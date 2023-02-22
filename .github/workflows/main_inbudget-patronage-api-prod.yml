@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'inbudget-patronage-api-prod'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7D7ABD65504A4DD1BF3109F6277A6B67 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_23594BE8220141B18E54A5F1484DD23B }}
           package: .
