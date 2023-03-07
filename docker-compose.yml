@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  intive.patronage2023.api:
+    image: ${DOCKER_REGISTRY-}intivepatronage2023api
+    build:
+      context: .
+      dockerfile: src/api/app/Dockerfile
