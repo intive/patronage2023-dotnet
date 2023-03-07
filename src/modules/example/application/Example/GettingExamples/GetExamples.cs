@@ -1,5 +1,6 @@
 namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 
+using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
