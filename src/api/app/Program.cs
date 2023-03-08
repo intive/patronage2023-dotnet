@@ -4,8 +4,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
 builder.Services.AddExampleModule();
 
 builder.Services.AddSwaggerGen(options =>
@@ -15,25 +13,18 @@ builder.Services.AddSwaggerGen(options =>
 		Version = "v1",
 		Title = "Intive Patronage2023 Some Title Api",
 		Description = "An ASP.NET Core Web API for managing bills and more",
-
-		// Idk if needed and what to put in TOS, Contact and License
-		// TermsOfService = new Uri("https://example.com/terms"),
-		// Contact = new OpenApiContact
-		// {
-		// 	Name = "Example Contact",
-		// 	Url = new Uri("https://example.com/contact"),
-		// },
-		// License = new OpenApiLicense
-		// {
-		// 	Name = "Example License",
-		// 	Url = new Uri("https://example.com/license"),
-		// },
 	});
 
-	string xmlExampleApiDocFilename = "Intive.Patronage2023.Modules.Example.Api.xml";
-
-	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlExampleApiDocFilename));
+	// Searching for all files with "Api.xml" suffix, which should be api docs,
+	// in build directory and attach them to swagger
+	var xmlFiles = Directory.GetFiles(
+		AppContext.BaseDirectory,
+		"*.Api.xml",
+		SearchOption.TopDirectoryOnly).ToList();
+	xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 });
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
