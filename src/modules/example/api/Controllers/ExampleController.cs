@@ -46,7 +46,7 @@ public class ExampleController : ControllerBase
 	{
 		if (this.getExamplesValidator.Validate(request).IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(new GetExamples());
+			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
 			return this.Ok(pagedList);
 		}
 

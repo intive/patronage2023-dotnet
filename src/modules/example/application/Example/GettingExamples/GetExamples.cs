@@ -15,12 +15,21 @@ public record GetExamples();
 public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInfo>>
 {
 	/// <summary>
+	/// Initializes a new instance of the <see cref="HandleGetExamples"/> class.
+	/// </summary>
+	public HandleGetExamples()
+	{
+	}
+
+	/// <summary>
 	/// GetExamples query handler.
 	/// </summary>
 	/// <param name="query">Query.</param>
 	/// <returns>Paged list of examples.</returns>
 	public Task<PagedList<ExampleInfo>> Handle(GetExamples query)
 	{
+		var examples = new PagedList<ExampleInfo>();
+		return Task.FromResult(examples);
 		throw new NotImplementedException();
 	}
 }
