@@ -1,7 +1,6 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 
-namespace Intive.Patronage2023.Modules.Example.Api
+namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample
 {
 	/// <summary>
 	/// Example validator class.
