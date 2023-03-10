@@ -55,7 +55,7 @@ public class ExampleController : ControllerBase
 	///
 	///     POST
 	///     {
-	///        "Name": "Example",
+	///        "Name": "Example"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>

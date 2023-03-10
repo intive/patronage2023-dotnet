@@ -1,4 +1,3 @@
-using System.Reflection;
 using Intive.Patronage2023.Modules.Example.Api;
 using Microsoft.OpenApi.Models;
 
@@ -15,7 +14,7 @@ builder.Services.AddSwaggerGen(options =>
 		Description = "An ASP.NET Core Web API for managing bills and more",
 	});
 
-	// Searching for all files with "Api.xml" suffix, which should be api docs,
+	// Searching for all files with ".Api.xml" suffix, which should be api docs,
 	// in build directory and attach them to swagger
 	var xmlFiles = Directory.GetFiles(
 		AppContext.BaseDirectory,
