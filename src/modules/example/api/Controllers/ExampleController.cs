@@ -45,13 +45,15 @@ public class ExampleController : ControllerBase
 	/// <returns>Paged list of examples.</returns>
 	public async Task<IActionResult> GetExamples(GetExamples request)
 	{
-		if (this.getExamplesValidator.Validate(request).IsValid)
+		var validator = this.getExamplesValidator.Validate(request);
+		if (validator.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
 			return this.Ok(pagedList);
 		}
 
-		return this.NotFound();
+		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).ToJson();
+		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
 	}
 
 	/// <summary>
@@ -70,6 +72,6 @@ public class ExampleController : ControllerBase
 		}
 
 		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).ToJson();
-		return this.ValidationProblem(errorResponse);
+		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
 	}
 }

@@ -12,7 +12,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExampl
 		/// </summary>
 		public GetExamplesValidator()
 		{
-			this.RuleFor(x => x).NotEmpty().NotNull().WithMessage("Examples cannot be empty.");
 		}
 	}
 }

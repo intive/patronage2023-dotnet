@@ -2,6 +2,7 @@ namespace Intive.Patronage2023.Modules.Example.Api;
 
 using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 
 /// <summary>
 /// Example module.
@@ -16,6 +17,7 @@ public static class ExampleModule
     public static IServiceCollection AddExampleModule(this IServiceCollection services)
     {
 		services.AddValidatorsFromAssemblyContaining<CreateExampleValidator>();
+		services.AddValidatorsFromAssemblyContaining<GetExamplesValidator>();
 		return services;
     }
 

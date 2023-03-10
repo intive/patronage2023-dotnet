@@ -28,8 +28,6 @@ public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInf
 	/// <returns>Paged list of examples.</returns>
 	public Task<PagedList<ExampleInfo>> Handle(GetExamples query)
 	{
-		var examples = new PagedList<ExampleInfo>();
-		return Task.FromResult(examples);
 		throw new NotImplementedException();
 	}
 }
