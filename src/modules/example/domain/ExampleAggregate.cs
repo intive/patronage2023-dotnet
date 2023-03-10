@@ -15,6 +15,7 @@ public class ExampleAggregate : Aggregate
 	{
 		var exampleCreated = new ExampleCreatedDomainEvent(id, name);
 		this.Apply(exampleCreated, this.Handle);
+		this.CreatedOn = DateTime.Now;
 	}
 
 	/// <summary>
@@ -26,6 +27,11 @@ public class ExampleAggregate : Aggregate
 	/// Example name.
 	/// </summary>
 	public string Name { get; private set; } = default!;
+
+	/// <summary>
+	/// Example creation date.
+	/// </summary>
+	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
 	/// Create example.
