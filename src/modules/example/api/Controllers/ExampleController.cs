@@ -2,6 +2,7 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 
 using System.Reflection.Metadata;
 using FluentValidation;
+using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -27,8 +28,8 @@ public class ExampleController : ControllerBase
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
-	/// /// <param name="createExamplesValidator">Command bus validator.</param>
-	/// /// /// <param name="getExamplesValidator">Query bus validator.</param>
+	/// <param name="createExamplesValidator">Command bus validator.</param>
+	/// <param name="getExamplesValidator">Query bus validator.</param>
 	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, CreateExampleValidator createExamplesValidator, GetExamplesValidator getExamplesValidator)
 	{
 		this.createExamplesValidator = createExamplesValidator;
@@ -61,12 +62,14 @@ public class ExampleController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateExample(CreateExample request)
 	{
-		if (this.createExamplesValidator.Validate(request).IsValid)
+		var validator = this.createExamplesValidator.Validate(request);
+		if (validator.IsValid)
 		{
 			await this.commandBus.Send(request);
 			return this.Created($"example/{request.Id}", request.Id);
 		}
 
-		return this.ValidationProblem();
+		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).ToJson();
+		return this.ValidationProblem(errorResponse);
 	}
 }
