@@ -1,12 +1,24 @@
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 
 using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 
 /// <summary>
 /// Example aggregate repository.
 /// </summary>
 public class ExampleRepository : IExampleRepository
 {
+	private readonly DomainEventDispatcher domainEventDispatcher;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ExampleRepository"/> class.
+	/// </summary>
+	/// <param name="domainEventDispatcher">Event dispatcher.</param>
+	public ExampleRepository(DomainEventDispatcher domainEventDispatcher)
+	{
+		this.domainEventDispatcher = domainEventDispatcher;
+	}
+
 	/// <summary>
 	/// Retrieves example aggregate.
 	/// </summary>
@@ -22,8 +34,8 @@ public class ExampleRepository : IExampleRepository
 	/// </summary>
 	/// <param name="example">Aggregate.</param>
 	/// <returns>Task.</returns>
-	public Task Persist(ExampleAggregate example)
+	public async Task Persist(ExampleAggregate example)
 	{
-		throw new NotImplementedException();
+		await this.domainEventDispatcher.Publish(example.UncommittedEvents);
 	}
 }
