@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(ExampleDbContext))]
     [Migration("20230308131423_InitialMigration")]
     partial class InitialMigration
     {

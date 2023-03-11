@@ -1,9 +1,10 @@
-namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
-
 using Intive.Patronage2023.Modules.Example.Application.Example.Mappers;
-using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 /// <summary>
 /// Get Examples query.
 /// </summary>
@@ -14,15 +15,15 @@ public record GetExamples();
 /// </summary>
 public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInfo>>
 {
-	private readonly IExampleRepository exampleRepository;
+	private readonly ExampleDbContext exampleDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleGetExamples"/> class.
 	/// </summary>
-	/// <param name="exampleRepository">Example repository.</param>
-	public HandleGetExamples(IExampleRepository exampleRepository)
+	/// <param name="exampleDbContext">Example dbContext.</param>
+	public HandleGetExamples(ExampleDbContext exampleDbContext)
 	{
-		this.exampleRepository = exampleRepository;
+		this.exampleDbContext = exampleDbContext;
 	}
 
 	/// <summary>
@@ -32,7 +33,7 @@ public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInf
 	/// <returns>Paged list of examples.</returns>
 	public async Task<PagedList<ExampleInfo>> Handle(GetExamples query)
 	{
-		var examples = await this.exampleRepository.GetAll();
+		var examples = await this.exampleDbContext.ExampleAggregates.OrderBy(x => x.Id).ToListAsync();
 		var mappedData = examples.Select(s => ExampleAggregateExampleInfoMapper.Map(s)).ToList();
 
 		return new PagedList<ExampleInfo> { Items = mappedData };

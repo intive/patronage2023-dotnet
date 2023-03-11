@@ -20,10 +20,4 @@ public interface IRepository<T, TKey>
 	/// <param name="example">Aggregate.</param>
 	/// <returns>Task.</returns>
 	Task Persist(T example);
-
-	/// <summary>
-	/// Gets all aggregates.
-	/// </summary>
-	/// <returns>Task that gets all aggregates.</returns>
-	Task<List<T>> GetAll();
 }

@@ -1,4 +1,9 @@
-﻿namespace Intive.Patronage2023.Modules.Example.Api;
+using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Example.Api;
 
 /// <summary>
 /// Example module.
@@ -9,10 +14,14 @@ public static class ExampleModule
     /// Add module services.
     /// </summary>
     /// <param name="services">IServiceCollection.</param>
+	/// <param name="configurationManager">ConfigurationManager.</param>
     /// <returns>Updated IServiceCollection.</returns>
-    public static IServiceCollection AddExampleModule(this IServiceCollection services)
+    public static IServiceCollection AddExampleModule(this IServiceCollection services, ConfigurationManager configurationManager)
     {
-        return services;
+		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
+
+		services.AddScoped<IExampleRepository, ExampleRepository>();
+		return services;
     }
 
     /// <summary>

@@ -15,7 +15,6 @@ public class ExampleAggregate : Aggregate
 	{
 		var exampleCreated = new ExampleCreatedDomainEvent(id, name);
 		this.Apply(exampleCreated, this.Handle);
-		this.CreatedOn = DateTime.Now;
 	}
 
 	/// <summary>
@@ -66,5 +65,6 @@ public class ExampleAggregate : Aggregate
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;
+		this.CreatedOn = @event.Timestamp;
 	}
 }

@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore;
 /// </summary>
 public class ExampleRepository : IExampleRepository
 {
-	private readonly AppDbContext appDbContext;
+	private readonly ExampleDbContext exampleDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExampleRepository"/> class.
 	/// </summary>
-	/// <param name="appDbContext">Database context.</param>
-	public ExampleRepository(AppDbContext appDbContext)
+	/// <param name="exampleDbContext">Database context.</param>
+	public ExampleRepository(ExampleDbContext exampleDbContext)
 	{
-		this.appDbContext = appDbContext;
+		this.exampleDbContext = exampleDbContext;
 	}
 
 	/// <summary>
@@ -27,9 +27,7 @@ public class ExampleRepository : IExampleRepository
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
 	public Task<ExampleAggregate> GetById(Guid id)
-	{
-		return this.appDbContext.ExampleAggregates.FirstOrDefaultAsync(x => x.Id == id);
-	}
+		=> this.exampleDbContext.ExampleAggregates.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
@@ -38,16 +36,7 @@ public class ExampleRepository : IExampleRepository
 	/// <returns>Task.</returns>
 	public Task Persist(ExampleAggregate example)
 	{
-		this.appDbContext.ExampleAggregates.Add(example);
-		return this.appDbContext.SaveChangesAsync();
-	}
-
-	/// <summary>
-	/// Retrieves all example aggregates.
-	/// </summary>
-	/// <returns>All aggregates.</returns>
-	public Task<List<ExampleAggregate>> GetAll()
-	{
-		return this.appDbContext.ExampleAggregates.OrderBy(x => x.Id).ToListAsync();
+		this.exampleDbContext.ExampleAggregates.Add(example);
+		return this.exampleDbContext.SaveChangesAsync();
 	}
 }
