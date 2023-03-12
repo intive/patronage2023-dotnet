@@ -12,7 +12,6 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 var app = builder.Build();
-
 app.UseExampleModule();
 app.UseHttpLogging();
 app.Run();
