@@ -1,19 +1,16 @@
 using Intive.Patronage2023.Modules.Example.Api;
 
+// Zastępuje domyślny zestaw dostawców rejestrowania dodanych przez metodę WebApplication.CreateBuilder
 var builder = WebApplication.CreateBuilder(args);
-
-// Set of logging providers added by WebApplication.CreateBuilder
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-// Configure JSON logging to the console.
-builder.Logging.AddJsonConsole();
-builder.Services.AddRazorPages();
-
 builder.Services.AddExampleModule();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+app.UseExampleModule();
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Error");
@@ -28,7 +25,5 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
-app.UseExampleModule();
 
 app.Run();
