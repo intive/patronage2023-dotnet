@@ -28,6 +28,11 @@ public class ExampleAggregate : Aggregate
 	public string Name { get; private set; } = default!;
 
 	/// <summary>
+	/// Example creation date.
+	/// </summary>
+	public DateTime CreatedOn { get; private set; }
+
+	/// <summary>
 	/// Create example.
 	/// </summary>
 	/// <param name="id">Unique identifier.</param>
@@ -60,5 +65,6 @@ public class ExampleAggregate : Aggregate
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;
+		this.CreatedOn = @event.Timestamp;
 	}
 }
