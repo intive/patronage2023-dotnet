@@ -1,5 +1,9 @@
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
+
+using MediatR;
+
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Intive.Patronage2023.Shared.Infrastructure;
@@ -22,6 +26,7 @@ builder.Services.AddMediatR(cfg =>
 {
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
+builder.Services.AddTransient(typeof(INotificationHandler<>), typeof(MediatrEventHandlerAdapter<>));
 
 builder.Services.AddSwaggerGen(options =>
 {
