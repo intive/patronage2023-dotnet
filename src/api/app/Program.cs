@@ -1,10 +1,8 @@
 using Intive.Patronage2023.Modules.Example.Api;
-using Microsoft.OpenApi.Models;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -14,7 +12,6 @@ builder.Services.AddSharedModule();
 
 builder.Services.AddMediatR(cfg =>
 {
-	cfg.Lifetime = ServiceLifetime.Singleton;
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
