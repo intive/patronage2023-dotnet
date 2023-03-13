@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bogus;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Moq;
-using Xunit.Abstractions;
 
 namespace Intive.Patronage2023.Example.Tests
 {
@@ -34,10 +27,9 @@ namespace Intive.Patronage2023.Example.Tests
 			await this.handleCreateExample.Handle(new CreateExample(id, name));
 
 			// Assert
-
 			this.exampleRepositoryMock.Verify(r => r.Persist(It.Is<ExampleAggregate>(e =>
 				e.Id == id &&
-				e.Name == name)));
+				e.Name == name)), Times.Once);
 		}
 	}
 }
