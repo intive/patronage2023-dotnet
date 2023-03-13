@@ -2,8 +2,6 @@ name: Build and deploy .NET Core application to Web App inbudget-patronage-api-d
 on:
   push:
     branches: [dev]
-  pull_request:
-    branches: [dev]
 env:
   AZURE_WEBAPP_NAME: inbudget-patronage-api-dev
   AZURE_WEBAPP_PACKAGE_PATH: src\api\app\publish
