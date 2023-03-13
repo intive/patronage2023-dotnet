@@ -8,7 +8,7 @@ WORKDIR /src
 COPY ["src/api/app/Intive.Patronage2023.Api.csproj", "src/api/app/"]
 RUN dotnet restore "src/api/app/Intive.Patronage2023.Api.csproj"
 COPY . .
-WORKDIR "src\api\app"
+WORKDIR /src/api/app
 RUN dotnet build "Intive.Patronage2023.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
