@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architectur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Architecture.Tests", "tests\architecture\Intive.Patronage2023.Architecture.Tests.csproj", "{74167673-3DBF-442E-8FBB-D12B7116589F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xunit", "xunit", "{751EFD73-0C2F-4917-8738-EF0C2A391FDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Example.Tests", "Intive.Patronage2023.Example.Tests\Intive.Patronage2023.Example.Tests.csproj", "{EE7D12AC-0539-4481-9492-474FE38AC3E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +79,10 @@ Global
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE7D12AC-0539-4481-9492-474FE38AC3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE7D12AC-0539-4481-9492-474FE38AC3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE7D12AC-0539-4481-9492-474FE38AC3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE7D12AC-0539-4481-9492-474FE38AC3E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +99,8 @@ Global
 		{8889DB97-EE28-4585-BFD9-DAA1685539BE} = {24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}
 		{9585A6B8-A14E-411E-8176-9FF001E6B18A} = {138E58F8-3FAE-4CCC-A92A-3A85E7E4D35B}
 		{74167673-3DBF-442E-8FBB-D12B7116589F} = {9585A6B8-A14E-411E-8176-9FF001E6B18A}
+		{751EFD73-0C2F-4917-8738-EF0C2A391FDA} = {138E58F8-3FAE-4CCC-A92A-3A85E7E4D35B}
+		{EE7D12AC-0539-4481-9492-474FE38AC3E0} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7483708-EA69-4509-A749-B4BA172FC7D3}
