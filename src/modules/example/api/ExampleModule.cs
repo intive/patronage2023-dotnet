@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandlers;
-using MediatR;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 namespace Intive.Patronage2023.Modules.Example.Api;
 
@@ -16,8 +16,8 @@ public static class ExampleModule
 	/// <returns>Updated IServiceCollection.</returns>
 	public static IServiceCollection AddExampleModule(this IServiceCollection services)
 	{
-		services.AddSingleton<INotificationHandler<ExampleCreatedDomainEvent>, ExampleCreatedDomainEventHandler>();
-		services.AddSingleton<INotificationHandler<ExampleNameUpdatedDomainEvent>, ExampleNameUpdatedDomainEventHandler>();
+		services.AddSingleton<IDomainEventHandler<ExampleCreatedDomainEvent>, ExampleCreatedDomainEventHandler>();
+		services.AddSingleton<IDomainEventHandler<ExampleNameUpdatedDomainEvent>, ExampleNameUpdatedDomainEventHandler>();
 		return services;
 	}
 

@@ -1,6 +1,7 @@
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 
 using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 
 /// <summary>
@@ -8,13 +9,13 @@ using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 /// </summary>
 public class ExampleRepository : IExampleRepository
 {
-	private readonly DomainEventDispatcher domainEventDispatcher;
+	private readonly IEventDispatcher<IEvent> domainEventDispatcher;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExampleRepository"/> class.
 	/// </summary>
 	/// <param name="domainEventDispatcher">Event dispatcher.</param>
-	public ExampleRepository(DomainEventDispatcher domainEventDispatcher)
+	public ExampleRepository(IEventDispatcher<IEvent> domainEventDispatcher)
 	{
 		this.domainEventDispatcher = domainEventDispatcher;
 	}

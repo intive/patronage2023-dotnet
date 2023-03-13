@@ -1,13 +1,12 @@
-using System.Diagnostics;
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
-using MediatR;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandlers
 {
 	/// <summary>
 	/// Example created domain event handler.
 	/// </summary>
-	public class ExampleCreatedDomainEventHandler : INotificationHandler<ExampleCreatedDomainEvent>
+	public class ExampleCreatedDomainEventHandler : IDomainEventHandler<ExampleCreatedDomainEvent>
 	{
 		/// <summary>
 		/// Handle the notification.
@@ -17,8 +16,9 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandle
 		/// <returns>Task.</returns>
 		public Task Handle(ExampleCreatedDomainEvent notification, CancellationToken cancellationToken)
 		{
-			Debug.WriteLine($"Example create domian event. {nameof(ExampleCreatedDomainEventHandler)}");
 			cancellationToken.ThrowIfCancellationRequested();
+
+			// TODO: Use logger
 			return Task.CompletedTask;
 		}
 	}

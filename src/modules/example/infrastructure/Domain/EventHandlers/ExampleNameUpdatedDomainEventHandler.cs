@@ -1,13 +1,12 @@
-using System.Diagnostics;
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
-using MediatR;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandlers
 {
 	/// <summary>
 	/// Example name updated domain event handler.
 	/// </summary>
-	public class ExampleNameUpdatedDomainEventHandler : INotificationHandler<ExampleNameUpdatedDomainEvent>
+	public class ExampleNameUpdatedDomainEventHandler : IDomainEventHandler<ExampleNameUpdatedDomainEvent>
 	{
 		/// <summary>
 		/// Handle the notification.
@@ -18,7 +17,8 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandle
 		public Task Handle(ExampleNameUpdatedDomainEvent notification, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Debug.WriteLine($"Example create domian event. {nameof(ExampleNameUpdatedDomainEventHandler)}");
+
+			// TODO: Add logging using ILogger
 			return Task.CompletedTask;
 		}
 	}
