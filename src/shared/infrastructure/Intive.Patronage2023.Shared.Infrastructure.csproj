@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\..\app.props" />
 	<PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 	<ItemGroup>
+	  <PackageReference Include="MediatR" Version="12.0.1" />
 	  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
