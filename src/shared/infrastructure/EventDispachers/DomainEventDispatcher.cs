@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using MediatR;
 
@@ -24,11 +23,9 @@ namespace Intive.Patronage2023.Shared.Infrastructure.EventDispachers
 		/// <inheritdoc/>
 		public async Task Publish(List<IEvent> eventsList)
 		{
-			Debug.WriteLine($"Example create domian event. {nameof(DomainEventDispatcher)}");
-			foreach (var element in eventsList)
-			{
-				await this.mediator.Publish(element);
-			}
+			// TODO: Add logging using ILogger
+			var tasks = eventsList.Select(x => this.mediator.Publish(x));
+			await Task.WhenAll(tasks);
 		}
 	}
 }
