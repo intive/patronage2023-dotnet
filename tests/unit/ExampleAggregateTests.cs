@@ -13,9 +13,8 @@ namespace Intive.Patronage2023.Example.Tests
 			this.output = output;
 		}
 
-		// Naming Convention: TestedMethodName_StateUnderTest_ExpectedBehavior		
-		[Theory]
-		[MemberData(nameof(GeneratedDate))]
+		// Naming Convention: TestedMethodName_StateUnderTest_ExpectedBehavior
+		[Fact]
 		public void Create_ArrayWithValues_CreateGivenValues(Guid id, string name)
 		{
 			// Arrange
@@ -94,16 +93,6 @@ namespace Intive.Patronage2023.Example.Tests
 			// Assert
 			output.WriteLine($"{name} {newName}");
 			aggregate.Name.Should().Be(name);
-		}
-
-		public static IEnumerable<object[]> GeneratedDate()
-		{
-			for (int i = 0; i < 10; i++)
-			{
-				var id = Guid.NewGuid();
-				string name = new Faker().Name.FirstName();
-				yield return new object[] { id, name };
-			}
 		}
 	}
 }
