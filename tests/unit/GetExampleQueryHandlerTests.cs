@@ -3,6 +3,10 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 
 namespace Intive.Patronage2023.Example.Tests
 {
+	/// <summary>
+	/// Test that check if the method throws a "NotImplementedException" when called,
+	/// indicating that the implementation of the method is not yet complete.
+	/// </summary>
 	public class GetExampleQueryHandlerTests
 	{
 		[Fact]

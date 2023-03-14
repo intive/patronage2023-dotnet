@@ -5,11 +5,20 @@ using Moq;
 
 namespace Intive.Patronage2023.Example.Tests
 {
+	/// <summary>
+	/// Test that check if the method correctly creates an instance of "ExampleAggregate" with the expected values
+	/// and then passes that instance to a mocked implementation of "IExampleRepository" to persist it.
+	/// The test uses a "Mock" object to simulate the behavior of the "IExampleRepository"
+	/// interface and verify that the "Persist" method is called once with the expected values.
+	/// </summary>
 	public class CreateExampleCommandHandlerTests
 	{
 		private readonly Mock<IExampleRepository> exampleRepositoryMock;
 		private readonly HandleCreateExample handleCreateExample;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CreateExampleCommandHandlerTests"/> class.
+		/// </summary>
 		public CreateExampleCommandHandlerTests()
 		{
 			this.exampleRepositoryMock = new Mock<IExampleRepository>();

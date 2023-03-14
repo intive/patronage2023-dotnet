@@ -5,9 +5,19 @@ using Xunit.Abstractions;
 
 namespace Intive.Patronage2023.Example.Tests
 {
+	/// <summary>
+	/// Tests that check class "ExampleAggregate", which has a Create method
+	/// that takes a Guid and a name and returns an instance of the class.
+	/// The class also has an UpdateName method that updates the name of the instance.
+	/// </summary>
 	public class ExampleAggregateTests
 	{
 		private readonly ITestOutputHelper output;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ExampleAggregateTests"/> class.
+		/// </summary>
+		/// <param name="output">Parameter is of type "ITestOutputHelper".</param>
 		public ExampleAggregateTests(ITestOutputHelper output)
 		{
 			this.output = output;
@@ -23,7 +33,7 @@ namespace Intive.Patronage2023.Example.Tests
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Assert
-			output.WriteLine($"{aggregate.Id} {aggregate.Name}");
+			this.output.WriteLine($"{aggregate.Id} {aggregate.Name}");
 
 			aggregate.Should().NotBeNull();
 			aggregate.Id.Should().Be(id);
@@ -41,7 +51,7 @@ namespace Intive.Patronage2023.Example.Tests
 			Action act = () => ExampleAggregate.Create(Guid.Parse(invalidGuid), name);
 
 			// Assert
-			output.WriteLine($"{invalidGuid} {name}");
+			this.output.WriteLine($"{invalidGuid} {name}");
 			act.Should().Throw<FormatException>();
 		}
 
@@ -58,7 +68,7 @@ namespace Intive.Patronage2023.Example.Tests
 			aggregate.UpdateName(newName);
 
 			// Assert
-			output.WriteLine($"{newName} {aggregate.Name}");
+			this.output.WriteLine($"{newName} {aggregate.Name}");
 			aggregate.Name.Should().Be(newName);
 		}
 
@@ -74,7 +84,7 @@ namespace Intive.Patronage2023.Example.Tests
 			bool isContainsDigits = invalidUpdateName.Any(char.IsDigit);
 
 			// Assert
-			output.WriteLine($"{name} {invalidUpdateName}");
+			this.output.WriteLine($"{name} {invalidUpdateName}");
 			isContainsDigits.Should().BeTrue();
 		}
 
@@ -91,7 +101,7 @@ namespace Intive.Patronage2023.Example.Tests
 			aggregate.UpdateName(newName);
 
 			// Assert
-			output.WriteLine($"{name} {newName}");
+			this.output.WriteLine($"{name} {newName}");
 			aggregate.Name.Should().Be(name);
 		}
 	}
