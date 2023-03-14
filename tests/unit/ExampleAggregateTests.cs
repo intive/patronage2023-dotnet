@@ -13,8 +13,7 @@ namespace Intive.Patronage2023.Example.Tests
 			this.output = output;
 		}
 
-		// Naming Convention: TestedMethodName_StateUnderTest_ExpectedBehavior
-		#region Create
+		// Naming Convention: TestedMethodName_StateUnderTest_ExpectedBehavior		
 		[Theory]
 		[MemberData(nameof(GeneratedDate))]
 		public void Create_ArrayWithValues_CreateGivenValues(Guid id, string name)
@@ -36,26 +35,24 @@ namespace Intive.Patronage2023.Example.Tests
 		public void Create_WithInvalidGuid_ShouldThrowFormatException()
 		{
 			// Arrange
-			var invalidGuid = "invalid-guid";
-			var name = new Faker().Name.FirstName();
+			string invalidGuid = "invalid-guid";
+			string name = new Faker().Name.FirstName();
 
-			// Act 
+			// Act
 			Action act = () => ExampleAggregate.Create(Guid.Parse(invalidGuid), name);
 
 			// Assert
 			output.WriteLine($"{invalidGuid} {name}");
 			act.Should().Throw<FormatException>();
 		}
-		#endregion
 
-		#region UpdateName
 		[Fact]
 		public void UpdateName_WithUpdatedName_ShouldUpdateAggregateName()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			var name = "Tomas";
-			var newName = "Tomasz";
+			string name = "Tomas";
+			string newName = "Tomasz";
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
@@ -71,8 +68,8 @@ namespace Intive.Patronage2023.Example.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			var name = "Bartosz";
-			var invalidUpdateName = "Bartosz123";
+			string name = "Bartosz";
+			string invalidUpdateName = "Bartosz123";
 
 			// Act
 			bool isContainsDigits = invalidUpdateName.Any(char.IsDigit);
@@ -87,8 +84,8 @@ namespace Intive.Patronage2023.Example.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			var name = "Tomasz";
-			var newName = "Tomasz";
+			string name = "Tomasz";
+			string newName = "Tomasz";
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
@@ -98,7 +95,6 @@ namespace Intive.Patronage2023.Example.Tests
 			output.WriteLine($"{name} {newName}");
 			aggregate.Name.Should().Be(name);
 		}
-		#endregion
 
 		public static IEnumerable<object[]> GeneratedDate()
 		{

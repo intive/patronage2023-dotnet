@@ -21,15 +21,17 @@ namespace Intive.Patronage2023.Example.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			var name = new Faker().Name.FirstName();
+			string name = new Faker().Name.FirstName();
 
 			// Act
 			await this.handleCreateExample.Handle(new CreateExample(id, name));
 
 			// Assert
-			this.exampleRepositoryMock.Verify(r => r.Persist(It.Is<ExampleAggregate>(e =>
-				e.Id == id &&
-				e.Name == name)), Times.Once);
+			this.exampleRepositoryMock.Verify(
+				r => r.Persist(It.Is<ExampleAggregate>(e =>
+					e.Id == id &&
+					e.Name == name)),
+				Times.Once);
 		}
 	}
 }
