@@ -19,11 +19,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 	/// </summary>
 	public class ErrorResponse
 	{
-		private string? type;
-		private string? title;
-		private string? traceId;
-		private List<ValidationFailure>? errors;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ErrorResponse"/> class.
 		/// </summary>
@@ -37,51 +32,32 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 			this.Title = title;
 			this.TraceId = traceId;
 			this.Errors = errors;
+			this.FullMessage = JsonSerializer.Serialize(this);
 		}
 
 		/// <summary>
-		/// Type.
+		/// type.
 		/// </summary>
-		public string? Type
-		{
-			get => this.type;
-			set => this.type = value;
-		}
+		public string? Type { get; set; }
 
 		/// <summary>
 		/// Title.
 		/// </summary>
-		public string? Title
-		{
-			get => this.title;
-			set => this.title = value;
-		}
+		public string? Title { get; set; }
 
 		/// <summary>
 		/// Trace ID.
 		/// </summary>
-		public string? TraceId
-		{
-			get => this.traceId;
-			set => this.traceId = value;
-		}
+		public string? TraceId { get; set; }
 
 		/// <summary>
 		/// Errors.
 		/// </summary>
-		public List<ValidationFailure>? Errors
-		{
-			get => this.errors;
-			set => this.errors = value;
-		}
+		public List<ValidationFailure>? Errors { get; set; }
 
 		/// <summary>
-		/// Create error response JSON object.
+		/// Full error message serialized to JSON.
 		/// </summary>
-		/// <returns>ErrorResponse object.</returns>
-		public string CreateResponse()
-		{
-			return JsonSerializer.Serialize(this);
-		}
+		public string? FullMessage { get; set; }
 	}
 }

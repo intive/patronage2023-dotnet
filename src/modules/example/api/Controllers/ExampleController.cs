@@ -53,7 +53,7 @@ public class ExampleController : ControllerBase
 		}
 
 		string errorResponse = new ErrorResponse(" ", " ", " ", validationResult.Errors).CreateResponse();
-		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
+		throw new AppException(errorResponse);
 	}
 
 	/// <summary>
@@ -72,6 +72,6 @@ public class ExampleController : ControllerBase
 		}
 
 		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).CreateResponse();
-		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
+		throw new AppException(errorResponse);
 	}
 }
