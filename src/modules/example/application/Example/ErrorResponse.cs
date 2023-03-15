@@ -17,7 +17,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 	/// <summary>
 	/// Error response class.
 	/// </summary>
-	[JsonIncludePrivateFields]
 	public class ErrorResponse
 	{
 		private string? type;
@@ -34,11 +33,46 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 		/// <param name="errors">Errors.</param>
 		public ErrorResponse(string? type, string? title, string? traceId, List<ValidationFailure>? errors)
 		{
-			this.type = type;
-			this.title = title;
-			this.traceId = traceId;
-			this.errors = errors;
-			Console.WriteLine(this.type);
+			this.Type = type;
+			this.Title = title;
+			this.TraceId = traceId;
+			this.Errors = errors;
+		}
+
+		/// <summary>
+		/// Type.
+		/// </summary>
+		public string? Type
+		{
+			get => this.type;
+			set => this.type = value;
+		}
+
+		/// <summary>
+		/// Title.
+		/// </summary>
+		public string? Title
+		{
+			get => this.title;
+			set => this.title = value;
+		}
+
+		/// <summary>
+		/// Trace ID.
+		/// </summary>
+		public string? TraceId
+		{
+			get => this.traceId;
+			set => this.traceId = value;
+		}
+
+		/// <summary>
+		/// Errors.
+		/// </summary>
+		public List<ValidationFailure>? Errors
+		{
+			get => this.errors;
+			set => this.errors = value;
 		}
 
 		/// <summary>
@@ -47,43 +81,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 		/// <returns>ErrorResponse object.</returns>
 		public string CreateResponse()
 		{
-			var options = new JsonSerializerOptions { TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { AddPrivateFieldsModifier } } };
-			return JsonSerializer.Serialize(this, options);
-		}
-
-		/// <summary>
-		/// Private fields serializing.
-		/// </summary>
-		/// <param name="jsonTypeInfo">json type info.</param>
-		private static void AddPrivateFieldsModifier(JsonTypeInfo jsonTypeInfo)
-		{
-			if (jsonTypeInfo.Kind != JsonTypeInfoKind.Object)
-			{
-				return;
-			}
-
-			if (!jsonTypeInfo.Type.IsDefined(typeof(JsonIncludePrivateFieldsAttribute), inherit: false))
-			{
-				return;
-			}
-
-			foreach (FieldInfo field in jsonTypeInfo.Type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
-			{
-				JsonPropertyInfo jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(field.FieldType, field.Name);
-				jsonPropertyInfo.Get = field.GetValue;
-				jsonPropertyInfo.Set = field.SetValue;
-
-				jsonTypeInfo.Properties.Add(jsonPropertyInfo);
-			}
-		}
-
-		/// <summary>
-		/// Including private fields attributes serialization.
-		/// </summary>
-		///
-		[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-		public class JsonIncludePrivateFieldsAttribute : Attribute
-		{
+			return JsonSerializer.Serialize(this);
 		}
 	}
 }
