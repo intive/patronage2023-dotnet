@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
 {
     [DbContext(typeof(ExampleDbContext))]
-    [Migration("20230308131423_InitialMigration")]
+    [Migration("20230313153024_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -31,13 +31,16 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExampleAggregates");
+                    b.ToTable("Example", "Examples");
                 });
 #pragma warning restore 612, 618
         }

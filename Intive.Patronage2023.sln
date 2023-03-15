@@ -34,9 +34,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Architecture.Tests", "tests\architecture\Intive.Patronage2023.Architecture.Tests.csproj", "{74167673-3DBF-442E-8FBB-D12B7116589F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6E10887-57DB-47DC-893B-E886DA96C51E}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

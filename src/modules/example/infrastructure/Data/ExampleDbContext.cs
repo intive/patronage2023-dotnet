@@ -1,4 +1,4 @@
-﻿using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data.DataConfiguration;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,12 +21,9 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 		/// <summary>
 		/// ExampleAggregate DbSet.
 		/// </summary>
-		public DbSet<ExampleAggregate> ExampleAggregates { get; set; }
+		public DbSet<ExampleAggregate> Example { get; set; }
 
-		/// <summary>
-		/// OnModelCreating override.
-		/// </summary>
-		/// <param name="modelBuilder">ModelBuilder.</param>
+		/// <inheritdoc />
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			new ExampleAggregateEntityConfiguration().Configure(modelBuilder.Entity<ExampleAggregate>());

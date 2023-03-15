@@ -2,6 +2,22 @@
 
 ## Setting up local development environment:
 
-1. Check the file appsetings.json to confirm that the connection string to your local database is correct. Modify it if necessary. 
-2. To apply migrations in Visual Studio go to Package Manager Console, set the project 'Intive.Patronage2023.Api' as default and run command 'Update-Database'.  
-3. To create a new migration run 'Add-Migration [Migration Name]'.
+1. The default connection string is called "AppDb" and is stored in appsetings.json file. Check the file to confirm that the connection string to your local database is correct. The context is configured in ExampleModule.cs (Modules.Example.Api project) with the connection string being read from configuration.
+
+2. To create a new migration you can use .NET CLI and execute the following command: dotnet ef migrations add ###NAME### --project <PathToProjectWhereIsDbContext> --startup-project <PathToMainApiProject> --context <ContextName> --output-dir <PathToMigrationsDir> --configuration Debug --no-build.
+
+Migration script example: 
+
+dotnet ef migrations add ExampleMigration --project .\src\modules\example\infrastructure --startup-project .\src\api\app --context ExampleDbContext --output-dir .\src\modules\example\infrastructure --configuration Debug --no-build.
+
+3. In order to create the database, apply database migrations by executing: dotnet ef database update. Optionally, you can add the specific name of migration that you want the database to be updated to: dotnet ef database update <MigrationName>.
+
+
+
+
+
+
+
+
+
+

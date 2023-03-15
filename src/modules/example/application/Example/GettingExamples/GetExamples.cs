@@ -5,6 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
+
 /// <summary>
 /// Get Examples query.
 /// </summary>
@@ -33,8 +34,8 @@ public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInf
 	/// <returns>Paged list of examples.</returns>
 	public async Task<PagedList<ExampleInfo>> Handle(GetExamples query)
 	{
-		var examples = await this.exampleDbContext.ExampleAggregates.OrderBy(x => x.Id).ToListAsync();
-		var mappedData = examples.Select(s => ExampleAggregateExampleInfoMapper.Map(s)).ToList();
+		var examples = await this.exampleDbContext.Example.OrderBy(x => x.Id).ToListAsync();
+		var mappedData = examples.Select(ExampleAggregateExampleInfoMapper.Map).ToList();
 
 		return new PagedList<ExampleInfo> { Items = mappedData };
 	}

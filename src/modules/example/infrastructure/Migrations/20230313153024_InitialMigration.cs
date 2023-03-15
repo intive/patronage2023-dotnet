@@ -11,16 +11,21 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Examples");
+
             migrationBuilder.CreateTable(
-                name: "ExampleAggregates",
+                name: "Example",
+                schema: "Examples",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExampleAggregates", x => x.Id);
+                    table.PrimaryKey("PK_Example", x => x.Id);
                 });
         }
 
@@ -28,7 +33,8 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ExampleAggregates");
+                name: "Example",
+                schema: "Examples");
         }
     }
 }

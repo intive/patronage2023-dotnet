@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,6 +16,7 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data.DataConfigura
 		public void Configure(EntityTypeBuilder<ExampleAggregate> builder)
 		{
 			builder.HasKey(x => x.Id);
+			builder.ToTable("Example", "Examples");
 		}
 	}
 }

@@ -1,6 +1,5 @@
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 
-using System.Collections.Generic;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +26,7 @@ public class ExampleRepository : IExampleRepository
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
 	public Task<ExampleAggregate> GetById(Guid id)
-		=> this.exampleDbContext.ExampleAggregates.FirstOrDefaultAsync(x => x.Id == id);
+		=> this.exampleDbContext.Example.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
@@ -36,7 +35,7 @@ public class ExampleRepository : IExampleRepository
 	/// <returns>Task.</returns>
 	public Task Persist(ExampleAggregate example)
 	{
-		this.exampleDbContext.ExampleAggregates.Add(example);
+		this.exampleDbContext.Example.Add(example);
 		return this.exampleDbContext.SaveChangesAsync();
 	}
 }
