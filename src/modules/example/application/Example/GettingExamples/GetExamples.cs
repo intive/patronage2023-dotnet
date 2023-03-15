@@ -36,7 +36,7 @@ public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInf
 	{
 		var examples = await this.exampleDbContext.Example.OrderBy(x => x.Id).ToListAsync();
 		var mappedData = examples.Select(ExampleAggregateExampleInfoMapper.Map).ToList();
-
-		return new PagedList<ExampleInfo> { Items = mappedData };
+		var result = new PagedList<ExampleInfo> { Items = mappedData };
+		return result;
 	}
 }
