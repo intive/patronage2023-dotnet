@@ -16,7 +16,8 @@ public static class ExampleModule
     /// <returns>Updated IServiceCollection.</returns>
     public static IServiceCollection AddExampleModule(this IServiceCollection services)
     {
-		services.AddValidatorsFromAssemblyContaining<CreateExampleValidator>();
+		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
+		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
 		return services;
     }
 

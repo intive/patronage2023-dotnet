@@ -20,19 +20,19 @@ public class ExampleController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
-	private readonly CreateExampleValidator createExamplesValidator;
-	private readonly GetExamplesValidator getExamplesValidator;
+	private readonly IValidator<CreateExample> createExampleValidator;
+	private readonly IValidator<GetExamples> getExamplesValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExampleController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
-	/// <param name="createExamplesValidator">Command bus validator.</param>
-	/// <param name="getExamplesValidator">Query bus validator.</param>
-	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, CreateExampleValidator createExamplesValidator, GetExamplesValidator getExamplesValidator)
+	/// <param name="createExampleValidator">Create example validator.</param>
+	/// <param name="getExamplesValidator">Get examples validator.</param>
+	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateExample> createExampleValidator, IValidator<GetExamples> getExamplesValidator)
 	{
-		this.createExamplesValidator = createExamplesValidator;
+		this.createExampleValidator = createExampleValidator;
 		this.getExamplesValidator = getExamplesValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
@@ -64,7 +64,7 @@ public class ExampleController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateExample(CreateExample request)
 	{
-		var validator = await this.createExamplesValidator.ValidateAsync(request);
+		var validator = await this.createExampleValidator.ValidateAsync(request);
 		if (validator.IsValid)
 		{
 			await this.commandBus.Send(request);
