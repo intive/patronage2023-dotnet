@@ -23,11 +23,15 @@ namespace Intive.Patronage2023.Example.Tests
 			this.output = output;
 		}
 
-		// Naming Convention: TestedMethodName_StateUnderTest_ExpectedBehavior
+		/// <summary>
+		/// Test that check if the method "Create" returns a valid aggregate when valid arguments are provided.
+		/// </summary>
 		[Fact]
-		public void Create_ArrayWithValues_CreateGivenValues(Guid id, string name)
+		public void Create_WhenValidArguments_ShouldReturnValidAggregate()
 		{
 			// Arrange
+			var id = Guid.NewGuid();
+			string name = new Faker().Name.FirstName();
 
 			// Act
 			var aggregate = ExampleAggregate.Create(id, name);
@@ -40,8 +44,11 @@ namespace Intive.Patronage2023.Example.Tests
 			aggregate.Name.Should().Be(name);
 		}
 
+		/// <summary>
+		/// Test that checks if the method "Create" throws a FormatException when invalid guid is provided.
+		/// </summary>
 		[Fact]
-		public void Create_WithInvalidGuid_ShouldThrowFormatException()
+		public void Create_WhenInvalidGuid_ShouldThrowFormatException()
 		{
 			// Arrange
 			string invalidGuid = "invalid-guid";
@@ -55,8 +62,12 @@ namespace Intive.Patronage2023.Example.Tests
 			act.Should().Throw<FormatException>();
 		}
 
+		/// <summary>
+		/// Test that check if the method "UpdateName" updates the "Name" property of the object
+		/// with the specified value when called with a new name.
+		/// </summary>
 		[Fact]
-		public void UpdateName_WithUpdatedName_ShouldUpdateAggregateName()
+		public void UpdateName_WhenUpdatedNamePassed_ShouldUpdateName()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
@@ -72,8 +83,12 @@ namespace Intive.Patronage2023.Example.Tests
 			aggregate.Name.Should().Be(newName);
 		}
 
+		/// <summary>
+		/// Test that check if the method "UpdateName" updates the name of the ExampleAggregate when provided
+		/// with valid arguments and throws an exception when the new name contains digits.
+		/// </summary>
 		[Fact]
-		public void UpdateName_WithNumberInName_ShouldThrowTrue()
+		public void UpdateName_WhenUpdateNameContainsDigits_ShouldThrowTrue()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
@@ -89,7 +104,7 @@ namespace Intive.Patronage2023.Example.Tests
 		}
 
 		[Fact]
-		public void UpdateName_WithUpdatedTheSameName_ShouldBeTheSameName()
+		public void UpdateName_WhenNewNameIsSameAsOldName_ShouldUpdateName()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
