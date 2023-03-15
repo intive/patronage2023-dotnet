@@ -23,20 +23,20 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 		/// Initializes a new instance of the <see cref="ErrorResponse"/> class.
 		/// </summary>
 		/// <param name="type">Type.</param>
-		/// <param name="title">Title.</param>
 		/// <param name="traceId">Trace ID.</param>
 		/// <param name="errors">Errors.</param>
-		public ErrorResponse(string? type, string? title, string? traceId, List<ValidationFailure>? errors)
+		public ErrorResponse(string? type, string? traceId, List<ValidationFailure>? errors)
 		{
 			this.Type = type;
-			this.Title = title;
+			this.Title = "One or more validation errors occured.";
+			this.Status = 400;
 			this.TraceId = traceId;
 			this.Errors = errors;
 			this.FullMessage = JsonSerializer.Serialize(this);
 		}
 
 		/// <summary>
-		/// type.
+		/// Type.
 		/// </summary>
 		public string? Type { get; set; }
 
@@ -44,6 +44,11 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 		/// Title.
 		/// </summary>
 		public string? Title { get; set; }
+
+		/// <summary>
+		/// Status code.
+		/// </summary>
+		public int? Status { get; set; }
 
 		/// <summary>
 		/// Trace ID.

@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.Results;
 
 namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample
 {
@@ -15,18 +14,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExamp
 		{
 			this.RuleFor(example => example.Id).NotEmpty().NotNull();
 			this.RuleFor(example => example.Name).NotEmpty().NotNull();
-		}
-
-		/// <summary>
-		/// ValidateAsync override.
-		/// </summary>
-		/// <param name="context">context.</param>
-		/// <param name="cancellation">cancellation.</param>
-		/// <returns>result.</returns>
-		public override Task<ValidationResult> ValidateAsync(ValidationContext<CreateExample> context, CancellationToken cancellation = default)
-		{
-			var validate = base.ValidateAsync(context, cancellation);
-			return base.ValidateAsync(context, cancellation);
 		}
 	}
 }

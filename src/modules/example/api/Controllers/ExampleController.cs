@@ -1,5 +1,6 @@
 namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Application.Example;
@@ -52,8 +53,8 @@ public class ExampleController : ControllerBase
 			return this.Ok(pagedList);
 		}
 
-		string errorResponse = new ErrorResponse(" ", " ", " ", validationResult.Errors).CreateResponse();
-		throw new AppException(errorResponse);
+		var errorResponse = new ErrorResponse(request.GetType().ToString(), "traceId", validationResult.Errors);
+		throw new AppException(errorResponse.FullMessage);
 	}
 
 	/// <summary>
@@ -64,14 +65,14 @@ public class ExampleController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateExample(CreateExample request)
 	{
-		var validator = await this.createExampleValidator.ValidateAsync(request);
-		if (validator.IsValid)
+		var validationResult = await this.createExampleValidator.ValidateAsync(request);
+		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(request);
 			return this.Created($"example/{request.Id}", request.Id);
 		}
 
-		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).CreateResponse();
-		throw new AppException(errorResponse);
+		var errorResponse = new ErrorResponse(request.GetType().ToString(), "traceId", validationResult.Errors);
+		throw new AppException(errorResponse.FullMessage);
 	}
 }
