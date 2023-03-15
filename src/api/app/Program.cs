@@ -40,8 +40,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.UseExampleModule();
-
 app.UseHttpLogging();
+
+app.UseExampleModule();
 
 app.Run();
