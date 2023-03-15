@@ -11,13 +11,3 @@ Migration script example:
 dotnet ef migrations add ExampleMigration --project .\src\modules\example\infrastructure --startup-project .\src\api\app --context ExampleDbContext --output-dir .\src\modules\example\infrastructure --configuration Debug --no-build.
 
 3. In order to create the database, apply database migrations by executing: dotnet ef database update. Optionally, you can add the specific name of migration that you want the database to be updated to: dotnet ef database update <MigrationName>.
-
-
-
-
-
-
-
-
-
-
