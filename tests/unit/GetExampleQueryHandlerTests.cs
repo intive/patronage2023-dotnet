@@ -13,7 +13,7 @@ namespace Intive.Patronage2023.Example.Tests
 		/// indicating that the implementation of the method is not yet complete.
 		/// </summary>
 		[Fact]
-		public void Handle_WhenCalled_ReturnsPagedListExampleInfo()
+		public void Handle_WhenCalled_ShouldReturnsPagedListExampleInfo()
 		{
 			// Arrange
 			var query = new GetExamples();

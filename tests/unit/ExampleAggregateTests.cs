@@ -103,6 +103,10 @@ namespace Intive.Patronage2023.Example.Tests
 			isContainsDigits.Should().BeTrue();
 		}
 
+		/// <summary>
+		/// Test that check if the method "UpdateName"  updates the name of the aggregate
+		/// to the new name, even if the new name is the same as the old name.
+		/// </summary>
 		[Fact]
 		public void UpdateName_WhenNewNameIsSameAsOldName_ShouldUpdateName()
 		{

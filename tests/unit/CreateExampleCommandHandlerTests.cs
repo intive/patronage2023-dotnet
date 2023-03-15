@@ -29,7 +29,7 @@ namespace Intive.Patronage2023.Example.Tests
 		/// interface and verify that the "Persist" method is called once with the expected values.
 		/// </summary>
 		[Fact]
-		public void Handle_WhenCalled_CreatesExampleAggregateWithCorrectValues()
+		public void Handle_WhenCalled_ShouldCreatesExampleAggregateWithCorrectValues()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
