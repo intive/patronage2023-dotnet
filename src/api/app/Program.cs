@@ -1,8 +1,11 @@
 using Intive.Patronage2023.Modules.Example.Api;
-using Microsoft.OpenApi.Models;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddExampleModule();
 builder.Services.AddHttpLogging(logging =>
@@ -10,6 +13,13 @@ builder.Services.AddHttpLogging(logging =>
 	logging.LoggingFields = HttpLoggingFields.All;
 	logging.RequestBodyLogLimit = 4096;
 	logging.ResponseBodyLogLimit = 4096;
+});
+
+builder.Services.AddSharedModule();
+
+builder.Services.AddMediatR(cfg =>
+{
+	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -41,6 +51,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpLogging();
+app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.UseExampleModule();
 
