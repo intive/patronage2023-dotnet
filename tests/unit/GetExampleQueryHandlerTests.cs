@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 namespace Intive.Patronage2023.Example.Tests
 {
 	/// <summary>
-	/// Test that checks the behavior of a query handler class "HandleGetExamples".
+	/// Test that checks the behavior of a query handler class "GetExamples".
 	/// </summary>
 	public class GetExampleQueryHandlerTests
 	{

@@ -6,10 +6,7 @@ using Moq;
 namespace Intive.Patronage2023.Example.Tests
 {
 	/// <summary>
-	/// Test that check if the method correctly creates an instance of "ExampleAggregate" with the expected values
-	/// and then passes that instance to a mocked implementation of "IExampleRepository" to persist it.
-	/// The test uses a "Mock" object to simulate the behavior of the "IExampleRepository"
-	/// interface and verify that the "Persist" method is called once with the expected values.
+	/// Test that checks the behavior of a query handler class "CreateExample".
 	/// </summary>
 	public class CreateExampleCommandHandlerTests
 	{
@@ -25,15 +22,21 @@ namespace Intive.Patronage2023.Example.Tests
 			this.handleCreateExample = new HandleCreateExample(this.exampleRepositoryMock.Object);
 		}
 
+		/// <summary>
+		/// Test that check if the method correctly creates an instance of "ExampleAggregate" with the expected values
+		/// and then passes that instance to a mocked implementation of "IExampleRepository" to persist it.
+		/// The test uses a "Mock" object to simulate the behavior of the "IExampleRepository"
+		/// interface and verify that the "Persist" method is called once with the expected values.
+		/// </summary>
 		[Fact]
-		public async Task Handle_WhenCalled_CreatesExampleAggregateWithCorrectValues()
+		public void Handle_WhenCalled_CreatesExampleAggregateWithCorrectValues()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
 			string name = new Faker().Name.FirstName();
 
 			// Act
-			await this.handleCreateExample.Handle(new CreateExample(id, name));
+			this.handleCreateExample.Handle(new CreateExample(id, name));
 
 			// Assert
 			this.exampleRepositoryMock.Verify(
