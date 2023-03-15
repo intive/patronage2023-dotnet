@@ -17,7 +17,6 @@ public static class ExampleModule
     public static IServiceCollection AddExampleModule(this IServiceCollection services)
     {
 		services.AddValidatorsFromAssemblyContaining<CreateExampleValidator>();
-		services.AddValidatorsFromAssemblyContaining<GetExamplesValidator>();
 		return services;
     }
 

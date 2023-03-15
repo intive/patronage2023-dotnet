@@ -20,8 +20,8 @@ public class ExampleController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
-	private CreateExampleValidator createExamplesValidator;
-	private GetExamplesValidator getExamplesValidator;
+	private readonly CreateExampleValidator createExamplesValidator;
+	private readonly GetExamplesValidator getExamplesValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExampleController"/> class.
@@ -45,14 +45,14 @@ public class ExampleController : ControllerBase
 	/// <returns>Paged list of examples.</returns>
 	public async Task<IActionResult> GetExamples(GetExamples request)
 	{
-		var validator = this.getExamplesValidator.Validate(request);
-		if (validator.IsValid)
+		var validationResult = await this.getExamplesValidator.ValidateAsync(request);
+		if (validationResult.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
 			return this.Ok(pagedList);
 		}
 
-		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).ToJson();
+		string errorResponse = new ErrorResponse(" ", " ", " ", validationResult.Errors).CreateResponse();
 		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
 	}
 
@@ -64,14 +64,14 @@ public class ExampleController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateExample(CreateExample request)
 	{
-		var validator = this.createExamplesValidator.Validate(request);
+		var validator = await this.createExamplesValidator.ValidateAsync(request);
 		if (validator.IsValid)
 		{
 			await this.commandBus.Send(request);
 			return this.Created($"example/{request.Id}", request.Id);
 		}
 
-		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).ToJson();
+		string errorResponse = new ErrorResponse(" ", " ", " ", validator.Errors).CreateResponse();
 		return this.ValidationProblem(detail: errorResponse, statusCode: 400);
 	}
 }
