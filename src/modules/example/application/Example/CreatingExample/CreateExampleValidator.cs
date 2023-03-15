@@ -12,8 +12,8 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExamp
 		/// </summary>
 		public CreateExampleValidator()
 		{
-			this.RuleFor(example => example.Id).NotEmpty().NotNull().WithMessage("Id cannot be empty");
-			this.RuleFor(example => example.Name).NotEmpty().NotNull().WithMessage("Name cannot be empty");
+			this.RuleFor(example => example.Id).NotEmpty().NotNull();
+			this.RuleFor(example => example.Name).NotEmpty().NotNull();
 		}
 	}
 }
