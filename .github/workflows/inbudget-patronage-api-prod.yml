@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
 env:
-  AZURE_WEBAPP_NAME: inbudget-patronage-api-dev
+  AZURE_WEBAPP_NAME: inbudget-patronage-api-prod
   AZURE_WEBAPP_PACKAGE_PATH: src\api\app\publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
