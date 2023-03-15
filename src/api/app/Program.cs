@@ -41,5 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExampleModule();
+
 app.UseHttpLogging();
+
 app.Run();
