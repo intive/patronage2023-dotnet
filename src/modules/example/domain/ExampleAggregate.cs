@@ -2,9 +2,7 @@ namespace Intive.Patronage2023.Modules.Example.Domain;
 
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain.Rules;
-using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 /// <summary>
 /// Example of aggregate root.

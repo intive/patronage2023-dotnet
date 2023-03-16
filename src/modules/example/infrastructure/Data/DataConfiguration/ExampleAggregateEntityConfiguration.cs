@@ -18,8 +18,7 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data.DataConfigura
 			builder.HasKey(x => x.Id);
 			builder.ToTable("Example", "Examples");
 			builder.Property(x => x.Id).HasColumnName("Id");
-			builder.Property(x => x.Name).HasColumnName("Name");
-			builder.Property(x => x.Name).HasMaxLength(256);
+			builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 			builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 		}
 	}

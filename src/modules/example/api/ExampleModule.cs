@@ -1,6 +1,9 @@
+using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandlers;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Api;
@@ -10,27 +13,30 @@ namespace Intive.Patronage2023.Modules.Example.Api;
 /// </summary>
 public static class ExampleModule
 {
-    /// <summary>
-    /// Add module services.
-    /// </summary>
-    /// <param name="services">IServiceCollection.</param>
+	/// <summary>
+	/// Add module services.
+	/// </summary>
+	/// <param name="services">IServiceCollection.</param>
 	/// <param name="configurationManager">ConfigurationManager.</param>
-    /// <returns>Updated IServiceCollection.</returns>
-    public static IServiceCollection AddExampleModule(this IServiceCollection services, ConfigurationManager configurationManager)
-    {
+	/// <returns>Updated IServiceCollection.</returns>
+	public static IServiceCollection AddExampleModule(this IServiceCollection services, ConfigurationManager configurationManager)
+	{
 		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 
 		services.AddScoped<IExampleRepository, ExampleRepository>();
-		return services;
-    }
+		services.AddSingleton<IDomainEventHandler<ExampleCreatedDomainEvent>, ExampleCreatedDomainEventHandler>();
+		services.AddSingleton<IDomainEventHandler<ExampleNameUpdatedDomainEvent>, ExampleNameUpdatedDomainEventHandler>();
 
-    /// <summary>
-    /// Customizes app building process.
-    /// </summary>
-    /// <param name="app">IApplicationBuilder.</param>
-    /// <returns>Updated IApplicationBuilder.</returns>
-    public static IApplicationBuilder UseExampleModule(this IApplicationBuilder app)
-    {
-        return app;
-    }
+		return services;
+	}
+
+	/// <summary>
+	/// Customizes app building process.
+	/// </summary>
+	/// <param name="app">IApplicationBuilder.</param>
+	/// <returns>Updated IApplicationBuilder.</returns>
+	public static IApplicationBuilder UseExampleModule(this IApplicationBuilder app)
+	{
+		return app;
+	}
 }
