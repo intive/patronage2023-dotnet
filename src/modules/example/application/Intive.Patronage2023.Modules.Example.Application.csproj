@@ -8,6 +8,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
 	  <PackageReference Include="MediatR" Version="12.0.1" />
 	  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
 	    <PrivateAssets>all</PrivateAssets>
@@ -19,5 +20,6 @@
     <ProjectReference Include="..\..\..\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Example.Domain.csproj" />
+    <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

@@ -9,19 +9,24 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
-		<ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
-		<ProjectReference Include="..\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
-		<ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
+    <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
