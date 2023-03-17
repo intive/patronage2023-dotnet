@@ -53,8 +53,7 @@ public class ExampleController : ControllerBase
 			return this.Ok(pagedList);
 		}
 
-		var errorResponse = new ErrorResponse(request.GetType().ToString(), "traceId", validationResult.Errors);
-		throw new AppException(errorResponse.FullMessage);
+		throw new AppException("One or more error occured when trying to get examples.", validationResult.Errors);
 	}
 
 	/// <summary>
@@ -72,7 +71,6 @@ public class ExampleController : ControllerBase
 			return this.Created($"example/{request.Id}", request.Id);
 		}
 
-		var errorResponse = new ErrorResponse(request.GetType().ToString(), "traceId", validationResult.Errors);
-		throw new AppException(errorResponse.FullMessage);
+		throw new AppException("One or more error occured when trying to create example.", validationResult.Errors);
 	}
 }

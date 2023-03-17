@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace Intive.Patronage2023.Modules.Example.Application.Example
 {
@@ -23,19 +24,10 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppException"/> class.
 		/// </summary>
-		/// <param name="message">a.</param>
-		public AppException(string message)
-			: base(message)
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AppException"/> class.
-		/// </summary>
-		/// <param name="message">Message.</param>
-		/// <param name="args">Args.</param>
+		/// <param name="message">Error message.</param>
+		/// <param name="args">Arguments.</param>
 		public AppException(string message, params object[] args)
-			: base(string.Format(CultureInfo.CurrentCulture, message, args))
+		: base(string.Format(CultureInfo.CurrentCulture, message, args))
 		{
 		}
 	}
