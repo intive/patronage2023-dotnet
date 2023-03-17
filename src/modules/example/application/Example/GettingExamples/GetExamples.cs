@@ -29,13 +29,6 @@ public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInf
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleGetExamples"/> class.
-	/// </summary>
-	public HandleGetExamples()
-	{
-	}
-
-	/// <summary>
 	/// GetExamples query handler.
 	/// </summary>
 	/// <param name="query">Query.</param>
