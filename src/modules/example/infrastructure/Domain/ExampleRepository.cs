@@ -18,17 +18,10 @@ public class ExampleRepository : IExampleRepository
 	/// Initializes a new instance of the <see cref="ExampleRepository"/> class.
 	/// </summary>
 	/// <param name="exampleDbContext">Database context.</param>
-	public ExampleRepository(ExampleDbContext exampleDbContext)
+	/// <param name="domainEventDispatcher">Event dispatcher.</param>
+	public ExampleRepository(ExampleDbContext exampleDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
 	{
 		this.exampleDbContext = exampleDbContext;
-	}
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ExampleRepository"/> class.
-	/// </summary>
-	/// <param name="domainEventDispatcher">Event dispatcher.</param>
-	public ExampleRepository(IEventDispatcher<IEvent> domainEventDispatcher)
-	{
 		this.domainEventDispatcher = domainEventDispatcher;
 	}
 
