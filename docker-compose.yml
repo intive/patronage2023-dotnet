@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports:
+      - "1434:1433"
+    environment:
+      SA_PASSWORD: "S3cur3P@ssW0rd!"
+      ACCEPT_EULA: "Y"
+
+  intive.patronage2023.api:
+    depends_on:
+      - db
+    image: intivepatronage2023api
+    build:
+      context: .
+    ports:
+      - "8080:5000" 
+      - "8081:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5001;http://+:5000
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=awesomepass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/intivepatronageapi.pfx
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${USERPROFILE}/.aspnet/https:/https/
+
+
+  
