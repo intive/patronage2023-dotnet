@@ -5,25 +5,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-ConfigurationManager configuration = builder.Configuration;
-string? allowedOrigins = configuration.GetValue<string>("AllowedOrigins");
 string corsPolicyName = "CorsPolicy";
-
-if (!string.IsNullOrEmpty(allowedOrigins))
-{
-	builder.Services.AddCors(options =>
-	{
-		options.AddPolicy(
-		name: corsPolicyName,
-		policy =>
-		{
-			string[] origins = allowedOrigins.Split(";");
-			policy.AllowAnyMethod()
-				  .AllowAnyHeader()
-				  .WithOrigins(origins);
-		});
-	});
-}
+ConfigureCorsPolicy(builder.Services, builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -80,3 +63,23 @@ app.MapControllers();
 app.UseExampleModule();
 
 app.Run();
+
+static void ConfigureCorsPolicy(IServiceCollection services, ConfigurationManager configuration, string corsPolicyName)
+{
+	string? allowedOrigins = configuration.GetValue<string>("AllowedOrigins");
+	if (!string.IsNullOrEmpty(allowedOrigins))
+	{
+		services.AddCors(options =>
+		{
+			options.AddPolicy(
+			name: corsPolicyName,
+			policy =>
+			{
+				string[] origins = allowedOrigins.Split(";");
+				policy.AllowAnyMethod()
+					  .AllowAnyHeader()
+					  .WithOrigins(origins);
+			});
+		});
+	}
+}
