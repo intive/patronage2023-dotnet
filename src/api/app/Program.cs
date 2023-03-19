@@ -5,6 +5,19 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string corsPolicyName = "CorsPolicy";
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(
+	name: corsPolicyName,
+	policy =>
+	{
+		policy.AllowAnyMethod()
+			  .AllowAnyHeader()
+			  .WithOrigins("https://localhost:7106;http://localhost:5106");
+	});
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddExampleModule(builder.Configuration);
@@ -49,6 +62,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
