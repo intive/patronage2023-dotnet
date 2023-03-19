@@ -5,18 +5,25 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigurationManager configuration = builder.Configuration;
+string? allowedOrigins = configuration.GetValue<string>("AllowedOrigins");
 string corsPolicyName = "CorsPolicy";
-builder.Services.AddCors(options =>
+
+if (!string.IsNullOrEmpty(allowedOrigins))
 {
-	options.AddPolicy(
-	name: corsPolicyName,
-	policy =>
+	builder.Services.AddCors(options =>
 	{
-		policy.AllowAnyMethod()
-			  .AllowAnyHeader()
-			  .WithOrigins("https://localhost:7106;http://localhost:5106");
+		options.AddPolicy(
+		name: corsPolicyName,
+		policy =>
+		{
+			string[] origins = allowedOrigins.Split(";");
+			policy.AllowAnyMethod()
+				  .AllowAnyHeader()
+				  .WithOrigins(origins);
+		});
 	});
-});
+}
 
 builder.Services.AddEndpointsApiExplorer();
 
