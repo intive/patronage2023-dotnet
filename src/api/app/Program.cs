@@ -1,6 +1,8 @@
+using Intive.Patronage2023.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,21 +66,19 @@ app.UseExampleModule();
 
 app.Run();
 
-static void ConfigureCorsPolicy(IServiceCollection services, ConfigurationManager configuration, string corsPolicyName)
+static void ConfigureCorsPolicy(IServiceCollection services, IConfiguration configuration, string corsPolicyName)
 {
-	string? allowedOrigins = configuration.GetValue<string>("AllowedOrigins");
+	string? allowedOrigins = configuration.GetValue<string>("CorsAllowedOrigins");
 	if (!string.IsNullOrEmpty(allowedOrigins))
 	{
 		services.AddCors(options =>
 		{
-			options.AddPolicy(
-			name: corsPolicyName,
-			policy =>
+			options.AddPolicy(corsPolicyName, builder =>
 			{
 				string[] origins = allowedOrigins.Split(";");
-				policy.AllowAnyMethod()
-					  .AllowAnyHeader()
-					  .WithOrigins(origins);
+				builder.AllowAnyMethod()
+					   .AllowAnyHeader()
+					   .WithOrigins(origins);
 			});
 		});
 	}
