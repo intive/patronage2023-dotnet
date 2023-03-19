@@ -1,6 +1,8 @@
 using Intive.Patronage2023.Modules.Example.Api;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,5 +58,15 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+
+using (var scope = app.Services.CreateScope())
+{
+	var dbContext = scope.ServiceProvider
+		.GetRequiredService<ExampleDbContext>();
+
+	// Here is the migration executed
+	Thread.Sleep(10000);
+	dbContext.Database.Migrate();
+}
 
 app.Run();

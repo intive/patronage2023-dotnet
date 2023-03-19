@@ -21,7 +21,7 @@ public static class ExampleModule
 	/// <returns>Updated IServiceCollection.</returns>
 	public static IServiceCollection AddExampleModule(this IServiceCollection services, ConfigurationManager configurationManager)
 	{
-		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
+		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("DockerDb")));
 
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddSingleton<IDomainEventHandler<ExampleCreatedDomainEvent>, ExampleCreatedDomainEventHandler>();
