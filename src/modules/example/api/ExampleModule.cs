@@ -1,3 +1,6 @@
+using FluentValidation;
+using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
@@ -26,6 +29,8 @@ public static class ExampleModule
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddSingleton<IDomainEventHandler<ExampleCreatedDomainEvent>, ExampleCreatedDomainEventHandler>();
 		services.AddSingleton<IDomainEventHandler<ExampleNameUpdatedDomainEvent>, ExampleNameUpdatedDomainEventHandler>();
+		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
+		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
 
 		return services;
 	}
