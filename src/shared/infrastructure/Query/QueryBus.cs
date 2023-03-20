@@ -1,7 +1,8 @@
 using System;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using MediatR;
 
-namespace Intive.Patronage2023.Shared.Abstractions.Queries
+namespace Intive.Patronage2023.Shared.Infrastructure.Queries
 {
 	/// <summary>
 	/// Query bus implementation.
@@ -22,7 +23,7 @@ namespace Intive.Patronage2023.Shared.Abstractions.Queries
 		/// <inheritdoc/>
 		public async Task<TResponse> Query<TRequest, TResponse>(TRequest query)
 		{
-			return (TResponse)await this.mediator.Send(query);
+			return (TResponse) await this.mediator.Send(query);
 		}
 	}
 }

@@ -1,29 +1,30 @@
 using System;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
 using MediatR;
 
-namespace Intive.Patronage2023.Shared.Abstractions.Commands
+namespace Intive.Patronage2023.Shared.Infrastructure.Commands
 {
 	/// <summary>
 	/// Command Bus implementation.
 	/// </summary>
 	public class CommandBus : ICommandBus
 	{
-		private readonly Mediator mediator;
+		private readonly IMediator mediator;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CommandBus"/> class.
 		/// </summary>
 		/// <param name="mediator">MediatR injection.</param>
-		public CommandBus(Mediator mediator)
+		public CommandBus(IMediator mediator)
 		{
 			this.mediator = mediator;
 		}
 
 		/// <inheritdoc/>
-		public async Task<object> Send<TCommand>(TCommand command)
+		public Task Send<TCommand>(TCommand command)
 			where TCommand : class
 		{
-			return await this.mediator.Send(command);
+			return this.mediator.Send(command);
 		}
 	}
 }
