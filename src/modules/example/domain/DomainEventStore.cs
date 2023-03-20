@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Modules.Example.Domain.Enums;
+
 namespace Intive.Patronage2023.Modules.Example.Domain
 {
 	/// <summary>
@@ -18,7 +20,7 @@ namespace Intive.Patronage2023.Modules.Example.Domain
 		/// <summary>
 		/// Domain Event type.
 		/// </summary>
-		public string? Type { get; set; }
+		public EventType Type { get; set; }
 
 		/// <summary>
 		/// Domain Event creation timestamp.
