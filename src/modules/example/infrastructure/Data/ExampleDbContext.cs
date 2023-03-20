@@ -23,24 +23,24 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 		/// </summary>
 		public DbSet<ExampleAggregate> Example { get; set; }
 
+		/// <inheritdoc />
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			ApplyConfiguration(modelBuilder, typeof(ExampleDbContext).Assembly);
+			base.OnModelCreating(modelBuilder);
+		}
+
 		/// <summary>
-		/// Apply.
+		/// Applies all entities configurations from given assemblies.
 		/// </summary>
 		/// <param name="modelBuilder">Model builder.</param>
 		/// <param name="assemblies">Assemblies to apply configs from.</param>
-		protected void ApplyConfiguration(ModelBuilder modelBuilder, params Assembly[] assemblies)
+		private static void ApplyConfiguration(ModelBuilder modelBuilder, params Assembly[] assemblies)
 		{
 			foreach (var assembly in assemblies)
 			{
 				modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 			}
-		}
-
-		/// <inheritdoc />
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			this.ApplyConfiguration(modelBuilder, typeof(ExampleDbContext).Assembly);
-			base.OnModelCreating(modelBuilder);
 		}
 	}
 }
