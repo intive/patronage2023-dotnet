@@ -1,14 +1,11 @@
-namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
-
-using System.Collections.Generic;
 using System.Text.Json;
-using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain;
-using Intive.Patronage2023.Modules.Example.Domain.Enums;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 
 /// <summary>
 /// Example aggregate repository.
@@ -57,22 +54,10 @@ public class ExampleRepository : IExampleRepository
 			var newEvent = new DomainEventStore
 			{
 				CreatedAt = DateTimeOffset.UtcNow,
-				Type = this.ResolveEventType(item),
+				Type = item.GetType().FullName,
 				Data = JsonSerializer.Serialize(item),
 			};
 			this.exampleDbContext.DomainEventStore.Add(newEvent);
-		}
-	}
-
-	private EventType ResolveEventType(IEvent uncommittedEvent)
-	{
-		switch (uncommittedEvent)
-		{
-			case ExampleCreatedDomainEvent:
-				return EventType.ExampleCreated;
-			case ExampleNameUpdatedDomainEvent:
-				return EventType.ExampleNameUpdated;
-			default: return EventType.None;
 		}
 	}
 }
