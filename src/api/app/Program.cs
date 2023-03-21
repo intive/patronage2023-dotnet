@@ -1,8 +1,6 @@
-using Intive.Patronage2023.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
