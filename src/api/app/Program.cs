@@ -1,5 +1,7 @@
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Commands;
+using Intive.Patronage2023.Shared.Infrastructure.Queries;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
@@ -39,6 +41,9 @@ builder.Services.AddSwaggerGen(options =>
 		SearchOption.TopDirectoryOnly).ToList();
 	xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 });
+
+builder.Services.AddSingleton<CommandBus>();
+builder.Services.AddSingleton<QueryBus>();
 
 builder.Services.AddControllers();
 
