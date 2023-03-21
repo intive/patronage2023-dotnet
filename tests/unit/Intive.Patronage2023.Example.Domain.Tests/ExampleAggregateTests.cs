@@ -86,26 +86,26 @@ namespace Intive.Patronage2023.Example.Domain.Tests
 
 		/// <summary>
 		/// Test that check if the method "UpdateName" updates the name of the ExampleAggregate when provided
-		/// with valid arguments and throws an exception when the new name contains digits.
+		/// with name containing digits.
 		/// </summary>
 		[Fact]
-		public void UpdateName_WhenUpdateNameContainsDigits_ShouldThrowTrue()
+		public void UpdateName_WhenNameWithoutDigits_NewNameShouldContainsDigits()
 		{
 			// Arrange
 			var id = Guid.NewGuid();
 			string name = "Bartosz";
-			string invalidUpdateName = "Bartosz123";
+			string nameWithDigits = "Bartosz123";
+			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
-			bool isContainsDigits = invalidUpdateName.Any(char.IsDigit);
+			aggregate.UpdateName(nameWithDigits);
 
 			// Assert
-			this.output.WriteLine($"{name} {invalidUpdateName}");
-			isContainsDigits.Should().BeTrue();
+			aggregate.Name.Should().MatchRegex(@"\d+");
 		}
 
 		/// <summary>
-		/// Test that check if the method "UpdateName"  updates the name of the aggregate
+		/// Test that check if the method "UpdateName" updates the name of the aggregate
 		/// to the new name, even if the new name is the same as the old name.
 		/// </summary>
 		[Fact]
