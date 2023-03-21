@@ -1,5 +1,5 @@
-using System.Reflection;
 using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
@@ -26,21 +26,8 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 		/// <inheritdoc />
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			ApplyConfiguration(modelBuilder, typeof(ExampleDbContext).Assembly);
+			modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(ExampleDbContext).Assembly);
 			base.OnModelCreating(modelBuilder);
-		}
-
-		/// <summary>
-		/// Applies all entities configurations from given assemblies.
-		/// </summary>
-		/// <param name="modelBuilder">Model builder.</param>
-		/// <param name="assemblies">Assemblies to apply configs from.</param>
-		private static void ApplyConfiguration(ModelBuilder modelBuilder, params Assembly[] assemblies)
-		{
-			foreach (var assembly in assemblies)
-			{
-				modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-			}
 		}
 	}
 }
