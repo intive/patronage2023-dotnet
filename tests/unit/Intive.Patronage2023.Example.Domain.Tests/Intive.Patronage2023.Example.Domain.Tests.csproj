@@ -27,4 +27,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\modules\example\domain\Intive.Patronage2023.Modules.Example.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
