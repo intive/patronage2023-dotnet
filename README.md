@@ -31,5 +31,5 @@ dotnet ef database update --startup-project <PathToMainApiProject>
 Optionally, you can add the specific name of migration that you want the database to be updated to: 
 
 ```
-dotnet ef database update -MigrationName
+dotnet ef database update -MigrationName --startup-project <PathToMainApiProject>
 ```
