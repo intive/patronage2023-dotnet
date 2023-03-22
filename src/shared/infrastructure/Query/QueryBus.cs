@@ -23,7 +23,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Queries
 		/// <inheritdoc/>
 		public async Task<TResponse> Query<TRequest, TResponse>(TRequest query)
 		{
-			return (TResponse) await this.mediator.Send(query);
+			return (TResponse)await this.mediator.Send(query);
 		}
 	}
 }
