@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\..\..\app.props" />
+	<PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+      <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

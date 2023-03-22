@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architectur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Architecture.Tests", "tests\architecture\Intive.Patronage2023.Architecture.Tests.csproj", "{74167673-3DBF-442E-8FBB-D12B7116589F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "budget", "budget", "{FE449D95-859E-4654-84FE-12D7B2A30ED4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,7 @@ Global
 		{8889DB97-EE28-4585-BFD9-DAA1685539BE} = {24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}
 		{9585A6B8-A14E-411E-8176-9FF001E6B18A} = {138E58F8-3FAE-4CCC-A92A-3A85E7E4D35B}
 		{74167673-3DBF-442E-8FBB-D12B7116589F} = {9585A6B8-A14E-411E-8176-9FF001E6B18A}
+		{FE449D95-859E-4654-84FE-12D7B2A30ED4} = {B581E464-B295-4D63-BB10-97AC3E19A52F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7483708-EA69-4509-A749-B4BA172FC7D3}
