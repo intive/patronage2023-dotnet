@@ -8,26 +8,28 @@ The default connection string is called `AppDb` and is stored in `appsetings.jso
 
 ### Migrations
 
+In order to execute EF Core commands from .NET CLI install EF Core Tools.
+
 To create a new migration you can use .NET CLI and execute the following command: 
 
 ```
-dotnet ef migrations add `NAME` --project <PathToProjectWhereIsDbContext> --startup-project <PathToMainApiProject> --context <ContextName> --output-dir <PathToMigrationsDir> --configuration Debug --no-build.
+dotnet ef migrations add <NAME> --project <PathToProjectWhereIsDbContext> --startup-project <PathToMainApiProject> --context <ContextName> --output-dir <PathToMigrationsDir> --configuration Debug --no-build
 ```
  
 Migration script example: 
 
 ```
-dotnet ef migrations add ExampleMigration --project .\src\modules\example\infrastructure --startup-project .\src\api\app --context ExampleDbContext --output-dir .\src\modules\example\infrastructure --configuration Debug --no-build.
+dotnet ef migrations add ExampleMigration --project .\src\modules\example\infrastructure --startup-project .\src\api\app --context ExampleDbContext .\Migrations --configuration Debug --no-build
 ```
 
 In order to create the database, apply database migrations by executing: 
 
 ```
-dotnet ef database update. 
+dotnet ef database update --startup-project <PathToMainApiProject>
 ```
 
 Optionally, you can add the specific name of migration that you want the database to be updated to: 
 
 ```
-dotnet ef database update `-MigrationName`.
+dotnet ef database update -MigrationName --startup-project <PathToMainApiProject>
 ```
