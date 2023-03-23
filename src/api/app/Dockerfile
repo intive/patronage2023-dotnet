@@ -17,7 +17,7 @@ COPY ["src/modules/example/contracts/Intive.Patronage2023.Modules.Example.Contra
 COPY ["src/modules/example/infrastructure/Intive.Patronage2023.Modules.Example.Infrastructure.csproj", "src/modules/example/infrastructure/"]
 RUN dotnet restore "src/api/app/Intive.Patronage2023.Api.csproj"
 COPY . .
-WORKDIR "/src/src/api/app"
+WORKDIR "src/api/app"
 RUN dotnet build "Intive.Patronage2023.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
