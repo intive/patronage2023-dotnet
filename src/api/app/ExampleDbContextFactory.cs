@@ -20,7 +20,7 @@ namespace Intive.Patronage2023.Api
 				.Build();
 
 			var optionsBuilder = new DbContextOptionsBuilder<ExampleDbContext>();
-			optionsBuilder.UseSqlServer(configuration.GetConnectionString("DockerDb"));
+			optionsBuilder.UseSqlServer(configuration.GetConnectionString("MigrationsDb"));
 
 			return new ExampleDbContext(optionsBuilder.Options);
 		}
