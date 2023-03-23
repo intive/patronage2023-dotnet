@@ -1,10 +1,8 @@
-using System.IO;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace Intive.Patronage2023.Api
+namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 {
 	/// <summary>
 	///  provides a new instance of a DbContext for use in design-time scenarios, such as running migrations.
