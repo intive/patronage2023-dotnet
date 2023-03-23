@@ -1,12 +1,16 @@
+using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
+using static Intive.Patronage2023.Api.Configuration.CorsPolicyConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string corsPolicyName = "CorsPolicy";
-ConfigureCorsPolicy(builder.Services, builder.Configuration, corsPolicyName);
+
+// Extension method for configuring CORS
+builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -63,21 +67,3 @@ app.MapControllers();
 app.UseExampleModule();
 
 app.Run();
-
-static void ConfigureCorsPolicy(IServiceCollection services, IConfiguration configuration, string corsPolicyName)
-{
-	string? allowedOrigins = configuration.GetValue<string>("CorsAllowedOrigins");
-	if (!string.IsNullOrEmpty(allowedOrigins))
-	{
-		services.AddCors(options =>
-		{
-			options.AddPolicy(corsPolicyName, builder =>
-			{
-				string[] origins = allowedOrigins.Split(";");
-				builder.AllowAnyMethod()
-					   .AllowAnyHeader()
-					   .WithOrigins(origins);
-			});
-		});
-	}
-}
