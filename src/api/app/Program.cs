@@ -1,6 +1,10 @@
 using Intive.Patronage2023.Modules.Example.Api;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -43,6 +47,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
 var app = builder.Build();
 

@@ -22,3 +22,4 @@ services:
     depends_on:
       - db
       - mssqlscripts
+
