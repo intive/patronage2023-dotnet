@@ -1,5 +1,5 @@
 using Intive.Patronage2023.Modules.Example.Domain;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data.DataConfiguration;
+using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
@@ -31,8 +31,7 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 		/// <inheritdoc />
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			new ExampleAggregateEntityConfiguration().Configure(modelBuilder.Entity<ExampleAggregate>());
-			new DomainEventStoreEntityConfiguration().Configure(modelBuilder.Entity<DomainEventStore>());
+			modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(ExampleDbContext).Assembly);
 			base.OnModelCreating(modelBuilder);
 		}
 	}
