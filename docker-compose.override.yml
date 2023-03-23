@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  db:
+    environment:
+      SA_PASSWORD: "S3cur3P@ssW0rd!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+  intive.patronage2023.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=awesomepass
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/intivepatronageapi.pfx
+    ports:
+      - "8080:80"
+      - "8081:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${USERPROFILE}/.aspnet/https:/https/

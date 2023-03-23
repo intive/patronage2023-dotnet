@@ -23,6 +23,11 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 		/// </summary>
 		public DbSet<ExampleAggregate> Example { get; set; }
 
+		/// <summary>
+		/// Domain Event Store DbSet.
+		/// </summary>
+		public DbSet<DomainEventStore> DomainEventStore { get; set; }
+
 		/// <inheritdoc />
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
