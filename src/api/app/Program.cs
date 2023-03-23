@@ -1,6 +1,10 @@
 using Intive.Patronage2023.Modules.Example.Api;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
+using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -44,6 +48,11 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -58,15 +67,5 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
-
-using (var scope = app.Services.CreateScope())
-{
-	var dbContext = scope.ServiceProvider
-		.GetRequiredService<ExampleDbContext>();
-
-	// Here is the migration executed
-	Thread.Sleep(10000);
-	dbContext.Database.Migrate();
-}
 
 app.Run();
