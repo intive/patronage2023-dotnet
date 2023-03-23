@@ -26,6 +26,8 @@ services:
   keycloak:
     command: start-dev
     environment:
+      - KEYCLOAK_ADMIN=admin1
+      - KEYCLOAK_ADMIN_PASSWORD=admin1
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - DB_VENDOR=mssql
