@@ -11,17 +11,17 @@ using Microsoft.EntityFrameworkCore;
 /// </summary>
 public class BudgetRepository : IBudgetRepository
 {
-	private readonly BudgetDbContext BudgetDbContext;
+	private readonly BudgetDbContext budgetDbContext;
 	private readonly IEventDispatcher<IEvent> domainEventDispatcher;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetRepository"/> class.
 	/// </summary>
-	/// <param name="BudgetDbContext">Database context.</param>
+	/// <param name="budgetDbContext">Database context.</param>
 	/// <param name="domainEventDispatcher">Event dispatcher.</param>
-	public BudgetRepository(BudgetDbContext BudgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
+	public BudgetRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
 	{
-		this.BudgetDbContext = BudgetDbContext;
+		this.budgetDbContext = budgetDbContext;
 		this.domainEventDispatcher = domainEventDispatcher;
 	}
 
@@ -31,17 +31,17 @@ public class BudgetRepository : IBudgetRepository
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
 	public Task<BudgetAggregate> GetById(Guid id)
-		=> this.BudgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
+		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
 	/// </summary>
-	/// <param name="Budget">Aggregate.</param>
+	/// <param name="budget">Aggregate.</param>
 	/// <returns>Task.</returns>
-	public async Task Persist(BudgetAggregate Budget)
+	public async Task Persist(BudgetAggregate budget)
 	{
-		await this.domainEventDispatcher.Publish(Budget.UncommittedEvents);
-		this.BudgetDbContext.Budget.Add(Budget);
-		await this.BudgetDbContext.SaveChangesAsync();
+		await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
+		this.budgetDbContext.Budget.Add(budget);
+		await this.budgetDbContext.SaveChangesAsync();
 	}
 }

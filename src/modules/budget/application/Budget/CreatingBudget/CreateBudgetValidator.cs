@@ -12,8 +12,8 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget
 		/// </summary>
 		public CreateBudgetValidator()
 		{
-			this.RuleFor(Budget => Budget.Id).NotEmpty().NotNull();
-			this.RuleFor(Budget => Budget.Name).NotEmpty().NotNull();
+			this.RuleFor(budget => budget.Id).NotEmpty().NotNull();
+			this.RuleFor(budget => budget.Name).NotEmpty().NotNull();
 		}
 	}
 }

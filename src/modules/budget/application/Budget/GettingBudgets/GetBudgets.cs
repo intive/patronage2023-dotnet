@@ -17,15 +17,15 @@ public record GetBudgets();
 /// </summary>
 public class HandleGetBudgets : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 {
-	private readonly BudgetDbContext BudgetDbContext;
+	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleGetBudgets"/> class.
 	/// </summary>
-	/// <param name="BudgetDbContext">Budget dbContext.</param>
-	public HandleGetBudgets(BudgetDbContext BudgetDbContext)
+	/// <param name="budgetDbContext">Budget dbContext.</param>
+	public HandleGetBudgets(BudgetDbContext budgetDbContext)
 	{
-		this.BudgetDbContext = BudgetDbContext;
+		this.budgetDbContext = budgetDbContext;
 	}
 
 	/// <summary>
@@ -35,8 +35,8 @@ public class HandleGetBudgets : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query)
 	{
-		var Budgets = await this.BudgetDbContext.Budget.OrderBy(x => x.Id).ToListAsync();
-		var mappedData = Budgets.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
+		var budgets = await this.budgetDbContext.Budget.OrderBy(x => x.Id).ToListAsync();
+		var mappedData = budgets.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
 		var result = new PagedList<BudgetInfo> { Items = mappedData };
 		return result;
 	}

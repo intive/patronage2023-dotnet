@@ -15,23 +15,23 @@ public record CreateBudget(Guid Id, string Name);
 /// </summary>
 public class HandleCreateBudget : ICommandHandler<CreateBudget>
 {
-	private readonly IBudgetRepository BudgetRepository;
+	private readonly IBudgetRepository budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateBudget"/> class.
 	/// </summary>
-	/// <param name="BudgetRepository">Repository that manages Budget aggregate root.</param>
-	public HandleCreateBudget(IBudgetRepository BudgetRepository)
+	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
+	public HandleCreateBudget(IBudgetRepository budgetRepository)
 	{
-		this.BudgetRepository = BudgetRepository;
+		this.budgetRepository = budgetRepository;
 	}
 
 	/// <inheritdoc/>
 	public Task Handle(CreateBudget command)
 	{
-		var Budget = BudgetAggregate.Create(command.Id, command.Name);
+		var budget = BudgetAggregate.Create(command.Id, command.Name);
 
-		this.BudgetRepository.Persist(Budget);
+		this.budgetRepository.Persist(budget);
 		return Task.CompletedTask;
 	}
 }

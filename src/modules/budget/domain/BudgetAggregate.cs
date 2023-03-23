@@ -11,8 +11,8 @@ public class BudgetAggregate : Aggregate
 {
 	private BudgetAggregate(Guid id, string name)
 	{
-		var BudgetCreated = new BudgetCreatedDomainEvent(id, name);
-		this.Apply(BudgetCreated, this.Handle);
+		var vudgetCreated = new BudgetCreatedDomainEvent(id, name);
+		this.Apply(vudgetCreated, this.Handle);
 	}
 
 	/// <summary>
