@@ -44,6 +44,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.Budget.Domain", "src\modules\budget\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj", "{C8C02485-531F-4CE4-819C-E559E40E2F50}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.Budget.Infrastructure", "src\modules\budget\infrastructure\Intive.Patronage2023.Modules.Budget.Infrastructure.csproj", "{92CF3878-1915-4002-9D42-517BEECDD1E7}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +108,10 @@ Global
 		{92CF3878-1915-4002-9D42-517BEECDD1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92CF3878-1915-4002-9D42-517BEECDD1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92CF3878-1915-4002-9D42-517BEECDD1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
