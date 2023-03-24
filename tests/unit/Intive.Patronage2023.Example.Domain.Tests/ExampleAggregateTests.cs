@@ -72,8 +72,8 @@ namespace Intive.Patronage2023.Example.Domain.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			string name = "Tomas";
-			string newName = "Tomasz";
+			string name = new Faker().Name.FirstName();
+			string newName = new Faker().Name.FirstName();
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
@@ -93,8 +93,8 @@ namespace Intive.Patronage2023.Example.Domain.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			string name = "Bartosz";
-			string nameWithDigits = "Bartosz123";
+			string name = new Faker().Name.FirstName();
+			string nameWithDigits = name + "123";
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
@@ -113,8 +113,8 @@ namespace Intive.Patronage2023.Example.Domain.Tests
 		{
 			// Arrange
 			var id = Guid.NewGuid();
-			string name = "Tomasz";
-			string newName = "Tomasz";
+			string name = new Faker().Name.FirstName();
+			string newName = name;
 			var aggregate = ExampleAggregate.Create(id, name);
 
 			// Act
