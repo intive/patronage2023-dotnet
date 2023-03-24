@@ -1,12 +1,15 @@
 using System;
+using Intive.Patronage2023.Shared.Abstractions.Attributes;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Intive.Patronage2023.Shared.Infrastructure.Queries
 {
 	/// <summary>
 	/// Query bus implementation.
 	/// </summary>
+	[Lifetime(Lifetime = ServiceLifetime.Singleton)]
 	public class QueryBus : IQueryBus
 	{
 		private readonly IMediator mediator;
@@ -25,9 +28,9 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Queries
 		{
 			var result = await this.mediator.Send(query!);
 
-			if (result == null)
+			if (result == null || result is not TResponse)
 			{
-				throw new ArgumentNullException();
+				throw new InvalidDataException();
 			}
 
 			return (TResponse)result;

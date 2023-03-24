@@ -47,9 +47,6 @@ builder.Services.AddSwaggerGen(options =>
 	xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 });
 
-builder.Services.AddSingleton<CommandBus>();
-builder.Services.AddSingleton<QueryBus>();
-
 builder.Services.AddControllers();
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));

@@ -1,12 +1,15 @@
 using System;
+using Intive.Patronage2023.Shared.Abstractions.Attributes;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Intive.Patronage2023.Shared.Infrastructure.Commands
 {
 	/// <summary>
 	/// Command Bus implementation.
 	/// </summary>
+	[Lifetime(Lifetime = ServiceLifetime.Singleton)]
 	public class CommandBus : ICommandBus
 	{
 		private readonly IMediator mediator;
