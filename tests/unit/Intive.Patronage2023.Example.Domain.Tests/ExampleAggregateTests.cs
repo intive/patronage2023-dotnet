@@ -4,125 +4,124 @@ using Xunit.Abstractions;
 using Xunit;
 using Intive.Patronage2023.Modules.Example.Domain;
 
-namespace Intive.Patronage2023.Example.Domain.Tests
+namespace Intive.Patronage2023.Example.Domain.Tests;
+
+/// <summary>
+/// Tests that check class "ExampleAggregate", which has a Create method
+/// that takes a Guid and a name and returns an instance of the class.
+/// The class also has an UpdateName method that updates the name of the instance.
+/// </summary>
+public class ExampleAggregateTests
 {
+	private readonly ITestOutputHelper output;
+
 	/// <summary>
-	/// Tests that check class "ExampleAggregate", which has a Create method
-	/// that takes a Guid and a name and returns an instance of the class.
-	/// The class also has an UpdateName method that updates the name of the instance.
+	/// Initializes a new instance of the <see cref="ExampleAggregateTests"/> class.
 	/// </summary>
-	public class ExampleAggregateTests
+	/// <param name="output">Parameter is of type "ITestOutputHelper".</param>
+	public ExampleAggregateTests(ITestOutputHelper output)
 	{
-		private readonly ITestOutputHelper output;
+		this.output = output;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ExampleAggregateTests"/> class.
-		/// </summary>
-		/// <param name="output">Parameter is of type "ITestOutputHelper".</param>
-		public ExampleAggregateTests(ITestOutputHelper output)
-		{
-			this.output = output;
-		}
+	/// <summary>
+	/// Test that check if the method "Create" returns a valid aggregate when valid arguments are provided.
+	/// </summary>
+	[Fact]
+	public void Create_WhenValidArguments_ShouldReturnValidAggregate()
+	{
+		// Arrange
+		var id = Guid.NewGuid();
+		string name = new Faker().Name.FirstName();
 
-		/// <summary>
-		/// Test that check if the method "Create" returns a valid aggregate when valid arguments are provided.
-		/// </summary>
-		[Fact]
-		public void Create_WhenValidArguments_ShouldReturnValidAggregate()
-		{
-			// Arrange
-			var id = Guid.NewGuid();
-			string name = new Faker().Name.FirstName();
+		// Act
+		var aggregate = ExampleAggregate.Create(id, name);
 
-			// Act
-			var aggregate = ExampleAggregate.Create(id, name);
+		// Assert
+		this.output.WriteLine($"{aggregate.Id} {aggregate.Name}");
 
-			// Assert
-			this.output.WriteLine($"{aggregate.Id} {aggregate.Name}");
+		aggregate.Should().NotBeNull();
+		aggregate.Id.Should().Be(id);
+		aggregate.Name.Should().Be(name);
+	}
 
-			aggregate.Should().NotBeNull();
-			aggregate.Id.Should().Be(id);
-			aggregate.Name.Should().Be(name);
-		}
+	/// <summary>
+	/// Test that checks if the method "Create" throws a FormatException when invalid guid is provided.
+	/// </summary>
+	[Fact]
+	public void Create_WhenInvalidGuid_ShouldThrowFormatException()
+	{
+		// Arrange
+		string invalidGuid = "invalid-guid";
+		string name = new Faker().Name.FirstName();
 
-		/// <summary>
-		/// Test that checks if the method "Create" throws a FormatException when invalid guid is provided.
-		/// </summary>
-		[Fact]
-		public void Create_WhenInvalidGuid_ShouldThrowFormatException()
-		{
-			// Arrange
-			string invalidGuid = "invalid-guid";
-			string name = new Faker().Name.FirstName();
+		// Act
+		Action act = () => ExampleAggregate.Create(Guid.Parse(invalidGuid), name);
 
-			// Act
-			Action act = () => ExampleAggregate.Create(Guid.Parse(invalidGuid), name);
+		// Assert
+		this.output.WriteLine($"{invalidGuid} {name}");
+		act.Should().Throw<FormatException>();
+	}
 
-			// Assert
-			this.output.WriteLine($"{invalidGuid} {name}");
-			act.Should().Throw<FormatException>();
-		}
+	/// <summary>
+	/// Test that check if the method "UpdateName" updates the "Name" property of the object
+	/// with the specified value when called with a new name.
+	/// </summary>
+	[Fact]
+	public void UpdateName_WhenUpdatedNamePassed_ShouldUpdateName()
+	{
+		// Arrange
+		var id = Guid.NewGuid();
+		string name = new Faker().Name.FirstName();
+		string newName = new Faker().Name.FirstName();
+		var aggregate = ExampleAggregate.Create(id, name);
 
-		/// <summary>
-		/// Test that check if the method "UpdateName" updates the "Name" property of the object
-		/// with the specified value when called with a new name.
-		/// </summary>
-		[Fact]
-		public void UpdateName_WhenUpdatedNamePassed_ShouldUpdateName()
-		{
-			// Arrange
-			var id = Guid.NewGuid();
-			string name = new Faker().Name.FirstName();
-			string newName = new Faker().Name.FirstName();
-			var aggregate = ExampleAggregate.Create(id, name);
+		// Act
+		aggregate.UpdateName(newName);
 
-			// Act
-			aggregate.UpdateName(newName);
+		// Assert
+		this.output.WriteLine($"{newName} {aggregate.Name}");
+		aggregate.Name.Should().Be(newName);
+	}
 
-			// Assert
-			this.output.WriteLine($"{newName} {aggregate.Name}");
-			aggregate.Name.Should().Be(newName);
-		}
+	/// <summary>
+	/// Test that check if the method "UpdateName" updates the name of the ExampleAggregate when provided
+	/// with name containing digits.
+	/// </summary>
+	[Fact]
+	public void UpdateName_WhenNameWithoutDigits_NewNameShouldContainsDigits()
+	{
+		// Arrange
+		var id = Guid.NewGuid();
+		string name = new Faker().Name.FirstName();
+		string nameWithDigits = name + "123";
+		var aggregate = ExampleAggregate.Create(id, name);
 
-		/// <summary>
-		/// Test that check if the method "UpdateName" updates the name of the ExampleAggregate when provided
-		/// with name containing digits.
-		/// </summary>
-		[Fact]
-		public void UpdateName_WhenNameWithoutDigits_NewNameShouldContainsDigits()
-		{
-			// Arrange
-			var id = Guid.NewGuid();
-			string name = new Faker().Name.FirstName();
-			string nameWithDigits = name + "123";
-			var aggregate = ExampleAggregate.Create(id, name);
+		// Act
+		aggregate.UpdateName(nameWithDigits);
 
-			// Act
-			aggregate.UpdateName(nameWithDigits);
+		// Assert
+		aggregate.Name.Should().MatchRegex(@"\d+");
+	}
 
-			// Assert
-			aggregate.Name.Should().MatchRegex(@"\d+");
-		}
+	/// <summary>
+	/// Test that check if the method "UpdateName" updates the name of the aggregate
+	/// to the new name, even if the new name is the same as the old name.
+	/// </summary>
+	[Fact]
+	public void UpdateName_WhenNewNameIsSameAsOldName_ShouldUpdateName()
+	{
+		// Arrange
+		var id = Guid.NewGuid();
+		string name = new Faker().Name.FirstName();
+		string newName = name;
+		var aggregate = ExampleAggregate.Create(id, name);
 
-		/// <summary>
-		/// Test that check if the method "UpdateName" updates the name of the aggregate
-		/// to the new name, even if the new name is the same as the old name.
-		/// </summary>
-		[Fact]
-		public void UpdateName_WhenNewNameIsSameAsOldName_ShouldUpdateName()
-		{
-			// Arrange
-			var id = Guid.NewGuid();
-			string name = new Faker().Name.FirstName();
-			string newName = name;
-			var aggregate = ExampleAggregate.Create(id, name);
+		// Act
+		aggregate.UpdateName(newName);
 
-			// Act
-			aggregate.UpdateName(newName);
-
-			// Assert
-			this.output.WriteLine($"{name} {newName}");
-			aggregate.Name.Should().Be(name);
-		}
+		// Assert
+		this.output.WriteLine($"{name} {newName}");
+		aggregate.Name.Should().Be(name);
 	}
 }
