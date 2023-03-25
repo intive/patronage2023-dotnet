@@ -13,6 +13,11 @@ public class ExampleAggregate : Aggregate
 {
 	private ExampleAggregate(Guid id, string name)
 	{
+		if (id == Guid.Empty)
+		{
+			throw new InvalidOperationException("Id value cannot be empty!");
+		}
+
 		var exampleCreated = new ExampleCreatedDomainEvent(id, name);
 		this.Apply(exampleCreated, this.Handle);
 	}

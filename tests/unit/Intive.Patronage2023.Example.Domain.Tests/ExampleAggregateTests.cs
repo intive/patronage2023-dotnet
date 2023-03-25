@@ -46,21 +46,20 @@ public class ExampleAggregateTests
 	}
 
 	/// <summary>
-	/// Test that checks if the method "Create" throws a FormatException when invalid guid is provided.
+	/// Test that checks if the method "Create" throws a InvalidOperationException when empty guid is provided.
 	/// </summary>
 	[Fact]
-	public void Create_WhenInvalidGuid_ShouldThrowFormatException()
+	public void Create_WhenEmptydGuid_ShouldThrowInvalidOperationException()
 	{
 		// Arrange
-		string invalidGuid = "invalid-guid";
+		var emptydGuid = Guid.Empty;
 		string name = new Faker().Name.FirstName();
 
 		// Act
-		Action act = () => ExampleAggregate.Create(Guid.Parse(invalidGuid), name);
+		Action act = () => ExampleAggregate.Create(emptydGuid, name);
 
 		// Assert
-		this.output.WriteLine($"{invalidGuid} {name}");
-		act.Should().Throw<FormatException>();
+		act.Should().Throw<InvalidOperationException>();
 	}
 
 	/// <summary>
