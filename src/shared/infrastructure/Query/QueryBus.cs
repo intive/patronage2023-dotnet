@@ -26,7 +26,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Queries
 		/// <inheritdoc/>
 		public async Task<TResponse> Query<TRequest, TResponse>(TRequest query)
 		{
-			var result = await this.mediator.Send(query!);
+			object? result = await this.mediator.Send(query!);
 
 			if (result == null || result is not TResponse)
 			{
