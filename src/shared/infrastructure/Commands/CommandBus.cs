@@ -4,30 +4,29 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Shared.Infrastructure.Commands
+namespace Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
+
+/// <summary>
+/// Command Bus implementation.
+/// </summary>
+[Lifetime(Lifetime = ServiceLifetime.Singleton)]
+public class CommandBus : ICommandBus
 {
+	private readonly IMediator mediator;
+
 	/// <summary>
-	/// Command Bus implementation.
+	/// Initializes a new instance of the <see cref="CommandBus"/> class.
 	/// </summary>
-	[Lifetime(Lifetime = ServiceLifetime.Singleton)]
-	public class CommandBus : ICommandBus
+	/// <param name="mediator">MediatR injection.</param>
+	public CommandBus(IMediator mediator)
 	{
-		private readonly IMediator mediator;
+		this.mediator = mediator;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CommandBus"/> class.
-		/// </summary>
-		/// <param name="mediator">MediatR injection.</param>
-		public CommandBus(IMediator mediator)
-		{
-			this.mediator = mediator;
-		}
-
-		/// <inheritdoc/>
-		public Task Send<TCommand>(TCommand command)
-			where TCommand : class
-		{
-			return this.mediator.Send(command);
-		}
+	/// <inheritdoc/>
+	public Task Send<TCommand>(TCommand command)
+		where TCommand : class
+	{
+		return this.mediator.Send(command);
 	}
 }
