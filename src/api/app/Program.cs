@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
-using static Intive.Patronage2023.Api.Configuration.CorsPolicyConfiguration;
+using static Intive.Patronage2023.Api.Configuration.CorsPolicyConfigurationExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
