@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architectur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Architecture.Tests", "tests\architecture\Intive.Patronage2023.Architecture.Tests.csproj", "{74167673-3DBF-442E-8FBB-D12B7116589F}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74167673-3DBF-442E-8FBB-D12B7116589F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
