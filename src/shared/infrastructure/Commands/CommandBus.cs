@@ -1,7 +1,8 @@
-using System;
 using Intive.Patronage2023.Shared.Abstractions.Attributes;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+
 using MediatR;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;

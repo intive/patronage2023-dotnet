@@ -10,29 +10,28 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 using Xunit;
 
-namespace Intive.Patronage2023.Architecture.Tests
+namespace Intive.Patronage2023.Architecture.Tests;
+
+/// <summary>
+/// Class containing tests that check if all api components are named correctly.
+/// </summary>
+public class ApiNamingTests
 {
+	private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
+	typeof(Program).Assembly,
+	typeof(ExampleModule).Assembly)
+	.Build();
+
 	/// <summary>
-	/// Class containing tests that check if all api components are named correctly.
+	/// Test that checks if all controllers are named correctly.
 	/// </summary>
-	public class ApiNamingTests
+	[Fact]
+	public void ControllersNamesShouldEndsWithControllerPostfixTest()
 	{
-		private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
-		typeof(Program).Assembly,
-		typeof(ExampleModule).Assembly)
-		.Build();
+		var baseClass = Modules.GetClassOfType(typeof(ControllerBase));
 
-		/// <summary>
-		/// Test that checks if all controllers are named correctly.
-		/// </summary>
-		[Fact]
-		public void ControllersNamesShouldEndsWithControllerPostfixTest()
-		{
-			var baseClass = Modules.GetClassOfType(typeof(ControllerBase));
+		IArchRule controllerNamePostfixRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("Controller");
 
-			IArchRule controllerNamePostfixRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("Controller");
-
-			controllerNamePostfixRule.Check(Modules);
-		}
+		controllerNamePostfixRule.Check(Modules);
 	}
 }

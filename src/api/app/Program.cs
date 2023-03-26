@@ -3,10 +3,9 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
-using Intive.Patronage2023.Shared.Infrastructure.Commands;
-using Intive.Patronage2023.Shared.Infrastructure.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
+
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
