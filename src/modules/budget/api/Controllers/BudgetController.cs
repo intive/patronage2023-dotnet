@@ -1,8 +1,5 @@
-namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
-
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
 using FluentValidation;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
@@ -11,6 +8,8 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 using Microsoft.AspNetCore.Mvc;
+
+namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
 /// <summary>
 /// Budget controller.
@@ -49,7 +48,7 @@ public class BudgetController : ControllerBase
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgets([FromQuery]GetBudgets request)
+	public async Task<IActionResult> GetBudgets([FromQuery] GetBudgets request)
 	{
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
@@ -79,7 +78,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> CreateBudget([FromBody]CreateBudget request)
+	public async Task<IActionResult> CreateBudget([FromBody] CreateBudget request)
 	{
 		var validationResult = await this.createBudgetValidator.ValidateAsync(request);
 		if (validationResult.IsValid)

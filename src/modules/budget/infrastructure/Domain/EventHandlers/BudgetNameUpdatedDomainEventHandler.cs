@@ -1,25 +1,24 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
-namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers
+namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
+
+/// <summary>
+/// Budget name updated domain event handler.
+/// </summary>
+public class BudgetNameUpdatedDomainEventHandler : IDomainEventHandler<BudgetNameUpdatedDomainEvent>
 {
 	/// <summary>
-	/// Budget name updated domain event handler.
+	/// Handle the notification.
 	/// </summary>
-	public class BudgetNameUpdatedDomainEventHandler : IDomainEventHandler<BudgetNameUpdatedDomainEvent>
+	/// <param name="notification">Notification.</param>
+	/// <param name="cancellationToken">Cancelation token.</param>
+	/// <returns>Task.</returns>
+	public Task Handle(BudgetNameUpdatedDomainEvent notification, CancellationToken cancellationToken)
 	{
-		/// <summary>
-		/// Handle the notification.
-		/// </summary>
-		/// <param name="notification">Notification.</param>
-		/// <param name="cancellationToken">Cancelation token.</param>
-		/// <returns>Task.</returns>
-		public Task Handle(BudgetNameUpdatedDomainEvent notification, CancellationToken cancellationToken)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
+		cancellationToken.ThrowIfCancellationRequested();
 
-			// TODO: Add logging using ILogger
-			return Task.CompletedTask;
-		}
+		// TODO: Add logging using ILogger
+		return Task.CompletedTask;
 	}
 }
