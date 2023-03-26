@@ -5,12 +5,18 @@ root = true
 [*]
 indent_style = tab
 charset = utf-8
+end_of_line = crlf
+insert_final_newline = false 
 
 # Code files
 
 [*.cs]
 csharp_style_var_for_built_in_types = false:warning
 csharp_style_var_when_type_is_apparent = true:warning
+
+# file scoped namespaces necessary
+csharp_style_namespace_declarations = file_scoped
+dotnet_diagnostic.IDE0161.severity = error
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
