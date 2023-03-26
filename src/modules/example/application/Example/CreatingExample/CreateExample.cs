@@ -1,7 +1,7 @@
-namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
-
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+
+namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 
 /// <summary>
 /// Create Example command.

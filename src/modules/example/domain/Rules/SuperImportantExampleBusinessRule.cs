@@ -1,6 +1,6 @@
-﻿namespace Intive.Patronage2023.Modules.Example.Domain.Rules;
+﻿using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-using Intive.Patronage2023.Shared.Abstractions.Domain;
+namespace Intive.Patronage2023.Modules.Example.Domain.Rules;
 
 /// <summary>
 /// Example rule.

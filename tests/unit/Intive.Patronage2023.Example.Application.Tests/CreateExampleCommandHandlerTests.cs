@@ -1,7 +1,10 @@
 using Bogus;
+
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Domain;
+
 using Moq;
+
 using Xunit;
 
 namespace Intive.Patronage2023.Example.Application.Tests;

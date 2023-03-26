@@ -1,8 +1,11 @@
 using Bogus;
+
 using FluentAssertions;
-using Xunit.Abstractions;
-using Xunit;
+
 using Intive.Patronage2023.Modules.Example.Domain;
+
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Intive.Patronage2023.Example.Domain.Tests;
 
