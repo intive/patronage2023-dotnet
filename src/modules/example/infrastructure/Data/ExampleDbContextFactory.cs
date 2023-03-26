@@ -15,6 +15,7 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data
 			IConfigurationRoot configuration = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
 				.AddJsonFile("appsettings.json")
+				.AddJsonFile("appsettings.Development.json")
 				.Build();
 
 			var optionsBuilder = new DbContextOptionsBuilder<ExampleDbContext>();
