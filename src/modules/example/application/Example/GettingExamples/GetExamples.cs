@@ -2,6 +2,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example.Mappers;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;

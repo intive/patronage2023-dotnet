@@ -5,26 +5,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class InitialMigration : Migration
+public partial class AddDomainEventStore : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.EnsureSchema(
-			name: "Examples");
-
 		migrationBuilder.CreateTable(
-			name: "Example",
+			name: "DomainEventStore",
 			schema: "Examples",
 			columns: table => new
 			{
 				Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-				Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-				CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+				Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+				Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+				CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
 			},
 			constraints: table =>
 			{
-				table.PrimaryKey("PK_Example", x => x.Id);
+				table.PrimaryKey("PK_DomainEventStore", x => x.Id);
 			});
 	}
 
@@ -32,7 +30,7 @@ public partial class InitialMigration : Migration
 	protected override void Down(MigrationBuilder migrationBuilder)
 	{
 		migrationBuilder.DropTable(
-			name: "Example",
+			name: "DomainEventStore",
 			schema: "Examples");
 	}
 }
