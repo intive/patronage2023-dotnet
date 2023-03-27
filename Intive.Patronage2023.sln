@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{ABD0EA86-4BA3-4E57-9CEB-9E1AC6232B2B}"
+	ProjectSection(SolutionItems) = preProject
+		TextFile1.txt = TextFile1.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{AE9A661F-BE3A-4B30-AE50-3286C148E9B5}"
 EndProject
@@ -37,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{751EFD73-0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Example.Domain.Tests", "tests\unit\Intive.Patronage2023.Example.Domain.Tests\Intive.Patronage2023.Example.Domain.Tests.csproj", "{9F9736A8-A702-4B91-A752-79F7F240371E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Example.Application.Tests", "tests\unit\Intive.Patronage2023.Example.Application.Tests\Intive.Patronage2023.Example.Application.Tests.csproj", "{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Example.Application.Tests", "tests\unit\Intive.Patronage2023.Example.Application.Tests\Intive.Patronage2023.Example.Application.Tests.csproj", "{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
 EndProject

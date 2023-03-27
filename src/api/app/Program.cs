@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -5,13 +6,15 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
-
+using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
 builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddHttpLogging(logging =>
@@ -67,5 +70,13 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapGet("/", (ClaimsPrincipal user) =>
+{
+	app.Logger.LogInformation(user?.Identity?.Name);
+}).RequireAuthorization();
 
 app.Run();
