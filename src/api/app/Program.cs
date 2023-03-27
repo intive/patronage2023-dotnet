@@ -10,13 +10,10 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
-using static Intive.Patronage2023.Api.Configuration.CorsPolicyConfigurationExtensions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 string corsPolicyName = "CorsPolicy";
 
-// Extension method for configuring CORS
 builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
