@@ -5,33 +5,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class AddExColumnsConfiguration : Migration
+public partial class EditTypeToEnum : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.AlterColumn<string>(
-			name: "Name",
+		migrationBuilder.AlterColumn<int>(
+			name: "Type",
 			schema: "Examples",
-			table: "Example",
-			type: "nvarchar(256)",
-			maxLength: 256,
+			table: "DomainEventStore",
+			type: "int",
 			nullable: false,
+			defaultValue: 0,
 			oldClrType: typeof(string),
-			oldType: "nvarchar(max)");
+			oldType: "nvarchar(max)",
+			oldNullable: true);
 	}
 
 	/// <inheritdoc />
 	protected override void Down(MigrationBuilder migrationBuilder)
 	{
 		migrationBuilder.AlterColumn<string>(
-			name: "Name",
+			name: "Type",
 			schema: "Examples",
-			table: "Example",
+			table: "DomainEventStore",
 			type: "nvarchar(max)",
-			nullable: false,
-			oldClrType: typeof(string),
-			oldType: "nvarchar(256)",
-			oldMaxLength: 256);
+			nullable: true,
+			oldClrType: typeof(int),
+			oldType: "int");
 	}
 }

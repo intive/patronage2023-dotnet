@@ -1,17 +1,16 @@
 using FluentValidation;
 
-namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples
+namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
+
+/// <summary>
+/// GetExamplesValidator class.
+/// </summary>
+public class GetExamplesValidator : AbstractValidator<GetExamples>
 {
 	/// <summary>
-	/// GetExamplesValidator class.
+	/// Initializes a new instance of the <see cref="GetExamplesValidator"/> class.
 	/// </summary>
-	public class GetExamplesValidator : AbstractValidator<GetExamples>
+	public GetExamplesValidator()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GetExamplesValidator"/> class.
-		/// </summary>
-		public GetExamplesValidator()
-		{
-		}
 	}
 }

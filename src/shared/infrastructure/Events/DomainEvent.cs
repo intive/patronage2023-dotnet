@@ -1,6 +1,6 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Events;
-
 using Intive.Patronage2023.Shared.Abstractions.Events;
+
+namespace Intive.Patronage2023.Shared.Infrastructure.Events;
 
 /// <summary>
 /// Domain event base class.

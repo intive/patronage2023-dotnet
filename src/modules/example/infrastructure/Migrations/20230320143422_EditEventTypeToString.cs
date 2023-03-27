@@ -5,33 +5,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class AddExColumnsConfiguration : Migration
+public partial class EditEventTypeToString : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
 	{
 		migrationBuilder.AlterColumn<string>(
-			name: "Name",
+			name: "Type",
 			schema: "Examples",
-			table: "Example",
-			type: "nvarchar(256)",
-			maxLength: 256,
-			nullable: false,
-			oldClrType: typeof(string),
-			oldType: "nvarchar(max)");
+			table: "DomainEventStore",
+			type: "nvarchar(max)",
+			nullable: true,
+			oldClrType: typeof(int),
+			oldType: "int");
 	}
 
 	/// <inheritdoc />
 	protected override void Down(MigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.AlterColumn<string>(
-			name: "Name",
+		migrationBuilder.AlterColumn<int>(
+			name: "Type",
 			schema: "Examples",
-			table: "Example",
-			type: "nvarchar(max)",
+			table: "DomainEventStore",
+			type: "int",
 			nullable: false,
+			defaultValue: 0,
 			oldClrType: typeof(string),
-			oldType: "nvarchar(256)",
-			oldMaxLength: 256);
+			oldType: "nvarchar(max)",
+			oldNullable: true);
 	}
 }
