@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Shared.Abstractions.Attributes;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
