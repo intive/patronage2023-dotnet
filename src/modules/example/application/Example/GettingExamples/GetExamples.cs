@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExampl
 /// <summary>
 /// Get Examples query.
 /// </summary>
-public record GetExamples();
+public record GetExamples() : IQuery<PagedList<ExampleInfo>>;
 
 /// <summary>
 /// Get Examples handler.

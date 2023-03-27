@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 
@@ -8,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExamp
 /// </summary>
 /// <param name="Id">Example identifier.</param>
 /// <param name="Name">Example name.</param>
-public record CreateExample(Guid Id, string Name);
+public record CreateExample(Guid Id, string Name) : ICommand;
 
 /// <summary>
 /// Create example.
