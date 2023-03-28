@@ -15,15 +15,15 @@ public record GetExamples();
 /// <summary>
 /// Get Examples handler.
 /// </summary>
-public class HandleGetExamples : IQueryHandler<GetExamples, PagedList<ExampleInfo>>
+public class GetExampleQueryHandler : IQueryHandler<GetExamples, PagedList<ExampleInfo>>
 {
 	private readonly ExampleDbContext exampleDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleGetExamples"/> class.
+	/// Initializes a new instance of the <see cref="GetExampleQueryHandler"/> class.
 	/// </summary>
 	/// <param name="exampleDbContext">Example dbContext.</param>
-	public HandleGetExamples(ExampleDbContext exampleDbContext)
+	public GetExampleQueryHandler(ExampleDbContext exampleDbContext)
 	{
 		this.exampleDbContext = exampleDbContext;
 	}
