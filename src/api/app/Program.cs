@@ -5,8 +5,11 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
-
+using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +40,29 @@ builder.Services.AddSwaggerGen(options =>
 		Description = "An ASP.NET Core Web API for managing bills and more",
 	});
 
+	// Adding authentication to swagger
+	var securityScheme = new OpenApiSecurityScheme
+	{
+		Name = "JWT Authentication",
+		Description = "Enter JWT Bearer token **_only_**",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.Http,
+		Scheme = "bearer", // must be lower case
+		BearerFormat = "JWT",
+		Reference = new OpenApiReference
+		{
+			Id = JwtBearerDefaults.AuthenticationScheme,
+			Type = ReferenceType.SecurityScheme,
+		},
+	};
+	options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			securityScheme, Array.Empty<string>()
+		},
+	});
+
 	// Searching for all files with ".Api.xml" suffix, which should be api docs,
 	// in build directory and attach them to swagger
 	var xmlFiles = Directory.GetFiles(
@@ -53,13 +79,15 @@ builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+	// turning off issuer validation and https
+	configureOptions.RequireHttpsMetadata = false;
+	configureOptions.TokenValidationParameters.ValidateIssuer = false;
+});
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
@@ -67,5 +95,14 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI();
+}
 
 app.Run();
