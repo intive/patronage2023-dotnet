@@ -1,14 +1,14 @@
-namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
-
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+
+namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 
 /// <summary>
 /// Create Example command.
 /// </summary>
 /// <param name="Id">Example identifier.</param>
 /// <param name="Name">Example name.</param>
-public record CreateExample(Guid Id, string Name);
+public record CreateExample(Guid Id, string Name) : ICommand;
 
 /// <summary>
 /// Create example.
@@ -27,7 +27,7 @@ public class HandleCreateExample : ICommandHandler<CreateExample>
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(CreateExample command)
+	public Task Handle(CreateExample command, CancellationToken cancellationToken)
 	{
 		var example = ExampleAggregate.Create(command.Id, command.Name);
 

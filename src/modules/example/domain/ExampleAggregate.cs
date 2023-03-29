@@ -1,8 +1,8 @@
-namespace Intive.Patronage2023.Modules.Example.Domain;
-
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain.Rules;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+
+namespace Intive.Patronage2023.Modules.Example.Domain;
 
 /// <summary>
 /// Example of aggregate root.
@@ -11,6 +11,11 @@ public class ExampleAggregate : Aggregate
 {
 	private ExampleAggregate(Guid id, string name)
 	{
+		if (id == Guid.Empty)
+		{
+			throw new InvalidOperationException("Id value cannot be empty!");
+		}
+
 		var exampleCreated = new ExampleCreatedDomainEvent(id, name);
 		this.Apply(exampleCreated, this.Handle);
 	}
@@ -24,6 +29,11 @@ public class ExampleAggregate : Aggregate
 	/// Example name.
 	/// </summary>
 	public string Name { get; private set; } = default!;
+
+	/// <summary>
+	/// Example creation date.
+	/// </summary>
+	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
 	/// Create example.
@@ -58,5 +68,6 @@ public class ExampleAggregate : Aggregate
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;
+		this.CreatedOn = @event.Timestamp;
 	}
 }
