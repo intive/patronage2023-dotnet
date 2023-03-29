@@ -8,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.CreatingExamp
 /// </summary>
 /// <param name="Id">Example identifier.</param>
 /// <param name="Name">Example name.</param>
-public record CreateExample(Guid Id, string Name);
+public record CreateExample(Guid Id, string Name) : ICommand;
 
 /// <summary>
 /// Create example.
@@ -27,7 +27,7 @@ public class HandleCreateExample : ICommandHandler<CreateExample>
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(CreateExample command)
+	public Task Handle(CreateExample command, CancellationToken cancellationToken)
 	{
 		var example = ExampleAggregate.Create(command.Id, command.Name);
 

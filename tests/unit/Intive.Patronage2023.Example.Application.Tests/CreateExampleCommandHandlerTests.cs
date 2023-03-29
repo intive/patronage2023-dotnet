@@ -37,10 +37,11 @@ public class CreateExampleCommandHandlerTests
 	{
 		// Arrange
 		var id = Guid.NewGuid();
+		var cancellationToken = CancellationToken.None;
 		string name = new Faker().Name.FirstName();
 
 		// Act
-		this.handleCreateExample.Handle(new CreateExample(id, name));
+		this.handleCreateExample.Handle(new CreateExample(id, name), cancellationToken);
 
 		// Assert
 		this.exampleRepositoryMock.Verify(

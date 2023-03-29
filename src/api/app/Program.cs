@@ -1,16 +1,22 @@
-using Intive.Patronage2023.Modules.Example.Api;
+using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
+using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string corsPolicyName = "CorsPolicy";
+
+builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -85,7 +91,11 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 });
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<ICommandBus, CommandBus>();
+builder.Services.AddScoped<IQueryBus, QueryBus>();
 var app = builder.Build();
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
