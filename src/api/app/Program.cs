@@ -1,5 +1,4 @@
 using Intive.Patronage2023.Api.Configuration;
-using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
