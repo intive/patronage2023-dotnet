@@ -27,7 +27,7 @@ public class HandleCreateExample : ICommandHandler<CreateExample>
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(CreateExample command)
+	public Task Handle(CreateExample command, CancellationToken cancellationToken)
 	{
 		var example = ExampleAggregate.Create(command.Id, command.Name);
 
