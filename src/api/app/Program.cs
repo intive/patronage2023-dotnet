@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -10,6 +12,10 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string corsPolicyName = "CorsPolicy";
+
+builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -61,6 +67,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
