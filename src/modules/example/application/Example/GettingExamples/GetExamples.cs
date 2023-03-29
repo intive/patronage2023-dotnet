@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.Example.GettingExampl
 /// <summary>
 /// Get Examples query.
 /// </summary>
-public record GetExamples();
+public record GetExamples() : IQuery<PagedList<ExampleInfo>>;
 
 /// <summary>
 /// Get Examples handler.
@@ -32,8 +32,9 @@ public class GetExampleQueryHandler : IQueryHandler<GetExamples, PagedList<Examp
 	/// GetExamples query handler.
 	/// </summary>
 	/// <param name="query">Query.</param>
+	/// <param name="cancellationToken">cancellation token.</param>
 	/// <returns>Paged list of examples.</returns>
-	public async Task<PagedList<ExampleInfo>> Handle(GetExamples query)
+	public async Task<PagedList<ExampleInfo>> Handle(GetExamples query, CancellationToken cancellationToken)
 	{
 		var examples = await this.exampleDbContext.Example.OrderBy(x => x.Id).ToListAsync();
 		var mappedData = examples.Select(ExampleAggregateExampleInfoMapper.Map).ToList();

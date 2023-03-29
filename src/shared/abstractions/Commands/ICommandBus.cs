@@ -12,5 +12,5 @@ public interface ICommandBus
 	/// <param name="command">Command to send.</param>
 	/// <returns>Task that represents asynchronous operation.</returns>
 	Task Send<TCommand>(TCommand command)
-		where TCommand : class;
+		where TCommand : ICommand;
 }

@@ -1,12 +1,12 @@
 using Intive.Patronage2023.Api.Configuration;
-using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
-
+using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
@@ -57,7 +57,8 @@ builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
-
+builder.Services.AddScoped<ICommandBus, CommandBus>();
+builder.Services.AddScoped<IQueryBus, QueryBus>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

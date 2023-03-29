@@ -19,6 +19,8 @@ public static class SharedModule
 	public static IServiceCollection AddSharedModule(this IServiceCollection services)
 	{
 		services.AddTransient(typeof(INotificationHandler<>), typeof(MediatrEventHandlerAdapter<>));
+		services.AddTransient(typeof(IRequestHandler<,>), typeof(MediatRQueryHandlerAdapter<,>));
+		services.AddTransient(typeof(IRequestHandler<>), typeof(MediatRCommandHandlerAdapter<>));
 		return services;
 	}
 }
