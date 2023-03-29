@@ -31,4 +31,8 @@
     <ProjectReference Include="..\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
 </Project>
