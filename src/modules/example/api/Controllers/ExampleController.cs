@@ -6,7 +6,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
@@ -15,6 +15,7 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 /// Example controller.
 /// </summary>
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class ExampleController : ControllerBase
 {
