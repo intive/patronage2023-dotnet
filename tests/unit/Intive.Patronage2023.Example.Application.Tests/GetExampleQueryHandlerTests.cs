@@ -20,10 +20,11 @@ public class GetExampleQueryHandlerTests
 	{
 		// Arrange
 		var query = new GetExamples();
+		var cancellationToken = CancellationToken.None;
 		var handler = new GetExampleQueryHandler(null!); // TODO: Use integration tests db context.
 
 		// Act
-		Action act = async () => await handler.Handle(query);
+		Action act = async () => await handler.Handle(query, cancellationToken);
 
 		// Assert
 		act.Should().Throw<NotImplementedException>();

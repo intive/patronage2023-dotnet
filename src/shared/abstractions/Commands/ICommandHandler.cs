@@ -10,6 +10,7 @@ public interface ICommandHandler<T>
 	/// Handles command.
 	/// </summary>
 	/// <param name="command">Command to handle.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
 	/// <returns>Task representing asynchronous operation.</returns>
-	Task Handle(T command);
+	Task Handle(T command, CancellationToken cancellationToken);
 }

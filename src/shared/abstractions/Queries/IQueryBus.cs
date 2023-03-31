@@ -12,5 +12,6 @@ public interface IQueryBus
 	/// <typeparam name="TResponse">Type of response.</typeparam>
 	/// <param name="query">Query to send.</param>
 	/// <returns>Task that represents asynchronous operation which returns query resposne.</returns>
-	Task<TResponse> Query<TRequest, TResponse>(TRequest query);
+	Task<TResponse> Query<TRequest, TResponse>(TRequest query)
+		where TRequest : IQuery<TResponse>;
 }
