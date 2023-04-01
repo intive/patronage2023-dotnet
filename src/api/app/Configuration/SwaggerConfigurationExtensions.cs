@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 namespace Intive.Patronage2023.Api.Configuration;
 
 /// <summary>
-/// Static class SwaggerConfigurationExtensions.
+/// Class that contains methods for swagger configuration.
 /// </summary>
 public static class SwaggerConfigurationExtensions
 {

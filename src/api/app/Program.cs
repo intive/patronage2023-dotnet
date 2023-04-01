@@ -34,14 +34,15 @@ builder.Services.AddMediatR(cfg =>
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddSwagger();
-
 builder.Services.AddControllers();
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+
+builder.Services.AddScoped<ICommandBus, CommandBus>();
+builder.Services.AddScoped<IQueryBus, QueryBus>();
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
@@ -51,8 +52,7 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<ICommandBus, CommandBus>();
-builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
@@ -68,10 +68,7 @@ app.UseExampleModule();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();

@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,9 +47,11 @@ public class ExampleController : ControllerBase
 	/// <returns>Paged list of examples.</returns>
 	/// <response code="200">Returns the list of examples corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	public async Task<IActionResult> GetExamples([FromQuery] GetExamples request)
 	{
 		var validationResult = await this.getExamplesValidator.ValidateAsync(request);
@@ -71,13 +74,16 @@ public class ExampleController : ControllerBase
 	///
 	///     POST
 	///     {
+	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 	///        "Name": "Example"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[HttpPost]
 	public async Task<IActionResult> CreateExample([FromBody] CreateExample request)
 	{
