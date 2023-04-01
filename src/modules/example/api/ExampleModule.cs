@@ -37,6 +37,10 @@ public static class ExampleModule
 	/// <returns>Updated IApplicationBuilder.</returns>
 	public static IApplicationBuilder UseExampleModule(this IApplicationBuilder app)
 	{
+		using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
+		var dbContext = scope.ServiceProvider
+			.GetRequiredService<ExampleDbContext>();
+		dbContext.Database.Migrate();
 		return app;
 	}
 }
