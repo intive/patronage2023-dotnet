@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -75,5 +75,19 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+if (!app.Environment.IsDevelopment())
+{
+	app.UseExceptionHandler("/Error");
+	app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.Run();
