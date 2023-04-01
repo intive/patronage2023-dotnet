@@ -26,6 +26,7 @@ public class QueryBus : IQueryBus
 
 	/// <inheritdoc/>
 	public async Task<TResponse> Query<TRequest, TResponse>(TRequest query)
+		where TRequest : IQuery<TResponse>
 	{
 		object? result = await this.mediator.Send(query!);
 
