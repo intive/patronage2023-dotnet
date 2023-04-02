@@ -1,6 +1,6 @@
 {
 	"id": "03ad796a-c0d0-4627-bb40-e6ac98b9c7d4",
-	"realm": "budget-realm",
+	"realm": "inbudget-realm-dev",
 	"notBefore": 0,
 	"defaultSignatureAlgorithm": "RS256",
 	"revokeRefreshToken": false,
@@ -56,7 +56,7 @@
 			},
 			{
 				"id": "b8c7dce9-cbc1-4889-a4cd-8cc3e2f430fd",
-				"name": "default-roles-budget-realm",
+				"name": "default-roles-inbudget-realm-dev",
 				"description": "${role_default-roles}",
 				"composite": true,
 				"composites": {
@@ -405,7 +405,7 @@
 	"groups": [],
 	"defaultRole": {
 		"id": "b8c7dce9-cbc1-4889-a4cd-8cc3e2f430fd",
-		"name": "default-roles-budget-realm",
+		"name": "default-roles-inbudget-realm-dev",
 		"description": "${role_default-roles}",
 		"composite": true,
 		"clientRole": false,
@@ -475,13 +475,13 @@
 			"clientId": "account",
 			"name": "${client_account}",
 			"rootUrl": "${authBaseUrl}",
-			"baseUrl": "/realms/budget-realm/account/",
+			"baseUrl": "/realms/inbudget-realm-dev/account/",
 			"surrogateAuthRequired": false,
 			"enabled": true,
 			"alwaysDisplayInConsole": false,
 			"clientAuthenticatorType": "client-secret",
 			"redirectUris": [
-				"/realms/budget-realm/account/*"
+				"/realms/inbudget-realm-dev/account/*"
 			],
 			"webOrigins": [],
 			"notBefore": 0,
@@ -519,13 +519,13 @@
 			"clientId": "account-console",
 			"name": "${client_account-console}",
 			"rootUrl": "${authBaseUrl}",
-			"baseUrl": "/realms/budget-realm/account/",
+			"baseUrl": "/realms/inbudget-realm-dev/account/",
 			"surrogateAuthRequired": false,
 			"enabled": true,
 			"alwaysDisplayInConsole": false,
 			"clientAuthenticatorType": "client-secret",
 			"redirectUris": [
-				"/realms/budget-realm/account/*"
+				"/realms/inbudget-realm-dev/account/*"
 			],
 			"webOrigins": [],
 			"notBefore": 0,
@@ -688,13 +688,13 @@
 			"clientId": "security-admin-console",
 			"name": "${client_security-admin-console}",
 			"rootUrl": "${authAdminUrl}",
-			"baseUrl": "/admin/budget-realm/console/",
+			"baseUrl": "/admin/inbudget-realm-dev/console/",
 			"surrogateAuthRequired": false,
 			"enabled": true,
 			"alwaysDisplayInConsole": false,
 			"clientAuthenticatorType": "client-secret",
 			"redirectUris": [
-				"/admin/budget-realm/console/*"
+				"/admin/inbudget-realm-dev/console/*"
 			],
 			"webOrigins": [
 				"+"
