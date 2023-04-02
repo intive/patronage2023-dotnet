@@ -9,7 +9,9 @@ using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +53,12 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 	configureOptions.TokenValidationParameters.ValidateIssuer = false;
 });
 builder.Services.AddAuthorization();
+
+builder.Services.AddMvc(options =>
+	options.Filters.Add(new AuthorizeFilter(
+		new AuthorizationPolicyBuilder()
+			.RequireAuthenticatedUser()
+			.Build())));
 
 builder.Services.AddSwagger();
 
