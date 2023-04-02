@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -37,10 +38,7 @@ public static class ExampleModule
 	/// <returns>Updated IApplicationBuilder.</returns>
 	public static IApplicationBuilder UseExampleModule(this IApplicationBuilder app)
 	{
-		using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
-		var dbContext = scope.ServiceProvider
-			.GetRequiredService<ExampleDbContext>();
-		dbContext.Database.Migrate();
+		app.InitDatabase<ExampleDbContext>();
 		return app;
 	}
 }
