@@ -36,7 +36,11 @@ builder.Services.AddMediatR(cfg =>
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+	options.Filters.Add(new AuthorizeFilter(
+		new AuthorizationPolicyBuilder()
+			.RequireAuthenticatedUser()
+			.Build())));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
@@ -53,12 +57,6 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 	configureOptions.TokenValidationParameters.ValidateIssuer = false;
 });
 builder.Services.AddAuthorization();
-
-builder.Services.AddMvc(options =>
-	options.Filters.Add(new AuthorizeFilter(
-		new AuthorizationPolicyBuilder()
-			.RequireAuthenticatedUser()
-			.Build())));
 
 builder.Services.AddSwagger();
 
