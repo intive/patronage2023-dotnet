@@ -15,10 +15,13 @@ public class AuthenticationController : ControllerBase
 	/// <summary>
 	/// text.
 	/// </summary>
-	/// /<param name="username">Example identifier.</param>
-	/// <param name="password">Example name.</param>
+	/// /<param name="username">User login.</param>
+	/// <param name="password">User password.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	[HttpPost("signin")]
+	/// <response code="200">Successfully signed in.</response>
+	/// <response code="400">Username or password is not valid.</response>
+	/// <response code="500">Internal server error.</response>
+	[HttpPost("SignIn")]
 	public async Task<IActionResult> SignInUserAsync([FromForm] string username, [FromForm] string password)
 	{
 		using var client = new HttpClient();
@@ -27,12 +30,12 @@ public class AuthenticationController : ControllerBase
 		{
 				new KeyValuePair<string, string>("username", username),
 				new KeyValuePair<string, string>("password", password),
-				new KeyValuePair<string, string>("client_id", "TestClient"),
-				new KeyValuePair<string, string>("client_secret", "Qe003KOmd5DOiJskv1I0kmD5Q6AigKv9"),
+				new KeyValuePair<string, string>("client_id", "test-client"),
+				new KeyValuePair<string, string>("client_secret", "4VR8ktQIszIZVWgc3ud8efGAzYbbr1uu"),
 				new KeyValuePair<string, string>("grant_type", "password"),
 		});
 
-		var response = await client.PostAsync("http://localhost:8080/realms/UserTest/protocol/openid-connect/token", content);
+		var response = await client.PostAsync("http://localhost:8080/realms/Test/protocol/openid-connect/token", content);
 
 		if (response.StatusCode == HttpStatusCode.Unauthorized)
 		{

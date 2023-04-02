@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
@@ -6,6 +7,7 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 /// TestController.
 /// </summary>
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class TestController : ControllerBase
 {
