@@ -21,7 +21,6 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;
@@ -30,6 +29,7 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 builder.Services.AddSharedModule();
+builder.Services.AddExampleModule(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
 {
