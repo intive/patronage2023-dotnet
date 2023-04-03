@@ -5,9 +5,9 @@ namespace Intive.Patronage2023.Shared.Abstractions.Domain;
 /// </summary>
 public interface IBusinessRule
 {
-    /// <summary>
-    /// Check business rule.
-    /// </summary>
-    /// <returns>Information if rule has been broken.</returns>
-    bool IsBroken();
+	/// <summary>
+	/// Check business rule.
+	/// </summary>
+	/// <returns>Information if rule has been broken.</returns>
+	bool IsBroken();
 }
