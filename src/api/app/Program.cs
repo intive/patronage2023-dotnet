@@ -1,3 +1,4 @@
+// using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -8,6 +9,10 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.Extensibility;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -55,7 +60,57 @@ builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
+using var loggerFactory = LoggerFactory.Create(builder =>
+{
+	builder.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Disabled);
+});
+
+var logger = loggerFactory.CreateLogger<Program>();
+
+builder.Logging.AddApplicationInsights(
+		configureTelemetryConfiguration: (config) =>
+			config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
+		configureApplicationInsightsLoggerOptions: (options) => { });
+
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("your-category", Microsoft.Extensions.Logging.LogLevel.Trace);
+
+using var channel = new InMemoryChannel();
+
+try
+{
+	IServiceCollection services = new ServiceCollection();
+	services.Configure<TelemetryConfiguration>(config => config.TelemetryChannel = channel);
+	services.AddLogging(builder =>
+	{
+		// Only Application Insights is registered as a logger provider
+		builder.AddApplicationInsights(
+			configureTelemetryConfiguration: (config) => config.ConnectionString = "<OurConnectionString>",
+			configureApplicationInsightsLoggerOptions: (options) => { });
+	});
+
+	IServiceProvider serviceProvider = services.BuildServiceProvider();
+	ILogger<Program> logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+	logger.LogInformation("Logger is working...");
+}
+finally
+{
+	// Explicitly call Flush() followed by Delay, as required in console apps.
+	// This ensures that even if the application terminates, telemetry is sent to the back end.
+	channel.Flush();
+
+	await Task.Delay(TimeSpan.FromMilliseconds(1000));
+}
+
 var app = builder.Build();
+
+app.MapGet("/", () => "Hello World!");
+
+app.MapGet("/Test", async context =>
+{
+	logger.LogInformation("Testing logging in Program.cs");
+	await context.Response.WriteAsync("Testing");
+});
 
 if (app.Environment.IsDevelopment())
 {
