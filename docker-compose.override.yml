@@ -24,7 +24,12 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${USERPROFILE}/.aspnet/https:/https/
   keycloak:
-    command: start-dev
+    command:
+     - "-Dkeycloak.migration.action=import"
+     - "-Dkeycloak.migration.provider=singleFile"
+     - "-Dkeycloak.migration.file=/root/data/import/realm-config.json"
+     - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
+     - start-dev
     environment:
       - KEYCLOAK_ADMIN=admin1
       - KEYCLOAK_ADMIN_PASSWORD=admin1
@@ -40,4 +45,6 @@ services:
     ports:
       - 8080:8080
       - 8443:8443
+    volumes:
+      - ./realm-config.json:/root/data/import/realm-config.json
     restart: always
