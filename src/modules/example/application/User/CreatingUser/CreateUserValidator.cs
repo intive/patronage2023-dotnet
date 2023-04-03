@@ -13,8 +13,15 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 	public CreateUserValidator()
 	{
 		this.RuleFor(user => user.Id).NotEmpty().NotNull();
-		this.RuleFor(user => user.Username).NotEmpty().NotNull().Length(6, 30);
-		this.RuleFor(user => user.Email).NotEmpty().EmailAddress();
-		this.RuleFor(user => user.Password).NotEmpty().NotNull();
+		this.RuleFor(user => user.FirstName).NotEmpty();
+		this.RuleFor(user => user.LastName).NotEmpty();
+		this.RuleFor(user => user.Email).EmailAddress();
+
+		this.RuleFor(user => user.Password)
+			.MinimumLength(8)
+			.Must(password => password.Any(char.IsUpper))
+			.Must(password => password.Any(char.IsLower))
+			.Must(password => password.Any(char.IsDigit))
+			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]");
 	}
 }

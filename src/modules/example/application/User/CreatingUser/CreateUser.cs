@@ -6,7 +6,8 @@ namespace Intive.Patronage2023.Modules.Example.Application.User.CreatingUser;
 /// Create user command.
 /// </summary>
 /// <param name="Id">Id.</param>
-/// <param name="Username">Username.</param>
+/// <param name="FirstName">FirstName.</param>
+/// <param name="LastName">LastName.</param>
 /// <param name="Password">Password.</param>
 /// <param name="Email">Email.</param>
-public record CreateUser(Guid Id, string Username, string Password, string Email) : ICommand;
+public record CreateUser(Guid Id, string FirstName, string LastName, string Password, string Email) : ICommand;
