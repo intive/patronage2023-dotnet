@@ -1,4 +1,3 @@
-using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 
 namespace Intive.Patronage2023.Modules.Example.Application.User.CreatingUser;
