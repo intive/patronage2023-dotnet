@@ -7,8 +7,8 @@ namespace Intive.Patronage2023.Shared.Abstractions.Events;
 /// </summary>
 public interface IEvent : INotification
 {
-	/// <summary>
-	/// Event timestamp.
-	/// </summary>
-	public DateTime Timestamp { get; set; }
+    /// <summary>
+    /// Event timestamp.
+    /// </summary>
+    public DateTime Timestamp { get; set; }
 }

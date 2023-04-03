@@ -27,6 +27,7 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
+builder.Services.AddBudgetModule(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -75,5 +76,4 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
-
 app.Run();

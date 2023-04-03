@@ -7,8 +7,8 @@ namespace Intive.Patronage2023.Shared.Abstractions.Attributes;
 /// </summary>
 public class LifetimeAttribute : Attribute
 {
-	/// <summary>
-	/// Lifetime of the registered class.
-	/// </summary>
-	public ServiceLifetime Lifetime { get; set; }
+    /// <summary>
+    /// Lifetime of the registered class.
+    /// </summary>
+    public ServiceLifetime Lifetime { get; set; }
 }
