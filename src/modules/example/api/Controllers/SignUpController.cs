@@ -1,5 +1,6 @@
-using System.Text.Json;
-using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+using FluentValidation;
+using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Modules.Example.Application.User.CreatingUser;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,39 +14,47 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 public class SignUpController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
+	private readonly IValidator<CreateUser> createUserValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SignUpController"/> class.
 	/// </summary>
-	/// <param name="commandBus">CommandBus.</param>
-	public SignUpController(ICommandBus commandBus)
+	/// <param name="commandBus">command bus.</param>
+	/// <param name="createUserValidator">create user validator.</param>
+	public SignUpController(ICommandBus commandBus, IValidator<CreateUser> createUserValidator)
 	{
 		this.commandBus = commandBus;
+		this.createUserValidator = createUserValidator;
 	}
 
 	/// <summary>
-	/// Post Method to create user in keycloak.
+	/// Creates user. Username length has to be in range (6,30). Emails needs to be in valid address format.
 	/// </summary>
-	/// <param name="request">Request.</param>
-	/// <returns>Returns created user.</returns>
+	/// <param name="command">Command.</param>
+	/// <returns>Created command.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     {
+	///        "username": "admin1",
+	///        "password": "admin1",
+	///        "email": "admin1@gmail.com"
+	///     }
+	/// .</remarks>
+	/// <response code="201">Returns the newly created item.</response>
+	/// <response code="400">If the body is not valid.</response>
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> CreateUser([FromBody] CreateExample request)
+	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
 	{
-		var client = new HttpClient();
-		var config = new ConfigurationBuilder()
-		.AddJsonFile("appsettings.json")
-		.Build();
-		string? tokenEndpoint = config["KeycloakConfig:TokenEndpoint"];
-		string? clientId = config["KeycloakConfig:ClientId"];
-		string? clientSecret = config["KeycloakConfig:ClientSecret"];
+		var validationResult = await this.createUserValidator.ValidateAsync(command);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(command);
+			return this.Created($"user/{command.Id}", command.Id);
+		}
 
-		var tokenResponse = await client.PostAsync(tokenEndpoint, new StringContent($"grant_type=client_credentials&client_id={clientId}&client_secret={clientSecret}"));
-
-		string? token = JsonDocument.Parse(await tokenResponse.Content.ReadAsStringAsync()).RootElement.GetProperty("access_token").GetString();
-
-		await this.commandBus.Send(request);
-		return this.Created($"example/{request.Id}", request.Id);
+		throw new AppException("One or more error occured when trying to create user.", validationResult.Errors);
 	}
 }
