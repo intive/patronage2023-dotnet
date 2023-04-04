@@ -43,6 +43,7 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("ApiKeycloakSettings"));
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {

@@ -41,7 +41,7 @@ public class UserController : ControllerBase
 		var validationResult = await this.signInCommandValidator.ValidateAsync(command);
 		if (validationResult.IsValid)
 		{
-			var response = await this.commandBus.Send(command);
+			HttpResponseMessage response = await this.commandBus.Send(command);
 			return this.Ok(response);
 		}
 
