@@ -2,6 +2,7 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
 using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
@@ -47,6 +48,7 @@ public class SignUpController : ControllerBase
 	/// <response code="400">If the body is not valid.</response>
 	[ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+	[AllowAnonymous]
 	[HttpPost]
 	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
 	{
