@@ -1,6 +1,5 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Application.Example;
-using Intive.Patronage2023.Modules.Example.Application.User.CreatingUser;
+using Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +42,7 @@ public class SignUpController : ControllerBase
 	///        "email": "jkowalski@gmail.com"
 	///     }
 	/// .</remarks>
-	/// <response code="201">Returns the newly created item.</response>
+	/// <response code="201">Returns the newly created user.</response>
 	/// <response code="400">If the body is not valid.</response>
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]

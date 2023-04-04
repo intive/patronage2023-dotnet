@@ -2,7 +2,6 @@ using FluentValidation;
 
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
-using Intive.Patronage2023.Modules.Example.Application.User.CreatingUser;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
@@ -28,7 +27,6 @@ public static class ExampleModule
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
 		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
-		services.AddScoped<IValidator<CreateUser>, CreateUserValidator>();
 		return services;
 	}
 
