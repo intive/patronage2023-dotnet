@@ -18,7 +18,7 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 		this.RuleFor(user => user.Email).EmailAddress();
 
 		this.RuleFor(user => user.Password)
-			.MinimumLength(8)
+			.MinimumLength(12)
 			.Must(password => password.Any(char.IsUpper))
 			.Must(password => password.Any(char.IsLower))
 			.Must(password => password.Any(char.IsDigit))
