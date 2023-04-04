@@ -1,7 +1,6 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Api.User;

@@ -1,5 +1,6 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
+using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Microsoft.AspNetCore.Mvc;
 
