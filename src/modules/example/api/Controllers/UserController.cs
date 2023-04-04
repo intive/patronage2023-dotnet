@@ -1,5 +1,6 @@
-using System.Runtime.Serialization;
+using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Application.User.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +11,22 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController : ControllerBase
+public class UserController : ControllerBase
 {
+	private readonly ICommandBus commandBus;
+	private readonly IValidator<SignInCommand> signInCommandValidator;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UserController"/> class.
+	/// </summary>
+	/// <param name="commandBus">Command bus.</param>
+	/// <param name="signInCommandValidator">SignIn command validator.</param>
+	public UserController(ICommandBus commandBus, IValidator<SignInCommand> signInCommandValidator)
+	{
+		this.signInCommandValidator = signInCommandValidator;
+		this.commandBus = commandBus;
+	}
+
 	/// <summary>
 	/// text.
 	/// </summary>
@@ -23,7 +38,14 @@ public class AuthenticationController : ControllerBase
 	[HttpPost("SignIn")]
 	public async Task<IActionResult> SignInUserAsync([FromBody] SignInCommand command)
 	{
-		
+		var validationResult = await this.signInCommandValidator.ValidateAsync(command);
+		if (validationResult.IsValid)
+		{
+			var response = await this.commandBus.Send(command);
+			return this.Ok(response);
+		}
+
+		return this.BadRequest();
 	}
 
 	/// <summary>

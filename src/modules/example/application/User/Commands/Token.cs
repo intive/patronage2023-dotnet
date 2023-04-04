@@ -1,15 +1,6 @@
-﻿using System.Runtime.Serialization;
-using Intive.Patronage2023.Shared.Abstractions.Commands;
-using MediatR;
+using System.Runtime.Serialization;
 
 namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
-
-/// <summary>
-/// SignIn command.
-/// </summary>
-/// <param name="Username">User name.</param>
-/// <param name="Password">User password.</param>
-public record SignInCommand(string Username, string Password) : ICommand;
 
 /// <summary>
 /// text.
