@@ -45,8 +45,8 @@ public class SignUpController : ControllerBase
 	/// .</remarks>
 	/// <response code="201">Returns the newly created user.</response>
 	/// <response code="400">If the body is not valid.</response>
-	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
 	{
