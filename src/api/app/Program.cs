@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -7,8 +8,10 @@ using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
+using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,39 +36,31 @@ builder.Services.AddMediatR(cfg =>
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddSwaggerGen(options =>
-{
-	options.SwaggerDoc("v1", new OpenApiInfo
-	{
-		Version = "v1",
-		Title = "Intive Patronage2023 Some Title Api",
-		Description = "An ASP.NET Core Web API for managing bills and more",
-	});
-
-	// Searching for all files with ".Api.xml" suffix, which should be api docs,
-	// in build directory and attach them to swagger
-	var xmlFiles = Directory.GetFiles(
-		AppContext.BaseDirectory,
-		"*.Api.xml",
-		SearchOption.TopDirectoryOnly).ToList();
-	xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
-});
-
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+	options.Filters.Add(new AuthorizeFilter(
+		new AuthorizationPolicyBuilder()
+			.RequireAuthenticatedUser()
+			.Build())));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
-var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+	// turning off issuer validation and https
+	configureOptions.RequireHttpsMetadata = false;
+	configureOptions.TokenValidationParameters.ValidateIssuer = false;
+});
+builder.Services.AddAuthorization();
+
+builder.Services.AddSwagger();
+
+var app = builder.Build();
 
 app.UseCors(corsPolicyName);
 
@@ -75,5 +70,11 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();

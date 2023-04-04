@@ -9,6 +9,8 @@ using Intive.Patronage2023.Shared.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
+namespace Intive.Patronage2023.Modules.Example.Api;
+
 /// <summary>
 /// Example module.
 /// </summary>
