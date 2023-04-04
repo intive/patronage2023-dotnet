@@ -22,6 +22,7 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 			.Must(password => password.Any(char.IsUpper))
 			.Must(password => password.Any(char.IsLower))
 			.Must(password => password.Any(char.IsDigit))
+			.Must(password => !password.Contains(" "))
 			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]");
 	}
 }
