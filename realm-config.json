@@ -28,7 +28,7 @@
 	"enabled": true,
 	"sslRequired": "external",
 	"registrationAllowed": true,
-	"registrationEmailAsUsername": false,
+	"registrationEmailAsUsername": true,
 	"rememberMe": false,
 	"verifyEmail": false,
 	"loginWithEmailAllowed": true,
@@ -415,7 +415,7 @@
 	"requiredCredentials": [
 		"password"
 	],
-	"passwordPolicy": "length(8) and specialChars(1) and upperCase(1) and lowerCase(1)",
+	"passwordPolicy": "length(12) and specialChars(1) and upperCase(1) and lowerCase(1) and regexPattern(^\\S+$)",
 	"otpPolicyType": "totp",
 	"otpPolicyAlgorithm": "HmacSHA1",
 	"otpPolicyInitialCounter": 0,
