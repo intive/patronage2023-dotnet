@@ -38,10 +38,10 @@ public class SignUpController : ControllerBase
 	///
 	///     {
 	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///        "FirstName": "Jan",
-	///        "LastName": "Kowalski",
-	///        "Password": "testPasword123!@",
-	///        "Email": "jkowalski@gmail.com"
+	///        "eirstName": "Jan",
+	///        "lastName": "Kowalski",
+	///        "password": "testPasword123!@",
+	///        "email": "jkowalski@gmail.com"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created user.</response>
