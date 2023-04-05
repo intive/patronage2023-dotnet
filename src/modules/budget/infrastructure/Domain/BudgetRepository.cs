@@ -1,10 +1,10 @@
-namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
-
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
 /// Budget aggregate repository.
@@ -32,6 +32,14 @@ public class BudgetRepository : IBudgetRepository
 	/// <returns>Aggregate.</returns>
 	public Task<BudgetAggregate> GetById(Guid id)
 		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
+
+	/// <summary>
+	/// Retrieves Budget aggregate by name.
+	/// </summary>
+	/// <param name="name">Budget Name.</param>
+	/// <returns>Aggregate.</returns>
+	bool IBudgetRepository.ExistsByName(string name)
+		=> this.budgetDbContext.Budget.Any(x => x.Name == name);
 
 	/// <summary>
 	/// Persist aggregate state.
