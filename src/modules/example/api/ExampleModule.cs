@@ -8,8 +8,6 @@ using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Example.Api;
-
 /// <summary>
 /// Example module.
 /// </summary>
