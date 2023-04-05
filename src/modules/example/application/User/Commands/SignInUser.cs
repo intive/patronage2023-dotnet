@@ -10,12 +10,12 @@ namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
 /// </summary>
 /// <param name="Username">Username.</param>
 /// <param name="Password">Password.</param>
-public record SignInCommand(string Username, string Password) : IRequest<HttpResponseMessage>;
+public record SignInUser(string Username, string Password) : IRequest<HttpResponseMessage>;
 
 /// <summary>
 /// SignIn.
 /// </summary>
-public class HandleSignIn : IRequestHandler<SignInCommand, HttpResponseMessage>
+public class HandleSignIn : IRequestHandler<SignInUser, HttpResponseMessage>
 {
 	private readonly IHttpClientFactory httpClientFactory;
 	private readonly ApiKeycloakSettings apiKeycloakSettings;
@@ -37,7 +37,7 @@ public class HandleSignIn : IRequestHandler<SignInCommand, HttpResponseMessage>
 	/// <param name="request">request.</param>
 	/// <param name="cancellationToken">cancellationToken.</param>
 	/// <returns>Token.</returns>
-	public async Task<HttpResponseMessage> Handle(SignInCommand request, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> Handle(SignInUser request, CancellationToken cancellationToken)
 	{
 		var httpClient = this.httpClientFactory.CreateClient();
 		string? resource = this.apiKeycloakSettings.Resource;

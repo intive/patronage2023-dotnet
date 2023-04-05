@@ -20,6 +20,8 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddExampleModule(builder.Configuration);
+builder.Services.AddUserModule(builder.Configuration);
+
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;
@@ -43,7 +45,6 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
-builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("ApiKeycloakSettings"));
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
