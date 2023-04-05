@@ -4,18 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{B581E464-B295-4D63-BB10-97AC3E19A52F}"
-	ProjectSection(SolutionItems) = preProject
-		src\modules\example\api\User\UserModule.cs = src\modules\example\api\User\UserModule.cs
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{ABD0EA86-4BA3-4E57-9CEB-9E1AC6232B2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{AE9A661F-BE3A-4B30-AE50-3286C148E9B5}"
-	ProjectSection(SolutionItems) = preProject
-		src\modules\example\api\User\UserModule.cs = src\modules\example\api\User\UserModule.cs
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.Example.Contracts", "src\modules\example\contracts\Intive.Patronage2023.Modules.Example.Contracts.csproj", "{BE34A05D-59AB-436C-92CD-3E9CC9BDB177}"
 EndProject
