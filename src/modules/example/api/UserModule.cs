@@ -1,5 +1,4 @@
 using FluentValidation;
-using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Modules.Example.Application.User.Commands;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

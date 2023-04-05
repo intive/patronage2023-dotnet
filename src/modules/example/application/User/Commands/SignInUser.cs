@@ -25,7 +25,7 @@ public class HandleSignIn : IRequestHandler<SignInUser, HttpResponseMessage>
 	/// </summary>
 	/// <param name="httpClientFactory">IHttpClientFactory.</param>
 	/// <param name="apiKeycloakSettings">ApiKeycloakSettings.</param>
-	public HandleSignIn(IHttpClientFactory httpClientFactory, IOptions<ApiKeycloakSettings> apiKeycloakSettings)
+	public HandleSignIn(IHttpClientFactory httpClientFactory, ApiKeycloakSettings apiKeycloakSettings)
 	{
 		this.httpClientFactory = httpClientFactory;
 		this.apiKeycloakSettings = apiKeycloakSettings.Value;
