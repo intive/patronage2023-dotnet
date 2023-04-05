@@ -10,11 +10,11 @@ using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -72,8 +72,8 @@ builder.Services.AddScoped<IQueryBus, QueryBus>();
 
 app.MapGet("/Test", async context =>
 {
-    logger.LogInformation("Testing logging in Program.cs");
-    await context.Response.WriteAsync("Testing");
+	logger.LogInformation("Testing logging in Program.cs");
+	await context.Response.WriteAsync("Testing");
 });
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
@@ -84,8 +84,6 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 builder.Services.AddAuthorization();
 
 builder.Services.AddSwagger();
-
-var app = builder.Build();
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
