@@ -32,8 +32,13 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 		this.budgetRepository = budgetRepository;
 	}
 
-	/// <inheritdoc/>
-	public Task Handle(CreateBudget command)
+	/// <summary>
+	/// Handling of CreateBudget.
+	/// </summary>
+	/// <param name="command">CreateBudget command.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
+	/// <returns>Result.</returns>
+	public Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
 		// var budget = BudgetAggregate.Create(command.Id, command.Name, command.StartDate, command.EndDate, command.Currency, command.Limit);
 		// this.budgetRepository.Persist(budget);
