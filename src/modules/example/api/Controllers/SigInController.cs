@@ -3,6 +3,7 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.Example.Application.User.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,17 +18,20 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 public class SigInController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
+	private readonly IQueryBus queryBus;
 	private readonly IValidator<SignInUser> signInUserValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SigInController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
+	/// <param name="queryBus">Query bus.</param>
 	/// <param name="signInCommandValidator">SignIn User validator.</param>
-	public SigInController(ICommandBus commandBus, IValidator<SignInUser> signInCommandValidator)
+	public SigInController(ICommandBus commandBus, IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
 	{
 		this.signInUserValidator = signInCommandValidator;
 		this.commandBus = commandBus;
+		this.queryBus = queryBus;
 	}
 
 	/// <summary>
@@ -48,7 +52,7 @@ public class SigInController : ControllerBase
 		var validationResult = await this.signInUserValidator.ValidateAsync(command);
 		if (validationResult.IsValid)
 		{
-			HttpResponseMessage response = await this.commandBus.Send(command);
+			HttpResponseMessage response = await this.queryBus.Query<SignInUser, HttpResponseMessage>(command);
 
 			if (response.StatusCode == HttpStatusCode.Unauthorized)
 			{

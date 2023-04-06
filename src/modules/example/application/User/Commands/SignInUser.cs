@@ -1,7 +1,6 @@
-using System.Linq.Expressions;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using MediatR;
-using Microsoft.Extensions.Options;
 
 namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
 
@@ -10,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
 /// </summary>
 /// <param name="Username">Username.</param>
 /// <param name="Password">Password.</param>
-public record SignInUser(string Username, string Password) : IRequest<HttpResponseMessage>;
+public record SignInUser(string Username, string Password) : IQuery<HttpResponseMessage>;
 
 /// <summary>
 /// SignIn.
@@ -28,7 +27,7 @@ public class HandleSignIn : IRequestHandler<SignInUser, HttpResponseMessage>
 	public HandleSignIn(IHttpClientFactory httpClientFactory, ApiKeycloakSettings apiKeycloakSettings)
 	{
 		this.httpClientFactory = httpClientFactory;
-		this.apiKeycloakSettings = apiKeycloakSettings.Value;
+		this.apiKeycloakSettings = apiKeycloakSettings;
 	}
 
 	/// <summary>
