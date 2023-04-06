@@ -67,6 +67,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
+app.UseUserModule();
 
 app.UseAuthentication();
 app.UseAuthorization();

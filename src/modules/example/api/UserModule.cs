@@ -24,4 +24,14 @@ public static class UserModule
 		services.Configure<ApiKeycloakSettings>(configurationManager.GetSection("ApiKeycloakSettings"));
 		return services;
 	}
+
+	/// <summary>
+	/// Customizes app building process.
+	/// </summary>
+	/// <param name="app">IApplicationBuilder.</param>
+	/// <returns>Updated IApplicationBuilder.</returns>
+	public static IApplicationBuilder UseUserModule(this IApplicationBuilder app)
+	{
+		return app;
+	}
 }

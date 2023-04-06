@@ -15,19 +15,19 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class SigInController : ControllerBase
+public class AuthenticationController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<SignInUser> signInUserValidator;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="SigInController"/> class.
+	/// Initializes a new instance of the <see cref="AuthenticationController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="signInCommandValidator">SignIn User validator.</param>
-	public SigInController(ICommandBus commandBus, IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
+	public AuthenticationController(ICommandBus commandBus, IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
 	{
 		this.signInUserValidator = signInCommandValidator;
 		this.commandBus = commandBus;
