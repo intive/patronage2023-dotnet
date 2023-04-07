@@ -1,6 +1,7 @@
-using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using MediatR;
+using Microsoft.Extensions.Options;
 
 namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
 
@@ -24,10 +25,10 @@ public class HandleSignIn : IRequestHandler<SignInUser, HttpResponseMessage>
 	/// </summary>
 	/// <param name="httpClientFactory">IHttpClientFactory.</param>
 	/// <param name="apiKeycloakSettings">ApiKeycloakSettings.</param>
-	public HandleSignIn(IHttpClientFactory httpClientFactory, ApiKeycloakSettings apiKeycloakSettings)
+	public HandleSignIn(IHttpClientFactory httpClientFactory, IOptions<ApiKeycloakSettings> apiKeycloakSettings)
 	{
 		this.httpClientFactory = httpClientFactory;
-		this.apiKeycloakSettings = apiKeycloakSettings;
+		this.apiKeycloakSettings = apiKeycloakSettings.Value;
 	}
 
 	/// <summary>

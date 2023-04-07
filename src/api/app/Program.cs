@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.Example.Application.User;
+using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -22,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddUserModule(builder.Configuration);
+builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("ApiKeycloakSettings"));
 builder.Services.AddHttpClient();
 builder.Services.AddHttpLogging(logging =>
 {

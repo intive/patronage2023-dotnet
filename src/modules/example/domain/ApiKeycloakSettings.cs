@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Api.Configuration;
+namespace Intive.Patronage2023.Modules.Example.Domain;
 
 /// <summary>
 /// ApiKeycloakSettings.

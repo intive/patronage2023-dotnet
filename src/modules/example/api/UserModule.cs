@@ -1,5 +1,4 @@
 using FluentValidation;
-using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Modules.Example.Application.User.Commands;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +20,6 @@ public static class UserModule
 	{
 		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 		services.AddScoped<IValidator<SignInUser>, SignInUserValidator>();
-		services.Configure<ApiKeycloakSettings>(configurationManager.GetSection("ApiKeycloakSettings"));
 		return services;
 	}
 
