@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using MediatR;
 using Microsoft.Extensions.Options;
 
 namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
@@ -15,7 +14,7 @@ public record SignInUser(string Username, string Password) : IQuery<HttpResponse
 /// <summary>
 /// SignIn.
 /// </summary>
-public class HandleSignIn : IRequestHandler<SignInUser, HttpResponseMessage>
+public class HandleSignIn : IQueryHandler<SignInUser, HttpResponseMessage>
 {
 	private readonly IHttpClientFactory httpClientFactory;
 	private readonly ApiKeycloakSettings apiKeycloakSettings;
