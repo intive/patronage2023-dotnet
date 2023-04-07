@@ -18,7 +18,7 @@ public static class SwaggerConfigurationExtensions
 		options.SwaggerDoc("v1", new OpenApiInfo
 		{
 			Version = "v1",
-			Title = "Intive Patronage2023 Some Title Api",
+			Title = "Intive Patronage 2023 InBudget Api",
 			Description = "An ASP.NET Core Web API for managing bills and more",
 		});
 
