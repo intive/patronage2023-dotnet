@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Intive.Patronage2023.Modules.Example.Application.User.Commands;
+namespace Intive.Patronage2023.Api;
 
 /// <summary>
 /// SigIn validator class.

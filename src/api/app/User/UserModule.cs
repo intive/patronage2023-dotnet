@@ -1,9 +1,8 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Application.User.Commands;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Example.Application.User;
+namespace Intive.Patronage2023.Api;
 
 /// <summary>
 /// User Module.

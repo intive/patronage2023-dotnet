@@ -1,44 +1,46 @@
 using System.Net;
 using FluentValidation;
+using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Example.Application.Example;
-using Intive.Patronage2023.Modules.Example.Application.User.Commands;
-using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
+namespace Intive.Patronage2023.Api;
 
 /// <summary>
-/// text.
+/// User Controller.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController : ControllerBase
+public class UserController : ControllerBase
 {
-	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<SignInUser> signInUserValidator;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AuthenticationController"/> class.
+	/// Initializes a new instance of the <see cref="UserController"/> class.
 	/// </summary>
-	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="signInCommandValidator">SignIn User validator.</param>
-	public AuthenticationController(ICommandBus commandBus, IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
+	public UserController(IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
 	{
 		this.signInUserValidator = signInCommandValidator;
-		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 	}
 
 	/// <summary>
-	/// text.
+	/// Authenticates a user and returns a JWT token.
 	/// </summary>
-	/// <param name="command">User login and password.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <param name="command">The sign-in command, which includes the user's email and password.</param>
+	/// <returns>
+	/// An HTTP response containing a JWT token if the sign-in was successful, or an error response
+	/// if the sign-in failed. <see cref="Task"/>Representing the asynchronous operation.
+	/// </returns>
+	/// <exception cref="AppException">
+	/// Thrown if one or more errors occur while trying to authenticate the user.
+	/// </exception>
 	/// <response code="200">Successfully signed in.</response>
 	/// <response code="401">Username or password is not valid.</response>
 	/// <response code="500">Internal server error.</response>
@@ -68,20 +70,5 @@ public class AuthenticationController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to get token.", validationResult.Errors);
-	}
-
-	/// <summary>
-	/// [Test] Returns ok if authorized.
-	/// </summary>
-	/// <returns>Paged list of examples.</returns>
-	/// <response code="200">Returns 200Ok if authorized.</response>
-	/// <response code="401">If the user is unauthorized.</response>
-	[HttpGet]
-	[Authorize]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	public IActionResult ReturnOkIfAuthorized()
-	{
-		return this.Ok();
 	}
 }
