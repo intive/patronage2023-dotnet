@@ -17,9 +17,13 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 	public void Configure(EntityTypeBuilder<BudgetAggregate> builder)
 	{
 		builder.HasKey(x => x.Id);
+		builder.HasIndex(x => new { x.UserId, x.Name }, "IX_Budget_UserId_Name").IsUnique();
 		builder.ToTable("Budget", "Budgets");
 		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
+		builder.Property(x => x.UserId).HasColumnName("UserId");
+		builder.Property(x => x.Limit).HasColumnName("Limit");
+		builder.Property(x => x.Period).HasColumnName("Period");
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 	}
 }
