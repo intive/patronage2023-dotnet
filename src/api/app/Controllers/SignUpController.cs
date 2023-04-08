@@ -38,7 +38,7 @@ public class SignUpController : ControllerBase
 	///
 	///     {
 	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///        "eirstName": "Jan",
+	///        "firstName": "Jan",
 	///        "lastName": "Kowalski",
 	///        "password": "testPasword123!@",
 	///        "email": "jkowalski@gmail.com"
