@@ -28,7 +28,7 @@
 	"enabled": true,
 	"sslRequired": "external",
 	"registrationAllowed": true,
-	"registrationEmailAsUsername": false,
+	"registrationEmailAsUsername": true,
 	"rememberMe": false,
 	"verifyEmail": false,
 	"loginWithEmailAllowed": true,
@@ -415,6 +415,7 @@
 	"requiredCredentials": [
 		"password"
 	],
+	"passwordPolicy": "length(12) and specialChars(1) and upperCase(1) and lowerCase(1) and regexPattern(^\\S+$)",
 	"otpPolicyType": "totp",
 	"otpPolicyAlgorithm": "HmacSHA1",
 	"otpPolicyInitialCounter": 0,
@@ -1369,7 +1370,12 @@
 				"subComponents": {},
 				"config": {
 					"allowed-protocol-mapper-types": [
+						"oidc-usermodel-property-mapper",
+						"oidc-full-name-mapper",
+						"saml-user-attribute-mapper",
+						"saml-user-property-mapper",
 						"oidc-address-mapper",
+						"oidc-sha256-pairwise-sub-mapper",
 						"oidc-usermodel-attribute-mapper",
 						"oidc-sha256-pairwise-sub-mapper",
 						"saml-user-attribute-mapper",
@@ -2209,6 +2215,7 @@
 		"cibaExpiresIn": "120",
 		"cibaAuthRequestedUserHint": "login_hint",
 		"oauth2DeviceCodeLifespan": "600",
+		"oauth2DevicePollingInterval": "5",
 		"clientOfflineSessionMaxLifespan": "0",
 		"oauth2DevicePollingInterval": "5",
 		"clientSessionIdleTimeout": "0",
