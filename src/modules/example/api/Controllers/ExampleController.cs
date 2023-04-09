@@ -1,5 +1,4 @@
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
@@ -47,12 +46,14 @@ public class ExampleController : ControllerBase
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(ExampleInfo), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(PagedList<ExampleInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	public async Task<IActionResult> GetExamples([FromQuery] GetExamples request)
 	{
 		var validationResult = await this.getExamplesValidator.ValidateAsync(request);
+		var user = this.HttpContext;
+		Console.WriteLine(user.User.ToString());
 		if (validationResult.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);

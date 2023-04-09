@@ -47,7 +47,7 @@ public class BudgetController : ControllerBase
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(BudgetInfo), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	public async Task<IActionResult> GetBudgets([FromQuery] GetBudgets request)
