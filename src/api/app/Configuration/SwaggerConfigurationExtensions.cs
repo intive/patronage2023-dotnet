@@ -49,7 +49,7 @@ public static class SwaggerConfigurationExtensions
 		// in build directory and attach them to swagger
 		var xmlFiles = Directory.GetFiles(
 			AppContext.BaseDirectory,
-			"*.Api.xml",
+			"*.*.xml",
 			SearchOption.TopDirectoryOnly).ToList();
 		xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 	});
