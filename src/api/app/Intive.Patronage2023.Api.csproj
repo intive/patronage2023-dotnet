@@ -29,4 +29,10 @@
     <ProjectReference Include="..\..\modules\example\api\Intive.Patronage2023.Modules.Example.Api.csproj" />
     <ProjectReference Include="..\..\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

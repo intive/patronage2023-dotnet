@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.HttpLogging;
 var builder = WebApplication.CreateBuilder(args);
 
 string corsPolicyName = "CorsPolicy";
+string httpClientName = "ApiKeycloakClient";
 
 builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
@@ -23,16 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddUserModule(builder.Configuration);
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient("ApiKeycloakClient", httpClient =>
-{
-	////httpClient.BaseAddress = new Uri(builder.Configuration["Keycloak:auth-server-url"]);
-	string? authServerUrl = builder.Configuration["Keycloak:auth-server-url"];
-	if (authServerUrl != null)
-	{
-		httpClient.BaseAddress = new Uri(authServerUrl);
-		httpClient.Timeout = new TimeSpan(0, 0, 30);
-	}
-});
+builder.Services.AddHttpClient(builder.Configuration, httpClientName);
 
 builder.Services.AddHttpLogging(logging =>
 {
