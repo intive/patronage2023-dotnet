@@ -23,7 +23,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddUserModule(builder.Configuration);
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ApiKeycloakClient", httpClient =>
+{
+	////httpClient.BaseAddress = new Uri(builder.Configuration["Keycloak:auth-server-url"]);
+	string? authServerUrl = builder.Configuration["Keycloak:auth-server-url"];
+	if (authServerUrl != null)
+	{
+		httpClient.BaseAddress = new Uri(authServerUrl);
+		httpClient.Timeout = new TimeSpan(0, 0, 30);
+	}
+});
+
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;

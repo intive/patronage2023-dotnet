@@ -43,11 +43,11 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 	/// <returns>HttpResponseMessage with JSON Web Token .</returns>
 	public async Task<HttpResponseMessage> Handle(SignInUser request, CancellationToken cancellationToken)
 	{
-		var httpClient = this.httpClientFactory.CreateClient();
+		var httpClient = this.httpClientFactory.CreateClient("ApiKeycloakClient");
 		string? resource = this.apiKeycloakSettings.Resource;
 		string? secret = this.apiKeycloakSettings.Credentials?.Secret;
 		string? realm = this.apiKeycloakSettings.Realm;
-		string? url = $"http://localhost:8080/realms/{realm}/protocol/openid-connect/token";
+		string? url = $"/realms/{realm}/protocol/openid-connect/token";
 
 		var content = new FormUrlEncodedContent(new[]
 		{

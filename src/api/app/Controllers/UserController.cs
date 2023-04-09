@@ -33,7 +33,7 @@ public class UserController : ControllerBase
 	/// <summary>
 	/// Authenticates a user and returns a JWT token.
 	/// </summary>
-	/// <param name="command">The sign-in command, which includes the user's email and password.</param>
+	/// <param name="command">The sign-in command, which includes the username and password.</param>
 	/// <returns>
 	/// An HTTP response containing a JWT token if the sign-in was successful, or an error response
 	/// if the sign-in failed. <see cref="Task"/>Representing the asynchronous operation.
