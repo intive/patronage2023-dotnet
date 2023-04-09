@@ -47,7 +47,7 @@ public class ExampleController : ControllerBase
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpGet]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ExampleInfo), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	public async Task<IActionResult> GetExamples([FromQuery] GetExamples request)
@@ -79,7 +79,7 @@ public class ExampleController : ControllerBase
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ExampleInfo), StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[HttpPost]
