@@ -45,11 +45,9 @@ public static class SwaggerConfigurationExtensions
 			},
 		});
 
-		// Searching for all files with ".Api.xml" suffix, which should be api docs,
-		// in build directory and attach them to swagger
 		var xmlFiles = Directory.GetFiles(
 			AppContext.BaseDirectory,
-			"*.*.xml",
+			"*.xml",
 			SearchOption.TopDirectoryOnly).ToList();
 		xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 	});
