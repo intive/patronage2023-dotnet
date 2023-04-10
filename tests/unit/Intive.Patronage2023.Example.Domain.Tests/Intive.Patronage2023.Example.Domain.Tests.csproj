@@ -1,209 +1,34 @@
-using System.Runtime.Serialization;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\..\..\app.props" />
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-/// <summary>
-/// text.
-/// </summary>
-[Route("api/[controller]")]
-[ApiController]
-public class AuthenticateController : ControllerBase
-{
-	private readonly IMediator mediator;
+	<ItemGroup>
+		<PackageReference Include="Bogus" Version="34.0.2" />
+		<PackageReference Include="FluentAssertions" Version="6.10.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="xunit" Version="2.4.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="3.2.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AuthenticateController"/> class.
-	/// </summary>
-	/// <param name="mediator">mediator.</param>
-	public AuthenticateController(IMediator mediator)
-	{
-		this.mediator = mediator;
-	}
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\src\modules\example\domain\Intive.Patronage2023.Modules.Example.Domain.csproj" />
+	</ItemGroup>
 
-	/// <summary>
-	/// text.
-	/// </summary>
-	/// <param name="command">User login and password.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	/// <response code="200">Successfully signed in.</response>
-	/// <response code="400">Username or password is not valid.</response>
-	/// <response code="500">Internal server error.</response>
-	[HttpPost("SignIn")]
-	[ProducesDefaultResponseType(typeof(SignInResponse))]
-	public async Task<IActionResult> SignInUserAsync([FromBody] SignInCommand command)
-	{
-		var content = new AuthenticateCommand
-		{
-			Username = command.Username,
-			Password = command.Password,
-			ClientId = "test-client",
-			ClientSecret = "4VR8ktQIszIZVWgc3ud8efGAzYbbr1uu",
-		};
-
-		SignInResponse response = await this.mediator.Send(content);
-		return this.Ok(response);
-	}
-
-	/// <summary>
-	/// SignInResponse.
-	/// </summary>
-	public class SignInResponse
-	{
-		/// <summary>
-		/// Token value.
-		/// </summary>
-		public string? Token { get; set; }
-	}
-
-	/// <summary>
-	/// text.
-	/// </summary>
-	[DataContract]
-	public class Token
-	{
-		/// <summary>
-		/// AccessToken.
-		/// </summary>
-		[DataMember(Name = "access_token")]
-		public string? AccessToken { get; set; }
-
-		/// <summary>
-		/// ExpiresIn.
-		/// </summary>
-		[DataMember(Name = "expires_in")]
-		public int? ExpiresIn { get; set; }
-
-		/// <summary>
-		/// RefreshExpiresIn.
-		/// </summary>
-		[DataMember(Name = "refresh_expires_in")]
-		public int? RefreshExpiresIn { get; set; }
-
-		/// <summary>
-		/// RefreshToken.
-		/// </summary>
-		[DataMember(Name = "refresh_token")]
-		public string? RefreshToken { get; set; }
-
-		/// <summary>
-		/// TokenType.
-		/// </summary>
-		[DataMember(Name = "token_type")]
-		public string? TokenType { get; set; }
-
-		/// <summary>
-		/// NotBeforePolicy.
-		/// </summary>
-		[DataMember(Name = "not-before-policy")]
-		public int? NotBeforePolicy { get; set; }
-
-		/// <summary>
-		/// SessionState.
-		/// </summary>
-		[DataMember(Name = "session_state")]
-		public string? SessionState { get; set; }
-
-		/// <summary>
-		/// Scope.
-		/// </summary>
-		[DataMember(Name = "scope")]
-		public string? Scope { get; set; }
-	}
-
-	/// <summary>
-	/// SignInCommand.
-	/// </summary>
-	public class SignInCommand
-	{
-		/// <summary>
-		/// Username.
-		/// </summary>
-		public string? Username { get; set; }
-
-		/// <summary>
-		/// Password.
-		/// </summary>
-		public string? Password { get; set; }
-	}
-
-	/// <summary>
-	/// AuthenticateUserCommand.
-	/// </summary>
-	public class AuthenticateCommand : IRequest<SignInResponse>
-	{
-		/// <summary>
-		/// Username.
-		/// </summary>
-		public string? Username { get; set; }
-
-		/// <summary>
-		/// Username.
-		/// </summary>
-		public string? Password { get; set; }
-
-		/// <summary>
-		/// ClientId.
-		/// </summary>
-		public string? ClientId { get; set; }
-
-		/// <summary>
-		/// ClientSecret.
-		/// </summary>
-		public string? ClientSecret { get; set; }
-	}
-
-	/// <summary>
-	/// AuthenticateUserCommandHandler.
-	/// </summary>
-	public class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, SignInResponse>
-	{
-		private readonly HttpClient httpClient;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AuthenticateCommandHandler"/> class.
-		/// </summary>
-		/// <param name="httpClient">HttpClient.</param>
-		public AuthenticateCommandHandler(HttpClient httpClient)
-		{
-			this.httpClient = httpClient;
-		}
-
-		/// <summary>
-		/// Handle.
-		/// </summary>
-		/// <param name="request">request.</param>
-		/// <param name="cancellationToken">cancellationToken.</param>
-		/// <returns>string.</returns>
-		public async Task<SignInResponse> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
-		{
-			if (request.Username != null && request.Password != null && request.ClientId != null && request.ClientSecret != null)
-			{
-				var content = new FormUrlEncodedContent(new[]
-				{
-					new KeyValuePair<string, string>("username", request.Username),
-					new KeyValuePair<string, string>("password", request.Password),
-					new KeyValuePair<string, string>("client_id", request.ClientId),
-					new KeyValuePair<string, string>("client_secret", request.ClientSecret),
-					new KeyValuePair<string, string>("grant_type", "password"),
-				});
-
-				var response = await this.httpClient.PostAsync("http://localhost:8080/realms/Test/protocol/openid-connect/token", content);
-
-				string? jsonResponse = await response.Content.ReadAsStringAsync();
-				return new SignInResponse
-				{
-					Token = jsonResponse,
-				};
-			}
-			else
-			{
-				return new SignInResponse
-				{
-					Token = null,
-				};
-			}
-		}
-	}
-}
+</Project>
