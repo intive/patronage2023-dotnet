@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,7 +56,7 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 			budgets = budgets.OrderBy(x => x.Name);
 		}
 
-		var results = await budgets.Skip(query.PageIndex * query.PageSize).Take(query.PageSize).ToListAsync();
+		var results = await budgets.Paginate(query.PageSize, query.PageIndex).ToListAsync();
 		var mappedData = results.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
 		var result = new PagedList<BudgetInfo> { Items = mappedData };
 		return result;
