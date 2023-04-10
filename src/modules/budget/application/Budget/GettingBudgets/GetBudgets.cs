@@ -10,11 +10,28 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 /// <summary>
 /// Get budgets query.
 /// </summary>
-/// <param name="Search">Field to search budget by name.</param>
-/// <param name="SortAscending">Bool to sort budgets ascending/descending by name.</param>
-/// <param name="PageSize">The amount of data to return.</param>
-/// <param name="PageIndex">Requested page.</param>
-public record GetBudgets(string Search, int PageSize, int PageIndex, bool SortAscending = true) : IQuery<PagedList<BudgetInfo>>;
+public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITextSearchQuery
+{
+	/// <summary>
+	/// The amount of data to return.
+	/// </summary>
+	public int PageSize { get; set; }
+
+	/// <summary>
+	/// Requested page.
+	/// </summary>
+	public int PageIndex { get; set; }
+
+	/// <summary>
+	/// Bool to sort budgets ascending/descending by name.
+	/// </summary>
+	public bool SortAscending { get; set; }
+
+	/// <summary>
+	/// Field to search budget by name.
+	/// </summary>
+	public string? Search { get; set; }
+}
 
 /// <summary>
 /// Get Budgets handler.
@@ -44,7 +61,7 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 
 		if (string.IsNullOrEmpty(query.Search))
 		{
-			budgets = budgets.Where(x => x.Name.StartsWith(query.Search, StringComparison.OrdinalIgnoreCase));
+			budgets = budgets.Where(x => x.Name.StartsWith(query.Search!, StringComparison.OrdinalIgnoreCase));
 		}
 
 		if (!query.SortAscending)

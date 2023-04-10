@@ -13,7 +13,7 @@ public static class OrderedQueryableExtension
 	/// <param name="pageIndex">Page index.</param>
 	/// <param name="pageSize">Page size.</param>
 	/// <returns>Paginated query.</returns>
-	public static IQueryable<T> Paginate<T>(this IOrderedQueryable<T> query, int pageIndex, int pageSize)
+	public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int pageIndex, int pageSize)
 	{
 		return query.Skip(pageIndex * pageSize).Take(pageSize);
 	}
