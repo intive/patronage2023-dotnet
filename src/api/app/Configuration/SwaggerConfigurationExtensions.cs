@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 
 namespace Intive.Patronage2023.Api.Configuration;
 
@@ -51,4 +54,18 @@ public static class SwaggerConfigurationExtensions
 			SearchOption.TopDirectoryOnly).ToList();
 		xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 	});
+
+	/// <summary>
+	/// Extension method that configure and add FluentValidation rules to swagger.
+	/// </summary>
+	/// <param name="services">IServiceCollection object.</param>
+	public static void AddFluentValidationRuleToSwagger(this IServiceCollection services)
+	{
+		services.AddFluentValidationAutoValidation();
+		services.AddFluentValidationClientsideAdapters();
+
+		services.AddValidatorsFromAssemblyContaining<Program>();
+
+		services.AddFluentValidationRulesToSwagger();
+	}
 }
