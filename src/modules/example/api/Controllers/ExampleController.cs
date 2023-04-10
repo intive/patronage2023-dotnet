@@ -18,6 +18,7 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 [Route("[controller]")]
 public class ExampleController : ControllerBase
 {
+	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateExample> createExampleValidator;
@@ -30,12 +31,14 @@ public class ExampleController : ControllerBase
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="createExampleValidator">Create example validator.</param>
 	/// <param name="getExamplesValidator">Get examples validator.</param>
-	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateExample> createExampleValidator, IValidator<GetExamples> getExamplesValidator)
+	/// <param name="contextAccessor">Execution context accessor.</param>
+	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateExample> createExampleValidator, IValidator<GetExamples> getExamplesValidator, IExecutionContextAccessor contextAccessor)
 	{
 		this.createExampleValidator = createExampleValidator;
 		this.getExamplesValidator = getExamplesValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -93,5 +96,25 @@ public class ExampleController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create example.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get user guid.
+	/// </summary>
+	/// <returns>User guid or null.</returns>
+	/// <response code="200">Returns current user guid.</response>
+	/// <response code="401">If the user is unauthorized or token is invalid.</response>
+	[HttpGet("/UserGuid")]
+	[ProducesResponseType(typeof(Guid?), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	public IActionResult GetUserId()
+	{
+		var userId = this.contextAccessor.GetUserId(this.HttpContext);
+		if (userId == null)
+		{
+			return this.Unauthorized();
+		}
+
+		return this.Ok(userId);
 	}
 }
