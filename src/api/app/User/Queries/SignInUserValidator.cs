@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Intive.Patronage2023.Api;
+namespace Intive.Patronage2023.Api.User;
 
 /// <summary>
 /// SigIn validator class.
@@ -12,7 +12,7 @@ public class SignInUserValidator : AbstractValidator<SignInUser>
 	/// </summary>
 	public SignInUserValidator()
 	{
-		this.RuleFor(signin => signin.Username).NotEmpty().NotNull();
+		this.RuleFor(signin => signin.Email).NotEmpty().NotNull();
 		this.RuleFor(signin => signin.Password).NotEmpty().NotNull();
 	}
 }

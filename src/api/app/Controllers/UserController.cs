@@ -33,16 +33,16 @@ public class UserController : ControllerBase
 	/// <summary>
 	/// Authenticates a user and returns a JWT token.
 	/// </summary>
-	/// <param name="command">The sign-in command, which includes the username and password.</param>
+	/// <param name="command">The sign-in command, which includes the user email and password.</param>
 	/// <returns>
 	/// An HTTP response containing a JWT token if the sign-in was successful, or an error response
-	/// if the sign-in failed. <see cref="Task"/>Representing the asynchronous operation.
+	/// if the sign-in failed.
 	/// </returns>
 	/// <exception cref="AppException">
 	/// Thrown if one or more errors occur while trying to authenticate the user.
 	/// </exception>
-	/// <response code="200">Successfully signed in.</response>
-	/// <response code="401">Username or password is not valid.</response>
+	/// <response code="200">Return Token class object.</response>
+	/// <response code="401">Email or password is not valid.</response>
 	/// <response code="500">Internal server error.</response>
 	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -62,7 +62,7 @@ public class UserController : ControllerBase
 			}
 
 			string responseContent = await response.Content.ReadAsStringAsync();
-			if (responseContent != null)
+			if (!string.IsNullOrEmpty(responseContent))
 			{
 				Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
 				return this.Ok(token);

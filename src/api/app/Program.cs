@@ -1,5 +1,5 @@
-using Intive.Patronage2023.Api;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -22,7 +22,7 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddExampleModule(builder.Configuration);
-builder.Services.AddUserModule(builder.Configuration);
+builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient(builder.Configuration, httpClientName);
 

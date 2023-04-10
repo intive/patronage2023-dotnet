@@ -1,8 +1,6 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Api;
+namespace Intive.Patronage2023.Api.User;
 
 /// <summary>
 /// User Module.
@@ -13,11 +11,9 @@ public static class UserModule
 	/// Add module services.
 	/// </summary>
 	/// <param name="services">IServiceCollection.</param>
-	/// <param name="configurationManager">ConfigurationManager.</param>
 	/// <returns>Updated IServiceCollection.</returns>
-	public static IServiceCollection AddUserModule(this IServiceCollection services, ConfigurationManager configurationManager)
+	public static IServiceCollection AddUserModule(this IServiceCollection services)
 	{
-		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 		services.AddScoped<IValidator<SignInUser>, SignInUserValidator>();
 		return services;
 	}
