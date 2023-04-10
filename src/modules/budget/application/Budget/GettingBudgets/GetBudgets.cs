@@ -8,9 +8,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 
 /// <summary>
-/// Get Budgets query.
+/// Get budgets query.
 /// </summary>
-public record GetBudgets() : IQuery<PagedList<BudgetInfo>>;
+/// <param name="Search">Field to search budget by name.</param>
+/// <param name="SortAscending">Bool to sort budgets ascending/descending by name.</param>
+/// <param name="PageSize">The amount of data to return.</param>
+/// <param name="PageIndex">Requested page.</param>
+public record GetBudgets(string Search, bool SortAscending, int PageSize, int PageIndex) : IQuery<PagedList<BudgetInfo>>;
 
 /// <summary>
 /// Get Budgets handler.
