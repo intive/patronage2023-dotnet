@@ -15,6 +15,7 @@ public static class OrderedQueryableExtension
 	/// <returns>Paginated query.</returns>
 	public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int pageIndex, int pageSize)
 	{
-		return query.Skip(pageIndex * pageSize).Take(pageSize);
+		var result = query.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
+		return result;
 	}
 }

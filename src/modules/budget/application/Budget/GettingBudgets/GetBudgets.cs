@@ -59,9 +59,9 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 	{
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
 
-		if (string.IsNullOrEmpty(query.Search))
+		if (!string.IsNullOrEmpty(query.Search))
 		{
-			budgets = budgets.Where(x => x.Name.StartsWith(query.Search!, StringComparison.OrdinalIgnoreCase));
+			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
 		if (!query.SortAscending)
@@ -73,9 +73,10 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 			budgets = budgets.OrderBy(x => x.Name);
 		}
 
-		var results = await budgets.Paginate(query.PageSize, query.PageIndex).ToListAsync();
+		var results = await budgets.Paginate(query.PageIndex, query.PageSize).ToListAsync();
 		var mappedData = results.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
-		var result = new PagedList<BudgetInfo> { Items = mappedData };
+		int totalItemsCount = await budgets.CountAsync();
+		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
 	}
 }
