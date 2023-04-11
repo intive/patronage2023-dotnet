@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Modules.Example.Api;
-using Intive.Patronage2023.Modules.Example.Api.User;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -13,6 +12,7 @@ using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Intive.Patronage2023.Api.User.CreatingUser;
 
 var builder = WebApplication.CreateBuilder(args);
 

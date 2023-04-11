@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 
-namespace Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
+namespace Intive.Patronage2023.Api.User.CreatingUser;
 
 /// <summary>
 /// Create user command.

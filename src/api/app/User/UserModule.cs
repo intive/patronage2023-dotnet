@@ -1,7 +1,6 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Api.User.CreatingUser;
 
-namespace Intive.Patronage2023.Modules.Example.Api.User;
+namespace Intive.Patronage2023.Api.User.CreatingUser;
 
 /// <summary>
 /// User Module.
