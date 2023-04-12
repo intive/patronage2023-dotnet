@@ -10,7 +10,9 @@ using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +23,6 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddExampleModule(builder.Configuration);
-builder.Services.AddUserModule();
-builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient(builder.Configuration, httpClientName);
-
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;
@@ -34,13 +31,22 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 builder.Services.AddSharedModule();
+builder.Services.AddExampleModule(builder.Configuration);
+builder.Services.AddBudgetModule(builder.Configuration);
+builder.Services.AddUserModule();
+builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.AddHttpClient(builder.Configuration, httpClientName);
 
 builder.Services.AddMediatR(cfg =>
 {
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+	options.Filters.Add(new AuthorizeFilter(
+		new AuthorizationPolicyBuilder()
+			.RequireAuthenticatedUser()
+			.Build())));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
