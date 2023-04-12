@@ -37,7 +37,7 @@ public class SignUpController : ControllerBase
 	/// Sample request:
 	///
 	///     {
-	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///        "avatar": "some Avatar.",
 	///        "firstName": "Jan",
 	///        "lastName": "Kowalski",
 	///        "password": "testPasword123!@",
@@ -56,7 +56,7 @@ public class SignUpController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(command);
-			return this.Created($"user/{command.Id}", command.Id);
+			return this.Created($"user/{command.FirstName}", command.FirstName);
 		}
 
 		throw new AppException("One or more error occured while trying to create user.", validationResult.Errors);

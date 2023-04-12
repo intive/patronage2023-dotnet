@@ -12,10 +12,10 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 	/// </summary>
 	public CreateUserValidator()
 	{
-		this.RuleFor(user => user.Id).NotEmpty().NotNull();
+		this.RuleFor(user => user.Avatar).NotEmpty();
 		this.RuleFor(user => user.FirstName).NotEmpty();
 		this.RuleFor(user => user.LastName).NotEmpty();
-		this.RuleFor(user => user.Email).EmailAddress();
+		this.RuleFor(user => user.Email).EmailAddress().NotEmpty();
 
 		this.RuleFor(user => user.Password)
 			.MinimumLength(12)
@@ -23,6 +23,7 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 			.Must(password => password.Any(char.IsLower))
 			.Must(password => password.Any(char.IsDigit))
 			.Must(password => !password.Contains(" "))
-			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]");
+			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]")
+			.NotEmpty();
 	}
 }
