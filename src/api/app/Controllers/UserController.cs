@@ -44,7 +44,7 @@ public class UserController : ControllerBase
 	/// <response code="200">Return Token class object.</response>
 	/// <response code="401">Email or password is not valid.</response>
 	/// <response code="500">Internal server error.</response>
-	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
 	[AllowAnonymous]
