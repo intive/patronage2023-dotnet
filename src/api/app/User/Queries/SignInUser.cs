@@ -50,7 +50,7 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 
 		var content = new FormUrlEncodedContent(new[]
 		{
-				new KeyValuePair<string, string>("email", request.Email),
+				new KeyValuePair<string, string>("username", request.Email),
 				new KeyValuePair<string, string>("password", request.Password),
 				new KeyValuePair<string, string>("client_id", resource ?? string.Empty),
 				new KeyValuePair<string, string>("grant_type", "password"),
