@@ -38,7 +38,6 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	{
 		var budget = BudgetAggregate.Create(command.Id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
 		this.budgetRepository.Persist(budget);
-		this.budgetRepository.Persist(budget);
 		return Task.CompletedTask;
 	}
 }
