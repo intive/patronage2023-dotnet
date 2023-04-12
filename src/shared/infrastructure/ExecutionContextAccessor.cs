@@ -5,14 +5,24 @@ using Microsoft.AspNetCore.Http;
 namespace Intive.Patronage2023.Shared.Infrastructure;
 
 /// <summary>
-/// Implementation of IExecutionContextAccessor.
+/// Implementation of IExecutionContextAccessor which uses JWT token to
+/// obtain required informations e.g. GetUserId uses "sub" claim to retrieve id.
 /// </summary>
 public class ExecutionContextAccessor : IExecutionContextAccessor
 {
+	private IHttpContextAccessor httpContextAccessor;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ExecutionContextAccessor"/> class.
+	/// </summary>
+	/// <param name="httpContextAccessor">Http context accessor provided by DI.</param>
+	public ExecutionContextAccessor(IHttpContextAccessor httpContextAccessor) =>
+	this.httpContextAccessor = httpContextAccessor;
+
 	/// <inheritdoc />
-	public Guid? GetUserId(HttpContext httpContext)
+	public Guid? GetUserId()
 	{
-		string? jwtToken = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 		if (jwtToken == null)
 		{
 			// User is not authenticated

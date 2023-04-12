@@ -61,6 +61,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwagger();
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 app.UseCors(corsPolicyName);

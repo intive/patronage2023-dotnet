@@ -109,7 +109,7 @@ public class ExampleController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	public IActionResult GetUserId()
 	{
-		var userId = this.contextAccessor.GetUserId(this.HttpContext);
+		var userId = this.contextAccessor.GetUserId();
 		if (userId == null)
 		{
 			return this.Unauthorized();
