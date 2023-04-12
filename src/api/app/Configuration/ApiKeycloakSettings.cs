@@ -39,12 +39,6 @@ public class ApiKeycloakSettings
 	public string? Resource { get; set; }
 
 	/// <summary>
-	/// An instance of the ApiKeycloakCredentials class which stores the secret value required to authenticate with the Keycloak API.
-	/// </summary>
-	[DataMember(Name = "credentials")]
-	public ApiKeycloakCredentials? Credentials { get; set; }
-
-	/// <summary>
 	/// Determines whether the client is public or not.
 	/// </summary>
 	[DataMember(Name = "public-client")]

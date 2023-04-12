@@ -45,7 +45,6 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 	{
 		var httpClient = this.httpClientFactory.CreateClient("ApiKeycloakClient");
 		string? resource = this.apiKeycloakSettings.Resource;
-		string? secret = this.apiKeycloakSettings.Credentials?.Secret;
 		string? realm = this.apiKeycloakSettings.Realm;
 		string? url = $"/realms/{realm}/protocol/openid-connect/token";
 
@@ -54,7 +53,6 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 				new KeyValuePair<string, string>("email", request.Email),
 				new KeyValuePair<string, string>("password", request.Password),
 				new KeyValuePair<string, string>("client_id", resource ?? string.Empty),
-				new KeyValuePair<string, string>("client_secret", secret ?? string.Empty),
 				new KeyValuePair<string, string>("grant_type", "password"),
 		});
 
