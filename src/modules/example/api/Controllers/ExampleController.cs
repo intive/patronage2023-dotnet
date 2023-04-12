@@ -52,8 +52,6 @@ public class ExampleController : ControllerBase
 	public async Task<IActionResult> GetExamples([FromQuery] GetExamples request)
 	{
 		var validationResult = await this.getExamplesValidator.ValidateAsync(request);
-		var user = this.HttpContext;
-		Console.WriteLine(user.User.ToString());
 		if (validationResult.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
@@ -73,7 +71,7 @@ public class ExampleController : ControllerBase
 	///
 	///     POST
 	///     {
-	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///        "Name": "Example"
 	///     }
 	/// .</remarks>

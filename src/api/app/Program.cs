@@ -61,8 +61,6 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwagger();
 
-builder.Services.AddFluentValidationRuleToSwagger();
-
 var app = builder.Build();
 
 app.UseCors(corsPolicyName);

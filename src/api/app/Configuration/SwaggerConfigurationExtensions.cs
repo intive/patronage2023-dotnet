@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 
 namespace Intive.Patronage2023.Api.Configuration;
@@ -15,56 +13,45 @@ public static class SwaggerConfigurationExtensions
 	/// Extension method that configures and add swagger.
 	/// </summary>
 	/// <param name="services">IServiceCollection object.</param>
-	public static void AddSwagger(
-		this IServiceCollection services) => services.AddSwaggerGen(options =>
+	public static void AddSwagger(this IServiceCollection services)
 	{
-		options.SwaggerDoc("v1", new OpenApiInfo
+		services.AddSwaggerGen(options =>
 		{
-			Version = "v1",
-			Title = "Intive Patronage 2023 InBudget Api",
-			Description = "An ASP.NET Core Web API for managing bills and more",
-		});
-
-		// Adding authentication to swagger
-		var securityScheme = new OpenApiSecurityScheme
-		{
-			Name = "JWT Authentication",
-			Description = "Enter JWT Bearer token **_only_**",
-			In = ParameterLocation.Header,
-			Type = SecuritySchemeType.Http,
-			Scheme = "bearer", // must be lower case
-			BearerFormat = "JWT",
-			Reference = new OpenApiReference
+			options.SwaggerDoc("v1", new OpenApiInfo
 			{
-				Id = JwtBearerDefaults.AuthenticationScheme,
-				Type = ReferenceType.SecurityScheme,
-			},
-		};
-		options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-		options.AddSecurityRequirement(new OpenApiSecurityRequirement
-		{
+				Version = "v1",
+				Title = "Intive Patronage 2023 InBudget Api",
+				Description = "An ASP.NET Core Web API for managing bills and more",
+			});
+
+			// Adding authentication to swagger
+			var securityScheme = new OpenApiSecurityScheme
 			{
-				securityScheme, Array.Empty<string>()
-			},
+				Name = "JWT Authentication",
+				Description = "Enter JWT Bearer token **_only_**",
+				In = ParameterLocation.Header,
+				Type = SecuritySchemeType.Http,
+				Scheme = "bearer", // must be lower case
+				BearerFormat = "JWT",
+				Reference = new OpenApiReference
+				{
+					Id = JwtBearerDefaults.AuthenticationScheme,
+					Type = ReferenceType.SecurityScheme,
+				},
+			};
+			options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+			options.AddSecurityRequirement(new OpenApiSecurityRequirement
+			{
+				{ securityScheme, Array.Empty<string>() },
+			});
+
+			var xmlFiles = Directory.GetFiles(
+					AppContext.BaseDirectory,
+					"*.xml",
+					SearchOption.TopDirectoryOnly)
+				.ToList();
+			xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
 		});
-
-		var xmlFiles = Directory.GetFiles(
-			AppContext.BaseDirectory,
-			"*.xml",
-			SearchOption.TopDirectoryOnly).ToList();
-		xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
-	});
-
-	/// <summary>
-	/// Extension method that configure and add FluentValidation rules to swagger.
-	/// </summary>
-	/// <param name="services">IServiceCollection object.</param>
-	public static void AddFluentValidationRuleToSwagger(this IServiceCollection services)
-	{
-		services.AddFluentValidationAutoValidation();
-		services.AddFluentValidationClientsideAdapters();
-
-		services.AddValidatorsFromAssemblyContaining<Program>();
 
 		services.AddFluentValidationRulesToSwagger();
 	}
