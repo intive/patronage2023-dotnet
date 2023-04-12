@@ -19,7 +19,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		this.budgetRepository = budgetRepository;
 		this.RuleFor(budget => budget.Id).NotEmpty().NotNull();
 		this.RuleFor(budget => budget.Name).NotEmpty().NotNull().WithMessage("{PropertyName} must not be empty");
-		this.RuleFor(budget => new { budget.StartDate, budget.EndDate }).Must(x => x.StartDate < x.EndDate).WithMessage("The start date must be earlier than the end date");
+		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate < x.EndDate).WithMessage("The start date must be earlier than the end date");
 		this.RuleFor(budget => budget.Name).Must(x => !this.budgetRepository.ExistsByName(x)).WithMessage("{PropertyName} already exists. Choose a different name");
 	}
 }
