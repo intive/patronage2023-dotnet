@@ -33,7 +33,7 @@ public partial class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget owner user Id.
 	/// </summary>
-	public Guid UserId { get; private set; } = default!;
+	public Guid UserId { get; private set; }
 
 	/// <summary>
 	/// Budget limit.

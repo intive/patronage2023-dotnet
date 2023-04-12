@@ -1,5 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
-
+using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,8 +22,12 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 		builder.Property(x => x.UserId).HasColumnName("UserId");
-		builder.Property(x => x.Limit).HasColumnName("Limit");
-		builder.Property(x => x.Period).HasColumnName("Period");
+		builder.Property(x => x.Limit).HasColumnName("Limit").HasConversion(
+			v => JsonConvert.SerializeObject(v, Formatting.None),
+			v => JsonConvert.DeserializeObject<BudgetLimit>(v));
+		builder.Property(x => x.Period).HasColumnName("Period").HasConversion(
+			v => JsonConvert.SerializeObject(v, Formatting.None),
+			v => JsonConvert.DeserializeObject<BudgetPeriod>(v));
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 	}
 }
