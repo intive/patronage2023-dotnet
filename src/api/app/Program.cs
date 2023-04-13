@@ -12,6 +12,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 
 using Keycloak.AuthServices.Authentication;
@@ -89,7 +90,7 @@ app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.UseExampleModule();
