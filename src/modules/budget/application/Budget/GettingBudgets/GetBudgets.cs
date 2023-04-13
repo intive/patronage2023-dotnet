@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -10,7 +11,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 /// <summary>
 /// Get budgets query.
 /// </summary>
-public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITextSearchQuery
+public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITextSearchQuery, ISortableQuery
 {
 	/// <summary>
 	/// The amount of data to return.
@@ -23,14 +24,14 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 	public int PageIndex { get; set; }
 
 	/// <summary>
-	/// Bool to sort budgets ascending/descending by name.
-	/// </summary>
-	public bool SortAscending { get; set; }
-
-	/// <summary>
 	/// Field to search budget by name.
 	/// </summary>
 	public string? Search { get; set; }
+
+	/// <summary>
+	/// List of criteria to sort budgets.
+	/// </summary>
+	public List<SortDescriptor>? SortDescriptors { get; set; }
 }
 
 /// <summary>
@@ -64,16 +65,7 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
-		if (!query.SortAscending)
-		{
-			budgets = budgets.OrderByDescending(x => x.Name);
-		}
-		else
-		{
-			budgets = budgets.OrderBy(x => x.Name);
-		}
-
-		var mappedData = budgets.Paginate(query.PageIndex, query.PageSize).Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
+		var mappedData = budgets.Sort(query).Paginate(query).Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
 		int totalItemsCount = await budgets.CountAsync();
 		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;

@@ -10,12 +10,11 @@ public static class OrderedQueryableExtension
 	/// </summary>
 	/// <typeparam name="T">Entity type.</typeparam>
 	/// <param name="query">Query.</param>
-	/// <param name="pageIndex">Page index.</param>
-	/// <param name="pageSize">Page size.</param>
+	/// <param name="pageableQuery">Paging criteria.</param>
 	/// <returns>Paginated query.</returns>
-	public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+	public static IQueryable<T> Paginate<T>(this IQueryable<T> query, IPageableQuery pageableQuery)
 	{
-		var result = query.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
+		var result = query.Skip(pageableQuery.PageSize * (pageableQuery.PageIndex - 1)).Take(pageableQuery.PageSize);
 		return result;
 	}
 }

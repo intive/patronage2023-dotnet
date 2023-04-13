@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Shared.Abstractions;
 
 /// <summary>
-/// IPageableQuery.
+/// Paging criteria.
 /// </summary>
 public interface IPageableQuery
 {
@@ -14,9 +14,4 @@ public interface IPageableQuery
 	/// Page index.
 	/// </summary>
 	int PageIndex { get; set; }
-
-	/// <summary>
-	/// Sort order.
-	/// </summary>
-	bool SortAscending { get; set; }
 }
