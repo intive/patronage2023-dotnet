@@ -1,25 +1,39 @@
-﻿using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Docker.DotNet;
+using Docker.DotNet.Models;
+using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
+using Intive.Patronage2023.Modules.Example.Application.IntegrationTest;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Intive.Patronage2023.Modules.Example.Application.Tests.Example.GettingExamples
+
+namespace GetExampleQueryHandlerFixturesTests;
+
+
+public class GetExampleQueryHandlerTests : IClassFixture<DatabaseFixture>
 {
-    public class GetExampleQueryHandlerTests
-    {
-        [Fact]
+	private readonly DatabaseFixture fixture;
+
+	public GetExampleQueryHandlerTests(DatabaseFixture fixture) 
+	{
+		_fixture = fixture;
+	}
+	[Fact]
         public async Task Handle_WhenCalled_ShouldReturnPagedList()
         {
-            // Arrange
-            var options = new DbContextOptionsBuilder<ExampleDbContext>()
-                .UseInMemoryDatabase(databaseName: "GetExamples_Db")
-                .Options;
-            var dbContext = new ExampleDbContext(options);
-            var example = ExampleHelper.CreateExample();
-            dbContext.Example.Add(example);
-            await dbContext.SaveChangesAsync();
-            var query = new GetExamples();
-            var handler = new GetExampleQueryHandler(dbContext);
+		// Arrange
+		var options = new DbContextOptionsBuilder<ExampleDbContext>()
+			.UseMySql(_fixture.ConnectionString)
+			.Options;
+		var dbContext = new ExampleDbContext(options);
+		var example = ExampleHelper.CreateExample();
+		dbContext.Example.Add(example);
+        await dbContext.SaveChangesAsync();
+        var query = new GetExamples();
+        var handler = new GetExampleQueryHandler(dbContext);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);

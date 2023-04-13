@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Intive.Patronage2023.Modules.Example.Tests
+namespace QueryResponseTests
 {
     public interface IQueryHandler<in T, TResult>
     {

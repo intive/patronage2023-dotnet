@@ -1,32 +1,38 @@
-﻿using Docker.DotNet;
-using MySql.Data.MySqlClient;
-
+using Docker.DotNet;
+using Microsoft.Data.SqlClient;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTest
 {
-    public class DatabaseFixture : IDisposable
-    {
-        public readonly MySqlConnection Connection;
+	public class DatabaseFixture : IDisposable
+	{
+		public readonly SqlConnection Connection;
 
-        public DatabaseFixture()
-        {
-            var dockerClient = new DockerClientConfiguration().CreateClient();
-            var container = new GenericContainer(dockerClient, "mysql:8.0")
-                .WithExposedPorts(3306)
-                .WithEnv("MYSQL_ROOT_PASSWORD", "test")
-                .WithEnv("MYSQL_DATABASE", "test")
-                .Start();
+		public DatabaseFixture()
+		{
+			var dockerClient = new DockerClientConfiguration().CreateClient();
+			var container = new GenericContainer(dockerClient, "mcr.microsoft.com/mssql/server:2019-latest")
+				.WithExposedPorts(1433)
+				.WithEnv("ACCEPT_EULA")
+				.WithEnv("PASSWORD=")
+				.WaitForPort("1433/tcp", 30000);
+			container.Start();
+			var hostPort = container.GetMappedPort(1433);
 
-            var port = container.GetMappedPort(3306);
-            var connectionString = $"Server=localhost;Port={port};Database=test;Uid=root;Pwd=test;";
-            Connection = new MySqlConnection(connectionString);
-            Connection.Open();
-        }
+			var connectionString = new SqlConnectionStringBuilder()
+			{
+				DataSource = $"localhost,{hostPort}",
+				InitialCatalog = "DB_name",
+				UserID = "",
+				Password = ""
+			}.ConnectionString;
 
-        public void Dispose()
-        {
-            Connection.Dispose();
-        }
-    }
+			Connection = new SqlConnection(connectionString);
+			Connection.Open();
+		}
 
+		public void Dispose()
+		{
+			Connection.Dispose();
+		}
+	}
 }
