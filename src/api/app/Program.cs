@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Api;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Example.Api;
@@ -17,7 +18,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 string corsPolicyName = "CorsPolicy";
-string httpClientName = "ApiKeycloakClient";
 
 builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
@@ -35,7 +35,7 @@ builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient(builder.Configuration, httpClientName);
+builder.Services.AddHttpClient<KeycloakService>();
 
 builder.Services.AddMediatR(cfg =>
 {

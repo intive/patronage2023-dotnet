@@ -21,18 +21,18 @@ public record SignInUser(string Email, string Password) : IQuery<HttpResponseMes
 /// </remarks>
 public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 {
-	private readonly IHttpClientFactory httpClientFactory;
 	private readonly ApiKeycloakSettings apiKeycloakSettings;
+	private readonly KeycloakService keycloakService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleSignInUser"/> class.
 	/// </summary>
-	/// <param name="httpClientFactory">IHttpClientFactory.</param>
 	/// <param name="apiKeycloakSettings">ApiKeycloakSettings.</param>
-	public HandleSignInUser(IHttpClientFactory httpClientFactory, IOptions<ApiKeycloakSettings> apiKeycloakSettings)
+	/// <param name="keycloakService">KeycloakService.</param>
+	public HandleSignInUser(IOptions<ApiKeycloakSettings> apiKeycloakSettings, KeycloakService keycloakService)
 	{
-		this.httpClientFactory = httpClientFactory;
 		this.apiKeycloakSettings = apiKeycloakSettings.Value;
+		this.keycloakService = keycloakService;
 	}
 
 	/// <summary>
@@ -43,7 +43,7 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
 	public async Task<HttpResponseMessage> Handle(SignInUser request, CancellationToken cancellationToken)
 	{
-		var httpClient = this.httpClientFactory.CreateClient("ApiKeycloakClient");
+		var httpClient = this.keycloakService.CreateClient();
 		string? resource = this.apiKeycloakSettings.Resource;
 		string? realm = this.apiKeycloakSettings.Realm;
 		string? url = $"/realms/{realm}/protocol/openid-connect/token";
