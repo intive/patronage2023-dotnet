@@ -65,7 +65,7 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
-		var mappedData = budgets.Sort(query).Paginate(query).Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
+		var mappedData = budgets.ProjectBy(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToList();
 		int totalItemsCount = await budgets.CountAsync();
 		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
