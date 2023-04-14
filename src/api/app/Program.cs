@@ -1,4 +1,6 @@
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Keycloak;
+using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -31,6 +33,10 @@ builder.Services.AddHttpLogging(logging =>
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddBudgetModule(builder.Configuration);
+builder.Services.AddUserModule();
+builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<KeycloakService>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -74,6 +80,7 @@ app.MapControllers();
 
 app.UseExampleModule();
 app.UseBudgetModule();
+app.UseUserModule();
 
 app.UseAuthentication();
 app.UseAuthorization();
