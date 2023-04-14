@@ -44,9 +44,9 @@ public class SignUpController : ControllerBase
 	///        "email": "jkowalski@gmail.com"
 	///     }
 	/// .</remarks>
-	/// <response code="201">Returns the newly created user.</response>
+	/// <response code="200">Indicates if the request to create user was done correctly.</response>
 	/// <response code="400">If the body is not valid.</response>
-	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[AllowAnonymous]
 	[HttpPost]
@@ -56,7 +56,7 @@ public class SignUpController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(command);
-			return this.Created($"user/{command.FirstName}", command.FirstName);
+			return this.Ok();
 		}
 
 		throw new AppException("One or more error occured while trying to create user.", validationResult.Errors);
