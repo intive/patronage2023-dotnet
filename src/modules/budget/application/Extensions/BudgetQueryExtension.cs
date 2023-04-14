@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Shared.Abstractions;
 
@@ -28,20 +27,6 @@ internal static class BudgetQueryExtension
 		}
 
 		return query;
-	}
-
-	/// <summary>
-	/// Projection method.
-	/// </summary>
-	/// <typeparam name="TSource">The type of the elements of source.</typeparam>
-	/// <typeparam name="TResult">The type of the value returned by the function represented by selector.</typeparam>
-	/// <param name="source">A sequence of values to project.</param>
-	/// <param name="selector">A projection function to apply to each element.</param>
-	/// <returns>An IQueryable whose elements are the result of invoking a projection function on each element of source.</returns>
-	public static IQueryable<TResult> ProjectBy<TSource, TResult>(this IQueryable<TSource> source, Func<TSource, TResult> selector)
-	{
-		var expression = Expression.Lambda<Func<TSource, TResult>>(Expression.Call(selector.Method));
-		return source.Select(expression);
 	}
 
 	private static IQueryable<BudgetInfo> Sort(IQueryable<BudgetInfo> query, SortDescriptor descriptor)
