@@ -30,7 +30,6 @@ public static class ExampleModule
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
 		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
-
 		return services;
 	}
 
