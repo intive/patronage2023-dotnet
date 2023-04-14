@@ -43,7 +43,7 @@ public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
 	public async Task<HttpResponseMessage> Handle(SignInUser request, CancellationToken cancellationToken)
 	{
-		var httpClient = this.keycloakService.CreateClient();
+		HttpClient httpClient = await this.keycloakService.CreateClientAsync();
 		string? resource = this.apiKeycloakSettings.Resource;
 		string? realm = this.apiKeycloakSettings.Realm;
 		string? url = $"/realms/{realm}/protocol/openid-connect/token";

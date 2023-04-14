@@ -35,7 +35,8 @@ builder.Services.AddExampleModule(builder.Configuration);
 builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient<KeycloakService>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<KeycloakService>();
 
 builder.Services.AddMediatR(cfg =>
 {
