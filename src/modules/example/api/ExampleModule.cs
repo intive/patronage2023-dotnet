@@ -6,7 +6,7 @@ using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
-
+using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Api;
@@ -26,6 +26,7 @@ public static class ExampleModule
 	{
 		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 
+		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
 		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
