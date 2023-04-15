@@ -14,31 +14,30 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransac
 /// <param name="Value">Value of income or expanse.</param>
 /// <param name="CreatedOn">Creation of new income or expanse date.</param>
 /// <param name="Category">Enum of income/expanse Categories.</param>
-/// <param name="BudgetAggregate">Budget Aggregate.</param>
-public record CreateTransaction(TransactionTypes Type, Guid Id, Guid BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category, BudgetAggregate BudgetAggregate) : ICommand;
+public record CreateTransaction(TransactionTypes Type, Guid Id, Guid BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category) : ICommand;
 
 /// <summary>
 /// Create Transaction.
 /// </summary>
 public class HandleCreateTransaction : ICommandHandler<CreateTransaction>
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly ITransactionRepository transactionRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateTransaction"/> class.
 	/// </summary>
-	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public HandleCreateTransaction(IBudgetRepository budgetRepository)
+	/// <param name="transactionRepository">Repository that manages Budget aggregate root.</param>
+	public HandleCreateTransaction(ITransactionRepository transactionRepository)
 	{
-		this.budgetRepository = budgetRepository;
+		this.transactionRepository = transactionRepository;
 	}
 
 	/// <inheritdoc/>
 	public Task Handle(CreateTransaction command, CancellationToken cancellationToken)
 	{
-		var transaction = TransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, command.Value, command.Category, command.CreatedOn, command.BudgetAggregate);
+		var transaction = TransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, command.Value, command.Category, command.CreatedOn);
 
-		this.budgetRepository.Persist(transaction);
+		this.transactionRepository.Persist(transaction);
 		return Task.CompletedTask;
 	}
 }

@@ -8,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class TransactionAggregate : Aggregate
 {
-	private TransactionAggregate(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn, BudgetAggregate budgetAggregate)
+	private TransactionAggregate(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn)
 	{
 		if (id == Guid.Empty)
 		{
@@ -55,11 +55,6 @@ public class TransactionAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
-	/// Budget Aggregate.
-	/// </summary>
-	public BudgetAggregate? BudgetAggregate { get; set; }
-
-	/// <summary>
 	/// Create Transaction.
 	/// </summary>
 	/// <param name="id">Transaction Id.</param>
@@ -69,11 +64,10 @@ public class TransactionAggregate : Aggregate
 	/// <param name="value">Value of income or expanse.</param>
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
 	/// <param name="createdOn">Creation of new income or expanse date.</param>
-	/// <param name="budgetAggregate">Budget Aggregate.</param>
 	/// <returns>New aggregate.</returns>
-	public static TransactionAggregate Create(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn, BudgetAggregate budgetAggregate)
+	public static TransactionAggregate Create(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn)
 	{
-		return new TransactionAggregate(id, budgetId, transactionType, name, value, categoryType, createdOn, budgetAggregate);
+		return new TransactionAggregate(id, budgetId, transactionType, name, value, categoryType, createdOn);
 	}
 
 	////private void Handle(TransactionCreatedDomainEvent @event)

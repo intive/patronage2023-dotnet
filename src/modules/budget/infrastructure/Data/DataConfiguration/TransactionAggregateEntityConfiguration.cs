@@ -19,8 +19,6 @@ internal class TransactionAggregateEntityConfiguration : IEntityTypeConfiguratio
 		builder.HasKey(x => x.Id);
 		builder.ToTable("Transaction", "Budgets");
 		builder.Property(x => x.Id).HasColumnName("Id").IsRequired();
-		builder.HasOne(x => x.BudgetAggregate);
-		builder.Property(x => x.BudgetId == x.BudgetAggregate.Id).HasColumnName("BudgetId").IsRequired();
 		builder.Property(x => x.Value).HasColumnName("Value").HasColumnType("decimal").IsRequired();
 		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").IsRequired();

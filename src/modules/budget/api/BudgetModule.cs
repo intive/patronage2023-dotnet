@@ -1,6 +1,7 @@
 using FluentValidation;
 
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -25,8 +26,10 @@ public static class BudgetModule
 		services.AddDbContext<BudgetDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 
 		services.AddScoped<IBudgetRepository, BudgetRepository>();
+		services.AddScoped<ITransactionRepository, TransactionRepository>();
 		services.AddScoped<IValidator<CreateBudget>, CreateBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgets>, GetBudgetsValidator>();
+		services.AddScoped<IValidator<CreateTransaction>, CreateTransactionValidator>();
 
 		return services;
 	}
