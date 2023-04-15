@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetAggregate : Aggregate
 {
-	private BudgetAggregate(Guid id, string name)
+	private BudgetAggregate(Guid id, string name, List<TransactionAggregate> transaction)
 	{
 		if (id == Guid.Empty)
 		{
@@ -36,14 +36,20 @@ public class BudgetAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
+	/// .
+	/// </summary>
+	public List<TransactionAggregate>? Transactions { get; set; }
+
+	/// <summary>
 	/// Create Budget.
 	/// </summary>
 	/// <param name="id">Unique identifier.</param>
 	/// <param name="name">Budget name.</param>
+	/// <param name="transaction">Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name)
+	public static BudgetAggregate Create(Guid id, string name, List<TransactionAggregate> transaction)
 	{
-		return new BudgetAggregate(id, name);
+		return new BudgetAggregate(id, name, transaction);
 	}
 
 	/// <summary>

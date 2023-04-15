@@ -2,6 +2,7 @@ using FluentValidation;
 
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -23,6 +24,7 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
+	private readonly IValidator<CreateTransaction> createTransactionValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -31,12 +33,14 @@ public class BudgetController : ControllerBase
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="createBudgetValidator">Create Budget validator.</param>
 	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
+	/// <param name="createTransactionValidator">Create Transaction validator.</param>
+	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateTransaction> createTransactionValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
+		this.createTransactionValidator = createTransactionValidator;
 	}
 
 	/// <summary>
@@ -92,5 +96,37 @@ public class BudgetController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Creates Budget.
+	/// </summary>
+	/// <param name="request">Request.</param>
+	/// <returns>Created Result.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST
+	///     {
+	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///        "Name": "Budget"
+	///     }
+	/// .</remarks>
+	/// <response code="201">Returns the newly created item.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[HttpPost("Create New Transaction")]
+	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateTransaction request)
+	{
+		var validationResult = await this.createTransactionValidator.ValidateAsync(request);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(request);
+			return this.Created($"Transaction/{request.Id}", request.Id);
+		}
+
+		throw new AppException("One or more error occured when trying to create Transaction.", validationResult.Errors);
 	}
 }
