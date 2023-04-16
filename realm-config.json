@@ -462,6 +462,32 @@
 	"webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
 	"webAuthnPolicyPasswordlessAcceptableAaguids": [],
 	"users": [
+	{
+		"id" : "82a62524-5b98-4e83-85a7-37aab867d77f",
+		"createdTimestamp" : 1681665106354,
+		"username" : "jkowalski@gmail.com",
+		"enabled" : true,
+		"totp" : false,
+		"emailVerified" : false,
+		"firstName" : "Jan",
+		"lastName" : "Kowalski",
+		"email" : "jkowalski@gmail.com",
+		"attributes" : {
+			"avatar" : [ "1" ]
+		},
+		"credentials" : [ {
+			"id" : "09cb9f64-ccb8-4f04-8c28-8e845b1e1cce",
+			"type" : "password",
+			"createdDate" : 1681665106410,
+			"secretData" : "{\"value\":\"VkUFNIaIr0ciRFKO3TEXWjxf2oOfWYCR3u2bVA8pk9U=\",\"salt\":\"fJ5e5FY+tvO/6wXlvHAiMQ==\",\"additionalParameters\":{}}",
+			"credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+		} ],
+		"disableableCredentialTypes" : [ ],
+		"requiredActions" : [ ],
+		"realmRoles" : [ "default-roles-inbudget-realm-dev" ],
+		"notBefore" : 0,
+		"groups" : [ ]
+		},
 		{
 			"id": "ffb304c4-87c4-45ad-ad59-d6c59c554a21",
 			"createdTimestamp": 1681589118268,

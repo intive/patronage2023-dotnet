@@ -37,10 +37,10 @@ public class SignUpController : ControllerBase
 	/// Sample request:
 	///
 	///     {
-	///        "avatar": "some Avatar.",
+	///        "avatar": "1",
 	///        "firstName": "Jan",
 	///        "lastName": "Kowalski",
-	///        "password": "testPasword123!@",
+	///        "password": "Password123!",
 	///        "email": "jkowalski@gmail.com"
 	///     }
 	/// .</remarks>
