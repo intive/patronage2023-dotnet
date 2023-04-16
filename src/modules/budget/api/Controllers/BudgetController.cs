@@ -99,7 +99,7 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Creates Budget.
+	/// Creates Income / Expanse Transaction.
 	/// </summary>
 	/// <param name="request">Request.</param>
 	/// <returns>Created Result.</returns>
@@ -108,8 +108,13 @@ public class BudgetController : ControllerBase
 	///
 	///     POST
 	///     {
-	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///        "Name": "Budget"
+	///        "type": 1,
+	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///        "budgetId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///        "name": "string",
+	///        "value": 1,
+	///        "createdOn": "2023-04-16T11:51:17.820Z",
+	///        "category": 1
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
@@ -118,7 +123,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost("Create New Transaction")]
-	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateTransaction request)
+	public async Task<IActionResult> CreateNewTransaction([FromQuery] CreateTransaction request)
 	{
 		var validationResult = await this.createTransactionValidator.ValidateAsync(request);
 		if (validationResult.IsValid)

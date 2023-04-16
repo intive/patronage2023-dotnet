@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Domain.Helpers;
+namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 /// <summary>
 /// Enum of Income/Expanse Categories.
@@ -8,7 +8,7 @@ public enum Categories
 	/// <summary>
 	/// Home Spendings Category.
 	/// </summary>
-	HomeSpendings,
+	HomeSpendings = 1,
 
 	/// <summary>
 	/// Subscription Category.

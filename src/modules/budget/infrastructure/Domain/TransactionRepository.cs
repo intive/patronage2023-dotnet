@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
-/// Budget aggregate repository.
+/// Transaction aggregate repository.
 /// </summary>
 public class TransactionRepository : ITransactionRepository
 {
@@ -29,7 +29,7 @@ public class TransactionRepository : ITransactionRepository
 	}
 
 	/// <summary>
-	/// Retrieves Budget aggregate.
+	/// Retrieves Transaction aggregate.
 	/// </summary>
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
@@ -43,8 +43,8 @@ public class TransactionRepository : ITransactionRepository
 	/// <returns>Task.</returns>
 	public async Task Persist(TransactionAggregate transaction)
 	{
-		await this.domainEventDispatcher.Publish(transaction.UncommittedEvents);
-		this.HandleEvents(transaction.UncommittedEvents);
+		////await this.domainEventDispatcher.Publish(transaction.UncommittedEvents);
+		////this.HandleEvents(transaction.UncommittedEvents);
 		this.budgetDbContext.Transaction.Add(transaction);
 		await this.budgetDbContext.SaveChangesAsync();
 	}

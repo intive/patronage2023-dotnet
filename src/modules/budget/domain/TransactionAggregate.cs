@@ -1,10 +1,12 @@
-using Intive.Patronage2023.Modules.Budget.Domain.Helpers;
+using System.ComponentModel;
+using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
 /// <summary>
-/// Budget of aggregate root.
+/// Transaction of aggregate root.
 /// </summary>
 public class TransactionAggregate : Aggregate
 {
@@ -15,24 +17,21 @@ public class TransactionAggregate : Aggregate
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		////var budgetCreated = new TransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, createdOn);
-		////this.Apply(budgetCreated, this.Handle);
+		var transactionCreated = new TransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, createdOn);
+		this.Apply(transactionCreated, this.Handle);
 	}
 
 	/// <summary>
 	/// Transaction identifier.
 	/// </summary>
+	/// [DefaultValue("3fa85f64-5717-4562-b3fc-2c963f66afb6")]
 	public Guid Id { get; private set; }
 
 	/// <summary>
 	/// Reference to budget ID.
 	/// </summary>
+	[DefaultValue("3fa85f64-5717-4562-b3fc-2c963f66afa6")]
 	public Guid BudgetId { get; private set; }
-
-	/// <summary>
-	/// Transaction name.
-	/// </summary>
-	public string Name { get; private set; } = default!;
 
 	/// <summary>
 	/// Transaction eg. income/expanse.
@@ -40,18 +39,26 @@ public class TransactionAggregate : Aggregate
 	public TransactionTypes TransactionType { get; set; }
 
 	/// <summary>
+	/// Transaction name.
+	/// </summary>
+	[DefaultValue("Type your Income/Expanse name.")]
+	public string Name { get; private set; } = default!;
+
+	/// <summary>
+	/// Value of new created income/expanse.
+	/// </summary>
+	[DefaultValue(typeof(decimal), "1")]
+	public decimal Value { get; set; }
+
+	/// <summary>
 	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
 	public Categories CategoryType { get; set; }
 
 	/// <summary>
-	/// Value of new created income/expanse.
-	/// </summary>
-	public decimal Value { get; set; }
-
-	/// <summary>
 	/// Transaction creation date.
 	/// </summary>
+	[DefaultValue(typeof(DateTime), "now")]
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
@@ -70,10 +77,14 @@ public class TransactionAggregate : Aggregate
 		return new TransactionAggregate(id, budgetId, transactionType, name, value, categoryType, createdOn);
 	}
 
-	////private void Handle(TransactionCreatedDomainEvent @event)
-	////{
-	////	this.Id = @event.Id;
-	////	this.Name = @event.Name;
-	////	this.CreatedOn = @event.Timestamp;
-	////}
+	private void Handle(TransactionCreatedDomainEvent @event)
+	{
+		this.Id = @event.Id;
+		this.BudgetId = @event.BudgetId;
+		this.TransactionType = @event.TransactionType;
+		this.Name = @event.Name;
+		this.Value = @event.Value;
+		this.CategoryType = @event.CategoryType;
+		this.CreatedOn = @event.CreatedOn;
+	}
 }

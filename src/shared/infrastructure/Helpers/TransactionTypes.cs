@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Domain.Helpers;
+namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 /// <summary>
 /// Enum of Income or Expanse Choice.
@@ -8,7 +8,7 @@ public enum TransactionTypes
 	/// <summary>
 	/// Income which will be added to your budget.
 	/// </summary>
-	Income,
+	Income = 1,
 
 	/// <summary>
 	/// Expanse which will be added to your budget.

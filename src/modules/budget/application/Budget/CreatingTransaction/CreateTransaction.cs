@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Modules.Budget.Domain.Helpers;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
 
@@ -26,7 +26,7 @@ public class HandleCreateTransaction : ICommandHandler<CreateTransaction>
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateTransaction"/> class.
 	/// </summary>
-	/// <param name="transactionRepository">Repository that manages Budget aggregate root.</param>
+	/// <param name="transactionRepository">Repository that manages Transaction aggregate root.</param>
 	public HandleCreateTransaction(ITransactionRepository transactionRepository)
 	{
 		this.transactionRepository = transactionRepository;

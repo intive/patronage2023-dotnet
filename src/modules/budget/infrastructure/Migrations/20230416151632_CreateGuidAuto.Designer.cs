@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230403152847_BudgetMigration")]
-    partial class BudgetMigration
+    [Migration("20230416151632_CreateGuidAuto")]
+    partial class CreateGuidAuto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,46 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DomainEventStore", "Budgets");
+                });
+
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("BudgetId");
+
+                    b.Property<string>("CategoryType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CategoryType");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("TransactionType");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal")
+                        .HasColumnName("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionStore", "Budgets");
                 });
 #pragma warning restore 612, 618
         }

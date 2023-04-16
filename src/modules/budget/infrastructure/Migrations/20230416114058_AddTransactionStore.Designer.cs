@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230415203140_MyMigration")]
-    partial class MyMigration
+    [Migration("20230416114058_AddTransactionStore")]
+    partial class AddTransactionStore
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,10 +79,12 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnName("Id");
 
                     b.Property<Guid>("BudgetId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("BudgetId");
 
-                    b.Property<int>("CategoryType")
-                        .HasColumnType("int")
+                    b.Property<string>("CategoryType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("CategoryType");
 
                     b.Property<DateTime>("CreatedOn")
@@ -94,8 +96,9 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int")
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("TransactionType");
 
                     b.Property<decimal>("Value")
@@ -104,7 +107,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transaction", "Budgets");
+                    b.ToTable("TransactionStore", "Budgets");
                 });
 #pragma warning restore 612, 618
         }
