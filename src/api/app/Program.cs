@@ -70,11 +70,6 @@ var app = builder.Build();
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
 
-app.MapGet("/Test", async context =>
-{
-	logger.LogInformation("Testing logging in Program.cs");
-	await context.Response.WriteAsync("Testing");
-});
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
 	// turning off issuer validation and https
