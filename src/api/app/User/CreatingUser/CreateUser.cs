@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Api.User.CreatingUser;
 
@@ -10,4 +10,4 @@ namespace Intive.Patronage2023.Api.User.CreatingUser;
 /// <param name="LastName">Last name which user provides.</param>
 /// <param name="Password">Password which user provides.</param>
 /// <param name="Email">Email which user provides.</param>
-public record CreateUser(string Avatar, string FirstName, string LastName, string Password, string Email) : ICommand;
+public record CreateUser(string Avatar, string FirstName, string LastName, string Password, string Email) : IQuery<HttpResponseMessage>;
