@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingTransaction;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -25,6 +26,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
 	private readonly IValidator<CreateTransaction> createTransactionValidator;
+	private readonly IValidator<GetTransaction> getTransactionValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -34,13 +36,15 @@ public class BudgetController : ControllerBase
 	/// <param name="createBudgetValidator">Create Budget validator.</param>
 	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateTransaction> createTransactionValidator)
+	/// <param name="getTransactionValidator">Get Transaction validator.</param>
+	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateTransaction> createTransactionValidator, IValidator<GetTransaction> getTransactionValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 		this.createTransactionValidator = createTransactionValidator;
+		this.getTransactionValidator = getTransactionValidator;
 	}
 
 	/// <summary>
@@ -133,5 +137,28 @@ public class BudgetController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create Transaction.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get Transactions.
+	/// </summary>
+	/// <param name="request">Query parameters.</param>
+	/// <returns>Budget details, list of incomes and expanses.</returns>
+	/// <response code="200">Returns the list of Budget details, list of incomes and expanses corresponding to the query.</response>
+	/// <response code="400">If the query is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpGet("Get Budget With Details")]
+	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] GetTransaction request)
+	{
+		var validationResult = await this.getTransactionValidator.ValidateAsync(request);
+		if (validationResult.IsValid)
+		{
+			var pagedList = await this.queryBus.Query<GetTransaction, PagedList<TransactionInfo>>(request);
+			return this.Ok(pagedList);
+		}
+
+		throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
 	}
 }
