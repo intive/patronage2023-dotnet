@@ -28,7 +28,6 @@ services:
      - "-Dkeycloak.migration.action=import"
      - "-Dkeycloak.migration.provider=singleFile"
      - "-Dkeycloak.migration.file=/root/data/import/realm-config.json"
-     - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
      - start-dev
     environment:
       - KEYCLOAK_ADMIN=admin1

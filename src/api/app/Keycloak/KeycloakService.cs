@@ -1,4 +1,7 @@
+using System.Net.Http.Headers;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.User.CreatingUser;
+using Intive.Patronage2023.Api.User.Models;
 using Microsoft.Extensions.Options;
 
 namespace Intive.Patronage2023.Api.Keycloak;
@@ -54,5 +57,71 @@ public class KeycloakService
 		});
 
 		return await this.httpClient.PostAsync(url, content, cancellationToken);
+	}
+
+	/// <summary>
+	/// Get client token method.
+	/// </summary>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>HttpResponseMessage object.</returns>
+	public async Task<HttpResponseMessage> GetClientToken(CancellationToken cancellationToken)
+	{
+		string? resource = this.apiKeycloakSettings?.Resource;
+		string? realm = this.apiKeycloakSettings?.Realm;
+		string? secret = this.apiKeycloakSettings?.Credentials?.Secret;
+
+		string? url = $"/realms/{realm}/protocol/openid-connect/token";
+
+		var content = new FormUrlEncodedContent(new[]
+		{
+			new KeyValuePair<string, string>("client_id", resource ?? string.Empty),
+			new KeyValuePair<string, string>("client_secret", secret ?? string.Empty),
+			new KeyValuePair<string, string>("grant_type", "client_credentials"),
+		});
+
+		return await this.httpClient.PostAsync(url, content, cancellationToken);
+	}
+
+	/// <summary>
+	/// Add new user to keycloak.
+	/// </summary>
+	/// <param name="createUser">User to add.</param>
+	/// <param name="accessToken">Client token.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
+	public async Task<HttpResponseMessage> AddUser(CreateUser createUser, string accessToken, CancellationToken cancellationToken)
+	{
+		string? realm = this.apiKeycloakSettings?.Realm;
+
+		string? url = $"/admin/realms/{realm}/users";
+
+		UserCredentials[] credentials =
+		{
+			new UserCredentials
+			{
+				Type = "password",
+				Value = createUser.Password,
+				Temporary = false,
+			},
+		};
+
+		var attributes = new UserAttributes
+		{
+			Avatar = createUser.Avatar,
+		};
+
+		var content = new AppUser
+		{
+			Email = createUser.Email,
+			FirstName = createUser.FirstName,
+			LastName = createUser.LastName,
+			Enabled = true,
+			Attributes = attributes,
+			Credentials = credentials,
+		};
+
+		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+		return await this.httpClient.PostAsJsonAsync(url, content, cancellationToken);
 	}
 }

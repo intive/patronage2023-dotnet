@@ -1,7 +1,7 @@
 using FluentValidation;
 using Intive.Patronage2023.Api.User.CreatingUser;
 using Intive.Patronage2023.Modules.Example.Application.Example;
-using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,24 +14,24 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 [Route("[controller]")]
 public class SignUpController : ControllerBase
 {
-	private readonly ICommandBus commandBus;
+	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateUser> createUserValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SignUpController"/> class.
 	/// </summary>
-	/// <param name="commandBus">command bus.</param>
+	/// <param name="queryBus">command bus.</param>
 	/// <param name="createUserValidator">create user validator.</param>
-	public SignUpController(ICommandBus commandBus, IValidator<CreateUser> createUserValidator)
+	public SignUpController(IQueryBus queryBus, IValidator<CreateUser> createUserValidator)
 	{
-		this.commandBus = commandBus;
+		this.queryBus = queryBus;
 		this.createUserValidator = createUserValidator;
 	}
 
 	/// <summary>
 	/// Creates user.
 	/// </summary>
-	/// <param name="command">Command.</param>
+	/// <param name="query">Command.</param>
 	/// <returns>Created command.</returns>
 	/// <remarks>
 	/// Sample request:
@@ -50,12 +50,12 @@ public class SignUpController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[AllowAnonymous]
 	[HttpPost]
-	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
+	public async Task<IActionResult> SignUp([FromBody] CreateUser query)
 	{
-		var validationResult = await this.createUserValidator.ValidateAsync(command);
+		var validationResult = await this.createUserValidator.ValidateAsync(query);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(command);
+			await this.queryBus.Query<CreateUser, HttpResponseMessage>(query);
 			return this.Ok();
 		}
 
