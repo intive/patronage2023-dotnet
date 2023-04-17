@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 
 var builder = WebApplication.CreateBuilder(args);
+string corsPolicyName = "CorsPolicy";
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
