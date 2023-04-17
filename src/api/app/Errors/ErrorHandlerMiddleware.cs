@@ -3,7 +3,7 @@ using System.Security.Authentication;
 using System.Text.Json;
 using Intive.Patronage2023.Modules.Example.Application.Example;
 
-namespace Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+namespace Intive.Patronage2023.Api.Errors;
 
 /// <summary>
 /// Middleware to handle exceptions and return appropriate HTTP responses.
@@ -32,25 +32,25 @@ public class ErrorHandlerMiddleware
 		{
 			await this.next(context);
 		}
-		catch (AppException error)
+		catch (AppException ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.BadRequest, error.Message);
+			await HandleErrorAsync(context, HttpStatusCode.BadRequest, ex.Message);
 		}
-		catch (AuthenticationException error)
+		catch (AuthenticationException ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.Unauthorized, error.Message);
+			await HandleErrorAsync(context, HttpStatusCode.Unauthorized, ex.Message);
 		}
-		catch (UnauthorizedAccessException error)
+		catch (UnauthorizedAccessException ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.Forbidden, error.Message);
+			await HandleErrorAsync(context, HttpStatusCode.Forbidden, ex.Message);
 		}
-		catch (FileNotFoundException error)
+		catch (FileNotFoundException ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.NotFound, error.Message);
+			await HandleErrorAsync(context, HttpStatusCode.NotFound, ex.Message);
 		}
-		catch (Exception error)
+		catch (Exception ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.InternalServerError, error.Message);
+			await HandleErrorAsync(context, HttpStatusCode.InternalServerError, ex.Message);
 		}
 	}
 

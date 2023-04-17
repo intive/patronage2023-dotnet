@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -6,7 +7,6 @@ using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
