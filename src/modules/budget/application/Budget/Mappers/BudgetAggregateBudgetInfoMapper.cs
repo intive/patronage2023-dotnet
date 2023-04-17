@@ -14,5 +14,5 @@ public static class BudgetAggregateBudgetInfoMapper
 	/// </summary>
 	/// <returns>Returns <ref name="BudgetInfo"/>Budget information.</returns>
 	public static Expression<Func<BudgetAggregate, BudgetInfo>> Map =>
-		 entity => new(entity.Id, entity.Name, entity.CreatedOn);
+		 entity => new BudgetInfo() { Id = entity.Id, Name = entity.Name, CreatedOn = entity.CreatedOn };
 }
