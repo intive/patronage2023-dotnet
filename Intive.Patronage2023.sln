@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Exampl
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Example.Api.Tests", "..\Intive.Patronage2023.Api.Tests\Intive.Patronage2023.Example.Api.Tests.csproj", "{C3C29281-1B49-4C44-BBD9-8A75531730A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Example.Api.Tests", "tests\unit\Intive.Patronage2023.Api.Tests\Intive.Patronage2023.Example.Api.Tests.csproj", "{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,10 +97,10 @@ Global
 		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,7 +120,7 @@ Global
 		{751EFD73-0C2F-4917-8738-EF0C2A391FDA} = {138E58F8-3FAE-4CCC-A92A-3A85E7E4D35B}
 		{9F9736A8-A702-4B91-A752-79F7F240371E} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
 		{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
-		{C3C29281-1B49-4C44-BBD9-8A75531730A9} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7483708-EA69-4509-A749-B4BA172FC7D3}
