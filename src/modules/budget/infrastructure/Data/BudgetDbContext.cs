@@ -27,7 +27,7 @@ public class BudgetDbContext : DbContext
 	/// <summary>
 	/// TransactionAggregate DbSet.
 	/// </summary>
-	public DbSet<TransactionAggregate> Transaction { get; set; }
+	public DbSet<BudgetTransactionAggregate> Transaction { get; set; }
 
 	/// <summary>
 	/// Domain Event Store DbSet.

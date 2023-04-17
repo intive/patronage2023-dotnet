@@ -38,6 +38,14 @@ public class UserController : ControllerBase
 	/// An HTTP response containing a JWT token if the sign-in was successful, or an error response
 	/// if the sign-in failed.
 	/// </returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     {
+	///        "email": "jkowalski@gmail.com",
+	///        "password": "Password123!"
+	///     }
+	/// .</remarks>
 	/// <exception cref="AppException">
 	/// Thrown if one or more errors occur while trying to authenticate the user.
 	/// </exception>

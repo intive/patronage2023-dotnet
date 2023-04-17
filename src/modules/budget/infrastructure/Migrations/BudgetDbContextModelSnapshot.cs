@@ -44,31 +44,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("Budget", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<string>("Data")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Data");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Type");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DomainEventStore", "Budgets");
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionAggregate", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetTransactionAggregate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,6 +55,9 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.Property<Guid>("BudgetId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("BudgetId");
+
+                    b.Property<DateTime>("BudgetTransactionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CategoryType")
                         .IsRequired()
@@ -106,6 +85,30 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransactionStore", "Budgets");
+                });
+
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Data");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DomainEventStore", "Budgets");
                 });
 #pragma warning restore 612, 618
         }

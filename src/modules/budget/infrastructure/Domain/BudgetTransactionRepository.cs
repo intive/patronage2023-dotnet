@@ -10,42 +10,42 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
-/// Transaction aggregate repository.
+/// Budget Transaction aggregate repository.
 /// </summary>
-public class TransactionRepository : ITransactionRepository
+public class BudgetTransactionRepository : IBudgetTransactionRepository
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IEventDispatcher<IEvent> domainEventDispatcher;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionRepository"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionRepository"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Database context.</param>
 	/// <param name="domainEventDispatcher">Event dispatcher.</param>
-	public TransactionRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
+	public BudgetTransactionRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.domainEventDispatcher = domainEventDispatcher;
 	}
 
 	/// <summary>
-	/// Retrieves Transaction aggregate.
+	/// Retrieves Budget Transaction aggregate.
 	/// </summary>
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
-	public Task<TransactionAggregate> GetById(Guid id)
+	public Task<BudgetTransactionAggregate> GetById(Guid id)
 		=> this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
 	/// </summary>
-	/// <param name="transaction">Aggregate.</param>
+	/// <param name="budgetTransaction">Aggregate.</param>
 	/// <returns>Task.</returns>
-	public async Task Persist(TransactionAggregate transaction)
+	public async Task Persist(BudgetTransactionAggregate budgetTransaction)
 	{
-		////await this.domainEventDispatcher.Publish(transaction.UncommittedEvents);
-		////this.HandleEvents(transaction.UncommittedEvents);
-		this.budgetDbContext.Transaction.Add(transaction);
+		////await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
+		////this.HandleEvents(budgetTransaction.UncommittedEvents);
+		this.budgetDbContext.Transaction.Add(budgetTransaction);
 		await this.budgetDbContext.SaveChangesAsync();
 	}
 

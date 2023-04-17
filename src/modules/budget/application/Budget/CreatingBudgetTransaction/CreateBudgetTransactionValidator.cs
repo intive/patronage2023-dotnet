@@ -1,16 +1,16 @@
 using FluentValidation;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
 /// <summary>
-/// Transaction validator class.
+/// Budget Transaction validator class.
 /// </summary>
-public class CreateTransactionValidator : AbstractValidator<CreateTransaction>
+public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="CreateTransactionValidator"/> class.
+	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
-	public CreateTransactionValidator()
+	public CreateBudgetTransactionValidator()
 	{
 		this.RuleFor(transaction => transaction.Id).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Type).NotEmpty().NotNull();
@@ -21,7 +21,7 @@ public class CreateTransactionValidator : AbstractValidator<CreateTransaction>
 		this.RuleFor(transaction => transaction.BudgetId).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().GreaterThan(0);
 		this.RuleFor(transaction => transaction.Category).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.CreatedOn).Must(date => date <= DateTime.Now && date >= DateTime.Now.AddMonths(-1))
+		this.RuleFor(transaction => transaction.TransactionDate).Must(date => date <= DateTime.Now && date >= DateTime.Now.AddMonths(-1))
 			.WithMessage("Data has to be from the last month.");
 	}
 }

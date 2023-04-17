@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data.DataConfiguration;
 
 /// <summary>
-/// Transaction Aggregate Configuration.
+/// Budget Transaction Aggregate Configuration.
 /// </summary>
-internal class TransactionAggregateEntityConfiguration : IEntityTypeConfiguration<TransactionAggregate>
+internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfiguration<BudgetTransactionAggregate>
 {
 	/// <summary>
 	/// Configure method.
 	/// </summary>
 	/// <param name="builder">builder.</param>
-	public void Configure(EntityTypeBuilder<TransactionAggregate> builder)
+	public void Configure(EntityTypeBuilder<BudgetTransactionAggregate> builder)
 	{
 		builder.HasKey(x => x.Id);
 		builder.ToTable("TransactionStore", "Budgets");

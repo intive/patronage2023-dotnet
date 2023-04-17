@@ -4,33 +4,32 @@ using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 
 /// <summary>
-/// Transaction created domain event.
+/// Budget Transaction created domain event.
 /// </summary>
-public class TransactionCreatedDomainEvent : DomainEvent
+public class BudgetTransactionCreatedDomainEvent : DomainEvent
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionCreatedDomainEvent"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionCreatedDomainEvent"/> class.
 	/// </summary>
-	/// <param name="id">Transaction Id.</param>
+	/// <param name="id">Budget Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expanse.</param>
 	/// <param name="name">Name of income or expanse.</param>
 	/// <param name="value">Value of income or expanse.</param>
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
-	/// <param name="createdOn">Creation of new income or expanse date.</param>
-	public TransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn)
+	/// <param name="transactionDate">Creation of new income or expanse date.</param>
+	public BudgetTransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime transactionDate)
 	{
 		this.Id = id;
 		this.Name = name;
 		this.Value = value;
 		this.CategoryType = categoryType;
-		this.CreatedOn = createdOn;
 		this.BudgetId = budgetId;
 		this.TransactionType = transactionType;
 	}
 
 	/// <summary>
-	/// Transaction identifier.
+	/// Budget Transaction identifier.
 	/// </summary>
 	public Guid Id { get; private set; }
 
@@ -40,12 +39,12 @@ public class TransactionCreatedDomainEvent : DomainEvent
 	public Guid BudgetId { get; private set; }
 
 	/// <summary>
-	/// Transaction name.
+	/// Budget Transaction name.
 	/// </summary>
 	public string Name { get; private set; }
 
 	/// <summary>
-	/// Transaction eg. income/expanse.
+	/// Budget Transaction eg. income/expanse.
 	/// </summary>
 	public TransactionTypes TransactionType { get; set; }
 
@@ -60,7 +59,7 @@ public class TransactionCreatedDomainEvent : DomainEvent
 	public decimal Value { get; set; }
 
 	/// <summary>
-	/// Transaction creation date.
+	/// Budget Transaction creation date.
 	/// </summary>
-	public DateTime CreatedOn { get; private set; }
+	public DateTime BudgetTransactionDate { get; set; }
 }

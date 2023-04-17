@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class AddTransactionStore : Migration
+public partial class BudgetTransactions : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,12 +47,13 @@ public partial class AddTransactionStore : Migration
 			schema: "Budgets",
 			columns: table => new
 			{
-				Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+				Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
 				BudgetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
 				TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
 				Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
 				Value = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
 				CategoryType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+				BudgetTransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
 				CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
 			},
 			constraints: table =>
