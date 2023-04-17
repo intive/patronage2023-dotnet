@@ -14,7 +14,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransac
 /// <param name="Value">Value of income or expanse.</param>
 /// <param name="CreatedOn">Creation of new income or expanse date.</param>
 /// <param name="Category">Enum of income/expanse Categories.</param>
-public record CreateTransaction(TransactionTypes Type, Guid Id, Guid BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category) : ICommand;
+public record CreateTransaction(TransactionTypes Type, Guid Id, BudgetId BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category) : ICommand;
 
 /// <summary>
 /// Create Transaction.

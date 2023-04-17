@@ -25,7 +25,7 @@ public class TransactionCreatedDomainEvent : DomainEvent
 		this.Value = value;
 		this.CategoryType = categoryType;
 		this.CreatedOn = createdOn;
-		this.BudgetId = budgetId;
+		this.BudgetId = new BudgetId(budgetId);
 		this.TransactionType = transactionType;
 	}
 
@@ -37,7 +37,7 @@ public class TransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Reference to budget ID.
 	/// </summary>
-	public Guid BudgetId { get; private set; }
+	public BudgetId BudgetId { get; private set; }
 
 	/// <summary>
 	/// Transaction name.

@@ -11,6 +11,8 @@ using Intive.Patronage2023.Shared.Abstractions;
 
 using Microsoft.EntityFrameworkCore;
 
+namespace Intive.Patronage2023.Modules.Budget.Api;
+
 /// <summary>
 /// Budget module.
 /// </summary>

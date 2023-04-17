@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
-
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -37,6 +37,9 @@ public class BudgetDbContext : DbContext
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		modelBuilder.Entity<TransactionAggregate>().Property(p => p.BudgetId).HasConversion(
+		v => v.ToString(),
+		v => (BudgetId)Enum.Parse(typeof(BudgetId), v));
 		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(BudgetDbContext).Assembly);
 		base.OnModelCreating(modelBuilder);
 	}

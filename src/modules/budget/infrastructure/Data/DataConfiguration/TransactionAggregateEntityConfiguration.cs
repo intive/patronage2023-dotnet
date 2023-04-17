@@ -20,6 +20,7 @@ internal class TransactionAggregateEntityConfiguration : IEntityTypeConfiguratio
 		builder.ToTable("TransactionStore", "Budgets");
 		builder.Property(x => x.Id).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
+		builder.HasOne(x => x.BudgetAggregate).WithMany().HasForeignKey(x => x.BudgetId);
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").HasConversion<string>().IsRequired();
 		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
 		builder.Property(x => x.Value).HasColumnName("Value").HasColumnType("decimal").IsRequired();

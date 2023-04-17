@@ -37,7 +37,7 @@ public class GetTransactionQueryHandler : IQueryHandler<GetTransaction, PagedLis
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<TransactionInfo>> Handle(GetTransaction query, CancellationToken cancellationToken)
 	{
-		var transcations = await this.budgetDbContext.Transaction.Where(x => x.BudgetId == query.BudgetId).ToListAsync();
+		var transcations = await this.budgetDbContext.Transaction.Where(x => x.BudgetId.Id == query.BudgetId).ToListAsync();
 		var mappedData = transcations.Select(TransactionAggregateInfoMapper.Map).ToList();
 		var result = new PagedList<TransactionInfo> { Items = mappedData };
 		return result;

@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Api.User;
+using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
