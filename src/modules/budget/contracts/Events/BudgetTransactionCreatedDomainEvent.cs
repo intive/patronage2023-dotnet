@@ -18,7 +18,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// <param name="value">Value of income or expanse.</param>
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
 	/// <param name="transactionDate">Creation of new income or expanse date.</param>
-	public BudgetTransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime transactionDate)
+	public BudgetTransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime transactionDate)
 	{
 		this.Id = id;
 		this.Name = name;
@@ -51,7 +51,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
-	public Categories CategoryType { get; set; }
+	public CategoriesType CategoryType { get; set; }
 
 	/// <summary>
 	/// Value of new created income/expanse.

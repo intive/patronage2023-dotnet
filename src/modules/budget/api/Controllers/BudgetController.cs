@@ -98,22 +98,26 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Creates Income / Expanse Transaction.
+	/// Creates Income / Expanse Budget Transaction.
 	/// </summary>
 	/// <param name="request">Request.</param>
 	/// <returns>Created Result.</returns>
 	/// <remarks>
 	/// Sample request:
 	///
+	/// Types: "Income" , "Expanse"
+	///
+	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	///
 	///     POST
 	///     {
-	///        "type": 1,
+	///        "type": "Income",
 	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///        "budgetId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///        "name": "string",
 	///        "value": 1,
-	///        "createdOn": "2023-04-16T11:51:17.820Z",
-	///        "category": 1
+	///        "category": "HomeSpendings",
+	///        "transactionDate": "2023-04-17T22:25:24.490Z"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>

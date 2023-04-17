@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetTransactionAggregate : Aggregate
 {
-	private BudgetTransactionAggregate(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
 	{
 		if (id == Guid.Empty)
 		{
@@ -49,7 +49,7 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <summary>
 	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
-	public Categories CategoryType { get; set; }
+	public CategoriesType CategoryType { get; set; }
 
 	/// <summary>
 	/// Budget Transaction creation date.
@@ -72,7 +72,7 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
 	{
 		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 	}

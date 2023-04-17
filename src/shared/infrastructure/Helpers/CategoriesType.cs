@@ -3,7 +3,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
 /// <summary>
 /// Enum of Income/Expanse Categories.
 /// </summary>
-public enum Categories
+public enum CategoriesType
 {
 	/// <summary>
 	/// Home Spendings Category.
