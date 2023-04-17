@@ -74,6 +74,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.User.Api", "src\modules\user\api\Intive.Patronage2023.Modules.User.Api.csproj", "{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Example.Api.Tests", "..\Intive.Patronage2023.Api.Tests\Intive.Patronage2023.Example.Api.Tests.csproj", "{C3C29281-1B49-4C44-BBD9-8A75531730A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,10 @@ Global
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3C29281-1B49-4C44-BBD9-8A75531730A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +220,7 @@ Global
 		{58058413-3498-4764-A14E-2E766727F17E} = {2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D}
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC} = {2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D}
 		{5BB415AD-09EF-413C-A2B9-4FFFF46306AB} = {24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}
+		{C3C29281-1B49-4C44-BBD9-8A75531730A9} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7483708-EA69-4509-A749-B4BA172FC7D3}
