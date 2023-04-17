@@ -29,6 +29,12 @@ internal static class BudgetQueryExtension
 		return query;
 	}
 
+	/// <summary>
+	/// Sorting helper method.
+	/// </summary>
+	/// <param name="query">Query.</param>
+	/// <param name="descriptor">Sort criteria.</param>
+	/// <returns>Sorted query.</returns>
 	private static IQueryable<BudgetAggregate> Sort(IQueryable<BudgetAggregate> query, SortDescriptor descriptor)
 	{
 		switch (descriptor.ColumnName.ToLower())
