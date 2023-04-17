@@ -45,10 +45,11 @@ public class BudgetController : ControllerBase
 	/// <returns>Paged list of Budgets.</returns>
 	/// <response code="200">Returns the list of Budgets corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
-	[HttpGet]
+	[HttpPost]
+	[Route("list")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgets([FromQuery] GetBudgets request)
+	public async Task<IActionResult> GetBudgets([FromBody] GetBudgets request)
 	{
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
