@@ -8,7 +8,14 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 /// </summary>
 /// <param name="Id">Budget identifier.</param>
 /// <param name="Name">Budget name.</param>
-public record CreateBudget(Guid Id, string Name) : ICommand;
+/// <param name="UserId">Budget owner user Id.</param>
+/// <param name="Limit">Budget limit.</param>
+/// <param name="Period">Budget time span.</param>
+/// <param name="Currency">Budget currency.</param>
+/// <param name="Description">Description.</param>
+/// <param name="IconName">Budget icon identifier.</param>
+
+public record CreateBudget(Guid Id, string Name, Guid UserId, Currency Currency, BudgetLimit Limit, BudgetPeriod Period, string Description, string IconName) : ICommand;
 
 /// <summary>
 /// Create Budget.
@@ -29,8 +36,7 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	/// <inheritdoc/>
 	public Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
-		var budget = BudgetAggregate.Create(command.Id, command.Name);
-
+		var budget = BudgetAggregate.Create(command.Id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
 		this.budgetRepository.Persist(budget);
 		return Task.CompletedTask;
 	}
