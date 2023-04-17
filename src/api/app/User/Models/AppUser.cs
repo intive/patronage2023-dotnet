@@ -31,7 +31,7 @@ public class AppUser
 	public UserAttributes Attributes { get; set; } = null!;
 
 	/// <summary>
-	/// User credetials settings.
+	/// User credentials settings.
 	/// </summary>
 	public UserCredentials[] Credentials { get; set; } = null!;
 }
