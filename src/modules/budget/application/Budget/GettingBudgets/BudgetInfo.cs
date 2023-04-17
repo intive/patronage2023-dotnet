@@ -1,4 +1,4 @@
-﻿namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 
 /// <summary>
 /// Budget information.

@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Extensions;
@@ -14,7 +14,7 @@ internal static class BudgetQueryExtension
 	/// <param name="query">Query.</param>
 	/// <param name="sortableQuery">Sorting criteria.</param>
 	/// <returns>Sorted query.</returns>
-	public static IQueryable<BudgetInfo> Sort(this IQueryable<BudgetInfo> query, ISortableQuery sortableQuery)
+	public static IQueryable<BudgetAggregate> Sort(this IQueryable<BudgetAggregate> query, ISortableQuery sortableQuery)
 	{
 		if (sortableQuery is null || !sortableQuery.SortDescriptors.Any())
 		{
@@ -29,7 +29,7 @@ internal static class BudgetQueryExtension
 		return query;
 	}
 
-	private static IQueryable<BudgetInfo> Sort(IQueryable<BudgetInfo> query, SortDescriptor descriptor)
+	private static IQueryable<BudgetAggregate> Sort(IQueryable<BudgetAggregate> query, SortDescriptor descriptor)
 	{
 		switch (descriptor.ColumnName.ToLower())
 		{
