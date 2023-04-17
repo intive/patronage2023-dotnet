@@ -43,8 +43,8 @@ public class BudgetTransactionRepository : IBudgetTransactionRepository
 	/// <returns>Task.</returns>
 	public async Task Persist(BudgetTransactionAggregate budgetTransaction)
 	{
-		////await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
-		////this.HandleEvents(budgetTransaction.UncommittedEvents);
+		await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
+		this.HandleEvents(budgetTransaction.UncommittedEvents);
 		this.budgetDbContext.Transaction.Add(budgetTransaction);
 		await this.budgetDbContext.SaveChangesAsync();
 	}
