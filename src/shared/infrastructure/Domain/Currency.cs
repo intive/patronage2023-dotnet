@@ -1,4 +1,4 @@
-﻿namespace Intive.Patronage2023.Modules.Budget.Domain;
+﻿namespace Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 /// <summary>
 /// Enum Currency with list of available currencies.

@@ -16,7 +16,7 @@ public partial class BudgetAggregate : Aggregate
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		var budgetCreated = new BudgetCreatedDomainEvent(id, name);
+		var budgetCreated = new BudgetCreatedDomainEvent(id, name, userId, budgetLimit, budgetDuration, description, iconName);
 		this.Apply(budgetCreated, this.Handle);
 	}
 
@@ -98,6 +98,11 @@ public partial class BudgetAggregate : Aggregate
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;
+		this.UserId = @event.UserId;
+		this.Limit = @event.Limit;
+		this.Period = @event.Period;
+		this.Icon = @event.Icon;
+		this.Describtion = @event.Describtion;
 		this.CreatedOn = @event.Timestamp;
 	}
 }
