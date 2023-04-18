@@ -16,7 +16,7 @@ namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
-public class BudgetController : ControllerBase
+public class BudgetsController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
@@ -24,13 +24,13 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetController"/> class.
+	/// Initializes a new instance of the <see cref="BudgetsController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
-	/// <param name="createBudgetValidator">Create Budget validator.</param>
-	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
+	/// <param name="createBudgetValidator">Create budget validator.</param>
+	/// <param name="getBudgetsValidator">Get budgets validator.</param>
+	public BudgetsController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -42,8 +42,24 @@ public class BudgetController : ControllerBase
 	/// Get Budgets.
 	/// </summary>
 	/// <param name="request">Query parameters.</param>
-	/// <returns>Paged list of Budgets.</returns>
-	/// <response code="200">Returns the list of Budgets corresponding to the query.</response>
+	/// <returns>Paged and sorted list of budgets.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST
+	///     {
+	///         "pageSize": 10,
+	///         "pageIndex": 1,
+	///         "search": "in",
+	///         "sortDescriptors": [
+	///         {
+	///             "columnName": "name",
+	///             "sortAscending": true
+	///         }
+	///       ]
+	///     }
+	/// .</remarks>
+	/// <response code="200">Returns the list of budgets corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	[HttpPost]
 	[Route("list")]
