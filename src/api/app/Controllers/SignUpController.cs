@@ -5,7 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
+namespace Intive.Patronage2023.Api.Controllers;
 
 /// <summary>
 /// Sign up Controller.

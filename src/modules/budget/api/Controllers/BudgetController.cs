@@ -128,11 +128,14 @@ public class BudgetController : ControllerBase
 	[HttpPost("Create New Budget Transaction")]
 	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction request)
 	{
-		var validationResult = await this.createTransactionValidator.ValidateAsync(request);
+		var transactionId = request.Id == Guid.Empty ? Guid.NewGuid() : request.Id;
+		var transactionDate = request.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : request.TransactionDate;
+		var newBudgetTransaction = new CreateBudgetTransaction(request.Type, transactionId, request.BudgetId, request.Name, request.Value, request.Category, transactionDate);
+		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(request);
-			return this.Created($"Transaction/{request.Id}", request.Id);
+			await this.commandBus.Send(newBudgetTransaction);
+			return this.Created($"Transaction/{newBudgetTransaction.Id}", newBudgetTransaction.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);

@@ -26,6 +26,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 		this.CategoryType = categoryType;
 		this.BudgetId = budgetId;
 		this.TransactionType = transactionType;
+		this.BudgetTransactionDate = transactionDate;
 	}
 
 	/// <summary>

@@ -11,11 +11,6 @@ public class BudgetTransactionAggregate : Aggregate
 {
 	private BudgetTransactionAggregate(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
 	{
-		if (id == Guid.Empty)
-		{
-			throw new InvalidOperationException("Id value cannot be empty!");
-		}
-
 		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
