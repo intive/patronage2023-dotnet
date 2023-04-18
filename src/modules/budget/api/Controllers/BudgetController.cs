@@ -15,8 +15,8 @@ namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 /// Budget controller.
 /// </summary>
 [ApiController]
-[Route("[controller]")]
-public class BudgetsController : ControllerBase
+[Route("budgets")]
+public class BudgetController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
@@ -24,13 +24,13 @@ public class BudgetsController : ControllerBase
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetsController"/> class.
+	/// Initializes a new instance of the <see cref="BudgetController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="createBudgetValidator">Create budget validator.</param>
 	/// <param name="getBudgetsValidator">Get budgets validator.</param>
-	public BudgetsController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
+	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;

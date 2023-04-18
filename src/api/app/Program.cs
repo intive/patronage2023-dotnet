@@ -37,8 +37,6 @@ builder.Services.AddMediatR(cfg =>
 	cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
 builder.Services.AddControllers(options =>
 	options.Filters.Add(new AuthorizeFilter(
 		new AuthorizationPolicyBuilder()
