@@ -27,15 +27,6 @@ public class ExampleErrorService
 	}
 
 	/// <summary>
-	/// Method throwing FileNotFoundException.
-	/// </summary>
-	/// <exception cref="FileNotFoundException">Thrown when a file is not found at the specified path.</exception>
-	public void ThrowFileNotFoundException()
-	{
-		throw new FileNotFoundException("The page could not be found.");
-	}
-
-	/// <summary>
 	/// Method throwing UnauthorizedAccessException.
 	/// </summary>
 	/// <exception cref="UnauthorizedAccessException">
