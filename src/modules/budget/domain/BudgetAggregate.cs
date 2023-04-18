@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public partial class BudgetAggregate : Aggregate
 {
-	private BudgetAggregate(Guid id, string name, Guid userId, BudgetLimit budgetLimit, BudgetPeriod budgetDuration)
+	private BudgetAggregate(Guid id, string name, Guid userId, BudgetLimit budgetLimit, BudgetPeriod budgetDuration, string description, string iconName)
 	{
 		if (id == Guid.Empty)
 		{
@@ -46,6 +46,16 @@ public partial class BudgetAggregate : Aggregate
 	public BudgetPeriod Period { get; private set; } = default!;
 
 	/// <summary>
+	/// Budget icon.
+	/// </summary>
+	public string? Icon { get; private set; }
+
+	/// <summary>
+	/// Budget describtion.
+	/// </summary>
+	public string? Describtion { get; private set; }
+
+	/// <summary>
 	/// Budget creation date.
 	/// </summary>
 	public DateTime CreatedOn { get; private set; }
@@ -58,10 +68,12 @@ public partial class BudgetAggregate : Aggregate
 	/// <param name="userId">Budget owner user id.</param>
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
+	/// <param name="icon">Budget Icon.</param>
+	/// <param name="describtion">Budget Describtion.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name, Guid userId, BudgetLimit limit, BudgetPeriod period)
+	public static BudgetAggregate Create(Guid id, string name, Guid userId, BudgetLimit limit, BudgetPeriod period, string icon, string describtion)
 	{
-		return new BudgetAggregate(id, name, userId, limit, period);
+		return new BudgetAggregate(id, name, userId, limit, period, icon, describtion);
 	}
 
 	/// <summary>
