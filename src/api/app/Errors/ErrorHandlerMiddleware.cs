@@ -44,10 +44,6 @@ public class ErrorHandlerMiddleware
 		{
 			await HandleErrorAsync(context, HttpStatusCode.Forbidden, ex.Message);
 		}
-		catch (FileNotFoundException ex)
-		{
-			await HandleErrorAsync(context, HttpStatusCode.NotFound, ex.Message);
-		}
 		catch (Exception ex)
 		{
 			await HandleErrorAsync(context, HttpStatusCode.InternalServerError, ex.Message);
