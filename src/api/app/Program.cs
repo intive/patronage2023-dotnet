@@ -4,24 +4,31 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.ApplicationInsights.Channel;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
+
 string corsPolicyName = "CorsPolicy";
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+
+builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Logging.AddApplicationInsights(
+		configureTelemetryConfiguration: (config) =>
+		config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
+		configureApplicationInsightsLoggerOptions: (options) => { });
+
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
 
 builder.Services.AddHttpLogging(logging =>
 {
@@ -32,7 +39,9 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
+
 builder.Services.AddBudgetModule(builder.Configuration);
+builder.Services.AddHttpClient();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -50,24 +59,6 @@ builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
 builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
 builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
 
-using var loggerFactory = LoggerFactory.Create(builder =>
-{
-	builder.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Disabled);
-});
-
-var logger = loggerFactory.CreateLogger<Program>();
-
-builder.Logging.AddApplicationInsights(
-		configureTelemetryConfiguration: (config) =>
-			config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
-		configureApplicationInsightsLoggerOptions: (options) => { });
-
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", Microsoft.Extensions.Logging.LogLevel.Trace);
-
-using var channel = new InMemoryChannel();
-
-var app = builder.Build();
-
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
 
@@ -80,6 +71,12 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptio
 builder.Services.AddAuthorization();
 
 builder.Services.AddSwagger();
+
+builder.Services.AddHttpContextAccessor();
+
+var app = builder.Build();
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
