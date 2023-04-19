@@ -27,11 +27,10 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(CreateBudget command, CancellationToken cancellationToken)
+	public async Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
 		var budget = BudgetAggregate.Create(command.Id, command.Name);
 
-		this.budgetRepository.Persist(budget);
-		return Task.CompletedTask;
+		await this.budgetRepository.Persist(budget);
 	}
 }
