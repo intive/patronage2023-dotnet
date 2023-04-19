@@ -1,12 +1,14 @@
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using MediatR;
 
+namespace Intive.Patronage2023.Shared.Infrastructure.Commands;
+
 /// <summary>
 /// Implementation of adapter that handles events by CommandHandler.
 /// </summary>
 /// <typeparam name="T">Type of event to handle.</typeparam>
 public class MediatRCommandHandlerAdapter<T> : IRequestHandler<T>
-where T : IRequest, ICommand
+	where T : IRequest, ICommand
 {
 	private readonly ICommandHandler<T> inner;
 
@@ -20,8 +22,8 @@ where T : IRequest, ICommand
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(T command, CancellationToken cancellationToken)
+	public async Task Handle(T command, CancellationToken cancellationToken)
 	{
-		return this.inner.Handle(command, cancellationToken);
+		await this.inner.Handle(command, cancellationToken);
 	}
 }

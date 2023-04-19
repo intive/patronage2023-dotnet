@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Shared.Infrastructure.Commands;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using MediatR;

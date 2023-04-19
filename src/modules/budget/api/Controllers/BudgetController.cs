@@ -7,7 +7,6 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;

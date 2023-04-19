@@ -35,7 +35,8 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 	/// <inheritdoc/>
 	public async Task Handle(CreateBudgetTransaction command, CancellationToken cancellationToken)
 	{
-		var budgetTransaction = BudgetTransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, command.Value, command.Category, command.TransactionDate);
+		decimal transactionValue = command.Type == TransactionTypes.Expanse ? (command.Value * -1) : command.Value;
+		var budgetTransaction = BudgetTransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, transactionValue, command.Category, command.TransactionDate);
 
 		await this.budgetTransactionRepository.Persist(budgetTransaction);
 	}
