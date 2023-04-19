@@ -12,12 +12,12 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	/// </summary>
 	public CreateBudgetTransactionValidator()
 	{
+		this.RuleFor(transaction => transaction.Id).NotNull();
+		this.RuleFor(transaction => transaction.BudgetId).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Type).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.Name)
-			.NotEmpty()
-			.NotNull()
-			.Length(3, 58);
+		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().GreaterThan(0);
 		this.RuleFor(transaction => transaction.Category).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.TransactionDate).Must(date => date >= DateTime.Now.AddMonths(-1));
 	}
 }
