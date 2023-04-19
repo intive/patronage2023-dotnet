@@ -17,13 +17,13 @@ public class CreateTransactionValidator : AbstractValidator<CreateTransaction>
 	public CreateTransactionValidator(IBudgetRepository budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
-		this.RuleFor(transaction => transaction.Id).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.TransactionId.Value).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Type).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Name)
 		.NotEmpty()
 		.NotNull()
 			.Length(3, 58);
-		this.RuleFor(transaction => transaction.BudgetId.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.BudgetId.Value).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().GreaterThan(0);
 		this.RuleFor(transaction => transaction.Category).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.CreatedOn).Must(date => date <= DateTime.Now && date >= DateTime.Now.AddMonths(-1))

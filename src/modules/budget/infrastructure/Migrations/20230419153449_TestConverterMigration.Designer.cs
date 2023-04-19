@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230416151632_CreateGuidAuto")]
-    partial class CreateGuidAuto
+    [Migration("20230419153449_TestConverterMigration")]
+    partial class TestConverterMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,7 +73,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionAggregate", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id")
@@ -106,7 +106,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("decimal")
                         .HasColumnName("Value");
 
-                    b.HasKey("Id");
+                    b.HasKey("TransactionId");
 
                     b.ToTable("TransactionStore", "Budgets");
                 });

@@ -25,4 +25,8 @@
       <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Example.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

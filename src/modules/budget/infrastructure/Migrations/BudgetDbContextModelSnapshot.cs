@@ -70,7 +70,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionAggregate", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id")
@@ -103,22 +103,9 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("decimal")
                         .HasColumnName("Value");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("BudgetId");
+                    b.HasKey("TransactionId");
 
                     b.ToTable("TransactionStore", "Budgets");
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionAggregate", b =>
-                {
-                    b.HasOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", "BudgetAggregate")
-                        .WithMany()
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BudgetAggregate");
                 });
 #pragma warning restore 612, 618
         }

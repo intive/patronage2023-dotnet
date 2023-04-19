@@ -11,16 +11,16 @@ public class TransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TransactionCreatedDomainEvent"/> class.
 	/// </summary>
-	/// <param name="id">Transaction Id.</param>
+	/// <param name="transactionId">Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expanse.</param>
 	/// <param name="name">Name of income or expanse.</param>
 	/// <param name="value">Value of income or expanse.</param>
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
 	/// <param name="createdOn">Creation of new income or expanse date.</param>
-	public TransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn)
+	public TransactionCreatedDomainEvent(TransactionId transactionId, Guid budgetId, TransactionTypes transactionType, string name, decimal value, Categories categoryType, DateTime createdOn)
 	{
-		this.Id = id;
+		this.TransactionId = transactionId;
 		this.Name = name;
 		this.Value = value;
 		this.CategoryType = categoryType;
@@ -32,7 +32,7 @@ public class TransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Transaction identifier.
 	/// </summary>
-	public Guid Id { get; private set; }
+	public TransactionId TransactionId { get; private set; }
 
 	/// <summary>
 	/// Reference to budget ID.

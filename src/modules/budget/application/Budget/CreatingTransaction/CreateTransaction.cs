@@ -8,13 +8,13 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransac
 /// Create Transaction command.
 /// </summary>
 /// <param name="Type">Enum of Income or Expanse.</param>
-/// <param name="Id">Id of Income or Expanse.</param>
+/// <param name="TransactionId">Id of Income or Expanse.</param>
 /// <param name="BudgetId">Budget Id.</param>
 /// <param name="Name">Name of income or expanse.</param>
 /// <param name="Value">Value of income or expanse.</param>
 /// <param name="CreatedOn">Creation of new income or expanse date.</param>
 /// <param name="Category">Enum of income/expanse Categories.</param>
-public record CreateTransaction(TransactionTypes Type, Guid Id, BudgetId BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category) : ICommand;
+public record CreateTransaction(TransactionTypes Type, TransactionId TransactionId, BudgetId BudgetId, string Name, decimal Value, DateTime CreatedOn, Categories Category) : ICommand;
 
 /// <summary>
 /// Create Transaction.
@@ -35,7 +35,7 @@ public class HandleCreateTransaction : ICommandHandler<CreateTransaction>
 	/// <inheritdoc/>
 	public Task Handle(CreateTransaction command, CancellationToken cancellationToken)
 	{
-		var transaction = TransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, command.Value, command.Category, command.CreatedOn);
+		var transaction = TransactionAggregate.Create(command.TransactionId, command.BudgetId, command.Type, command.Name, command.Value, command.Category, command.CreatedOn);
 
 		this.transactionRepository.Persist(transaction);
 		return Task.CompletedTask;

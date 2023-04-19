@@ -127,13 +127,13 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost("Create New Transaction")]
-	public async Task<IActionResult> CreateNewTransaction([FromQuery] CreateTransaction request)
+	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateTransaction request)
 	{
 		var validationResult = await this.createTransactionValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(request);
-			return this.Created($"Transaction/{request.Id}", request.Id);
+			return this.Created($"Transaction/{request.TransactionId.Value}", request.TransactionId.Value);
 		}
 
 		throw new AppException("One or more error occured when trying to create Transaction.", validationResult.Errors);
