@@ -13,5 +13,5 @@ public interface IBudgetRepository : IRepository<BudgetAggregate, Guid>
 	/// <param name="userId">Budget owner id.</param>
 	/// <param name="name">Budget name.</param>
 	/// <returns>True if exists.</returns>
-	bool ExistsByName(Guid userId, string name);
+	bool ExistsByName(Guid? userId, string name);
 }

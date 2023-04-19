@@ -39,10 +39,11 @@ public class BudgetRepository : IBudgetRepository
 	/// <summary>
 	/// Retrieves Budget aggregate by name.
 	/// </summary>
+	/// <param name="userId">Budget owner Id.</param>
 	/// <param name="name">Budget Name.</param>
 	/// <returns>Aggregate.</returns>
-	bool IBudgetRepository.ExistsByName(string name)
-		=> this.budgetDbContext.Budget.Any(x => x.Name == name);
+	bool IBudgetRepository.ExistsByName(Guid? userId, string name)
+		=> this.budgetDbContext.Budget.Any(x => x.UserId == userId && x.Name == name);
 
 	/// <summary>
 	/// Persist aggregate state.
