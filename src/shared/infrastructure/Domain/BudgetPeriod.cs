@@ -1,4 +1,4 @@
-﻿namespace Intive.Patronage2023.Shared.Infrastructure.Domain;
+namespace Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 /// <summary>
 /// Budget period value object.
