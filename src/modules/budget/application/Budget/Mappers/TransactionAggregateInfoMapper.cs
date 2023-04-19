@@ -14,5 +14,5 @@ public static class TransactionAggregateInfoMapper
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns <ref name="TransactionInfo"/>BudgetInfo.</returns>
 	public static TransactionInfo Map(TransactionAggregate entity) =>
-		 new(entity.TransactionType, entity.BudgetId, entity.Name, entity.Value, entity.CreatedOn, entity.CategoryType);
+		 new(entity.TransactionType, entity.TransactionId, entity.Name, entity.Value, entity.CreatedOn, entity.CategoryType);
 }
