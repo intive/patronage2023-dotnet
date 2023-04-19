@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
@@ -14,18 +14,18 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <param name="id">Budget identifier.</param>
 	/// <param name="name">Budget name.</param>
 	/// <param name="userId">Budget owner user id.</param>
-	/// <param name="budgetLimit">Budget Limit.</param>
-	/// <param name="budgetDuration">Budget Duration.</param>
+	/// <param name="limit">Budget Limit.</param>
+	/// <param name="period">Budget Duration.</param>
 	/// <param name="iconName">Budget Icon.</param>
 	/// <param name="description">Budget Describtion.</param>
-	public BudgetCreatedDomainEvent(Guid id, string name, Guid userId, BudgetLimit budgetLimit, BudgetPeriod budgetDuration, string description, string iconName)
+	public BudgetCreatedDomainEvent(Guid id, string name, Guid userId, BudgetLimit limit, BudgetPeriod period, string description, string iconName)
 	{
 		this.Id = id;
 		this.Name = name;
 		this.UserId = userId;
-		this.Limit = budgetLimit;
-		this.Period = budgetDuration;
-		this.Describtion = description;
+		this.Limit = limit;
+		this.Period = period;
+		this.Description = description;
 		this.Icon = iconName;
 	}
 
@@ -62,5 +62,5 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Budget describtion.
 	/// </summary>
-	public string? Describtion { get; private set; }
+	public string? Description { get; private set; }
 }

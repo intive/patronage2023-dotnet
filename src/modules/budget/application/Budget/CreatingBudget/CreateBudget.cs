@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 
