@@ -1,5 +1,6 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransaction;
 
@@ -23,17 +24,17 @@ public class CreateTransactionValidator : AbstractValidator<CreateTransaction>
 		.NotEmpty()
 		.NotNull()
 			.Length(3, 58);
-		this.RuleFor(transaction => transaction.BudgetId.Value).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().GreaterThan(0);
 		this.RuleFor(transaction => transaction.Category).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.CreatedOn).Must(date => date <= DateTime.Now && date >= DateTime.Now.AddMonths(-1))
 			.WithMessage("Data has to be from the last month.");
 	}
 
-	private async Task<bool> IsBudgetExists(Guid budgetId, CancellationToken cancellationToken)
+	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
 	{
 		var budget = await this.budgetRepository.GetById(budgetId);
-		if (budget is null)
+		if (budget == null)
 		{
 			return false;
 		}

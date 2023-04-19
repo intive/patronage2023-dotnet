@@ -12,7 +12,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 	/// </summary>
 	public CreateBudgetValidator()
 	{
-		this.RuleFor(budget => budget.Id).NotEmpty().NotNull();
+		this.RuleFor(budget => budget.BudgetId.Value).NotEmpty().NotNull();
 		this.RuleFor(budget => budget.Name).NotEmpty().NotNull();
 	}
 }

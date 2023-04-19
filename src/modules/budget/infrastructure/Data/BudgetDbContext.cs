@@ -38,32 +38,35 @@ public class BudgetDbContext : DbContext
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		////modelBuilder.Entity<TransactionAggregate>().Property(p => p.BudgetId)
-		////.HasConversion(
-		////v => v.Value,
-		////v => new BudgetId(v));
-
-		////modelBuilder.Entity<TransactionAggregate>().Property(p => p.TransactionId)
-		////.HasConversion(
-		////v => v.Value,
-		////v => new TransactionId(v));
-		var converter = new ValueConverter<TransactionId, Guid>(
+		var transactionIdConverter = new ValueConverter<TransactionId, Guid>(
 			id => id.Value,
 			guid => new TransactionId(guid));
 
-		var converter2 = new ValueConverter<BudgetId, Guid>(
+		var budgetIdConverter = new ValueConverter<BudgetId, Guid>(
 		id => id.Value,
 		guid => new BudgetId(guid));
 
-		var entity = modelBuilder.Entity<TransactionAggregate>();
+		var transactionAggregate = modelBuilder.Entity<TransactionAggregate>();
 
-		entity.HasKey(e => e.TransactionId);
+		transactionAggregate.HasKey(e => e.TransactionId);
 
-		entity.Property(e => e.TransactionId)
-			.HasConversion(converter);
+		transactionAggregate.Property(e => e.TransactionId)
+			.HasConversion(transactionIdConverter);
 
-		entity.Property(e => e.BudgetId)
-			.HasConversion(converter2);
+		transactionAggregate.Property(e => e.BudgetId)
+			.HasConversion(budgetIdConverter);
+
+		modelBuilder.Entity<TransactionAggregate>()
+		.HasOne<BudgetAggregate>()
+		.WithMany()
+		.HasForeignKey(p => p.BudgetId);
+
+		var budgetAggregate = modelBuilder.Entity<BudgetAggregate>();
+
+		budgetAggregate.HasKey(e => e.BudgetId);
+
+		budgetAggregate.Property(e => e.BudgetId)
+			.HasConversion(budgetIdConverter);
 
 		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(BudgetDbContext).Assembly);
 		base.OnModelCreating(modelBuilder);

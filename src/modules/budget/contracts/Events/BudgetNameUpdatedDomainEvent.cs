@@ -1,6 +1,7 @@
-﻿namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
-
 using Intive.Patronage2023.Shared.Infrastructure.Events;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
+
+namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 
 /// <summary>
 /// Budget name updated domain event.
@@ -10,18 +11,18 @@ public class BudgetNameUpdatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetNameUpdatedDomainEvent"/> class.
 	/// </summary>
-	/// <param name="id">Budget identifier.</param>
+	/// <param name="budgetId">Budget identifier.</param>
 	/// <param name="newName">New name.</param>
-	public BudgetNameUpdatedDomainEvent(Guid id, string newName)
+	public BudgetNameUpdatedDomainEvent(BudgetId budgetId, string newName)
 	{
-		this.Id = id;
+		this.BudgetId = budgetId;
 		this.NewName = newName;
 	}
 
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public Guid Id { get; }
+	public BudgetId BudgetId { get; }
 
 	/// <summary>
 	/// New Budget name.

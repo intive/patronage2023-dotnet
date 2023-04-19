@@ -9,7 +9,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -96,7 +96,7 @@ public class BudgetController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(request);
-			return this.Created($"Budget/{request.Id}", request.Id);
+			return this.Created($"Budget/{request.BudgetId}", request.BudgetId);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
@@ -142,20 +142,23 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Get Transactions.
 	/// </summary>
-	/// <param name="request">Query parameters.</param>
+	/// <param name="id">Query parameters.</param>
 	/// <returns>Budget details, list of incomes and expanses.</returns>
 	/// <response code="200">Returns the list of Budget details, list of incomes and expanses corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpGet("Get Budget With Details")]
+	[HttpGet("Budget/Transactions/")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] GetTransaction request)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] Guid id)
 	{
-		var validationResult = await this.getTransactionValidator.ValidateAsync(request);
+		var budgetId = new BudgetId(id);
+		var result = new GetTransaction(budgetId);
+
+		var validationResult = await this.getTransactionValidator.ValidateAsync(result);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetTransaction, PagedList<TransactionInfo>>(request);
+			var pagedList = await this.queryBus.Query<GetTransaction, PagedList<TransactionInfo>>(result);
 			return this.Ok(pagedList);
 		}
 

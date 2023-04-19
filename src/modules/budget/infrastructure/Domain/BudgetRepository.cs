@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
-
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
@@ -33,8 +33,8 @@ public class BudgetRepository : IBudgetRepository
 	/// </summary>
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
-	public Task<BudgetAggregate> GetById(Guid id)
-		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
+	public Task<BudgetAggregate> GetById(BudgetId id)
+		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.BudgetId == id);
 
 	/// <summary>
 	/// Persist aggregate state.

@@ -11,5 +11,5 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingTransac
 /// <param name="Value">Value of income or expanse.</param>
 /// <param name="CreatedOn">Creation of new income or expanse date.</param>
 /// <param name="CategoryType">Enum of income/expanse Categories.</param>
-public record TransactionInfo(TransactionTypes TransactionType, Guid BudgetId, string Name, decimal Value,
+public record TransactionInfo(TransactionTypes TransactionType, BudgetId BudgetId, string Name, decimal Value,
 	DateTime CreatedOn, Categories CategoryType);

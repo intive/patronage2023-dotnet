@@ -36,7 +36,7 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
-		var budgets = await this.budgetDbContext.Budget.OrderBy(x => x.Id).ToListAsync();
+		var budgets = await this.budgetDbContext.Budget.OrderBy(x => x.BudgetId).ToListAsync();
 		var mappedData = budgets.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
 		var result = new PagedList<BudgetInfo> { Items = mappedData };
 		return result;

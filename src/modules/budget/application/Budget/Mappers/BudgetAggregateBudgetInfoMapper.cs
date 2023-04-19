@@ -14,5 +14,5 @@ public static class BudgetAggregateBudgetInfoMapper
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns <ref name="BudgetInfo"/>BudgetInfo.</returns>
 	public static BudgetInfo Map(BudgetAggregate entity) =>
-		 new(entity.Id, entity.Name, entity.CreatedOn);
+		 new(entity.BudgetId, entity.Name, entity.CreatedOn);
 }

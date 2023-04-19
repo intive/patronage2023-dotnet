@@ -13,6 +13,5 @@ public class GetTransactionValidator : AbstractValidator<GetTransaction>
 	/// </summary>
 	public GetTransactionValidator()
 	{
-		this.RuleFor(x => x.BudgetId).NotNull().NotEmpty();
 	}
 }
