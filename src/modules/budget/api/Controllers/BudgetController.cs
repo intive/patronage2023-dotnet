@@ -1,5 +1,4 @@
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
@@ -7,7 +6,6 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -16,7 +14,7 @@ namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 /// Budget controller.
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("budgets")]
 public class BudgetController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
@@ -29,8 +27,8 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
-	/// <param name="createBudgetValidator">Create Budget validator.</param>
-	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
+	/// <param name="createBudgetValidator">Create budget validator.</param>
+	/// <param name="getBudgetsValidator">Get budgets validator.</param>
 	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -43,14 +41,30 @@ public class BudgetController : ControllerBase
 	/// Get Budgets.
 	/// </summary>
 	/// <param name="request">Query parameters.</param>
-	/// <returns>Paged list of Budgets.</returns>
-	/// <response code="200">Returns the list of Budgets corresponding to the query.</response>
+	/// <returns>Paged and sorted list of budgets.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST
+	///     {
+	///         "pageSize": 10,
+	///         "pageIndex": 1,
+	///         "search": "in",
+	///         "sortDescriptors": [
+	///         {
+	///             "columnName": "name",
+	///             "sortAscending": true
+	///         }
+	///       ]
+	///     }
+	/// .</remarks>
+	/// <response code="200">Returns the list of budgets corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
-	/// <response code="401">If the user is unauthorized.</response>
-	[HttpGet]
-	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgets([FromQuery] GetBudgets request)
+	[HttpPost]
+	[Route("list")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetBudgets([FromBody] GetBudgets request)
 	{
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)

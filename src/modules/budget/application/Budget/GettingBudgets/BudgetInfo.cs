@@ -3,7 +3,20 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 /// <summary>
 /// Budget information.
 /// </summary>
-/// <param name="Id">Budget ID.</param>
-/// <param name="Name">Name of Budget.</param>
-/// <param name="CreatedOn">Created Date.</param>
-public record BudgetInfo(Guid Id, string Name, DateTime CreatedOn);
+public record BudgetInfo()
+{
+	/// <summary>
+	/// Budget id.
+	/// </summary>
+	public Guid Id { get; init; }
+
+	/// <summary>
+	/// Budget name.
+	/// </summary>
+	public string Name { get; init; } = null!;
+
+	/// <summary>
+	/// Budget creation date.
+	/// </summary>
+	public DateTime CreatedOn { get; init; }
+}

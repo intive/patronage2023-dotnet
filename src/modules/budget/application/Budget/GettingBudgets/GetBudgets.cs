@@ -1,16 +1,38 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 
 /// <summary>
-/// Get Budgets query.
+/// Get budgets query.
 /// </summary>
-public record GetBudgets() : IQuery<PagedList<BudgetInfo>>;
+public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITextSearchQuery, ISortableQuery
+{
+	/// <summary>
+	/// The amount of data to return.
+	/// </summary>
+	public int PageSize { get; set; }
+
+	/// <summary>
+	/// Requested page.
+	/// </summary>
+	public int PageIndex { get; set; }
+
+	/// <summary>
+	/// Field to search budget by name.
+	/// </summary>
+	public string? Search { get; set; }
+
+	/// <summary>
+	/// List of criteria to sort budgets.
+	/// </summary>
+	public List<SortDescriptor>? SortDescriptors { get; set; }
+}
 
 /// <summary>
 /// Get Budgets handler.
@@ -36,9 +58,16 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
-		var budgets = await this.budgetDbContext.Budget.OrderBy(x => x.Id).ToListAsync();
-		var mappedData = budgets.Select(BudgetAggregateBudgetInfoMapper.Map).ToList();
-		var result = new PagedList<BudgetInfo> { Items = mappedData };
+		var budgets = this.budgetDbContext.Budget.AsQueryable();
+
+		if (!string.IsNullOrEmpty(query.Search))
+		{
+			budgets = budgets.Where(x => x.Name.Contains(query.Search));
+		}
+
+		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync();
+		int totalItemsCount = await budgets.CountAsync();
+		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
 	}
 }
