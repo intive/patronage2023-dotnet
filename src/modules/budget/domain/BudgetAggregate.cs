@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Domain.Rules;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -9,21 +10,21 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetAggregate : Aggregate
 {
-	private BudgetAggregate(Guid id, string name)
+	private BudgetAggregate(BudgetId budgetId, string name)
 	{
-		if (id == Guid.Empty)
+		if (budgetId.Value == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		var budgetCreated = new BudgetCreatedDomainEvent(id, name);
+		var budgetCreated = new BudgetCreatedDomainEvent(budgetId, name);
 		this.Apply(budgetCreated, this.Handle);
 	}
 
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public Guid Id { get; private set; }
+	public BudgetId BudgetId { get; private set; }
 
 	/// <summary>
 	/// Budget name.
@@ -38,12 +39,12 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Create Budget.
 	/// </summary>
-	/// <param name="id">Unique identifier.</param>
+	/// <param name="budgetId">Unique identifier.</param>
 	/// <param name="name">Budget name.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name)
+	public static BudgetAggregate Create(BudgetId budgetId, string name)
 	{
-		return new BudgetAggregate(id, name);
+		return new BudgetAggregate(budgetId, name);
 	}
 
 	/// <summary>
@@ -54,7 +55,7 @@ public class BudgetAggregate : Aggregate
 	{
 		this.CheckRule(new SuperImportantBudgetBusinessRule(name));
 
-		var evt = new BudgetNameUpdatedDomainEvent(this.Id, name);
+		var evt = new BudgetNameUpdatedDomainEvent(this.BudgetId, name);
 
 		this.Apply(evt, this.Handle);
 	}
@@ -66,7 +67,7 @@ public class BudgetAggregate : Aggregate
 
 	private void Handle(BudgetCreatedDomainEvent @event)
 	{
-		this.Id = @event.Id;
+		this.BudgetId = @event.BudgetId;
 		this.Name = @event.Name;
 		this.CreatedOn = @event.Timestamp;
 	}

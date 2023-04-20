@@ -11,16 +11,16 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetTransactionCreatedDomainEvent"/> class.
 	/// </summary>
-	/// <param name="id">Budget Transaction Id.</param>
+	/// <param name="transactionId">Budget Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expanse.</param>
 	/// <param name="name">Name of income or expanse.</param>
 	/// <param name="value">Value of income or expanse.</param>
 	/// <param name="categoryType">Enum of income/expanse Categories.</param>
 	/// <param name="transactionDate">Creation of new income or expanse date.</param>
-	public BudgetTransactionCreatedDomainEvent(Guid id, Guid budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime transactionDate)
+	public BudgetTransactionCreatedDomainEvent(TransactionId transactionId, BudgetId budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime transactionDate)
 	{
-		this.Id = id;
+		this.Id = transactionId;
 		this.Name = name;
 		this.Value = value;
 		this.CategoryType = categoryType;
@@ -32,12 +32,12 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Budget Transaction identifier.
 	/// </summary>
-	public Guid Id { get; private set; }
+	public TransactionId Id { get; private set; }
 
 	/// <summary>
 	/// Reference to budget ID.
 	/// </summary>
-	public Guid BudgetId { get; private set; }
+	public BudgetId BudgetId { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction name.

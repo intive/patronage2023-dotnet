@@ -1,7 +1,8 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
-
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 
@@ -37,6 +38,36 @@ public class BudgetDbContext : DbContext
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		var transactionIdConverter = new ValueConverter<TransactionId, Guid>(
+		id => id.Value,
+		guid => new TransactionId(guid));
+
+		var budgetIdConverter = new ValueConverter<BudgetId, Guid>(
+		id => id.Value,
+		guid => new BudgetId(guid));
+
+		var transactionAggregate = modelBuilder.Entity<BudgetTransactionAggregate>();
+
+		transactionAggregate.HasKey(e => e.TransactionId);
+
+		transactionAggregate.Property(e => e.TransactionId)
+			.HasConversion(transactionIdConverter);
+
+		transactionAggregate.Property(e => e.BudgetId)
+			.HasConversion(budgetIdConverter);
+
+		modelBuilder.Entity<BudgetTransactionAggregate>()
+		.HasOne<BudgetAggregate>()
+		.WithMany()
+		.HasForeignKey(p => p.BudgetId);
+
+		var budgetAggregate = modelBuilder.Entity<BudgetAggregate>();
+
+		budgetAggregate.HasKey(e => e.BudgetId);
+
+		budgetAggregate.Property(e => e.BudgetId)
+			.HasConversion(budgetIdConverter);
+
 		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(BudgetDbContext).Assembly);
 		base.OnModelCreating(modelBuilder);
 	}

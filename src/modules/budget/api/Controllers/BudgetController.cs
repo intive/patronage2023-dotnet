@@ -3,10 +3,12 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingTransaction;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -23,6 +25,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
+	private readonly IValidator<GetBudgetTransaction> getBudgetTransactionValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -32,13 +35,15 @@ public class BudgetController : ControllerBase
 	/// <param name="createBudgetValidator">Create Budget validator.</param>
 	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateBudgetTransaction> createTransactionValidator)
+	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
+	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateBudgetTransaction> createTransactionValidator, IValidator<GetBudgetTransaction> getBudgetTransactionValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 		this.createTransactionValidator = createTransactionValidator;
+		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 	}
 
 	/// <summary>
@@ -127,8 +132,11 @@ public class BudgetController : ControllerBase
 	[HttpPost("Create New Budget Transaction")]
 	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction request)
 	{
-		var transactionId = request.Id == Guid.Empty ? Guid.NewGuid() : request.Id;
+		var isTransactionIdGenereted = request.Id.Value == Guid.Empty ? Guid.NewGuid() : request.Id.Value;
+
 		var transactionDate = request.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : request.TransactionDate;
+		var transactionId = new TransactionId(isTransactionIdGenereted);
+
 		var newBudgetTransaction = new CreateBudgetTransaction(request.Type, transactionId, request.BudgetId, request.Name, request.Value, request.Category, transactionDate);
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
@@ -138,5 +146,31 @@ public class BudgetController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get Budget by id with transactions.
+	/// </summary>
+	/// <param name="id">Query parameters.</param>
+	/// <returns>Budget details, list of incomes and expanses.</returns>
+	/// <response code="200">Returns the list of Budget details, list of incomes and expanses corresponding to the query.</response>
+	/// <response code="400">If the query is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpGet("Budget/Transactions/")]
+	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] Guid id)
+	{
+		var budgetId = new BudgetId(id);
+		var result = new GetBudgetTransaction(budgetId);
+
+		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(result);
+		if (validationResult.IsValid)
+		{
+			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(result);
+			return this.Ok(pagedList);
+		}
+
+		throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
 	}
 }
