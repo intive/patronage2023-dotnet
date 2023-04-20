@@ -1,16 +1,16 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities;
+namespace Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 /// <summary>
 /// Budget period value object.
 /// </summary>
-public record BudgetPeriod
+public record Period
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetPeriod"/> class.
+	/// Initializes a new instance of the <see cref="Period"/> class.
 	/// </summary>
 	/// <param name="startDate"> Budget start date. </param>
 	/// <param name="endDate"> Budget end date. </param>
-	public BudgetPeriod(DateTime startDate, DateTime endDate)
+	public Period(DateTime startDate, DateTime endDate)
 	{
 		this.StartDate = startDate;
 		this.EndDate = endDate;

@@ -21,8 +21,16 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 		builder.Property(x => x.UserId).HasColumnName("UserId");
-		builder.OwnsOne(x => x.Limit);
-		builder.OwnsOne(x => x.Period);
+		builder.OwnsOne(x => x.Limit, limit =>
+		{
+			limit.Property(p => p.Value).HasColumnName("Value");
+			limit.Property(p => p.Currency).HasColumnName("Currency");
+		});
+		builder.OwnsOne(x => x.Period, period =>
+		{
+			period.Property(p => p.StartDate).HasColumnName("StartDate");
+			period.Property(p => p.EndDate).HasColumnName("EndDate");
+		});
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 	}
 }

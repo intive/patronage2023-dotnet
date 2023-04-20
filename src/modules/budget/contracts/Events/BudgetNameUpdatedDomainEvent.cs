@@ -1,6 +1,6 @@
-﻿namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
-
 using Intive.Patronage2023.Shared.Infrastructure.Events;
+
+namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 
 /// <summary>
 /// Budget name updated domain event.

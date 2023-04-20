@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 
@@ -15,7 +15,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 /// <param name="Description">Description.</param>
 /// <param name="IconName">Budget icon identifier.</param>
 
-public record CreateBudget(Guid Id, string Name, Guid UserId, BudgetLimit Limit, BudgetPeriod Period, string Description, string IconName) : ICommand;
+public record CreateBudget(Guid Id, string Name, Guid UserId, Money Limit, Period Period, string Description, string IconName) : ICommand;
 
 /// <summary>
 /// Create Budget.

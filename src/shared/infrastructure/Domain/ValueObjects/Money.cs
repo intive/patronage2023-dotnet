@@ -1,16 +1,16 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities;
+namespace Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 /// <summary>
 /// Budget limit value object.
 /// </summary>
-public record BudgetLimit
+public record Money
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetLimit"/> class.
+	/// Initializes a new instance of the <see cref="Money"/> class.
 	/// </summary>
 	/// <param name="value"> Budget start date. </param>
 	/// <param name="currency"> Budget end date. </param>
-	public BudgetLimit(decimal value, Currency currency)
+	public Money(decimal value, Currency currency)
 	{
 		this.Value = value;
 		this.Currency = currency;
