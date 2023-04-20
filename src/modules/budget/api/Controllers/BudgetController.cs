@@ -129,19 +129,20 @@ public class BudgetController : ControllerBase
 	///
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
 	///
-	///    {
-	///        "type": "Income",
-	///        "transactionId": {
-	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///        },
-	///        "budgetId": {
-	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///        },
-	///        "name": "string",
-	///        "value": 1,
-	///        "category": "HomeSpendings",
-	///        "transactionDate": "2023-06-20T14:15:47.392Z"
-	///    }
+	///     POST
+	///     {
+	///         "type": "Income",
+	///         "transactionId": {
+	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///         },
+	///         "budgetId": {
+	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///         },
+	///         "name": "string",
+	///         "value": 1,
+	///         "category": "HomeSpendings",
+	///         "transactionDate": "2023-06-20T14:15:47.392Z"
+	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
@@ -172,6 +173,18 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="request">Query parameters.</param>
 	/// <returns>Budget details, list of incomes and Expenses.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     POST
+	///     {
+	///         "pageSize": 1,
+	///         "pageIndex": 1,
+	///         "budgetId": {
+	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///         },
+	///     }
+	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
