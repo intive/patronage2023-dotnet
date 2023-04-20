@@ -7,12 +7,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// <summary>
 /// Create Budget Transaction command.
 /// </summary>
-/// <param name="Type">Enum of Income or Expanse.</param>
-/// <param name="Id">Id of Income or Expanse.</param>
+/// <param name="Type">Enum of Income or Expense.</param>
+/// <param name="Id">Id of Income or Expense.</param>
 /// <param name="BudgetId">Budget Id.</param>
-/// <param name="Name">Name of income or expanse.</param>
-/// <param name="Value">Value of income or expanse.</param>
-/// <param name="Category">Enum of income/expanse Categories.</param>
+/// <param name="Name">Name of income or Expense.</param>
+/// <param name="Value">Value of income or Expense.</param>
+/// <param name="Category">Enum of income/Expense Categories.</param>
 /// <param name="TransactionDate">Date of creation budget transaction.</param>
 public record CreateBudgetTransaction(TransactionTypes Type, TransactionId Id, BudgetId BudgetId, string Name, decimal Value, CategoriesType Category, DateTime TransactionDate) : ICommand;
 
@@ -35,7 +35,7 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 	/// <inheritdoc/>
 	public async Task Handle(CreateBudgetTransaction command, CancellationToken cancellationToken)
 	{
-		decimal transactionValue = command.Type == TransactionTypes.Expanse ? (command.Value * -1) : command.Value;
+		decimal transactionValue = command.Type == TransactionTypes.Expense ? (command.Value * -1) : command.Value;
 		var budgetTransaction = BudgetTransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, transactionValue, command.Category, command.TransactionDate);
 
 		await this.budgetTransactionRepository.Persist(budgetTransaction);

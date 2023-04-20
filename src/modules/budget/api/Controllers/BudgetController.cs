@@ -102,40 +102,43 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Creates Income / Expanse Budget Transaction.
+	/// Creates Income / Expense Budget Transaction.
 	/// </summary>
 	/// <param name="request">Request.</param>
 	/// <returns>Created Result.</returns>
 	/// <remarks>
 	/// Sample request:
 	///
-	/// Types: "Income" , "Expanse"
+	/// Types: "Income" , "Expense"
 	///
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
 	///
-	///     POST
-	///     {
+	///    {
 	///        "type": "Income",
-	///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///        "budgetId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///        "transactionId": {
+	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///        },
+	///        "budgetId": {
+	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///        },
 	///        "name": "string",
 	///        "value": 1,
 	///        "category": "HomeSpendings",
-	///        "transactionDate": "2023-04-17T22:25:24.490Z"
-	///     }
+	///        "transactionDate": "2023-06-20T14:15:47.392Z"
+	///    }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	[HttpPost("Create New Budget Transaction")]
+	[HttpPost("Transaction/Create")]
 	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction request)
 	{
-		var isTransactionIdGenereted = request.Id.Value == Guid.Empty ? Guid.NewGuid() : request.Id.Value;
+		var isTransactionIdGenerated = request.Id.Value == Guid.Empty ? Guid.NewGuid() : request.Id.Value;
+		var transactionId = new TransactionId(isTransactionIdGenerated);
 
 		var transactionDate = request.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : request.TransactionDate;
-		var transactionId = new TransactionId(isTransactionIdGenereted);
 
 		var newBudgetTransaction = new CreateBudgetTransaction(request.Type, transactionId, request.BudgetId, request.Name, request.Value, request.Category, transactionDate);
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
@@ -152,11 +155,11 @@ public class BudgetController : ControllerBase
 	/// Get Budget by id with transactions.
 	/// </summary>
 	/// <param name="id">Query parameters.</param>
-	/// <returns>Budget details, list of incomes and expanses.</returns>
-	/// <response code="200">Returns the list of Budget details, list of incomes and expanses corresponding to the query.</response>
+	/// <returns>Budget details, list of incomes and Expenses.</returns>
+	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpGet("Budget/Transactions/")]
+	[HttpGet("Transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] Guid id)

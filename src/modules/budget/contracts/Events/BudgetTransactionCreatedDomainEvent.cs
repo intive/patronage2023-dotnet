@@ -13,11 +13,11 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// </summary>
 	/// <param name="transactionId">Budget Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
-	/// <param name="transactionType">Enum of Income or Expanse.</param>
-	/// <param name="name">Name of income or expanse.</param>
-	/// <param name="value">Value of income or expanse.</param>
-	/// <param name="categoryType">Enum of income/expanse Categories.</param>
-	/// <param name="transactionDate">Creation of new income or expanse date.</param>
+	/// <param name="transactionType">Enum of Income or Expense.</param>
+	/// <param name="name">Name of income or Expense.</param>
+	/// <param name="value">Value of income or Expense.</param>
+	/// <param name="categoryType">Enum of income/Expense Categories.</param>
+	/// <param name="transactionDate">Creation of new income or Expense date.</param>
 	public BudgetTransactionCreatedDomainEvent(TransactionId transactionId, BudgetId budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime transactionDate)
 	{
 		this.Id = transactionId;
@@ -45,7 +45,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	public string Name { get; private set; }
 
 	/// <summary>
-	/// Budget Transaction eg. income/expanse.
+	/// Budget Transaction eg. income/Expense.
 	/// </summary>
 	public TransactionTypes TransactionType { get; set; }
 
@@ -55,7 +55,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	public CategoriesType CategoryType { get; set; }
 
 	/// <summary>
-	/// Value of new created income/expanse.
+	/// Value of new created income/Expense.
 	/// </summary>
 	public decimal Value { get; set; }
 

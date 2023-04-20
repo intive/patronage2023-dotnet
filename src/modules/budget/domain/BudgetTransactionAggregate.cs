@@ -26,7 +26,7 @@ public class BudgetTransactionAggregate : Aggregate
 	public TransactionId TransactionId { get; private set; }
 
 	/// <summary>
-	/// Budget Transaction eg. income/expanse.
+	/// Budget Transaction eg. income/Expense.
 	/// </summary>
 	public TransactionTypes TransactionType { get; set; }
 
@@ -36,7 +36,7 @@ public class BudgetTransactionAggregate : Aggregate
 	public string Name { get; private set; } = default!;
 
 	/// <summary>
-	/// Value of new created income/expanse.
+	/// Value of new created income/Expense.
 	/// </summary>
 	public decimal Value { get; set; }
 
@@ -60,10 +60,10 @@ public class BudgetTransactionAggregate : Aggregate
 	/// </summary>
 	/// <param name="id">Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
-	/// <param name="transactionType">Enum of Income or Expanse.</param>
-	/// <param name="name">Name of income or expanse.</param>
-	/// <param name="value">Value of income or expanse.</param>
-	/// <param name="categoryType">Enum of income/expanse Categories.</param>
+	/// <param name="transactionType">Enum of Income or Expense.</param>
+	/// <param name="name">Name of income or Expense.</param>
+	/// <param name="value">Value of income or Expense.</param>
+	/// <param name="categoryType">Enum of income/Expense Categories.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
 	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
