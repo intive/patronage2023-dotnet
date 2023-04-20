@@ -12,5 +12,7 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	/// </summary>
 	public GetBudgetTransactionValidator()
 	{
+		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
+		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
 	}
 }

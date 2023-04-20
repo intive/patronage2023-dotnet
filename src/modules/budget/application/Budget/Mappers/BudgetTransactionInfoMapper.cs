@@ -17,6 +17,7 @@ public static class BudgetTransactionInfoMapper
 		entity => new BudgetTransactionInfo
 		{
 			TransactionType = entity.TransactionType,
+			BudgetId = entity.BudgetId,
 			TransactionId = entity.TransactionId,
 			Name = entity.Name,
 			Value = entity.Value,

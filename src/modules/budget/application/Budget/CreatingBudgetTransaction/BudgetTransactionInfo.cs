@@ -18,6 +18,11 @@ public record BudgetTransactionInfo()
 	public TransactionId TransactionId { get; init; }
 
 	/// <summary>
+	/// Budget Transaction Id.
+	/// </summary>
+	public BudgetId BudgetId { get; init; }
+
+	/// <summary>
 	/// Transaction Name.
 	/// </summary>
 	public string Name { get; init; } = null!;
