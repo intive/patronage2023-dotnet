@@ -5,11 +5,35 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// <summary>
 /// Model of Income and Expense.
 /// </summary>
-/// <param name="TransactionType">Enum of Income or Expense.</param>
-/// <param name="TransactionId">Transaction Id.</param>
-/// <param name="Name">Name of income or Expense.</param>
-/// <param name="Value">Value of income or Expense.</param>
-/// <param name="CreatedOn">Creation of new income or Expense date.</param>
-/// <param name="CategoryType">Enum of income/Expense Categories.</param>
-public record BudgetTransactionInfo(TransactionTypes TransactionType, TransactionId TransactionId, string Name, decimal Value,
-	DateTime CreatedOn, CategoriesType CategoryType);
+public record BudgetTransactionInfo()
+{
+	/// <summary>
+	/// Transaction Type.
+	/// </summary>
+	public TransactionTypes TransactionType { get; init; }
+
+	/// <summary>
+	/// Transaction Id.
+	/// </summary>
+	public TransactionId TransactionId { get; init; }
+
+	/// <summary>
+	/// Transaction Name.
+	/// </summary>
+	public string Name { get; init; } = null!;
+
+	/// <summary>
+	/// Transaction Value.
+	/// </summary>
+	public decimal Value { get; init; }
+
+	/// <summary>
+	/// Transaction Date.
+	/// </summary>
+	public DateTime BudgetTransactionDate { get; init; }
+
+	/// <summary>
+	/// Transaction Category.
+	/// </summary>
+	public CategoriesType CategoryType { get; init; }
+}

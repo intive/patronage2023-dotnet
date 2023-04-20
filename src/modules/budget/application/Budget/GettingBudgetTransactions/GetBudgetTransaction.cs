@@ -2,16 +2,33 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingTransaction;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
 /// <summary>
 /// Get Budgets query.
 /// </summary>
-public record GetBudgetTransaction(BudgetId BudgetId) : IQuery<PagedList<BudgetTransactionInfo>>;
+public record GetBudgetTransaction() : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
+{
+	/// <summary>
+	/// The amount of data to return.
+	/// </summary>
+	public int PageSize { get; set; }
+
+	/// <summary>
+	/// Requested page.
+	/// </summary>
+	public int PageIndex { get; set; }
+
+	/// <summary>
+	/// Budget Id.
+	/// </summary>
+	public BudgetId BudgetId { get; set; }
+}
 
 /// <summary>
 /// Get Budgets handler.
@@ -37,8 +54,17 @@ public class GetTransactionQueryHandler : IQueryHandler<GetBudgetTransaction, Pa
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetTransactionInfo>> Handle(GetBudgetTransaction query, CancellationToken cancellationToken)
 	{
-		var transcations = await this.budgetDbContext.Transaction.Where(x => x.BudgetId == query.BudgetId).ToListAsync();
-		var mappedData = transcations.Select(BudgetTransactionInfoMapper.Map).ToList();
+		////	var transactions = await this.budgetDbContext.Transaction
+		////		.Where(x => x.BudgetId == query.BudgetId)
+		//////// .OrderBy(x => x.BudgetTransactionDate)
+		////		.ToListAsync();
+		////	var mappedData = transactions.Select(BudgetTransactionInfoMapper.Map).ToList();
+		////	var result = new PagedList<BudgetTransactionInfo> { Items = mappedData };
+		////	return result;
+
+		var budgets = this.budgetDbContext.Transaction.AsQueryable();
+
+		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map).Paginate(query).OrderBy(x => x.BudgetTransactionDate.Date).ToListAsync();
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData };
 		return result;
 	}

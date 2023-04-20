@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingTransaction;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -170,23 +170,20 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Get Budget by id with transactions.
 	/// </summary>
-	/// <param name="id">Query parameters.</param>
+	/// <param name="request">Query parameters.</param>
 	/// <returns>Budget details, list of incomes and Expenses.</returns>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpGet("Transactions")]
+	[HttpPost("Transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromQuery] Guid id)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromBody] GetBudgetTransaction request)
 	{
-		var budgetId = new BudgetId(id);
-		var result = new GetBudgetTransaction(budgetId);
-
-		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(result);
+		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(result);
+			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(request);
 			return this.Ok(pagedList);
 		}
 

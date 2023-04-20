@@ -1,7 +1,6 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingTransaction;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
 /// <summary>
 /// GetBudgetsValidator class.

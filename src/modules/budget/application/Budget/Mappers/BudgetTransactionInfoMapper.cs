@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -11,8 +12,15 @@ public static class BudgetTransactionInfoMapper
 	/// <summary>
 	/// Mapping method.
 	/// </summary>
-	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns <ref name="TransactionInfo"/>BudgetInfo.</returns>
-	public static BudgetTransactionInfo Map(BudgetTransactionAggregate entity) =>
-		 new(entity.TransactionType, entity.TransactionId, entity.Name, entity.Value, entity.CreatedOn, entity.CategoryType);
+	public static Expression<Func<BudgetTransactionAggregate, BudgetTransactionInfo>> Map =>
+		entity => new BudgetTransactionInfo
+		{
+			TransactionType = entity.TransactionType,
+			TransactionId = entity.TransactionId,
+			Name = entity.Name,
+			Value = entity.Value,
+			BudgetTransactionDate = entity.BudgetTransactionDate,
+			CategoryType = entity.CategoryType,
+		};
 }
