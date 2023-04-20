@@ -9,5 +9,5 @@ public class ApiKeycloakCredentials
 	/// Represents the secret associated with the API Keycloak client.
 	/// </summary>
 	[ConfigurationKeyName("secret")]
-	public string? Secret { get; set; }
+	public string Secret { get; set; } = null!;
 }

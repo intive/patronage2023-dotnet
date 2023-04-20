@@ -1,7 +1,9 @@
 using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Api.User;
+using Intive.Patronage2023.Api.User.CreatingUser;
 using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +14,28 @@ namespace Intive.Patronage2023.Api.Controllers;
 /// <summary>
 /// User Controller.
 /// </summary>
-[Route("api/[controller]")]
+[Route("user")]
 [ApiController]
 public class UserController : ControllerBase
 {
 	private readonly IQueryBus queryBus;
+	private readonly ICommandBus commandBus;
 	private readonly IValidator<SignInUser> signInUserValidator;
+	private readonly IValidator<CreateUser> createUserValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserController"/> class.
 	/// </summary>
 	/// <param name="queryBus">Query bus.</param>
-	/// <param name="signInCommandValidator">SignIn User validator.</param>
-	public UserController(IQueryBus queryBus, IValidator<SignInUser> signInCommandValidator)
+	/// <param name="commandBus">Command bus.</param>
+	/// <param name="signInUserValidator">SignIn User validator.</param>
+	/// <param name="createUserValidator">Create User validator.</param>
+	public UserController(IQueryBus queryBus, ICommandBus commandBus, IValidator<SignInUser> signInUserValidator, IValidator<CreateUser> createUserValidator)
 	{
-		this.signInUserValidator = signInCommandValidator;
 		this.queryBus = queryBus;
+		this.commandBus = commandBus;
+		this.signInUserValidator = signInUserValidator;
+		this.createUserValidator = createUserValidator;
 	}
 
 	/// <summary>
@@ -56,7 +64,7 @@ public class UserController : ControllerBase
 	[ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
 	[AllowAnonymous]
-	[HttpPost("SignIn")]
+	[HttpPost("sign-in")]
 	public async Task<IActionResult> SignInUserAsync([FromBody] SignInUser command)
 	{
 		var validationResult = await this.signInUserValidator.ValidateAsync(command);
@@ -78,5 +86,39 @@ public class UserController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to get token.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Creates user.
+	/// </summary>
+	/// <param name="command">Command.</param>
+	/// <returns>Created command.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     {
+	///        "avatar": "1",
+	///        "firstName": "Jan",
+	///        "lastName": "Kowalski",
+	///        "password": "Password123!",
+	///        "email": "jkowalski@gmail.com"
+	///     }
+	/// .</remarks>
+	/// <response code="200">Indicates if the request to create user was done correctly.</response>
+	/// <response code="400">If the body is not valid.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[AllowAnonymous]
+	[HttpPost("sign-up")]
+	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
+	{
+		var validationResult = await this.createUserValidator.ValidateAsync(command);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(command);
+			return this.Ok();
+		}
+
+		throw new AppException("One or more error occured while trying to create user.", validationResult.Errors);
 	}
 }

@@ -8,13 +8,13 @@ public class ApiKeycloakSettings
 	/// <summary>
 	/// The Realm name in Keycloak.
 	/// </summary>
-	public string? Realm { get; set; }
+	public string Realm { get; set; } = null!;
 
 	/// <summary>
 	/// The URL of the Keycloak authentication server.
 	/// </summary>
 	[ConfigurationKeyName("auth-server-url")]
-	public string? AuthServerUrl { get; set; }
+	public string AuthServerUrl { get; set; } = null!;
 
 	/// <summary>
 	/// Determines whether the audience of a token should be verified or not.
@@ -26,18 +26,18 @@ public class ApiKeycloakSettings
 	/// Represents whether SSL is required to connect to Keycloak or not.
 	/// </summary>
 	[ConfigurationKeyName("ssl-required")]
-	public string? SslRequired { get; set; }
+	public string SslRequired { get; set; } = null!;
 
 	/// <summary>
 	/// Represents the client id in Keycloak.
 	/// </summary>
-	public string? Resource { get; set; }
+	public string Resource { get; set; } = null!;
 
 	/// <summary>
 	/// An instance of the ApiKeycloakCredentials class which stores the secret value required to authenticate with the Keycloak API.
 	/// </summary>
 	[ConfigurationKeyName("credentials")]
-	public ApiKeycloakCredentials? Credentials { get; set; }
+	public ApiKeycloakCredentials Credentials { get; set; } = null!;
 
 	/// <summary>
 	/// Determines whether the client is public or not.
