@@ -20,20 +20,25 @@
 		},
 		"IIS Express": {
 			"commandName": "IISExpress",
-			"Docker": {
-				"commandName": "Docker",
-				"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-				"publishAllPorts": true,
-				"useSSL": true
+			"launchUrl": "swagger",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
 			}
 		},
-		"$schema": "https://json.schemastore.org/launchsettings.json",
-		"iisSettings": {
-			"windowsAuthentication": false,
-			"anonymousAuthentication": true,
-			"iisExpress": {
-				"applicationUrl": "http://localhost:23965",
-				"sslPort": 44335
-			}
+		"Docker": {
+			"commandName": "Docker",
+			"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+			"publishAllPorts": true,
+			"useSSL": true
+		}
+	},
+	"$schema": "https://json.schemastore.org/launchsettings.json",
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:23965",
+			"sslPort": 44335
 		}
 	}
+}
