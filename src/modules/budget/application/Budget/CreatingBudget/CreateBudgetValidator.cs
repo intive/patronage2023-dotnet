@@ -44,7 +44,9 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		this.RuleFor(budget => budget.Limit.Value)
 			.GreaterThan(0);
 		this.RuleFor(budget => budget.Limit.Currency)
-			.IsInEnum();
+			.NotEmpty()
+			.IsInEnum()
+			.WithMessage("Choose the valid value for currency");
 		this.RuleFor(budget => budget.Description)
 			.MaximumLength(50);
 		this.RuleFor(budget => budget.IconName.Length)
