@@ -1,9 +1,9 @@
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
@@ -18,6 +18,7 @@ namespace Intive.Patronage2023.Modules.Example.Api.Controllers;
 [Route("[controller]")]
 public class ExampleController : ControllerBase
 {
+	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateExample> createExampleValidator;
@@ -30,12 +31,14 @@ public class ExampleController : ControllerBase
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="createExampleValidator">Create example validator.</param>
 	/// <param name="getExamplesValidator">Get examples validator.</param>
-	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateExample> createExampleValidator, IValidator<GetExamples> getExamplesValidator)
+	/// <param name="contextAccessor">Execution context accessor.</param>
+	public ExampleController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateExample> createExampleValidator, IValidator<GetExamples> getExamplesValidator, IExecutionContextAccessor contextAccessor)
 	{
 		this.createExampleValidator = createExampleValidator;
 		this.getExamplesValidator = getExamplesValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -47,9 +50,8 @@ public class ExampleController : ControllerBase
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpGet]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(PagedList<ExampleInfo>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetExamples([FromQuery] GetExamples request)
 	{
 		var validationResult = await this.getExamplesValidator.ValidateAsync(request);
@@ -72,16 +74,15 @@ public class ExampleController : ControllerBase
 	///
 	///     POST
 	///     {
-	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///        "Name": "Example"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	public async Task<IActionResult> CreateExample([FromBody] CreateExample request)
 	{
@@ -93,5 +94,25 @@ public class ExampleController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create example.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get user guid.
+	/// </summary>
+	/// <returns>User guid or null.</returns>
+	/// <response code="200">Returns current user guid.</response>
+	/// <response code="401">If the user is unauthorized or token is invalid.</response>
+	[HttpGet("/UserGuid")]
+	[ProducesResponseType(typeof(Guid?), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	public IActionResult GetUserId()
+	{
+		var userId = this.contextAccessor.GetUserId();
+		if (userId == null)
+		{
+			return this.Unauthorized();
+		}
+
+		return this.Ok(userId);
 	}
 }
