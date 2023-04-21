@@ -32,9 +32,10 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		this.RuleFor(budget => budget.Name)
 			.Must(x => !this.budgetRepository.ExistsByName(executionContextAccessor.GetUserId(), x))
 			.WithMessage("{PropertyName} already exists. Choose a different name");
-		this.RuleFor(budget => budget.Period)
-			.NotEmpty()
-			.NotNull();
+		this.RuleFor(budget => budget.Period.StartDate)
+			.NotEmpty();
+		this.RuleFor(budget => budget.Period.EndDate)
+			.NotEmpty();
 		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate })
 			.Must(x => x.StartDate <= x.EndDate)
 			.WithMessage("The start date must be earlier than the end date");
