@@ -189,7 +189,7 @@ public class BudgetController : ControllerBase
 	///         "pageIndex": 1,
 	///         "budgetId": {
 	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///         },
+	///         }
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
