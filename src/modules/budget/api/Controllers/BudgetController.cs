@@ -99,10 +99,11 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	///
-	///     POST
 	///     {
-	///        "Id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///        "Name": "Budget"
+	///        "id": {
+	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	///        },
+	///        "name": "string"
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
@@ -158,7 +159,7 @@ public class BudgetController : ControllerBase
 	[HttpPost("Transaction/Create")]
 	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction command)
 	{
-		var id = command.Id.Value == Guid.Empty ? Guid.NewGuid() : command.Id.Value;
+		var id = command.Id.Value == default ? Guid.NewGuid() : command.Id.Value;
 		var transactionId = new TransactionId(id);
 
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;

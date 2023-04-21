@@ -17,7 +17,7 @@ internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfig
 	public void Configure(EntityTypeBuilder<BudgetTransactionAggregate> builder)
 	{
 		builder.HasKey(x => x.TransactionId);
-		builder.ToTable("TransactionStore", "Budgets");
+		builder.ToTable("BudgetTransaction", "Budgets");
 		builder.Property(x => x.TransactionId).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").HasConversion<string>().IsRequired();
