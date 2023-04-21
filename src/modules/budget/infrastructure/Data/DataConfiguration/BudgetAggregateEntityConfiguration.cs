@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data.DataConfigurat
 /// <summary>
 /// Budget Aggregate Configuration.
 /// </summary>
-internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<BudgetAggregate>
+internal class BudgetAggregateEntityConfiguration : IdConverter, IEntityTypeConfiguration<BudgetAggregate>
 {
 	/// <summary>
 	/// Configure method.
@@ -18,6 +19,8 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 	{
 		builder.HasKey(x => x.BudgetId);
 		builder.ToTable("Budget", "Budgets");
+		builder.Property(e => e.BudgetId)
+			.HasConversion(this.BudgetIdConverter());
 		builder.Property(x => x.BudgetId).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
