@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
-using Intive.Patronage2023.Shared.Infrastructure.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 

@@ -51,8 +51,9 @@ builder.Services.AddControllers(options =>
 	options.Filters.Add(new AuthorizeFilter(
 		new AuthorizationPolicyBuilder()
 			.RequireAuthenticatedUser()
-			.Build()))).AddJsonOptions(options =>
-	options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+			.Build())))
+			.AddJsonOptions(options =>
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));

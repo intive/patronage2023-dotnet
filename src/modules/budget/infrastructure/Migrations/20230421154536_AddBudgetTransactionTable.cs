@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class BudgetTransactions : Migration
+public partial class AddBudgetTransactionTable : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,7 @@ public partial class BudgetTransactions : Migration
 			});
 
 		migrationBuilder.CreateTable(
-			name: "TransactionStore",
+			name: "BudgetTransaction",
 			schema: "Budgets",
 			columns: table => new
 			{
@@ -58,15 +58,28 @@ public partial class BudgetTransactions : Migration
 			},
 			constraints: table =>
 			{
-				table.PrimaryKey("PK_TransactionStore", x => x.Id);
+				table.PrimaryKey("PK_BudgetTransaction", x => x.Id);
+				table.ForeignKey(
+					name: "FK_BudgetTransaction_Budget_BudgetId",
+					column: x => x.BudgetId,
+					principalSchema: "Budgets",
+					principalTable: "Budget",
+					principalColumn: "Id",
+					onDelete: ReferentialAction.Cascade);
 			});
+
+		migrationBuilder.CreateIndex(
+			name: "IX_BudgetTransaction_BudgetId",
+			schema: "Budgets",
+			table: "BudgetTransaction",
+			column: "BudgetId");
 	}
 
 	/// <inheritdoc />
 	protected override void Down(MigrationBuilder migrationBuilder)
 	{
 		migrationBuilder.DropTable(
-			name: "Budget",
+			name: "BudgetTransaction",
 			schema: "Budgets");
 
 		migrationBuilder.DropTable(
@@ -74,7 +87,7 @@ public partial class BudgetTransactions : Migration
 			schema: "Budgets");
 
 		migrationBuilder.DropTable(
-			name: "TransactionStore",
+			name: "Budget",
 			schema: "Budgets");
 	}
 }

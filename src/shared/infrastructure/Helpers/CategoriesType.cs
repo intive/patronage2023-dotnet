@@ -13,15 +13,15 @@ public enum CategoriesType
 	/// <summary>
 	/// Subscription Category.
 	/// </summary>
-	Subscriptions,
+	Subscriptions = 2,
 
 	/// <summary>
 	/// Car Category.
 	/// </summary>
-	Car,
+	Car = 3,
 
 	/// <summary>
 	/// Grocery Category.
 	/// </summary>
-	Grocery,
+	Grocery = 4,
 }

@@ -13,5 +13,5 @@ public enum TransactionTypes
 	/// <summary>
 	/// Expense which will be added to your budget.
 	/// </summary>
-	Expense,
+	Expense = 2,
 }

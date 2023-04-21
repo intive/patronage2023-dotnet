@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;

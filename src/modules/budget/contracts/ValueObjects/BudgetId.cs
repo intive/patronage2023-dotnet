@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
+namespace Intive.Patronage2023.Modules.Budget.Contracts;
 
 /// <summary>
 /// record which represents Budget Id.

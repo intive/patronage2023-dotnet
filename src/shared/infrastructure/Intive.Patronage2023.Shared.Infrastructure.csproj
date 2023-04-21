@@ -6,11 +6,6 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="Nowy folder\**" />
-	  <EmbeddedResource Remove="Nowy folder\**" />
-	  <None Remove="Nowy folder\**" />
-	</ItemGroup>
-	<ItemGroup>
 	  <PackageReference Include="MediatR" Version="12.0.1" />
 	  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
 	    <PrivateAssets>all</PrivateAssets>

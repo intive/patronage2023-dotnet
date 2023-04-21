@@ -8,7 +8,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -36,7 +36,13 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<CreateBudgetTransaction> createTransactionValidator, IValidator<GetBudgetTransaction> getBudgetTransactionValidator)
+	public BudgetController(
+		ICommandBus commandBus,
+		IQueryBus queryBus,
+		IValidator<CreateBudget> createBudgetValidator,
+		IValidator<GetBudgets> getBudgetsValidator,
+		IValidator<CreateBudgetTransaction> createTransactionValidator,
+		IValidator<GetBudgetTransaction> getBudgetTransactionValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -120,7 +126,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Creates Income / Expense Budget Transaction.
 	/// </summary>
-	/// <param name="request">Request.</param>
+	/// <param name="command">Command that creates Transaction to specific budget.</param>
 	/// <returns>Created Result.</returns>
 	/// <remarks>
 	/// Sample request:
@@ -149,14 +155,14 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost("Transaction/Create")]
-	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction request)
+	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction command)
 	{
-		var isTransactionIdGenerated = request.Id.Value == Guid.Empty ? Guid.NewGuid() : request.Id.Value;
-		var transactionId = new TransactionId(isTransactionIdGenerated);
+		var id = command.Id.Value == Guid.Empty ? Guid.NewGuid() : command.Id.Value;
+		var transactionId = new TransactionId(id);
 
-		var transactionDate = request.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : request.TransactionDate;
+		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
 
-		var newBudgetTransaction = new CreateBudgetTransaction(request.Type, transactionId, request.BudgetId, request.Name, request.Value, request.Category, transactionDate);
+		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, command.BudgetId, command.Name, command.Value, command.Category, transactionDate);
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
 		{
