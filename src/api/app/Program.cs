@@ -25,10 +25,13 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Logging.AddApplicationInsights(
+if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING")))
+{
+	builder.Logging.AddApplicationInsights(
 		configureTelemetryConfiguration: (config) =>
 		config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
 		configureApplicationInsightsLoggerOptions: (options) => { });
+}
 
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
 
