@@ -1,4 +1,4 @@
-{
+﻿{
 	"profiles": {
 		"http": {
 			"commandName": "Project",
@@ -20,7 +20,6 @@
 		},
 		"IIS Express": {
 			"commandName": "IISExpress",
-<<<<<<< HEAD
 			"launchUrl": "swagger",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development"
@@ -43,22 +42,3 @@
 		}
 	}
 }
-=======
-			"Docker": {
-				"commandName": "Docker",
-				"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-				"publishAllPorts": true,
-				"useSSL": true
-			}
-		},
-		"$schema": "https://json.schemastore.org/launchsettings.json",
-		"iisSettings": {
-			"windowsAuthentication": false,
-			"anonymousAuthentication": true,
-			"iisExpress": {
-				"applicationUrl": "http://localhost:23965",
-				"sslPort": 44335
-			}
-		}
-	}
->>>>>>> parent of f59cebc (Delete launchSettings.json)
