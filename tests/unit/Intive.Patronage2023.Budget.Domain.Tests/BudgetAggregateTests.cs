@@ -1,22 +1,22 @@
-using System;
 using Bogus;
+using FluentAssertions;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Xunit.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Xunit;
 
-namespace BudgetAggregateTests;
+namespace Intive.Patronage2023.Budget.Domain.Tests;
 
+/// <summary>
+/// Test that checks the behavior of a aggregate class "BudgetAggregate".
+/// </summary>
 public class BudgetAggregateTests
 {
-	private readonly ITestOutputHelper output;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetAggregateTests"/> class.
 	/// </summary>
-	/// <param name="output">Parameter is of type "ITestOutputHelper".</param>
-	public BudgetAggregateTests(ITestOutputHelper output)
+	public BudgetAggregateTests()
 	{
-		this.output = output;
 	}
 
 	/// <summary>
@@ -26,24 +26,27 @@ public class BudgetAggregateTests
 	public void Create_WhenPassedProperData_ShouldCreateBudgetAggregate()
 	{
 		// Arrange
-		Guid id = Guid.NewGuid();
+		var id = Guid.NewGuid();
 		string name = new Faker().Random.Word();
-		Guid userId = Guid.NewGuid();
-		BudgetLimit limit = new BudgetLimit(new Faker().Random.Number(50000), Currency.PLN);
-		BudgetPeriod period = new BudgetPeriod(new DateOnly(2023, 04, 13), new DateOnly(2023, 05, 13));
+		var userId = Guid.NewGuid();
+		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);
+		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
-		string describtion = new Faker().Lorem.Sentences();
+		string description = new Faker().Lorem.Sentences();
 
 		// Act
-		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, describtion);
+		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, description);
 
 		// Assert
-		Assert.NotNull(budgetAggregate);
-		Assert.Equal(id, budgetAggregate.Id);
-		Assert.Equal(name, budgetAggregate.Name);
-		Assert.Equal(userId, budgetAggregate.UserId);
-		Assert.Equal(limit, budgetAggregate.Limit);
-		Assert.Equal(period, budgetAggregate.Period);
+		budgetAggregate.Should().NotBeNull()
+			.And.BeEquivalentTo(new
+			{
+				Id = id,
+				Name = name,
+				UserId = userId,
+				Limit = limit,
+				Period = period
+			});
 	}
 
 	/// <summary>
@@ -52,17 +55,19 @@ public class BudgetAggregateTests
 	[Fact]
 	public void Create_WhenPassedEmptyId_ShouldThrowInvalidOperatorExeption()
 	{
-		// Arrange		
-		Guid id = Guid.Empty;
+		// Arrange
+		var id = Guid.Empty;
 		string name = new Faker().Random.Word();
-		Guid userId = Guid.NewGuid();
-		BudgetLimit limit = new BudgetLimit(new Faker().Random.Number(50000), Currency.PLN);
-		BudgetPeriod period = new BudgetPeriod(new DateOnly(2023, 04, 13), new DateOnly(2023, 05, 13));
+		var userId = Guid.NewGuid();
+		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);
+		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string describtion = new Faker().Lorem.Sentences();
 
-		// Act & Assert
-		Assert.Throws<InvalidOperationException>(() =>
-			 BudgetAggregate.Create(id, name, userId, limit, period, icon, describtion));
+		// Act
+		Action act = () => BudgetAggregate.Create(id, name, userId, limit, period, icon, describtion);
+
+		// Assert
+		act.Should().Throw<InvalidOperationException>();
 	}
 }
