@@ -81,7 +81,7 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Get budget details
+	/// Get budget details.
 	/// </summary>
 	/// <param name="request">Request.</param>
 	/// <returns>Budget details.</returns>
