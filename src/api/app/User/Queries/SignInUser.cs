@@ -1,7 +1,7 @@
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
-namespace Intive.Patronage2023.Api.User;
+namespace Intive.Patronage2023.Api.User.Queries;
 
 /// <summary>
 /// SignIn user query.

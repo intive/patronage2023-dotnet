@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Shared.Abstractions;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Class contains methods that extend ApplicationBuilder.

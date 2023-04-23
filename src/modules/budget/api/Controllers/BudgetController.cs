@@ -85,13 +85,14 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="request">Request.</param>
 	/// <returns>Budget details.</returns>
-	/// <response code="201">Returns the newly created item.</response>
+	/// <response code="200">Returns details of budget with given id.</response>
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="404">If budget with given id does not exist.</response>
-	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[HttpGet("{Id:guid}")]
+	[ProducesResponseType(typeof(BudgetDetailsInfo), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	[HttpGet("{id}")]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetBudgetDetails([FromRoute] GetBudgetDetails request)
 	{
 		var validationResult = await this.getBudgetDetailsValidator.ValidateAsync(request);

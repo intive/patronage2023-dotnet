@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Newtonsoft.Json;
 
-namespace Intive.Patronage2023.Api.User.Commands;
+namespace Intive.Patronage2023.Api.User.Queries;
 
 /// <summary>
 /// Sign up request handler.

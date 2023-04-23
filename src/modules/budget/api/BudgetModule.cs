@@ -6,9 +6,11 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Budget.Api;
 
 /// <summary>
 /// Budget module.
