@@ -5,27 +5,21 @@ namespace Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 /// <summary>
 /// Class which holds method for Id conversion.
 /// </summary>
-public class IdConverter
+public static class BudgetConverters
 {
 	/// <summary>
 	/// Converter which changes TransactionId to Guid.
 	/// </summary>
 	/// <returns>Returns Converted TransactionId to guid.</returns>
-	public ValueConverter TransactionIdConverter()
-	{
-		return new ValueConverter<TransactionId, Guid>(
+	public static ValueConverter TransactionIdConverter() => new ValueConverter<TransactionId, Guid>(
 		id => id.Value,
 		guid => new TransactionId(guid));
-	}
 
 	/// <summary>
 	/// Converter which changes BudgetId to Guid.
 	/// </summary>
 	/// <returns>Returns Converted BudgetId to guid.</returns>
-	public ValueConverter BudgetIdConverter()
-	{
-		return new ValueConverter<BudgetId, Guid>(
+	public static ValueConverter BudgetIdConverter() => new ValueConverter<BudgetId, Guid>(
 		id => id.Value,
 		guid => new BudgetId(guid));
-	}
 }

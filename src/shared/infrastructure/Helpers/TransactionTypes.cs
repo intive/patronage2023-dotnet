@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
 
 /// <summary>
-/// Enum of Income or Expense Choice.
+/// Enumeration of budget transaction types.
 /// </summary>
 public enum TransactionTypes
 {

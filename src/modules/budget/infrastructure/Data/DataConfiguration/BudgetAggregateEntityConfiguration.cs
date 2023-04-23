@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data.DataConfigurat
 /// <summary>
 /// Budget Aggregate Configuration.
 /// </summary>
-internal class BudgetAggregateEntityConfiguration : IdConverter, IEntityTypeConfiguration<BudgetAggregate>
+internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<BudgetAggregate>
 {
 	/// <summary>
 	/// Configure method.
@@ -20,7 +20,7 @@ internal class BudgetAggregateEntityConfiguration : IdConverter, IEntityTypeConf
 		builder.HasKey(x => x.BudgetId);
 		builder.ToTable("Budget", "Budgets");
 		builder.Property(e => e.BudgetId)
-			.HasConversion(this.BudgetIdConverter());
+			.HasConversion(BudgetConverters.BudgetIdConverter());
 		builder.Property(x => x.BudgetId).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");

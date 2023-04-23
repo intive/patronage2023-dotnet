@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data.DataConfigurat
 /// <summary>
 /// Budget Transaction Aggregate Configuration.
 /// </summary>
-internal class BudgetTransactionAggregateEntityConfiguration : IdConverter, IEntityTypeConfiguration<BudgetTransactionAggregate>
+internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfiguration<BudgetTransactionAggregate>
 {
 	/// <summary>
 	/// Configure method.
@@ -22,10 +21,10 @@ internal class BudgetTransactionAggregateEntityConfiguration : IdConverter, IEnt
 
 		builder.HasOne<BudgetAggregate>().WithMany().HasForeignKey(k => k.BudgetId);
 		builder.Property(e => e.TransactionId)
-			.HasConversion(this.TransactionIdConverter());
+			.HasConversion(BudgetConverters.TransactionIdConverter());
 
 		builder.Property(e => e.BudgetId)
-			.HasConversion(this.BudgetIdConverter());
+			.HasConversion(BudgetConverters.BudgetIdConverter());
 
 		builder.Property(x => x.TransactionId).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
