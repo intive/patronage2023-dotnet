@@ -31,9 +31,8 @@ if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("APPLICATION
 		configureTelemetryConfiguration: (config) =>
 		config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
 		configureApplicationInsightsLoggerOptions: (options) => { });
+	builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
 }
-
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
 
 builder.Services.AddHttpLogging(logging =>
 {
