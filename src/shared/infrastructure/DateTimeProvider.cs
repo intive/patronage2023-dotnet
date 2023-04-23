@@ -1,4 +1,6 @@
-namespace Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions;
+
+namespace Intive.Patronage2023.Shared.Infrastructure;
 
 /// <summary>
 /// Implementation of the IDateTimeService interface.
@@ -8,13 +10,10 @@ public class DateTimeProvider : IDateTimeProvider
 	private TimeZoneInfo timeZone = TimeZoneInfo.Local;
 
 	/// <inheritdoc/>
-	public DateTime UtcNow() => DateTime.UtcNow;
+	public DateTime UtcNow => DateTime.UtcNow;
 
 	/// <inheritdoc/>
-	public DateTime LocalNow()
-	{
-		return TimeZoneInfo.ConvertTimeFromUtc(this.UtcNow(), this.timeZone);
-	}
+	public DateTime LocalNow => TimeZoneInfo.ConvertTimeFromUtc(this.UtcNow, this.timeZone);
 
 	/// <inheritdoc/>
 	public void SetTimeZone(TimeZoneInfo timeZone)

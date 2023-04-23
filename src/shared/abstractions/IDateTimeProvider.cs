@@ -9,13 +9,13 @@ public interface IDateTimeProvider
 	/// Get UTC date and time.
 	/// </summary>
 	/// <returns>Utc date and time.</returns>
-	DateTime UtcNow();
+	DateTime UtcNow { get; }
 
 	/// <summary>
 	/// Get local date and time.
 	/// </summary>
 	/// <returns>Local date and time.</returns>
-	DateTime LocalNow();
+	DateTime LocalNow { get; }
 
 	/// <summary>
 	/// Set the TimeZone.

@@ -1,5 +1,5 @@
-using Intive.Patronage2023.Shared.Abstractions;
-using Moq;
+using FluentAssertions;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Xunit;
 
 namespace Intive.Patronage2023.Example.Application.Tests;
@@ -10,23 +10,21 @@ namespace Intive.Patronage2023.Example.Application.Tests;
 public class DateTimeProviderTests
 {
 	/// <summary>
-	/// Test that check if the method "LocalNow" returns the correct date and time when UtcNow has fixed value.
+	/// Test that check if the method "SetTimeZone" returns the correct local date and time when TimeZone has fixed value.
 	/// </summary>
 	[Fact]
-	public void LocalNow_WhenUtcNowHasFixedValue_ShouldReturnLocalTime()
+	public void SetTimeZone_WhenTimeZoneHasFixedValue_ShouldReturnFixedLocalTime()
 	{
 		// Arrange
-		var dateTimeProvider = new Mock<IDateTimeProvider>();
-		dateTimeProvider.Setup(x => x.UtcNow()).Returns(new DateTime(2021, 07, 20));
-
-		var expectedDateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeProvider.Object.UtcNow(), TimeZoneInfo.Local);
-
-		dateTimeProvider.Setup(x => x.LocalNow()).Returns(TimeZoneInfo.ConvertTimeFromUtc(dateTimeProvider.Object.UtcNow(), TimeZoneInfo.Local));
+		var dateTimeProvider = new DateTimeProvider();
+		var fixedTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+		var expectedDateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeProvider.UtcNow, fixedTimeZone);
+		var precision = TimeSpan.FromMinutes(1);
 
 		// Act
-		var dateTimeLocal = dateTimeProvider.Object.LocalNow();
+		dateTimeProvider.SetTimeZone(fixedTimeZone);
 
 		// Assert
-		Assert.Equal(expectedDateTimeLocal, dateTimeLocal);
+		dateTimeProvider.LocalNow.Should().BeCloseTo(expectedDateTimeLocal, precision);
 	}
 }
