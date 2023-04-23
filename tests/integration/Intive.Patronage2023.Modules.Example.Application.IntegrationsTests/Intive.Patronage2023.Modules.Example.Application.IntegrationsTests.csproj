@@ -9,13 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="34.0.2" />
-    <PackageReference Include="Docker.DotNet" Version="3.125.13" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.14" />
+    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="Moq" Version="4.18.4" />
-    <PackageReference Include="MySql.Data" Version="8.0.32.1" />
-    <PackageReference Include="MySqlConnector" Version="2.2.5" />
+    <PackageReference Include="Nito.DependencyInjection.InstanceBuilder.Options" Version="1.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <PackageReference Include="Sitecore.FakeDb" Version="2.0.1" />
     <PackageReference Include="Testcontainers" Version="3.0.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -30,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\git\src\modules\example\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
-    <ProjectReference Include="..\..\..\..\..\git\src\modules\example\domain\Intive.Patronage2023.Modules.Example.Domain.csproj" />
     <ProjectReference Include="..\..\..\..\..\git\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
 
