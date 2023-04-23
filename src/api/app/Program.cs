@@ -16,7 +16,6 @@ using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,16 +26,7 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-if (!string.IsNullOrEmpty(builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING")))
-{
-	builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"));
-	builder.Logging.AddApplicationInsights(
-		configureTelemetryConfiguration: (config) =>
-		config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
-		configureApplicationInsightsLoggerOptions: (options) => { });
-	builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
-}
-
+builder.AddTelemetry();
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;
