@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 
-namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests.DatabaseFixtures
-{
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests.DatabaseFixtures;
+
     public class DatabaseFixture : IDisposable
     {
         public SqlConnection Db { get; private set; }
@@ -38,6 +38,3 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests.Dat
             _fixture = fixture;
         }
     }
-}
-
-
