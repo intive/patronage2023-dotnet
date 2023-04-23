@@ -22,8 +22,8 @@ public class MediatRCommandHandlerAdapter<T> : IRequestHandler<T>
 	}
 
 	/// <inheritdoc/>
-	public async Task Handle(T command, CancellationToken cancellationToken)
+	public Task Handle(T command, CancellationToken cancellationToken)
 	{
-		await this.inner.Handle(command, cancellationToken);
+		return this.inner.Handle(command, cancellationToken);
 	}
 }
