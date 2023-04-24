@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\git\src\modules\example\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
-    <ProjectReference Include="..\..\..\..\..\git\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\modules\example\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

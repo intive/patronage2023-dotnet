@@ -6,7 +6,7 @@ namespace Intive.Patronage2023.Api.Configuration;
 public static class CorsPolicyConfigurationExtensions
 {
 	/// <summary>
-	/// Eetension method named that extends the IServiceCollection interface, that add Cross-Origin Resource Sharing (CORS) middleware to an application.
+	/// Extension method named that extends the IServiceCollection interface, that add Cross-Origin Resource Sharing (CORS) middleware to an application.
 	/// </summary>
 	/// <param name="services">IServiceCollection object.</param>
 	/// <param name="configuration">IConfiguration object.</param>
