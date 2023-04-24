@@ -45,7 +45,7 @@ public static class ServiceProviderExtension
 	/// </summary>
 	/// <param name="services">Service collection.</param>
 	/// <param name="type">Type of interface implemented by the class.</param>
-	/// <param name="assemblies">Assemblies that we pass into method.</param>
+	/// <param name="assemblies">assemblies to search for concrete types.</param>
 	/// <returns>Service collection with registered class.</returns>
 	public static IServiceCollection AddFromAssemblies(this IServiceCollection services, Type type, params Assembly[] assemblies)
 	{
