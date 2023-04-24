@@ -10,11 +10,12 @@ using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
+
 using Keycloak.AuthServices.Authentication;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Logging.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,13 +26,7 @@ builder.Services.AddCors(builder.Configuration, corsPolicyName);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Logging.AddApplicationInsights(
-		configureTelemetryConfiguration: (config) =>
-		config.ConnectionString = builder.Configuration.GetConnectionString("APPLICATIONINSIGHTS_CONNECTION_STRING"),
-		configureApplicationInsightsLoggerOptions: (options) => { });
-
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("category", LogLevel.Trace);
-
+builder.AddTelemetry();
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;

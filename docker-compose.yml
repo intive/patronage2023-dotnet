@@ -22,3 +22,5 @@ services:
     depends_on:
       - db
       - mssqlscripts
+  smtp4dev:
+    image: "rnwood/smtp4dev"
