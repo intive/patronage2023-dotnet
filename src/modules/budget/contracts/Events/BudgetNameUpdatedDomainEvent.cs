@@ -1,4 +1,4 @@
-﻿using Intive.Patronage2023.Shared.Infrastructure.Events;
+using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 

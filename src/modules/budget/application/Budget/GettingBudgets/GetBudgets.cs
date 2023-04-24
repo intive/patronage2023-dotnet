@@ -37,15 +37,15 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 /// <summary>
 /// Get Budgets handler.
 /// </summary>
-public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
+public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetBudgetQueryHandler"/> class.
+	/// Initializes a new instance of the <see cref="GetBudgetsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetBudgetQueryHandler(BudgetDbContext budgetDbContext)
+	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
 	}
@@ -65,8 +65,8 @@ public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetI
 			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
-		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync();
-		int totalItemsCount = await budgets.CountAsync();
+		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync(cancellationToken: cancellationToken);
+		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
 		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
 	}
