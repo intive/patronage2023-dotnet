@@ -14,18 +14,18 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests.Dat
 
         public DatabaseFixture()
         {
-            Db = new SqlConnection("MyConnectionString");
+            this.Db = new SqlConnection("MyConnectionString");
             var options = new DbContextOptionsBuilder<ExampleDbContext>()
-                .UseSqlServer(Db)
+                .UseSqlServer(this.Db)
                 .Options;
 
-            DbContext = new ExampleDbContext(options);
+            this.DbContext = new ExampleDbContext(options);
         }
 
         public void Dispose()
         {
-            Db.Dispose();
-            DbContext.Dispose();
+            this.Db.Dispose();
+            this.DbContext.Dispose();
         }
     }
 
@@ -35,6 +35,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests.Dat
 
         public GetExampleQueryHandlerTests(DatabaseFixture fixture)
         {
-            _fixture = fixture;
+            this._fixture = fixture;
         }
     }

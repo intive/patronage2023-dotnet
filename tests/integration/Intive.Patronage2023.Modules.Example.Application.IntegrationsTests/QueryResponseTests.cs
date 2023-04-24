@@ -8,13 +8,15 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
 
 public class ExampleAggregate
 {
+	
+
 	public int Id { get; set; }
 	public string Name { get; set; }
 
 	public ExampleAggregate(int id, string name)
 	{
-		Id = id;
-		Name = name;
+		this.Id = id;
+		this.Name = name;
 	}
 }
 
