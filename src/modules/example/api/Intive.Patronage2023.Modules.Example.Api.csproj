@@ -7,10 +7,9 @@
 		<Namespace>Intive.Patronage2023.Modules.Example.Api</Namespace>
 		<OutputType>Library</OutputType>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
-	<PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />

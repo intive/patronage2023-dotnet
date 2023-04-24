@@ -1,22 +1,35 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Domain.Rules;
+
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
 /// <summary>
 /// Budget of aggregate root.
 /// </summary>
-public partial class BudgetAggregate : Aggregate
+public class BudgetAggregate : Aggregate
 {
-	private BudgetAggregate(Guid id, string name, Guid userId, BudgetLimit budgetLimit, BudgetPeriod budgetDuration, string description, string iconName)
+	// For Entity
+	private BudgetAggregate(Guid id, string name, Guid userId, string? icon, string? description, DateTime createdOn)
+	{
+		this.Id = id;
+		this.Name = name;
+		this.UserId = userId;
+		this.Icon = icon;
+		this.Description = description;
+		this.CreatedOn = createdOn;
+	}
+
+	private BudgetAggregate(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
 		if (id == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		var budgetCreated = new BudgetCreatedDomainEvent(id, name, userId, budgetLimit, budgetDuration, description, iconName);
+		var budgetCreated = new BudgetCreatedDomainEvent(id, name, userId, limit, period, description, icon);
 		this.Apply(budgetCreated, this.Handle);
 	}
 
@@ -38,12 +51,12 @@ public partial class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget limit.
 	/// </summary>
-	public BudgetLimit Limit { get; private set; } = default!;
+	public Money Limit { get; private set; } = default!;
 
 	/// <summary>
 	/// Budget time span.
 	/// </summary>
-	public BudgetPeriod Period { get; private set; } = default!;
+	public Period Period { get; private set; } = default!;
 
 	/// <summary>
 	/// Budget icon.
@@ -53,7 +66,7 @@ public partial class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget describtion.
 	/// </summary>
-	public string? Describtion { get; private set; }
+	public string? Description { get; private set; }
 
 	/// <summary>
 	/// Budget creation date.
@@ -69,11 +82,11 @@ public partial class BudgetAggregate : Aggregate
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="icon">Budget Icon.</param>
-	/// <param name="describtion">Budget Describtion.</param>
+	/// <param name="description">Budget Describtion.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name, Guid userId, BudgetLimit limit, BudgetPeriod period, string icon, string describtion)
+	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string icon, string description)
 	{
-		return new BudgetAggregate(id, name, userId, limit, period, icon, describtion);
+		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
 	}
 
 	/// <summary>
@@ -102,7 +115,7 @@ public partial class BudgetAggregate : Aggregate
 		this.Limit = @event.Limit;
 		this.Period = @event.Period;
 		this.Icon = @event.Icon;
-		this.Describtion = @event.Describtion;
+		this.Description = @event.Description;
 		this.CreatedOn = @event.Timestamp;
 	}
 }

@@ -27,11 +27,10 @@ public class HandleCreateExample : ICommandHandler<CreateExample>
 	}
 
 	/// <inheritdoc/>
-	public Task Handle(CreateExample command, CancellationToken cancellationToken)
+	public async Task Handle(CreateExample command, CancellationToken cancellationToken)
 	{
 		var example = ExampleAggregate.Create(command.Id, command.Name);
 
-		this.exampleRepository.Persist(example);
-		return Task.CompletedTask;
+		await this.exampleRepository.Persist(example);
 	}
 }
