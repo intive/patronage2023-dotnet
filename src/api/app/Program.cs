@@ -57,10 +57,10 @@ builder.Services.AddControllers(options =>
 			.RequireAuthenticatedUser()
 			.Build())));
 
-builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
-builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
-builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
-builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), typeof(IDomainEventHandler<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), typeof(IEventDispatcher<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), typeof(IQueryHandler<,>).Assembly);
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
