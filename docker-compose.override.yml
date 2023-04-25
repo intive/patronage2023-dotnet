@@ -1,4 +1,4 @@
-version: '3.4'
+﻿version: '3.4'
 
 services:
   db:
@@ -20,9 +20,9 @@ services:
       - "5080:80"
       - "5081:443"
     volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-      - ${USERPROFILE}/.aspnet/https:/https/
+      - ${HOME}/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+      - ${HOME}/.aspnet/https:/root/.aspnet/https:ro
+      - ${HOME}/.aspnet/https:/https/
   keycloak:
     command:
      - "-Dkeycloak.migration.action=import"
@@ -48,3 +48,12 @@ services:
     volumes:
       - ./realm-config.json:/root/data/import/realm-config.json
     restart: always
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"

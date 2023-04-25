@@ -22,3 +22,5 @@ services:
     depends_on:
       - db
       - mssqlscripts
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
