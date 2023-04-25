@@ -135,6 +135,8 @@ public class BudgetController : ControllerBase
 	///
 	/// Types: "Income" , "Expense"
 	///
+	/// Value must be positive for income or negative for expense.
+	///
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
 	///
 	///     POST
@@ -179,7 +181,6 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	///
-	///     POST
 	///     {
 	///         "pageSize": 1,
 	///         "pageIndex": 1,

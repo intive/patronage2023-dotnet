@@ -30,7 +30,7 @@ internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfig
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").HasConversion<string>().IsRequired();
 		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
-		builder.Property(x => x.Value).HasColumnName("Value").HasColumnType("decimal").IsRequired();
+		builder.Property(x => x.Value).HasColumnName("Value").HasColumnType("decimal(19,4)").IsRequired();
 		builder.Property(x => x.CategoryType).HasColumnName("CategoryType").HasConversion<string>().IsRequired();
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 	}

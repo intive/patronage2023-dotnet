@@ -8,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// <param name="Type">Type of Transaction.</param>
 /// <param name="Id">Transaction Id.</param>
 /// <param name="Name">Name of Transaction.</param>
-/// <param name="Value">Value.</param>
+/// <param name="Value">Value must be positive for income or negative for expense.</param>
 /// <param name="Category">Transaction Category.</param>
 /// <param name="TransactionDate">Transaction Date.</param>
 public record CreateTransaction(
