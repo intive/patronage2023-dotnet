@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Contracts;
+namespace Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 /// <summary>
 /// Record That represents Transaction Id.
 /// </summary>

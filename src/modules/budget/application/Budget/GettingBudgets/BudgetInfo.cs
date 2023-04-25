@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Contracts;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 

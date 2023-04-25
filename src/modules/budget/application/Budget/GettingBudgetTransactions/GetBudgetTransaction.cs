@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Modules.Budget.Contracts;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -12,7 +12,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// Get Budgets query.
 /// </summary>
-public record GetBudgetTransaction() : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
+public record GetBudgetTransaction : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
 {
 	/// <summary>
 	/// The amount of data to return.
@@ -27,7 +27,7 @@ public record GetBudgetTransaction() : IQuery<PagedList<BudgetTransactionInfo>>,
 	/// <summary>
 	/// Budget Id.
 	/// </summary>
-	public BudgetId BudgetId { get; set; }
+	public BudgetId BudgetId { get; init; }
 }
 
 /// <summary>

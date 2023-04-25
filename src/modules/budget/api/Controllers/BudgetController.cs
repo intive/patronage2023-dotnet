@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -117,7 +118,7 @@ public class BudgetController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(request);
-			return this.Created($"Budget/{request.Id}", request.Id);
+			return this.Created(string.Empty, request.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
@@ -126,6 +127,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Creates Income / Expense Budget Transaction.
 	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="command">Command that creates Transaction to specific budget.</param>
 	/// <returns>Created Result.</returns>
 	/// <remarks>
@@ -138,12 +140,7 @@ public class BudgetController : ControllerBase
 	///     POST
 	///     {
 	///         "type": "Income",
-	///         "transactionId": {
-	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///         },
-	///         "budgetId": {
-	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///         },
+	///         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///         "name": "string",
 	///         "value": 1,
 	///         "category": "HomeSpendings",
@@ -156,17 +153,18 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost("{budgetId:guid}/transaction")]
-	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction command)
+	public async Task<IActionResult> CreateNewTransaction([FromRoute] Guid budgetId, [FromBody] CreateTransaction command)
 	{
 		Guid transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
 
-		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, command.BudgetId, command.Name, command.Value, command.Category, transactionDate);
+		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
+
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(newBudgetTransaction);
-			return this.Created($"Transaction/{newBudgetTransaction.Id}", newBudgetTransaction.Id);
+			return this.Created(string.Empty, newBudgetTransaction.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);
@@ -175,6 +173,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Get Budget by id with transactions.
 	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="request">Query parameters.</param>
 	/// <returns>Budget details, list of incomes and Expenses.</returns>
 	/// <remarks>
@@ -184,9 +183,6 @@ public class BudgetController : ControllerBase
 	///     {
 	///         "pageSize": 1,
 	///         "pageIndex": 1,
-	///         "budgetId": {
-	///            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///         }
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -195,12 +191,18 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromBody] GetBudgetTransaction request)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetPageSizeAndPageIndex request)
 	{
-		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(request);
+		var getBudgetTransactions = new GetBudgetTransaction
+		{
+			BudgetId = new BudgetId(budgetId),
+			PageSize = request.PageSize,
+			PageIndex = request.PageIndex,
+		};
+		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(request);
+			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
 			return this.Ok(pagedList);
 		}
 
