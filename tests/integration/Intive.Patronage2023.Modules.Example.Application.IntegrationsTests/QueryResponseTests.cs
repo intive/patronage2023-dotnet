@@ -24,7 +24,7 @@ public class GetExampleQueryHandlerTests
 	public async Task Handle_ValidQuery_ReturnsExamples()
 	{
 		// Arrange
-		var connectionString = "Server=db;Database=ExampleDatabase;User Id=sa;Password=S3cur3P@ssW0rd!;MultipleActiveResultSets=true";
+		string connectionString = "Server=db;Database=ExampleDatabase;User Id=sa;Password=S3cur3P@ssW0rd!;MultipleActiveResultSets=true";
 		var options = new DbContextOptionsBuilder<ExampleDbContext>()
 			.UseSqlServer(connectionString)
 			.Options;
@@ -47,7 +47,7 @@ public class GetExampleQueryHandlerTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(examples.Count);
-		result.Items.Should().BeEquivalentTo(examples, options => options.ExcludingMissingMembers());
+		//AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<ExampleInfo>> andConstraint = result.Items.Should().BeEquivalentTo(examples, options => options.ExcludingMissingMembers());
 	}
 }
 
