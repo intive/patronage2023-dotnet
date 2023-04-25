@@ -10,4 +10,9 @@ public class PagedList<T>
 	/// List of items of generic type.
 	/// </summary>
 	public List<T> Items { get; set; }
+
+	/// <summary>
+	/// Total count of items.
+	/// </summary>
+	public int TotalCount { get; set; }
 }

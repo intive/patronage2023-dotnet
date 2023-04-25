@@ -1,4 +1,4 @@
-﻿namespace Intive.Patronage2023.Shared.Abstractions.Domain;
+namespace Intive.Patronage2023.Shared.Abstractions.Domain;
 
 /// <summary>
 /// Business rule interface.
