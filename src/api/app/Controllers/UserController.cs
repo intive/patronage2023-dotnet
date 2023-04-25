@@ -2,7 +2,7 @@ using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Api.User.CreatingUser;
-using Intive.Patronage2023.Api.User.Queries;
+using Intive.Patronage2023.Api.User.SignIn;
 using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;

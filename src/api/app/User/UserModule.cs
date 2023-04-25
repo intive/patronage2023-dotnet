@@ -1,6 +1,6 @@
 using FluentValidation;
 using Intive.Patronage2023.Api.User.CreatingUser;
-using Intive.Patronage2023.Api.User.Queries;
+using Intive.Patronage2023.Api.User.SignIn;
 
 namespace Intive.Patronage2023.Api.User;
 
