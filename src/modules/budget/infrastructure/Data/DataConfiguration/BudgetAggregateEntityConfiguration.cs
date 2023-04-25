@@ -17,11 +17,11 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 	/// <param name="builder">builder.</param>
 	public void Configure(EntityTypeBuilder<BudgetAggregate> builder)
 	{
-		builder.HasKey(x => x.BudgetId);
+		builder.HasKey(x => x.Id);
 		builder.ToTable("Budget", "Budgets");
-		builder.Property(e => e.BudgetId)
+		builder.Property(e => e.Id)
 			.HasConversion(BudgetConverters.BudgetIdConverter());
-		builder.Property(x => x.BudgetId).HasColumnName("Id");
+		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 	}

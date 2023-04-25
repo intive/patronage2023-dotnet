@@ -11,7 +11,7 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction Type.
 	/// </summary>
-	public TransactionTypes TransactionType { get; init; }
+	public TransactionType TransactionType { get; init; }
 
 	/// <summary>
 	/// Transaction Id.
@@ -41,5 +41,5 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction Category.
 	/// </summary>
-	public CategoriesType CategoryType { get; init; }
+	public CategoryType CategoryType { get; init; }
 }

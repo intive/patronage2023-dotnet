@@ -15,14 +15,14 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <param name="name">Budget name.</param>
 	public BudgetCreatedDomainEvent(BudgetId id, string name)
 	{
-		this.BudgetId = id;
+		this.Id = id;
 		this.Name = name;
 	}
 
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public BudgetId BudgetId { get; }
+	public BudgetId Id { get; }
 
 	/// <summary>
 	/// Budget name.

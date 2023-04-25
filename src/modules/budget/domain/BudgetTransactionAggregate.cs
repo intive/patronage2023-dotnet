@@ -10,9 +10,9 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetTransactionAggregate : Aggregate
 {
-	private BudgetTransactionAggregate(TransactionId transactionId, BudgetId budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(transactionId, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -24,12 +24,12 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <summary>
 	/// Reference to transaction ID.
 	/// </summary>
-	public TransactionId TransactionId { get; private set; }
+	public TransactionId Id { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction eg. income/Expense.
 	/// </summary>
-	public TransactionTypes TransactionType { get; set; }
+	public TransactionType TransactionType { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction name.
@@ -39,17 +39,17 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <summary>
 	/// Value of new created income/Expense.
 	/// </summary>
-	public decimal Value { get; set; }
+	public decimal Value { get; private set; }
 
 	/// <summary>
 	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
-	public CategoriesType CategoryType { get; set; }
+	public CategoryType CategoryType { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction creation date.
 	/// </summary>
-	public DateTime BudgetTransactionDate { get; set; }
+	public DateTime BudgetTransactionDate { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction creation date.
@@ -67,14 +67,14 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <param name="categoryType">Enum of income/Expense Categories.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionTypes transactionType, string name, decimal value, CategoriesType categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
 		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 	}
 
 	private void Handle(BudgetTransactionCreatedDomainEvent @event)
 	{
-		this.TransactionId = @event.Id;
+		this.Id = @event.Id;
 		this.BudgetId = @event.BudgetId;
 		this.TransactionType = @event.TransactionType;
 		this.Name = @event.Name;

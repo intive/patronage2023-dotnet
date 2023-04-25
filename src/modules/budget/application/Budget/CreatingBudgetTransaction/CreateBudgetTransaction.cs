@@ -16,12 +16,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// <param name="Category">Enum of income/Expense Categories.</param>
 /// <param name="TransactionDate">Date of creation budget transaction.</param>
 public record CreateBudgetTransaction(
-	TransactionTypes Type,
-	TransactionId Id,
-	BudgetId BudgetId,
+	TransactionType Type,
+	Guid Id,
+	Guid BudgetId,
 	string Name,
 	decimal Value,
-	CategoriesType Category,
+	CategoryType Category,
 	DateTime TransactionDate) : ICommand;
 
 /// <summary>
@@ -43,8 +43,10 @@ public class CreateBudgetTransactionCommandHandler : ICommandHandler<CreateBudge
 	/// <inheritdoc/>
 	public async Task Handle(CreateBudgetTransaction command, CancellationToken cancellationToken)
 	{
-		decimal transactionValue = command.Type == TransactionTypes.Expense ? (command.Value * -1) : command.Value;
-		var budgetTransaction = BudgetTransactionAggregate.Create(command.Id, command.BudgetId, command.Type, command.Name, transactionValue, command.Category, command.TransactionDate);
+		decimal transactionValue = command.Type == TransactionType.Expense ? (command.Value * -1) : command.Value;
+		TransactionId id = new TransactionId(command.Id);
+		BudgetId budgetId = new BudgetId(command.BudgetId);
+		var budgetTransaction = BudgetTransactionAggregate.Create(id, budgetId, command.Type, command.Name, transactionValue, command.Category, command.TransactionDate);
 
 		await this.budgetTransactionRepository.Persist(budgetTransaction);
 	}

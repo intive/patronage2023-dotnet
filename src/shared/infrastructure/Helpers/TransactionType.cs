@@ -3,7 +3,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Helpers;
 /// <summary>
 /// Enumeration of budget transaction types.
 /// </summary>
-public enum TransactionTypes
+public enum TransactionType
 {
 	/// <summary>
 	/// Income which will be added to your budget.

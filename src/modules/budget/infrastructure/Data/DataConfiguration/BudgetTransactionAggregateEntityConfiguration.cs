@@ -17,16 +17,16 @@ internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfig
 	public void Configure(EntityTypeBuilder<BudgetTransactionAggregate> builder)
 	{
 		builder.ToTable("BudgetTransaction", "Budgets");
-		builder.HasKey(x => x.TransactionId);
+		builder.HasKey(x => x.Id);
 
 		builder.HasOne<BudgetAggregate>().WithMany().HasForeignKey(k => k.BudgetId);
-		builder.Property(e => e.TransactionId)
+		builder.Property(e => e.Id)
 			.HasConversion(BudgetConverters.TransactionIdConverter());
 
 		builder.Property(e => e.BudgetId)
 			.HasConversion(BudgetConverters.BudgetIdConverter());
 
-		builder.Property(x => x.TransactionId).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
+		builder.Property(x => x.Id).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").HasConversion<string>().IsRequired();
 		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();

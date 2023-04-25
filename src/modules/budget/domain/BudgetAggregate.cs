@@ -10,21 +10,21 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetAggregate : Aggregate
 {
-	private BudgetAggregate(BudgetId budgetId, string name)
+	private BudgetAggregate(BudgetId id, string name)
 	{
-		if (budgetId.Value == Guid.Empty)
+		if (id.Value == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		var budgetCreated = new BudgetCreatedDomainEvent(budgetId, name);
+		var budgetCreated = new BudgetCreatedDomainEvent(id, name);
 		this.Apply(budgetCreated, this.Handle);
 	}
 
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public BudgetId BudgetId { get; private set; }
+	public BudgetId Id { get; private set; }
 
 	/// <summary>
 	/// Budget name.
@@ -39,12 +39,12 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Create Budget.
 	/// </summary>
-	/// <param name="budgetId">Unique identifier.</param>
+	/// <param name="id">Unique identifier.</param>
 	/// <param name="name">Budget name.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(BudgetId budgetId, string name)
+	public static BudgetAggregate Create(BudgetId id, string name)
 	{
-		return new BudgetAggregate(budgetId, name);
+		return new BudgetAggregate(id, name);
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ public class BudgetAggregate : Aggregate
 	{
 		this.CheckRule(new SuperImportantBudgetBusinessRule(name));
 
-		var evt = new BudgetNameUpdatedDomainEvent(this.BudgetId, name);
+		var evt = new BudgetNameUpdatedDomainEvent(this.Id, name);
 
 		this.Apply(evt, this.Handle);
 	}
@@ -67,7 +67,7 @@ public class BudgetAggregate : Aggregate
 
 	private void Handle(BudgetCreatedDomainEvent @event)
 	{
-		this.BudgetId = @event.BudgetId;
+		this.Id = @event.Id;
 		this.Name = @event.Name;
 		this.CreatedOn = @event.Timestamp;
 	}

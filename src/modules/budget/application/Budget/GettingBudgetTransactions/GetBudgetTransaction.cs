@@ -55,9 +55,13 @@ public class GetTransactionQueryHandler : IQueryHandler<GetBudgetTransaction, Pa
 	public async Task<PagedList<BudgetTransactionInfo>> Handle(GetBudgetTransaction query, CancellationToken cancellationToken)
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable();
-
-		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map).Where(x => x.BudgetId == query.BudgetId).Paginate(query).OrderBy(x => x.BudgetTransactionDate).ToListAsync();
-		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData };
+		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
+		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)
+			.Where(x => x.BudgetId == query.BudgetId)
+			.Paginate(query)
+			.OrderBy(x => x.BudgetTransactionDate)
+			.ToListAsync(cancellationToken: cancellationToken);
+		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
 	}
 }

@@ -8,7 +8,6 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Modules.Budget.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -156,12 +155,10 @@ public class BudgetController : ControllerBase
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	[HttpPost("Transaction/Create")]
+	[HttpPost("{budgetId:guid}/transaction")]
 	public async Task<IActionResult> CreateNewTransaction([FromBody] CreateBudgetTransaction command)
 	{
-		var id = command.Id.Value == default ? Guid.NewGuid() : command.Id.Value;
-		var transactionId = new TransactionId(id);
-
+		Guid transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
 
 		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, command.BudgetId, command.Name, command.Value, command.Category, transactionDate);
@@ -195,7 +192,7 @@ public class BudgetController : ControllerBase
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
 	/// <response code="400">If the query is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpPost("Transactions")]
+	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetTransactionByBudgetId([FromBody] GetBudgetTransaction request)

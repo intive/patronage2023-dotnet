@@ -34,7 +34,7 @@ public class BudgetTransactionRepository : IBudgetTransactionRepository
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
 	public Task<BudgetTransactionAggregate> GetById(TransactionId id)
-		=> this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.TransactionId == id);
+		=> this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
