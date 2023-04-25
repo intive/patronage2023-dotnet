@@ -36,7 +36,8 @@ public class GetExampleQueryHandlerTests
 				new ExampleAggregate(3, "Example 3")
 			};
 
-		dbContext.Example.AddRange((IEnumerable<Domain.ExampleAggregate>)examples);
+		//dbContext.Examples.AddRange(examples);
+		await dbContext.SaveChangesAsync();
 		dbContext.SaveChanges();
 		var query = new GetExamples();
 		var handler = new GetExampleQueryHandler(dbContext);
