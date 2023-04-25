@@ -9,12 +9,12 @@ public class DatabaseFixture : IDisposable
 {
 	public SqlConnection Db { get; private set; }
 	public ExampleDbContext DbContext { get; private set; }
-	public string ConnectionString { get; set; }
+	public string? ConnectionString { get; set; }
 
 	public DatabaseFixture()
 	{
-		var saPassword = Environment.GetEnvironmentVariable("SA_PASSWORD");
-		var connectionString = $"Server=localhost,1433;Database=Keycloak;User Id=sa;Password={saPassword};";
+		string? saPassword = Environment.GetEnvironmentVariable("S3cur3P@ssW0rd!");
+		string? connectionString = $"Server=localhost,1433;Database=Keycloak;User Id=sa;Password={saPassword};";
 		this.Db = new SqlConnection(connectionString);
 		var options = new DbContextOptionsBuilder<ExampleDbContext>()
 			.UseSqlServer(this.Db)
