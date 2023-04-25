@@ -39,11 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Example.Application.Tests", "tests\unit\Intive.Patronage2023.Example.Application.Tests\Intive.Patronage2023.Example.Application.Tests.csproj", "{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4380D66A-E4F4-4D0F-BACA-2FAF546ADD6E} = {4380D66A-E4F4-4D0F-BACA-2FAF546ADD6E}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "budget", "budget", "{E0DDA671-F144-4893-9DB8-9ED358EA423D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.Budget.Api", "src\modules\budget\api\Intive.Patronage2023.Modules.Budget.Api.csproj", "{80C7B72D-20A2-4480-BFF5-440D481D90DF}"
@@ -59,6 +54,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Budget.Domain.Tests", "tests\unit\Intive.Patronage2023.Budget.Domain.Tests\Intive.Patronage2023.Budget.Domain.Tests.csproj", "{FC82E26F-63D3-47F9-80D1-098190A05D67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Budget.Application.Tests", "tests\unit\Intive.Patronage2023.Budget.Application.Tests\Intive.Patronage2023.Budget.Application.Tests.csproj", "{D4117491-2AB8-4A24-8866-41B862B2678A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker\docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,10 +107,6 @@ Global
 		{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1AEFB25-31E7-4983-B80F-0DDE1B56EC3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80C7B72D-20A2-4480-BFF5-440D481D90DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80C7B72D-20A2-4480-BFF5-440D481D90DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C7B72D-20A2-4480-BFF5-440D481D90DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -142,6 +135,10 @@ Global
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
