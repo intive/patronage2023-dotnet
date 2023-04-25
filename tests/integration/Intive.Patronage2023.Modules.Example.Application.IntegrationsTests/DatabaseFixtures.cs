@@ -13,8 +13,9 @@ public class DatabaseFixture : IDisposable
 
 	public DatabaseFixture()
 	{
-		// Here should be replaced "connection_string" with a valid connection string that points to the database server
-		this.Db = new SqlConnection("connection_string");
+		var saPassword = Environment.GetEnvironmentVariable("SA_PASSWORD");
+		var connectionString = $"Server=localhost,1433;Database=Keycloak;User Id=sa;Password={saPassword};";
+		this.Db = new SqlConnection(connectionString);
 		var options = new DbContextOptionsBuilder<ExampleDbContext>()
 			.UseSqlServer(this.Db)
 			.Options;

@@ -8,8 +8,6 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
 
 public class ExampleAggregate
 {
-	
-
 	public int Id { get; set; }
 	public string Name { get; set; }
 
@@ -26,8 +24,9 @@ public class GetExampleQueryHandlerTests
 	public async Task Handle_ValidQuery_ReturnsExamples()
 	{
 		// Arrange
+		var connectionString = "Server=db;Database=ExampleDatabase;User Id=sa;Password=S3cur3P@ssW0rd!;MultipleActiveResultSets=true";
 		var options = new DbContextOptionsBuilder<ExampleDbContext>()
-			.UseInMemoryDatabase(databaseName: "ExampleDatabase")
+			.UseSqlServer(connectionString)
 			.Options;
 		var dbContext = new ExampleDbContext(options);
 		var examples = new List<ExampleAggregate>

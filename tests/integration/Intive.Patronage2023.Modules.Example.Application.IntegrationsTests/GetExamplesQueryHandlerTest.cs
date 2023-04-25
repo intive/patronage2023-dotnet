@@ -23,8 +23,9 @@ public class GetExampleQueryHandlerTests : IClassFixture<DatabaseFixture>
         {
 		// Arrange
 		var options = new DbContextOptionsBuilder<ExampleDbContext>()
-		.UseMySql(this._fixture.ConnectionString, ServerVersion.AutoDetect(this._fixture.ConnectionString))
+		.UseSqlServer("Server=db;Database=Example;User=sa;Password=S3cur3P@ssW0rd!;MultipleActiveResultSets=True;")
 		.Options;
+
 
 
 		var dbContext = new ExampleDbContext(options);
