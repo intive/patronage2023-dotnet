@@ -21,11 +21,13 @@ public class GetExampleQueryHandlerTests : IClassFixture<DatabaseFixture>
         [Fact]
         public async Task Handle_WhenCalled_ShouldReturnPagedList()
         {
-            // Arrange
-            var options = new DbContextOptionsBuilder<ExampleDbContext>()
-                .UseMySql(this._fixture.ConnectionString)
-                .Options;
-            var dbContext = new ExampleDbContext(options);
+		// Arrange
+		var options = new DbContextOptionsBuilder<ExampleDbContext>()
+		.UseMySql(this._fixture.ConnectionString, ServerVersion.AutoDetect(this._fixture.ConnectionString))
+		.Options;
+
+
+		var dbContext = new ExampleDbContext(options);
             var command = new CreateExample(Guid.NewGuid(), "example name");
             await dbContext.SaveChangesAsync();
             var query = new GetExamples();
