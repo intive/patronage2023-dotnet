@@ -81,10 +81,10 @@ public class BudgetAggregate : Aggregate
 	/// <param name="userId">Budget owner user id.</param>
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
+	/// <param name="description">Budget Description.</param>
 	/// <param name="icon">Budget Icon.</param>
-	/// <param name="description">Budget Describtion.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string icon, string description)
+	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
 		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
 	}
@@ -102,12 +102,40 @@ public class BudgetAggregate : Aggregate
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Edit budget.
+	/// </summary>
+	/// <param name="id">Budget id.</param>
+	/// <param name="name">Budget name.</param>
+	/// <param name="userId">User id.</param>
+	/// <param name="limit">Budget Limit.</param>
+	/// <param name="period">Budget Duration.</param>
+	/// <param name="description">Budget Describtion.</param>
+	/// <param name="icon">Budget Icon.</param>
+	public void EditBudget(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	{
+		var budgetEdited = new BudgetEditedDomainEvent(id, name, userId, limit, period, description, icon);
+		this.Apply(budgetEdited, this.Handle);
+	}
+
 	private void Handle(BudgetNameUpdatedDomainEvent @event)
 	{
 		this.Name = @event.NewName;
 	}
 
 	private void Handle(BudgetCreatedDomainEvent @event)
+	{
+		this.Id = @event.Id;
+		this.Name = @event.Name;
+		this.UserId = @event.UserId;
+		this.Limit = @event.Limit;
+		this.Period = @event.Period;
+		this.Icon = @event.Icon;
+		this.Description = @event.Description;
+		this.CreatedOn = @event.Timestamp;
+	}
+
+	private void Handle(BudgetEditedDomainEvent @event)
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;

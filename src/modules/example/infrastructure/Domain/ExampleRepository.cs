@@ -49,6 +49,19 @@ public class ExampleRepository : IExampleRepository
 		await this.exampleDbContext.SaveChangesAsync();
 	}
 
+	/// <summary>
+	/// Updates aggregate state.
+	/// </summary>
+	/// <param name="example">Aggregate.</param>
+	/// <returns>Task.</returns>
+	public async Task Update(ExampleAggregate example)
+	{
+		await this.domainEventDispatcher.Publish(example.UncommittedEvents);
+		this.HandleEvents(example.UncommittedEvents);
+		this.exampleDbContext.Example.Update(example);
+		await this.exampleDbContext.SaveChangesAsync();
+	}
+
 	private void HandleEvents(List<IEvent> uncommittedEvents)
 	{
 		foreach (var item in uncommittedEvents)
