@@ -1,4 +1,4 @@
-﻿using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -6,7 +6,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.Rules;
 
 /// <summary>
-/// Budget name uniqness business rule.
+/// Budget name uniqueness business rule.
 /// </summary>
 public class BudgetNameUniquenessBusinessRule : IBusinessRule
 {
