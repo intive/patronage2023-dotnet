@@ -29,7 +29,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		.NotNull()
 		.Length(3, 30);
 		this.RuleFor(budget => new { budget.Name, budget.UserId })
-		.MustAsync((x, cancellation) => this.AnyExistingBudget(x.Name, executionContextAccessor))
+		.MustAsync((x, cancellation) => this.NoExistingBudget(x.Name, executionContextAccessor, cancellation))
 		.WithMessage("{PropertyName} already exists. Choose a different name");
 		this.RuleFor(budget => budget.Period.StartDate)
 		.NotEmpty();
@@ -47,9 +47,9 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		.NotEmpty();
 	}
 
-	private async Task<bool> AnyExistingBudget(string name, IExecutionContextAccessor executionContextAccessor)
+	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Name.Equals(name) && b.UserId.Equals(executionContextAccessor.GetUserId()));
+		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Name.Equals(name) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
 		return !anyExistingBudget;
 	}
 }
