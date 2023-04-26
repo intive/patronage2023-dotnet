@@ -87,7 +87,6 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseExampleModule();
-app.UseBudgetModule();
 app.UseUserModule();
 
 app.UseAuthentication();
@@ -97,3 +96,10 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.Run();
+
+/// <summary>
+/// Docs.
+/// </summary>
+public partial class Program
+{
+}
