@@ -31,7 +31,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
 	{
-		BudgetId budgetId = new BudgetId(budgetGuid);
+		var budgetId = new BudgetId(budgetGuid);
 		var budget = await this.budgetRepository.GetById(budgetId);
 		if (budget == null)
 		{
@@ -51,9 +51,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		{
 			return amount < 0;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }
