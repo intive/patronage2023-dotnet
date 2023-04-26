@@ -14,7 +14,6 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 /// <param name="Period">Budget time span.</param>
 /// <param name="Description">Description.</param>
 /// <param name="IconName">Budget icon identifier.</param>
-
 public record CreateBudget(Guid Id, string Name, Guid UserId, Money Limit, Period Period, string Description, string IconName) : ICommand;
 
 /// <summary>
