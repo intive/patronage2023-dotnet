@@ -37,15 +37,15 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 /// <summary>
 /// Get Budgets handler.
 /// </summary>
-public class GetBudgetQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
+public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetBudgetQueryHandler"/> class.
+	/// Initializes a new instance of the <see cref="GetBudgetsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetBudgetQueryHandler(BudgetDbContext budgetDbContext)
+	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
 	}

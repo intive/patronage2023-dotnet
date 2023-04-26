@@ -100,11 +100,21 @@ public class BudgetController : ControllerBase
 	/// Sample request:
 	///
 	///     {
-	///        "id": {
-	///           "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-	///        },
-	///        "name": "string"
+	///       "id": "3e6ca5f0-5ef8-44bc-a8bc-175c826b39b4",
+	///       "name": "budgetName",
+	///       "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///       "limit": {
+	///         "value": 15,
+	///         "currency": 1
+	///       },
+	///       "period": {
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	///       },
+	///       "description": "some budget description",
+	///       "iconName": "yellowIcon"
 	///     }
+	///
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
 	/// <response code="400">If the body is not valid.</response>
