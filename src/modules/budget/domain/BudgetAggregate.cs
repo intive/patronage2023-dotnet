@@ -23,7 +23,7 @@ public class BudgetAggregate : Aggregate
 		this.CreatedOn = createdOn;
 	}
 
-	private BudgetAggregate(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
 		if (id.Value == Guid.Empty)
 		{
@@ -85,7 +85,7 @@ public class BudgetAggregate : Aggregate
 	/// <param name="icon">Budget Icon.</param>
 	/// <param name="description">Budget Describtion.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string icon, string description)
+	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description)
 	{
 		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
 	}
