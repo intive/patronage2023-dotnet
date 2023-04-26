@@ -1,4 +1,3 @@
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using MediatR;
@@ -22,9 +21,6 @@ public static class SharedModule
 		services.AddTransient(typeof(INotificationHandler<>), typeof(MediatrEventHandlerAdapter<>));
 		services.AddTransient(typeof(IRequestHandler<,>), typeof(MediatRQueryHandlerAdapter<,>));
 		services.AddTransient(typeof(IRequestHandler<>), typeof(MediatRCommandHandlerAdapter<>));
-
-		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-
 		return services;
 	}
 }

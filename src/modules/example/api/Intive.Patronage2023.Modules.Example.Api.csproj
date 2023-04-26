@@ -7,7 +7,6 @@
 		<Namespace>Intive.Patronage2023.Modules.Example.Api</Namespace>
 		<OutputType>Library</OutputType>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 	</PropertyGroup>
 
   <ItemGroup>

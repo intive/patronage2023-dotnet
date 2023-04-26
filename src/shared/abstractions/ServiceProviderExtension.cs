@@ -12,15 +12,15 @@ namespace Intive.Patronage2023.Shared.Abstractions;
 public static class ServiceProviderExtension
 {
 	/// <summary>
-	/// Register from assemblies using extra param, assemblies.
+	/// Registration from assemblies.
 	/// </summary>
 	/// <param name="services">Service collection.</param>
 	/// <param name="type">Type of interface implemented by the class.</param>
-	/// <param name="assemblies">Assemblies to search for concrete types.</param>
 	/// <returns>Service collection with registered class.</returns>
-	public static IServiceCollection AddFromAssemblies(this IServiceCollection services, Type type, params Assembly[] assemblies)
+	public static IServiceCollection AddFromAssemblies(this IServiceCollection services, Type type)
 	{
-		var concreteTypes = assemblies
+		var concreteTypes = AppDomain.CurrentDomain
+			.GetAssemblies()
 			.SelectMany(x => x.GetTypes())
 			.Where(x => x.GetInterfaces().Any(y => type.IsGenericType ? (y.IsGenericType && y.GetGenericTypeDefinition() == type) : y == type))
 			.ToList();

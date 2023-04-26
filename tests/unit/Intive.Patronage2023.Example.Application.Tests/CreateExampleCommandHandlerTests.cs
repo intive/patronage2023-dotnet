@@ -33,7 +33,7 @@ public class CreateExampleCommandHandlerTests
 	/// interface and verify that the "Persist" method is called once with the expected values.
 	/// </summary>
 	[Fact]
-	public async void Handle_WhenCalled_ShouldCreatesExampleAggregateWithCorrectValues()
+	public void Handle_WhenCalled_ShouldCreatesExampleAggregateWithCorrectValues()
 	{
 		// Arrange
 		var id = Guid.NewGuid();
@@ -41,7 +41,7 @@ public class CreateExampleCommandHandlerTests
 		string name = new Faker().Name.FirstName();
 
 		// Act
-		await this.handleCreateExample.Handle(new CreateExample(id, name), cancellationToken);
+		this.handleCreateExample.Handle(new CreateExample(id, name), cancellationToken);
 
 		// Assert
 		this.exampleRepositoryMock.Verify(

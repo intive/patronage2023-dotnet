@@ -1,8 +1,8 @@
+﻿namespace Intive.Patronage2023.Shared.Infrastructure.Domain;
+
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
-
-namespace Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 /// <summary>
 /// Base Aggregate class.
