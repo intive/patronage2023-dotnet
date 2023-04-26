@@ -22,29 +22,37 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 		this.budgetDbContext = budgetDbContext;
 
 		this.RuleFor(budget => budget.Id)
-		.NotEmpty()
-		.NotNull();
+			.NotEmpty()
+			.NotNull();
+
 		this.RuleFor(budget => budget.Name)
-		.NotEmpty()
-		.NotNull()
-		.Length(3, 30);
+			.NotEmpty()
+			.NotNull()
+			.Length(3, 30);
+
 		this.RuleFor(budget => new { budget.Name, budget.UserId })
-		.MustAsync((x, cancellation) => this.NoExistingBudget(x.Name, executionContextAccessor, cancellation))
-		.WithMessage("{PropertyName} already exists. Choose a different name");
+			.MustAsync((x, cancellation) => this.NoExistingBudget(x.Name, executionContextAccessor, cancellation))
+			.WithMessage("{PropertyName} already exists. Choose a different name");
+
 		this.RuleFor(budget => budget.Period.StartDate)
-		.NotEmpty();
+			.NotEmpty();
+
 		this.RuleFor(budget => budget.Period.EndDate)
-		.NotEmpty();
+			.NotEmpty();
+
 		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate })
-		.Must(x => x.StartDate <= x.EndDate)
-		.WithMessage("The start date must be earlier than the end date");
+			.Must(x => x.StartDate <= x.EndDate)
+			.WithMessage("The start date must be earlier than the end date");
+
 		this.RuleFor(budget => budget.Limit)
-		.NotEmpty()
-		.NotNull();
+			.NotEmpty()
+			.NotNull();
+
 		this.RuleFor(budget => budget.Limit.Value)
-		.GreaterThan(0);
+			.GreaterThan(0);
+
 		this.RuleFor(budget => budget.Limit.Currency)
-		.NotEmpty();
+			.NotEmpty();
 	}
 
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
