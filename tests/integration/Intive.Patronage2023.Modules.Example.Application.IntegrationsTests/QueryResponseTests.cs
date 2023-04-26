@@ -16,6 +16,11 @@ public class ExampleAggregate
 		this.Id = id;
 		this.Name = name;
 	}
+
+	internal static object Create(Guid guid, string v)
+	{
+		throw new NotImplementedException();
+	}
 }
 
 public class GetExampleQueryHandlerTests
