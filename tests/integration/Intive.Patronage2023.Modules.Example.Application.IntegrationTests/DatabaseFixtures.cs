@@ -25,7 +25,7 @@ public class MsSqlTests : IAsyncLifetime
 
     public readonly IContainer _mssqlContainer = new ContainerBuilder()
         .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-        .WithPortBinding("1434", MsSqlPort.ToString())
+        .WithPortBinding("1433", MsSqlPort.ToString())
         .WithEnvironment("ACCEPT_EULA", "Y")
         .WithEnvironment("SQLCMDUSER", Username)
         .WithEnvironment("SQLCMDPASSWORD", Password)
@@ -89,7 +89,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
         public CustomWebApplicationFactory(MsSqlTests fixture)
         {
             this._connectionString =
-                $"Server=localhost,1434;Database={MsSqlTests.Database};User Id={MsSqlTests.Username};Password={MsSqlTests.Password};TrustServerCertificate=True";
+                $"Server=localhost,1433;Database={MsSqlTests.Database};User Id={MsSqlTests.Username};Password={MsSqlTests.Password};TrustServerCertificate=True";
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
