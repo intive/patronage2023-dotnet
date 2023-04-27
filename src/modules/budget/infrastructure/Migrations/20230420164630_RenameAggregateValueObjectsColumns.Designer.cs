@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230426082945_AddBudgetTransaction")]
-    partial class AddBudgetTransaction
+    [Migration("20230420164630_RenameAggregateValueObjectsColumns")]
+    partial class RenameAggregateValueObjectsColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id");
 
@@ -59,51 +60,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("Budget", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetTransactionAggregate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<Guid>("BudgetId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("BudgetId");
-
-                    b.Property<DateTime>("BudgetTransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CategoryType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CategoryType");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedOn");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
-
-                    b.Property<string>("TransactionType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("TransactionType");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(19,4)")
-                        .HasColumnName("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BudgetId");
-
-                    b.ToTable("BudgetTransaction", "Budgets");
-                });
-
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
@@ -130,7 +86,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", b =>
                 {
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Money", "Limit", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.BudgetLimit", "Limit", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
@@ -151,7 +107,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                                 .HasForeignKey("BudgetAggregateId");
                         });
 
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Period", "Period", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.BudgetPeriod", "Period", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
@@ -176,15 +132,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Period")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetTransactionAggregate", b =>
-                {
-                    b.HasOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", null)
-                        .WithMany()
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
