@@ -25,14 +25,14 @@ public class MsSqlTests : IAsyncLifetime
 	public const string Username = "sa";
 	public const string Password = "yourStrong(!)Password";
 	public const ushort MsSqlPort = 1433;
-	public const ushort MappedPort = 5000;
+	public const ushort MappedPort = 81;
 
 	public readonly IContainer _mssqlContainer = new ContainerBuilder()
 		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding(MappedPort.ToString(), MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
 		.WithEnvironment("MSSQL_SA_PASSWORD", Password)
-		.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5000).UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
+		.WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
 		.Build();
 
 	public Task InitializeAsync()
