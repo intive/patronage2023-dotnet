@@ -1,21 +1,21 @@
-using System.ComponentModel;
 using System.Data.Common;
+
 using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Containers;
+
 using FluentAssertions;
-using Intive.Patronage2023.Api;
-using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
+
 using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
-namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 public class MsSqlTests : IAsyncLifetime
 {
     public const string Database = "patronage2023";
