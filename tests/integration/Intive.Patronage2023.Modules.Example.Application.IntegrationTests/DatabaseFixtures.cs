@@ -1,12 +1,11 @@
 using System.Data.Common;
-
 using DotNet.Testcontainers.Builders;
-
 using FluentAssertions;
-
-using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
-using Intive.Patronage2023.Modules.Example.Domain;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -60,12 +59,20 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
     {
         // Arrange
         var scope = this._webApplicationFactory.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetService<ExampleDbContext>();
-        var command = ExampleAggregate.Create(Guid.NewGuid(), "example name");
+        var dbContext = scope.ServiceProvider.GetService<BudgetDbContext>();
+        var command = BudgetAggregate.Create(
+	        Guid.NewGuid(),
+	        "example name",
+	        Guid.NewGuid(),
+	        new Money(1, (Currency)1),
+	        new Period(DateTime.Now, DateTime.Now.AddDays(1)),
+	        "icon",
+	        "description");
+        
         dbContext!.Add(command);
         await dbContext.SaveChangesAsync();
-        var query = new GetExamples();
-        var handler = new GetExampleQueryHandler(dbContext);
+        var query = new GetBudgets();
+        var handler = new GetBudgetsQueryHandler(dbContext);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -82,11 +89,11 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
     private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
     {
-        private readonly string _connectionString;
+        private readonly string connectionString;
 
         public CustomWebApplicationFactory(MsSqlTests fixture)
         {
-            this._connectionString =
+            this.connectionString =
                 $"Server=localhost,1433;Database={MsSqlTests.Database};User Id={MsSqlTests.Username};Password={MsSqlTests.Password};TrustServerCertificate=True";
         }
 
@@ -95,9 +102,9 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
             builder.ConfigureServices(
                 services =>
                 {
-                services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<ExampleDbContext>) == service.ServiceType)!);
+                services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<BudgetDbContext>) == service.ServiceType)!);
                 services.Remove(services.SingleOrDefault(service => typeof(DbConnection) == service.ServiceType)!);
-                    services.AddDbContext<ExampleDbContext>((_, option) => option.UseSqlServer(this._connectionString));
+                    services.AddDbContext<BudgetDbContext>((_, option) => option.UseSqlServer(this.connectionString));
                 });
         }
     }
