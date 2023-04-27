@@ -9,7 +9,6 @@ namespace Intive.Patronage2023.Example.Api.Tests;
 /// <summary>
 /// Tests that checks correct behaviour of errors thrown by "ExampleErrorService".
 /// </summary>
-
 public class ExampleErrorServiceTests
 {
 	private readonly ExampleErrorService errorService;
