@@ -15,7 +15,7 @@ env:
   SLN_NAME: Intive.Patronage2023.sln
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: linux-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
