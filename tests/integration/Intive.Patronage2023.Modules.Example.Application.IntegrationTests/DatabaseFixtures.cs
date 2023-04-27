@@ -27,8 +27,6 @@ public class MsSqlTests : IAsyncLifetime
         .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
         .WithPortBinding("1433", MsSqlPort.ToString())
         .WithEnvironment("ACCEPT_EULA", "Y")
-        .WithEnvironment("SQLCMDUSER", Username)
-        .WithEnvironment("SQLCMDPASSWORD", Password)
         .WithEnvironment("MSSQL_SA_PASSWORD", Password)
         .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
         .Build();
