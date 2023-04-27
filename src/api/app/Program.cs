@@ -43,14 +43,10 @@ builder.Services.AddSwaggerGen(options =>
 		Description = "An ASP.NET Core Web API for managing bills and more",
 	});
 
-	// Searching for all files with ".Api.xml" suffix, which should be api docs,
-	// in build directory and attach them to swagger
-	var xmlFiles = Directory.GetFiles(
-		AppContext.BaseDirectory,
-		"*.Api.xml",
-		SearchOption.TopDirectoryOnly).ToList();
-	xmlFiles.ForEach(xmlFile => options.IncludeXmlComments(xmlFile));
-});
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 
