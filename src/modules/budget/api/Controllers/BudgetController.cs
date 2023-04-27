@@ -32,7 +32,12 @@ public class BudgetController : ControllerBase
 	/// <param name="createBudgetValidator">Create budget validator.</param>
 	/// <param name="getBudgetsValidator">Get budgets validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<GetBudgetDetails> getBudgetDetailsValidator)
+	public BudgetController(
+		ICommandBus commandBus,
+		IQueryBus queryBus,
+		IValidator<CreateBudget> createBudgetValidator,
+		IValidator<GetBudgets> getBudgetsValidator,
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
