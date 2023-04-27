@@ -54,24 +54,24 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 	}
 
 	[Fact]
-	//public async Task Handle_WhenCalled_ShouldReturnPagedList()
-	//{
-	//	// Arrange
-	//	var scope = this._webApplicationFactory.Services.CreateScope();
-	//	var dbContext = scope.ServiceProvider.GetService<ExampleDbContext>();
-	//	var command = ExampleAggregate.Create(Guid.NewGuid(), "example name");
-	//	dbContext.Add(command);
-	//	await dbContext.SaveChangesAsync();
-	//	var query = new GetExamples();
-	//	var handler = new GetExampleQueryHandler(dbContext);
+	public async Task Handle_WhenCalled_ShouldReturnPagedList()
+	{
+		// Arrange
+		var scope = this._webApplicationFactory.Services.CreateScope();
+		var dbContext = scope.ServiceProvider.GetService<ExampleDbContext>();
+		var command = ExampleAggregate.Create(Guid.NewGuid(), "example name");
+		dbContext.Add(command);
+		await dbContext.SaveChangesAsync();
+		var query = new GetExamples();
+		var handler = new GetExampleQueryHandler(dbContext);
 
-	//	// Act
-	//	var result = await handler.Handle(query, CancellationToken.None);
+		// Act
+		var result = await handler.Handle(query, CancellationToken.None);
 
-	//	// Assert
-	//	result.Should().NotBeNull();
-	//	result.Items.Should().HaveCount(1);
-	//}
+		// Assert
+		result.Should().NotBeNull();
+		result.Items.Should().HaveCount(1);
+	}
 
 	public void Dispose()
 	{
