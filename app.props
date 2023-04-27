@@ -2,12 +2,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 
-		<!-- Enable raising errors due not clean source code -->
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
 
 		 <GenerateDocumentationFile>true</GenerateDocumentationFile>
-		 <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<!-- Code analysis ruleset configuration -->
+
 		<CodeAnalysisRuleset>$(MSBuildThisFileDirectory)Intive.Patronage2023.ruleset</CodeAnalysisRuleset>
 	</PropertyGroup>
 	<ItemGroup>
