@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Shared.Infrastructure.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
