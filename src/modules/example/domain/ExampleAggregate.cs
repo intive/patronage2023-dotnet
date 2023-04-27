@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
 using Intive.Patronage2023.Modules.Example.Domain.Rules;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Example.Domain;
@@ -7,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Example.Domain;
 /// <summary>
 /// Example of aggregate root.
 /// </summary>
-public class ExampleAggregate : Aggregate
+public class ExampleAggregate : Aggregate, IEntity<Guid>
 {
 	private ExampleAggregate(Guid id, string name)
 	{

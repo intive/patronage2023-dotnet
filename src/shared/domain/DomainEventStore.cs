@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Example.Domain;
+namespace Intive.Patronage2023.Shared.Domain;
 
 /// <summary>
 /// Domain Event Store.

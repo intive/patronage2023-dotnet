@@ -57,7 +57,7 @@ public class LayerReferenceTests
 			.That()
 			.AreAssignableTo(repositoryInterface)
 			.Should()
-			.ResideInNamespace("Intive.Patronage2023.Modules.*.Infrastructure");
+			.ResideInNamespace("Intive.Patronage2023.*.Infrastructure");
 
 		IArchRule repositoryInterfacesNamespaceRule = ArchRuleDefinition.Interfaces()
 			.That()

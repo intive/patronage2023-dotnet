@@ -22,7 +22,7 @@ public static class ServiceProviderExtension
 	{
 		var concreteTypes = assemblies
 			.SelectMany(x => x.GetTypes())
-			.Where(x => x.GetInterfaces().Any(y => type.IsGenericType ? (y.IsGenericType && y.GetGenericTypeDefinition() == type) : y == type))
+			.Where(x => x.GetInterfaces().Any(y => type.IsGenericType ? (y.IsGenericType && y.GetGenericTypeDefinition() == type) : y == type) && !x.IsAbstract)
 			.ToList();
 
 		foreach (var concreteType in concreteTypes)
