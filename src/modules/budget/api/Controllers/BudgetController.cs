@@ -127,6 +127,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Edits Budget.
 	/// </summary>
+	/// <param name="id">Budget id. </param>
 	/// <param name="request">Request.</param>
 	/// <returns>Edited Result.</returns>
 	/// <remarks>
@@ -155,10 +156,10 @@ public class BudgetController : ControllerBase
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	[HttpPut]
-	[Route("edit")]
-	public async Task<IActionResult> EditBudget([FromBody] EditBudget request)
+	[HttpPut("{id:Guid}/edit")]
+	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
 	{
+		request.Id = id;
 		var validationResult = await this.editBudgetValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
