@@ -22,7 +22,7 @@ public class MsSqlTests : IAsyncLifetime
 	public const ushort MsSqlPort = 1433;
 
 	public readonly IContainer _mssqlContainer = new ContainerBuilder()
-		.WithImage("octopusdeploy/mssql-server-windows-express")
+		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding("1434", MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
 		.WithEnvironment("SQLCMDUSER", Username)
