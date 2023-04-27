@@ -1,5 +1,3 @@
-namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
-
 using System.ComponentModel;
 using System.Data.Common;
 using DotNet.Testcontainers.Builders;
@@ -17,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
 public class MsSqlTests : IAsyncLifetime
 {
     public const string Database = "patronage2023";
