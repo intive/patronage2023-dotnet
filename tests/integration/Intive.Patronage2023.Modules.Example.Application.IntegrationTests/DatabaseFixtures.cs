@@ -1,5 +1,3 @@
-using System.Data.Common;
-
 using DotNet.Testcontainers.Builders;
 
 using FluentAssertions;
@@ -7,6 +5,7 @@ using FluentAssertions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -25,12 +24,14 @@ public class MsSqlTests : IAsyncLifetime
 	public const string Username = "sa";
 	public const string Password = "yourStrong(!)Password";
 	public const ushort MsSqlPort = 1433;
-	public const ushort MappedPort = 81;
+	public const ushort MappedPort = 5000;
 
 	public readonly IContainer _mssqlContainer = new ContainerBuilder()
 		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding(MappedPort.ToString(), MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
+		.WithEnvironment("SQLCMDUSER", Username)
+		.WithEnvironment("SQLCMDPASSWORD", Password)
 		.WithEnvironment("MSSQL_SA_PASSWORD", Password)
 		.WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
 		.Build();
@@ -108,8 +109,9 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 				services =>
 				{
 					services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<BudgetDbContext>) == service.ServiceType)!);
-					services.Remove(services.SingleOrDefault(service => typeof(DbConnection) == service.ServiceType)!);
 					services.AddDbContext<BudgetDbContext>((_, option) => option.UseSqlServer(this.connectionString));
+					services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<ExampleDbContext>) == service.ServiceType)!);
+					services.AddDbContext<ExampleDbContext>((_, option) => option.UseSqlServer(this.connectionString));
 				});
 		}
 	}
