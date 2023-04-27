@@ -34,12 +34,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	{
 		var budgetId = new BudgetId(budgetGuid);
 		var budget = await this.budgetRepository.GetById(budgetId);
-		if (budget == null)
-		{
-			return false;
-		}
-
-		return true;
+		return budget != null;
 	}
 
 	private bool IsValueAppropriateToType(CreateBudgetTransaction budgetTransaction, decimal amount)
@@ -48,7 +43,8 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		{
 			return amount > 0;
 		}
-		else if (budgetTransaction.Type == TransactionType.Expense)
+
+		if (budgetTransaction.Type == TransactionType.Expense)
 		{
 			return amount < 0;
 		}
