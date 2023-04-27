@@ -1,3 +1,5 @@
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
+
 using System.Data.Common;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
@@ -10,10 +12,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Xunit;
 
-namespace Intive.Patronage2023.Modules.Example.Application.IntegrationsTests;
 public class MsSqlTests : IAsyncLifetime
 {
 	public const string Database = "patronage2023";
@@ -22,7 +22,7 @@ public class MsSqlTests : IAsyncLifetime
 	public const ushort MsSqlPort = 1433;
 
 	public readonly IContainer _mssqlContainer = new ContainerBuilder()
-		.WithImage("mcr.microsoft.com/mssql/server:2022-CU1-ubuntu-20.04")
+		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding("1434", MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
 		.WithEnvironment("SQLCMDUSER", Username)
@@ -44,7 +44,7 @@ public class MsSqlTests : IAsyncLifetime
 
 public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 {
-	private readonly WebApplicationFactory<Program> _webApplicationFactory;
+	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> _webApplicationFactory;
 
 	public ExampleTests(MsSqlTests fixture)
 	{
@@ -78,7 +78,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		this._webApplicationFactory.Dispose();
 	}
 
-	private class CustomWebApplicationFactory : WebApplicationFactory<Program>
+	private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
 	{
 		private readonly string _connectionString;
 
