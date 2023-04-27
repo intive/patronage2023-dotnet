@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\git\src\api\app\Intive.Patronage2023.Api.csproj" />
     <ProjectReference Include="..\..\..\..\..\git\src\modules\example\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
