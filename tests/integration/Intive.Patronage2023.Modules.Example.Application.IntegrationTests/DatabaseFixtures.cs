@@ -50,9 +50,11 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
     public ExampleTests(MsSqlTests fixture)
     {
-        var clientOptions = new WebApplicationFactoryClientOptions();
-        clientOptions.AllowAutoRedirect = false;
-        this._webApplicationFactory = new CustomWebApplicationFactory(fixture);
+		var clientOptions = new WebApplicationFactoryClientOptions
+		{
+			AllowAutoRedirect = false
+		};
+		this._webApplicationFactory = new CustomWebApplicationFactory(fixture);
     }
 
     [Fact]
@@ -62,7 +64,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
         var scope = this._webApplicationFactory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetService<ExampleDbContext>();
         var command = ExampleAggregate.Create(Guid.NewGuid(), "example name");
-        dbContext.Add(command);
+        dbContext!.Add(command);
         await dbContext.SaveChangesAsync();
         var query = new GetExamples();
         var handler = new GetExampleQueryHandler(dbContext);
@@ -95,8 +97,8 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
             builder.ConfigureServices(
                 services =>
                 {
-                services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<ExampleDbContext>) == service.ServiceType));
-                services.Remove(services.SingleOrDefault(service => typeof(DbConnection) == service.ServiceType));
+                services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<ExampleDbContext>) == service.ServiceType)!);
+                services.Remove(services.SingleOrDefault(service => typeof(DbConnection) == service.ServiceType)!);
                     services.AddDbContext<ExampleDbContext>((_, option) => option.UseSqlServer(this._connectionString));
                 });
         }
