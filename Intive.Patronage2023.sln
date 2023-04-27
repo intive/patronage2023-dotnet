@@ -53,9 +53,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Budget.Domain.Tests", "tests\unit\Intive.Patronage2023.Budget.Domain.Tests\Intive.Patronage2023.Budget.Domain.Tests.csproj", "{FC82E26F-63D3-47F9-80D1-098190A05D67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.Budget.Application.Tests", "tests\unit\Intive.Patronage2023.Budget.Application.Tests\Intive.Patronage2023.Budget.Application.Tests.csproj", "{D4117491-2AB8-4A24-8866-41B862B2678A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Budget.Application.Tests", "tests\unit\Intive.Patronage2023.Budget.Application.Tests\Intive.Patronage2023.Budget.Application.Tests.csproj", "{D4117491-2AB8-4A24-8866-41B862B2678A}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker\docker-compose.dcproj", "{7BF08A2E-B831-41E9-8B8A-6A22B586194F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4380D66A-E4F4-4D0F-BACA-2FAF546ADD6E} = {4380D66A-E4F4-4D0F-BACA-2FAF546ADD6E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
