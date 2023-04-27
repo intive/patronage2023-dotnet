@@ -61,10 +61,10 @@ builder.Services.AddControllers(options =>
 			.AddJsonOptions(options =>
 				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
-builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
-builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
-builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
