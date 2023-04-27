@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Domain.Rules;
-
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -82,7 +81,7 @@ public class BudgetAggregate : Aggregate
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="icon">Budget Icon.</param>
-	/// <param name="description">Budget Describtion.</param>
+	/// <param name="description">Budget Description.</param>
 	/// <returns>New aggregate.</returns>
 	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string icon, string description)
 	{
