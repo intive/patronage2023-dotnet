@@ -1,7 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
 /// <summary>
 /// Model of Income and Expense.

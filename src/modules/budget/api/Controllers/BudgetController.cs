@@ -25,7 +25,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
-	private readonly IValidator<GetBudgetTransaction> getBudgetTransactionValidator;
+	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -42,7 +42,7 @@ public class BudgetController : ControllerBase
 		IValidator<CreateBudget> createBudgetValidator,
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
-		IValidator<GetBudgetTransaction> getBudgetTransactionValidator)
+		IValidator<GetBudgetTransactions> getBudgetTransactionValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -167,7 +167,7 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transaction")]
 	public async Task<IActionResult> CreateNewTransaction([FromRoute] Guid budgetId, [FromBody] CreateTransaction command)
 	{
-		Guid transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
+		var transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
 
 		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
@@ -202,9 +202,9 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetPageSizeAndPageIndex request)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsPaginationInfo request)
 	{
-		var getBudgetTransactions = new GetBudgetTransaction
+		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			BudgetId = new BudgetId(budgetId),
 			PageSize = request.PageSize,
@@ -213,7 +213,7 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetTransaction, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
+			var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
 			return this.Ok(pagedList);
 		}
 

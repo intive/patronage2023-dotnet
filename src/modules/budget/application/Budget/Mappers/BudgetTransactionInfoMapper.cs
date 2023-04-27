@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;

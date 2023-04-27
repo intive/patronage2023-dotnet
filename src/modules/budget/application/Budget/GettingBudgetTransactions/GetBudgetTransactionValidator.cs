@@ -7,7 +7,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// GetBudgetsValidator class.
 /// </summary>
-public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransaction>
+public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransactions>
 {
 	private readonly IBudgetRepository budgetRepository;
 
