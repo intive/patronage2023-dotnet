@@ -29,24 +29,24 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BudgetController"/> class.
-    /// </summary>
-    /// <param name="commandBus">Command bus.</param>
-    /// <param name="queryBus">Query bus.</param>
-    /// <param name="createBudgetValidator">Create Budget validator.</param>
-    /// <param name="getBudgetsValidator">Get Budgets validator.</param>
-    /// <param name="createTransactionValidator">Create Transaction validator.</param>
-    /// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
-    /// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
-    public BudgetController(
+	/// <summary>
+	/// Initializes a new instance of the <see cref="BudgetController"/> class.
+	/// </summary>
+	/// <param name="commandBus">Command bus.</param>
+	/// <param name="queryBus">Query bus.</param>
+	/// <param name="createBudgetValidator">Create Budget validator.</param>
+	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
+	/// <param name="createTransactionValidator">Create Transaction validator.</param>
+	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
+	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
+	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
 		IValidator<CreateBudget> createBudgetValidator,
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-        IValidator<GetBudgetDetails> getBudgetDetailsValidator)
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
