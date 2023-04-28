@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -35,7 +36,15 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	/// <inheritdoc/>
 	public async Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
-		var budget = BudgetAggregate.Create(command.Id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
+		var id = new BudgetId(command.Id);
+		var budget = BudgetAggregate.Create(
+			id,
+			command.Name,
+			command.UserId,
+			command.Limit,
+			command.Period,
+			command.Description,
+			command.IconName);
 		await this.budgetRepository.Persist(budget);
 	}
 }

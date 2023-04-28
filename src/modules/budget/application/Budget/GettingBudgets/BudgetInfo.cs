@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 
 /// <summary>
@@ -8,7 +10,7 @@ public record BudgetInfo()
 	/// <summary>
 	/// Budget id.
 	/// </summary>
-	public Guid Id { get; init; }
+	public BudgetId Id { get; init; }
 
 	/// <summary>
 	/// Budget name.

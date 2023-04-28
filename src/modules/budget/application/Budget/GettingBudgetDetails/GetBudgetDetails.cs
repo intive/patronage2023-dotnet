@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
@@ -39,7 +40,9 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 	/// <returns>BudgetDetailsInfo or null.</returns>
 	public async Task<BudgetDetailsInfo?> Handle(GetBudgetDetails query, CancellationToken cancellationToken)
 	{
-		var budget = await this.budgetDbContext.Budget.FindAsync(new object?[] { query.Id }, cancellationToken: cancellationToken);
+		var budgetId = new BudgetId(query.Id);
+
+		var budget = await this.budgetDbContext.Budget.FindAsync(new object?[] { budgetId }, cancellationToken: cancellationToken);
 
 		return budget is null ? null : BudgetAggregateBudgetDetailsInfoMapper.Map(budget);
 	}

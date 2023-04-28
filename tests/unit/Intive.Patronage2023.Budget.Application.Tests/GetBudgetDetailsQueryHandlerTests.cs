@@ -2,6 +2,7 @@ using Bogus;
 using FluentAssertions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Xunit;
@@ -21,7 +22,7 @@ public class GetBudgetDetailsQueryHandlerTests
 	public async Task Handle_WhenCalledOnExistingBudget_ShouldReturnBudgetDetailsInfo()
 	{
 		// Arrange
-		var id = Guid.NewGuid();
+		var id = new BudgetId(Guid.NewGuid());
 		string budgetName = new Faker().Random.Word();
 		var userId = Guid.NewGuid();
 		var limit = new Money(new Faker().Random.Decimal(min: .1M), Currency.PLN);
@@ -36,7 +37,7 @@ public class GetBudgetDetailsQueryHandlerTests
 		//this.budgetDbContext.Budget.Add(budget);
 		//this.budgetDbContext.SaveChanges();
 
-		var query = new GetBudgetDetails { Id = id };
+		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
 		var handler = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
 

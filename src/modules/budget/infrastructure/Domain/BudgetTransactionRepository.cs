@@ -1,51 +1,50 @@
 using System.Text.Json;
-
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
-/// Budget aggregate repository.
+/// Budget Transaction aggregate repository.
 /// </summary>
-public class BudgetRepository : IBudgetRepository
+public class BudgetTransactionRepository : IBudgetTransactionRepository
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IEventDispatcher<IEvent> domainEventDispatcher;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetRepository"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionRepository"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Database context.</param>
 	/// <param name="domainEventDispatcher">Event dispatcher.</param>
-	public BudgetRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
+	public BudgetTransactionRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.domainEventDispatcher = domainEventDispatcher;
 	}
 
 	/// <summary>
-	/// Retrieves Budget aggregate.
+	/// Retrieves Budget Transaction aggregate.
 	/// </summary>
 	/// <param name="id">Aggregate identifier.</param>
 	/// <returns>Aggregate.</returns>
-	public Task<BudgetAggregate> GetById(BudgetId id)
-		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
+	public Task<BudgetTransactionAggregate> GetById(TransactionId id)
+		=> this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id == id);
 
 	/// <summary>
 	/// Persist aggregate state.
 	/// </summary>
-	/// <param name="budget">Aggregate.</param>
+	/// <param name="budgetTransaction">Aggregate.</param>
 	/// <returns>Task.</returns>
-	public async Task Persist(BudgetAggregate budget)
+	public async Task Persist(BudgetTransactionAggregate budgetTransaction)
 	{
-		await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
-		this.HandleEvents(budget.UncommittedEvents);
-		this.budgetDbContext.Budget.Add(budget);
+		await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
+		this.HandleEvents(budgetTransaction.UncommittedEvents);
+		this.budgetDbContext.Transaction.Add(budgetTransaction);
 		await this.budgetDbContext.SaveChangesAsync();
 	}
 

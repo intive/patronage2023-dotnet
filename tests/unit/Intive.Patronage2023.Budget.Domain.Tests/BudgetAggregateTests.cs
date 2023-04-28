@@ -1,5 +1,6 @@
 using Bogus;
 using FluentAssertions;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
@@ -26,7 +27,7 @@ public class BudgetAggregateTests
 	public void Create_WhenPassedProperData_ShouldCreateBudgetAggregate()
 	{
 		// Arrange
-		var id = Guid.NewGuid();
+		var id = new BudgetId(Guid.NewGuid());
 		string name = new Faker().Random.Word();
 		var userId = Guid.NewGuid();
 		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);
@@ -56,7 +57,7 @@ public class BudgetAggregateTests
 	public void Create_WhenPassedEmptyId_ShouldThrowInvalidOperatorExeption()
 	{
 		// Arrange
-		var id = Guid.Empty;
+		var id = new BudgetId(Guid.Empty);
 		string name = new Faker().Random.Word();
 		var userId = Guid.NewGuid();
 		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);

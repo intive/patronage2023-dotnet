@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Api.User;
@@ -56,7 +57,9 @@ builder.Services.AddControllers(options =>
 	options.Filters.Add(new AuthorizeFilter(
 		new AuthorizationPolicyBuilder()
 			.RequireAuthenticatedUser()
-			.Build())));
+			.Build())))
+			.AddJsonOptions(options =>
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
