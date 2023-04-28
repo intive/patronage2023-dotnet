@@ -2,7 +2,7 @@ using ArchUnitNET.Domain.Extensions;
 using ArchUnitNET.Fluent;
 using ArchUnitNET.Loader;
 using ArchUnitNET.xUnit;
-
+using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,8 @@ public class ApiNamingTests
 {
 	private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
 	typeof(Program).Assembly,
-	typeof(ExampleModule).Assembly)
+	typeof(ExampleModule).Assembly,
+	typeof(BudgetModule).Assembly)
 	.Build();
 
 	/// <summary>

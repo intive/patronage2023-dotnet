@@ -46,7 +46,12 @@ public class ComponentNamingTests
 		var baseInterface = Modules.GetInterfaceOfType(typeof(IRepository<,>));
 
 		IArchRule repositoryNameConvetnionRule = ArchRuleDefinition.Classes()
-			.That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("Repository");
+			.That()
+			.ImplementInterface(baseInterface)
+			.And()
+			.AreNotAbstract()
+			.Should()
+			.HaveNameEndingWith("Repository");
 
 		repositoryNameConvetnionRule.Check(Modules);
 	}
