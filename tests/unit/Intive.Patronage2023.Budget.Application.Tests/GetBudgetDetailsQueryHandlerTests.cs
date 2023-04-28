@@ -18,7 +18,7 @@ public class GetBudgetDetailsQueryHandlerTests
 	/// Test that check if the query returns expected values from database.
 	/// </summary>
 	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public async Task Handle_WhenCalled_ShouldReturnBudgetDetailsInfo()
+	public async Task Handle_WhenCalledOnExistingBudget_ShouldReturnBudgetDetailsInfo()
 	{
 		// Arrange
 		var id = Guid.NewGuid();
@@ -51,7 +51,7 @@ public class GetBudgetDetailsQueryHandlerTests
 	/// Test that check if the query returns null when budget does not exist in database.
 	/// </summary>
 	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public async Task Handle_WhenCalled_ShouldReturnNull()
+	public async Task Handle_WhenTriesToGetNonExistingBudget_ShouldReturnNull()
 	{
 		var id = Guid.NewGuid();
 
