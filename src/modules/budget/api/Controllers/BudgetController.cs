@@ -1,6 +1,7 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -21,6 +22,7 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
+	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -29,10 +31,17 @@ public class BudgetController : ControllerBase
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="createBudgetValidator">Create budget validator.</param>
 	/// <param name="getBudgetsValidator">Get budgets validator.</param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator)
+	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
+	public BudgetController(
+		ICommandBus commandBus,
+		IQueryBus queryBus,
+		IValidator<CreateBudget> createBudgetValidator,
+		IValidator<GetBudgets> getBudgetsValidator,
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
+		this.getBudgetDetailsValidator = getBudgetDetailsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 	}
@@ -74,6 +83,36 @@ public class BudgetController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get budget details.
+	/// </summary>
+	/// <param name="request">Request.</param>
+	/// <returns>Budget details.</returns>
+	/// <response code="200">Returns details of budget with given id.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="404">If budget with given id does not exist.</response>
+	[HttpGet("{Id:guid}")]
+	[ProducesResponseType(typeof(BudgetDetailsInfo), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> GetBudgetDetails([FromRoute] GetBudgetDetails request)
+	{
+		var validationResult = await this.getBudgetDetailsValidator.ValidateAsync(request);
+		if (validationResult.IsValid)
+		{
+			var result = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(request);
+			if (result is null)
+			{
+				return this.NotFound();
+			}
+
+			return this.Ok(result);
+		}
+
+		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
 	}
 
 	/// <summary>
