@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
 /// <summary>
-/// Get Budgets query.
+/// Get Budget's Transactions query.
 /// </summary>
 public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
 {
@@ -30,7 +30,7 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 }
 
 /// <summary>
-/// Get Budgets handler.
+/// Get Budget's Transaction handler.
 /// </summary>
 public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>
 {

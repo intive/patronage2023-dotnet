@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
+namespace Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 /// <summary>
 /// Enumeration of budget transaction types.

@@ -1,5 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
-using Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 

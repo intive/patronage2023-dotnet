@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -45,7 +45,14 @@ public class CreateBudgetTransactionCommandHandler : ICommandHandler<CreateBudge
 	{
 		var id = new TransactionId(command.Id);
 		var budgetId = new BudgetId(command.BudgetId);
-		var budgetTransaction = BudgetTransactionAggregate.Create(id, budgetId, command.Type, command.Name, command.Value, command.Category, command.TransactionDate);
+		var budgetTransaction = BudgetTransactionAggregate.Create(
+			id,
+			budgetId,
+			command.Type,
+			command.Name,
+			command.Value,
+			command.Category,
+			command.TransactionDate);
 
 		await this.budgetTransactionRepository.Persist(budgetTransaction);
 	}

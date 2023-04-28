@@ -37,7 +37,14 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	public async Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
 		var id = new BudgetId(command.Id);
-		var budget = BudgetAggregate.Create(id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
+		var budget = BudgetAggregate.Create(
+			id,
+			command.Name,
+			command.UserId,
+			command.Limit,
+			command.Period,
+			command.Description,
+			command.IconName);
 		await this.budgetRepository.Persist(budget);
 	}
 }

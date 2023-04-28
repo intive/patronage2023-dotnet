@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Contracts.Helpers;
+namespace Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 /// <summary>
 /// Enum of Income/Expense Categories.
