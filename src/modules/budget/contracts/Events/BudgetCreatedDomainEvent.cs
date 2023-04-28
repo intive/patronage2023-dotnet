@@ -58,7 +58,7 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Budget icon.
 	/// </summary>
-	public string? Icon { get; private set; }
+	public string Icon { get; private set; }
 
 	/// <summary>
 	/// Budget describtion.

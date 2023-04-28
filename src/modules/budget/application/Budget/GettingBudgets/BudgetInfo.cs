@@ -21,4 +21,9 @@ public record BudgetInfo()
 	/// Budget creation date.
 	/// </summary>
 	public DateTime CreatedOn { get; init; }
+
+	/// <summary>
+	/// BudgetIcon.
+	/// </summary>
+	public string Icon { get; init; } = null!;
 }

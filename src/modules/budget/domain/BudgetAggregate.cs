@@ -61,7 +61,7 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget icon.
 	/// </summary>
-	public string? Icon { get; private set; }
+	public string Icon { get; private set; } = default!;
 
 	/// <summary>
 	/// Budget describtion.
