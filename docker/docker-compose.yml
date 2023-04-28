@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+  mssqlscripts:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - db
+  intive.patronage2023.api:
+    depends_on:
+      - db
+    image: intivepatronage2023api
+    build:
+      context: ./..
+      dockerfile: src/api/app/Dockerfile
+  keycloak:
+    build:
+        context: ./..
+        dockerfile: src/api/app/Keycloak/Dockerfile
+    container_name: keycloak
+    depends_on:
+      - db
+      - mssqlscripts
+  smtp4dev:
+    image: "rnwood/smtp4dev"

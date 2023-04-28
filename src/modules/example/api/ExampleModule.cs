@@ -6,7 +6,9 @@ using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Infrastructure;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Example.Api;

@@ -1,13 +1,17 @@
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Budget.Api;
 
 /// <summary>
 /// Budget module.
@@ -25,8 +29,12 @@ public static class BudgetModule
 		services.AddDbContext<BudgetDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 
 		services.AddScoped<IBudgetRepository, BudgetRepository>();
+		services.AddScoped<IBudgetTransactionRepository, BudgetTransactionRepository>();
 		services.AddScoped<IValidator<CreateBudget>, CreateBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgets>, GetBudgetsValidator>();
+		services.AddScoped<IValidator<CreateBudgetTransaction>, CreateBudgetTransactionValidator>();
+		services.AddScoped<IValidator<GetBudgetTransactions>, GetBudgetTransactionValidator>();
+		services.AddScoped<IValidator<GetBudgetDetails>, GetBudgetDetailsValidator>();
 
 		return services;
 	}
