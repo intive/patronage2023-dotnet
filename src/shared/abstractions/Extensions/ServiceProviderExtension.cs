@@ -4,7 +4,7 @@ using Intive.Patronage2023.Shared.Abstractions.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Shared.Abstractions;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Define extension methods for Service Provider.

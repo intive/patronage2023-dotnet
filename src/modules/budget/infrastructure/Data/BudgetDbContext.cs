@@ -1,28 +1,28 @@
-using Intive.Patronage2023.Modules.Example.Domain;
+using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 
 /// <summary>
 /// Database context.
 /// </summary>
-public class ExampleDbContext : DbContext
+public class BudgetDbContext : DbContext
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ExampleDbContext"/> class.
+	/// Initializes a new instance of the <see cref="BudgetDbContext"/> class.
 	/// </summary>
 	/// <param name="options">DbContext options.</param>
-	public ExampleDbContext(DbContextOptions<ExampleDbContext> options)
+	public BudgetDbContext(DbContextOptions<BudgetDbContext> options)
 		: base(options)
 	{
 	}
 
 	/// <summary>
-	/// ExampleAggregate DbSet.
+	/// BudgetAggregate DbSet.
 	/// </summary>
-	public DbSet<ExampleAggregate> Example { get; set; }
+	public DbSet<BudgetAggregate> Budget { get; set; }
 
 	/// <summary>
 	/// Domain Event Store DbSet.
@@ -32,7 +32,7 @@ public class ExampleDbContext : DbContext
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(ExampleDbContext).Assembly);
+		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(BudgetDbContext).Assembly);
 		base.OnModelCreating(modelBuilder);
 	}
 }

@@ -5,8 +5,13 @@ using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
+using Intive.Patronage2023.Shared.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
+
+namespace Intive.Patronage2023.Modules.Example.Api;
 
 /// <summary>
 /// Example module.
@@ -23,10 +28,10 @@ public static class ExampleModule
 	{
 		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
 
+		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddScoped<IExampleRepository, ExampleRepository>();
 		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
 		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
-
 		return services;
 	}
 
@@ -37,6 +42,7 @@ public static class ExampleModule
 	/// <returns>Updated IApplicationBuilder.</returns>
 	public static IApplicationBuilder UseExampleModule(this IApplicationBuilder app)
 	{
+		app.InitDatabase<ExampleDbContext>();
 		return app;
 	}
 }
