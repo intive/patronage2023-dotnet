@@ -75,7 +75,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 			"icon",
 			"description");
 
-		dbContext!.Add(command);
+		dbContext?.Add(command);
 		await dbContext.SaveChangesAsync();
 		var query = new GetBudgets();
 		var handler = new GetBudgetsQueryHandler(dbContext);
