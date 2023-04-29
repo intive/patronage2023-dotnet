@@ -34,9 +34,10 @@ public class BudgetAggregateTests
 		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string description = new Faker().Lorem.Sentences();
+		bool isDeleted = false;
 
 		// Act
-		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, description);
+		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, description, isDeleted);
 
 		// Assert
 		budgetAggregate.Should().NotBeNull()
@@ -64,9 +65,10 @@ public class BudgetAggregateTests
 		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string describtion = new Faker().Lorem.Sentences();
+		bool isDeleted = false;
 
 		// Act
-		Action act = () => BudgetAggregate.Create(id, name, userId, limit, period, icon, describtion);
+		Action act = () => BudgetAggregate.Create(id, name, userId, limit, period, icon, describtion, isDeleted);
 
 		// Assert
 		act.Should().Throw<InvalidOperationException>();

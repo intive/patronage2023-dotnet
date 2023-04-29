@@ -37,6 +37,7 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	public async Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
 		var id = new BudgetId(command.Id);
+		bool isDeleted = default;
 		var budget = BudgetAggregate.Create(
 			id,
 			command.Name,
@@ -44,7 +45,8 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 			command.Limit,
 			command.Period,
 			command.Description,
-			command.IconName);
+			command.IconName,
+			isDeleted);
 		await this.budgetRepository.Persist(budget);
 	}
 }

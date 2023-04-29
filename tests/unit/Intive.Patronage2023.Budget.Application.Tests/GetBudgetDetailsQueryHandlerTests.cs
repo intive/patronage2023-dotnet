@@ -31,8 +31,9 @@ public class GetBudgetDetailsQueryHandlerTests
 		var period = new Period(startDate, endDate);
 		string icon = new Faker().Random.Word();
 		string description = new Faker().Lorem.Paragraph();
+		bool isDeleted = false;
 
-		var budget = BudgetAggregate.Create(id, budgetName, userId, limit, period, icon, description);
+		var budget = BudgetAggregate.Create(id, budgetName, userId, limit, period, icon, description, isDeleted);
 
 		//this.budgetDbContext.Budget.Add(budget);
 		//this.budgetDbContext.SaveChanges();

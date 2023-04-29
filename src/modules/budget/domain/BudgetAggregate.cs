@@ -22,14 +22,14 @@ public class BudgetAggregate : Aggregate
 		this.CreatedOn = createdOn;
 	}
 
-	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon, bool isDeleted)
 	{
 		if (id.Value == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
 
-		var budgetCreated = new BudgetCreatedDomainEvent(id, name, userId, limit, period, description, icon);
+		var budgetCreated = new BudgetCreatedDomainEvent(id, name, userId, limit, period, description, icon, isDeleted);
 		this.Apply(budgetCreated, this.Handle);
 	}
 
@@ -74,6 +74,11 @@ public class BudgetAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
+	/// IsDeleted.
+	/// </summary>
+	public bool IsDeleted { get; private set; } = default;
+
+	/// <summary>
 	/// Create Budget.
 	/// </summary>
 	/// <param name="id">Unique identifier.</param>
@@ -83,10 +88,11 @@ public class BudgetAggregate : Aggregate
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="icon">Budget Icon.</param>
 	/// <param name="description">Budget Description.</param>
+	/// <param name="isDeleted">IsDeleted.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description)
+	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description, bool isDeleted)
 	{
-		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
+		return new BudgetAggregate(id, name, userId, limit, period, icon, description, isDeleted);
 	}
 
 	/// <summary>
@@ -117,5 +123,6 @@ public class BudgetAggregate : Aggregate
 		this.Icon = @event.Icon;
 		this.Description = @event.Description;
 		this.CreatedOn = @event.Timestamp;
+		this.IsDeleted = @event.IsDeleted;
 	}
 }

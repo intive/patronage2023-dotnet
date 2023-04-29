@@ -35,5 +35,6 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 			period.Property(p => p.EndDate).HasColumnName("EndDate");
 		});
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
+		builder.Property(x => x.IsDeleted).HasColumnName("IsDeleted");
 	}
 }

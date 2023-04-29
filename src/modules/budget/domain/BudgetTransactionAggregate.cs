@@ -10,9 +10,9 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetTransactionAggregate : Aggregate
 {
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -57,6 +57,11 @@ public class BudgetTransactionAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
+	/// Budget Transaction creation date.
+	/// </summary>
+	public bool IsBudgetDeleted { get; private set; } = default;
+
+	/// <summary>
 	/// Create Budget Transaction.
 	/// </summary>
 	/// <param name="id">Transaction Id.</param>
@@ -66,10 +71,11 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <param name="value">Value of income or Expense.</param>
 	/// <param name="categoryType">Enum of income/Expense Categories.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
+	/// <param name="isBudgetDeleted">IsBudgetDeleted.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);
 	}
 
 	private void Handle(BudgetTransactionCreatedDomainEvent @event)
@@ -82,5 +88,6 @@ public class BudgetTransactionAggregate : Aggregate
 		this.CategoryType = @event.CategoryType;
 		this.BudgetTransactionDate = @event.BudgetTransactionDate;
 		this.CreatedOn = @event.Timestamp;
+		this.IsBudgetDeleted = @event.IsBudgetDeleted;
 	}
 }

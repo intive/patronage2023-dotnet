@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230429170717_UpdateCreateBudget")]
+    partial class UpdateCreateBudget
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,9 +87,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedOn");
-
-                    b.Property<bool>("IsBudgetDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
