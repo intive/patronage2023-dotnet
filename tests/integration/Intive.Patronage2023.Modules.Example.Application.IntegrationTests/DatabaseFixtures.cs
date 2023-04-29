@@ -78,6 +78,10 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		dbContext?.Add(command);
 		await dbContext.SaveChangesAsync();
 		var query = new GetBudgets();
+		if (query == null)
+		{
+			throw new ArgumentNullException(nameof(query));
+		}
 
 		if (dbContext == null)
 		{
