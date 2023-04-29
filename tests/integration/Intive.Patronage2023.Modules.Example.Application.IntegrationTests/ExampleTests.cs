@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using Xunit.Sdk;
+
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
 public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
@@ -43,12 +45,12 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		var query = new GetBudgets();
 		if (query == null)
 		{
-			throw new ArgumentNullException(nameof(query));
+			throw new NotNullException();
 		}
 
 		if (dbContext == null)
 		{
-			throw new ArgumentNullException(nameof(dbContext));
+			throw new NotEmptyException();
 		}
 
 		var handler = new GetBudgetsQueryHandler(dbContext);
