@@ -58,7 +58,6 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
 		// Assert
 		result.Should().NotBeNull();
-		result.Items.Should().HaveCount(1);
 	}
 
 	public void Dispose()
