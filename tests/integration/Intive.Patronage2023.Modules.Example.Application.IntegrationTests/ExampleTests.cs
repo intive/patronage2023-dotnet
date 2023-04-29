@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -42,7 +43,20 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
 		dbContext?.Add(command);
 		await dbContext!.SaveChangesAsync();
-		var query = new GetBudgets();
+		var query = new GetBudgets
+		{
+			PageSize = 1,
+			PageIndex = 1,
+			Search = "",
+			SortDescriptors = new List<SortDescriptor>
+			{
+				new SortDescriptor
+				{
+					ColumnName = "name",
+					SortAscending = true
+				}
+			}
+		};
 		if (query == null)
 		{
 			throw new NotNullException();
@@ -60,6 +74,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
 		// Assert
 		result.Should().NotBeNull();
+		result.Items.Should().HaveCount(1);
 	}
 
 	public void Dispose()
