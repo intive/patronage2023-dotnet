@@ -1,36 +1,33 @@
 using FluentAssertions;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
-namespace Intive.Patronage2023.Modules.Example.Application.ExampleTests;
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
 public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 {
-	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> _webApplicationFactory;
+	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> webApplicationFactory;
 
 	public ExampleTests(MsSqlTests fixture)
 	{
-		var clientOptions = new WebApplicationFactoryClientOptions
-		{
-			AllowAutoRedirect = false
-		};
-		this._webApplicationFactory = new CustomWebApplicationFactory(fixture);
+		this.webApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
 
 	[Fact]
 	public async Task Handle_WhenCalled_ShouldReturnPagedList()
 	{
 		// Arrange
-		var scope = this._webApplicationFactory.Services.CreateScope();
+		var scope = this.webApplicationFactory.Services.CreateScope();
 		var dbContext = scope.ServiceProvider.GetService<BudgetDbContext>();
 		var command = BudgetAggregate.Create(
 			Guid.NewGuid(),
@@ -42,7 +39,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 			"description");
 
 		dbContext?.Add(command);
-		await dbContext.SaveChangesAsync();
+		await dbContext!.SaveChangesAsync();
 		var query = new GetBudgets();
 		if (query == null)
 		{
@@ -66,7 +63,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
 	public void Dispose()
 	{
-		this._webApplicationFactory.Dispose();
+		this.webApplicationFactory.Dispose();
 	}
 
 	private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
