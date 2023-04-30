@@ -35,13 +35,12 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
-		var type = new Faker().Random.Enum<TransactionType>();
+		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-		if (type == TransactionType.Expense)
-			value *= -1;
+
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
@@ -60,13 +59,12 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be not existing BudgetId in database.
-		var type = new Faker().Random.Enum<TransactionType>();
+		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-		if (type == TransactionType.Expense)
-			value *= -1;
+		
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
@@ -126,7 +124,7 @@ public class CreateBudgetTransactionValidatorTests
 	}
 
 	/// <summary>
-	/// Validator should return false when tranaction created date is older than month.
+	/// Validator should return false when transaction created date is older than month.
 	/// </summary>
 	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
 	public void Validator_WhenTransactionDataIsOlderThanMonth_ShouldReturnFalse()
