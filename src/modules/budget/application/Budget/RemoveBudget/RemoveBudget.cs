@@ -31,12 +31,8 @@ public class HandleRemoveBudget : ICommandHandler<RemoveBudget>
 	{
 		var id = new BudgetId(command.Id);
 		bool isDeleted = true;
-		var budget = await this.budgetRepository.GetById(id);
-
-		var aggregate = BudgetAggregate.Create(id, budget.Name, budget.UserId, budget.Limit, budget.Period, budget.Icon, budget.Description ?? " ", isDeleted);
-
-		aggregate.UpdateIsRemoved(isDeleted);
-
-		await this.budgetRepository.Persist(budget);
+		var budget = this.budgetRepository.GetById(id);
+		budget.Result.UpdateIsRemoved(isDeleted);
+		await this.budgetRepository.Update(budget.Result);
 	}
 }
