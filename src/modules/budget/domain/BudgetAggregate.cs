@@ -108,9 +108,27 @@ public class BudgetAggregate : Aggregate
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Update Flag.
+	/// </summary>
+	/// <param name="isDeleted">IsDeleted.</param>
+	public void UpdateIsRemoved(bool isDeleted)
+	{
+		this.CheckRule(new SuperImportantBudgetBusinessRuleForIsDeleted(isDeleted));
+
+		var evt = new BudgetFlagIsRemovedUpdatedDomainEvent(this.Id, isDeleted);
+
+		this.Apply(evt, this.Handle);
+	}
+
 	private void Handle(BudgetNameUpdatedDomainEvent @event)
 	{
 		this.Name = @event.NewName;
+	}
+
+	private void Handle(BudgetFlagIsRemovedUpdatedDomainEvent @event)
+	{
+		this.IsDeleted = @event.IsDeleted;
 	}
 
 	private void Handle(BudgetCreatedDomainEvent @event)
