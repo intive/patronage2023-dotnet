@@ -6,14 +6,14 @@ namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 /// <summary>
 /// Budget Transaction soft delete domain event.
 /// </summary>
-public class BudgetTransactionFlagIsRemovedUpdatedDomainEvent : DomainEvent
+public class BudgetTransactionSoftDeleteDomainEvent : DomainEvent
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetTransactionFlagIsRemovedUpdatedDomainEvent"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionSoftDeleteDomainEvent"/> class.
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
-	/// <param name="isBudgetDeleted">New name.</param>
-	public BudgetTransactionFlagIsRemovedUpdatedDomainEvent(TransactionId id, bool isBudgetDeleted)
+	/// <param name="isBudgetDeleted">Soft Delete Flag.</param>
+	public BudgetTransactionSoftDeleteDomainEvent(TransactionId id, bool isBudgetDeleted)
 	{
 		this.Id = id;
 		this.IsBudgetDeleted = isBudgetDeleted;

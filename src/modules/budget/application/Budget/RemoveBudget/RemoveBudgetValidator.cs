@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
 /// <summary>
-/// Budget validator class.
+/// Remove Budget validator class.
 /// </summary>
 public class RemoveBudgetValidator : AbstractValidator<RemoveBudget>
 {

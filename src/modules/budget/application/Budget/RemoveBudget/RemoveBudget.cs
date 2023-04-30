@@ -5,23 +5,23 @@ using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
 /// <summary>
-/// Create Budget command.
+/// Remove Budget command.
 /// </summary>
 /// <param name="Id">Budget identifier.</param>
 public record RemoveBudget(Guid Id) : ICommand;
 
 /// <summary>
-/// Create Budget.
+/// Remove Budget.
 /// </summary>
-public class HandleRemoveBudget : ICommandHandler<RemoveBudget>
+public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
 {
 	private readonly IBudgetRepository budgetRepository;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleRemoveBudget"/> class.
+	/// Initializes a new instance of the <see cref="RemoveBudgetCommandHandler"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public HandleRemoveBudget(IBudgetRepository budgetRepository)
+	public RemoveBudgetCommandHandler(IBudgetRepository budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 	}

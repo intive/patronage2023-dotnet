@@ -62,7 +62,7 @@ public class BudgetTransactionAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
-	/// Budget Transaction creation date.
+	/// This property indicates whether the budget transaction has been soft deleted or not.
 	/// </summary>
 	public bool IsBudgetDeleted { get; private set; }
 
@@ -84,19 +84,19 @@ public class BudgetTransactionAggregate : Aggregate
 	}
 
 	/// <summary>
-	/// something to do. //TODO: set description.
+	/// This method updates the "soft delete" flag for budget transactions.
 	/// </summary>
-	/// <param name="isDeleted">status flag.</param>
+	/// <param name="isDeleted">Soft Delete Flag.</param>
 	public void UpdateIsRemoved(bool isDeleted)
 	{
 		this.CheckRule(new SuperImportantBudgetBusinessRuleForIsDeleted(isDeleted));
 
-		var evt = new BudgetTransactionFlagIsRemovedUpdatedDomainEvent(this.Id, isDeleted);
+		var evt = new BudgetTransactionSoftDeleteDomainEvent(this.Id, isDeleted);
 
 		this.Apply(evt, this.Handle);
 	}
 
-	private void Handle(BudgetTransactionFlagIsRemovedUpdatedDomainEvent @event)
+	private void Handle(BudgetTransactionSoftDeleteDomainEvent @event)
 	{
 		this.IsBudgetDeleted = @event.IsBudgetDeleted;
 	}

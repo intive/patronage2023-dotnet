@@ -7,18 +7,18 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
 
 /// <summary>
-/// Budget created domain event handler.
+/// This class is a domain event handler that handles the "BudgetTransactionSoftDeleteDomainEvent" event.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetFlagIsRemovedUpdatedDomainEventHandler : IDomainEventHandler<BudgetFlagIsRemovedUpdatedDomainEvent>
+public class BudgetTransactionSoftDeleteDomainEventHandler : IDomainEventHandler<BudgetTransactionSoftDeleteDomainEvent>
 {
 	/// <summary>
-	/// Handle the notification.
+	/// This method is the entry point for handling the "BudgetTransactionSoftDeleteDomainEvent" event.
 	/// </summary>
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetFlagIsRemovedUpdatedDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetTransactionSoftDeleteDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

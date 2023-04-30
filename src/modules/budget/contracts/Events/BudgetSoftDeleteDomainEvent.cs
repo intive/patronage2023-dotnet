@@ -4,16 +4,16 @@ using Intive.Patronage2023.Shared.Infrastructure.Events;
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 
 /// <summary>
-/// Budget name updated domain event.
+/// Budget Soft Delete domain event.
 /// </summary>
-public class BudgetFlagIsRemovedUpdatedDomainEvent : DomainEvent
+public class BudgetSoftDeleteDomainEvent : DomainEvent
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetFlagIsRemovedUpdatedDomainEvent"/> class.
+	/// Initializes a new instance of the <see cref="BudgetSoftDeleteDomainEvent"/> class.
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
-	/// <param name="isDeleted">New name.</param>
-	public BudgetFlagIsRemovedUpdatedDomainEvent(BudgetId id, bool isDeleted)
+	/// <param name="isDeleted">Soft Delete Flag.</param>
+	public BudgetSoftDeleteDomainEvent(BudgetId id, bool isDeleted)
 	{
 		this.Id = id;
 		this.IsDeleted = isDeleted;
@@ -25,7 +25,7 @@ public class BudgetFlagIsRemovedUpdatedDomainEvent : DomainEvent
 	public BudgetId Id { get; }
 
 	/// <summary>
-	/// New Budget name.
+	/// Soft Delete Flag.
 	/// </summary>
 	public bool IsDeleted { get; }
 }

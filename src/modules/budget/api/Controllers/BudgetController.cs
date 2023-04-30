@@ -176,7 +176,7 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// RemoveBudget.
+	/// Remove Budget and its Transactions.
 	/// </summary>
 	/// <param name="budgetId">Budget id.</param>
 	/// <returns>Remove.</returns>
@@ -191,7 +191,7 @@ public class BudgetController : ControllerBase
 		{
 			await this.commandBus.Send(removeBudget);
 			await this.commandBus.Send(removeBudgetTransactions);
-			return this.Created(string.Empty, removeBudget);
+			return this.Ok(removeBudget.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
