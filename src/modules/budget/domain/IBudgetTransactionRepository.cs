@@ -1,5 +1,5 @@
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 

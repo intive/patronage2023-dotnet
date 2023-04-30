@@ -11,6 +11,10 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetTransactionAggregate : Aggregate
 {
+	private BudgetTransactionAggregate()
+	{
+	}
+
 	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
 	{
 		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);

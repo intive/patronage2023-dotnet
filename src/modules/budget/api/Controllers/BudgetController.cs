@@ -189,6 +189,7 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
 		if (validationResult.IsValid)
 		{
+			await this.commandBus.Send(removeBudget);
 			await this.commandBus.Send(removeBudgetTransactions);
 			return this.Created(string.Empty, removeBudget);
 		}
