@@ -1,7 +1,4 @@
-using FluentValidation;
-using Intive.Patronage2023.Modules.User.Application.User;
 using Intive.Patronage2023.Shared.Abstractions;
-using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
@@ -14,7 +11,7 @@ namespace Intive.Patronage2023.Modules.User.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("user")]
-public class ExampleController : ControllerBase
+public class UserController : ControllerBase
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly ICommandBus commandBus;

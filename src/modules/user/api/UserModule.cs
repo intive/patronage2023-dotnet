@@ -1,5 +1,3 @@
-using FluentValidation;
-;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Infrastructure.Domain;
