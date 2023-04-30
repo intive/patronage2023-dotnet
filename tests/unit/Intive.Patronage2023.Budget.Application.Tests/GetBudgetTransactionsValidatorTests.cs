@@ -31,7 +31,7 @@ public class GetBudgetTransactionsValidatorTests
 	/// Validator should return false when budget with that not existing in database.
 	/// </summary>
 	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenBudgetIdNotExistingInDatabase_ShouldReturnFalse()
+	public void Validator_WhenBudgetIdDoesNotExistInDatabase_ShouldReturnFalse()
 	{
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must not be existing BudgetId in database.

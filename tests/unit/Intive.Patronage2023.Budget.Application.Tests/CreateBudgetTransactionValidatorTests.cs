@@ -37,7 +37,7 @@ public class CreateBudgetTransactionValidatorTests
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
 		if (type == TransactionType.Expense)
@@ -52,17 +52,17 @@ public class CreateBudgetTransactionValidatorTests
 	}
 
 	/// <summary>
-	/// Validator should return false when all properties are valid.
+	/// Validator should return false when budget with given id does not exist in database.
 	/// </summary>
 	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenBudgetIdNotExistedInDatabase_ShouldReturnFalse()
+	public void Validator_WhenBudgetIdDoesNotExistInDatabase_ShouldReturnFalse()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be not existing BudgetId in database.
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
 		if (type == TransactionType.Expense)
@@ -87,7 +87,7 @@ public class CreateBudgetTransactionValidatorTests
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
 		value *= -1;
@@ -110,9 +110,9 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
-		var type = TransactionType.Income;
+		var type = TransactionType.Expense;
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
 
@@ -136,11 +136,11 @@ public class CreateBudgetTransactionValidatorTests
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
-		var createdDate = new Faker().Date.Recent();
+		var transactionData = DateTime.UtcNow.AddMonths(-2);
 
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, transactionData);
 
 		//Act
 		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
