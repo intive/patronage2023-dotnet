@@ -56,8 +56,8 @@ public class BudgetRepository : IBudgetRepository
 	/// <returns>Task.</returns>
 	public async Task Update(BudgetAggregate budget)
 	{
-		////await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
-		////this.HandleEvents(budget.UncommittedEvents);
+		await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
+		this.HandleEvents(budget.UncommittedEvents);
 		this.budgetDbContext.Update(budget);
 		await this.budgetDbContext.SaveChangesAsync();
 	}
