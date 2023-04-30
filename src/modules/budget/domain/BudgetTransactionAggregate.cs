@@ -2,6 +2,7 @@ using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain.Rules;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -42,7 +43,7 @@ public class BudgetTransactionAggregate : Aggregate
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
+	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 
@@ -59,7 +60,7 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <summary>
 	/// Budget Transaction creation date.
 	/// </summary>
-	public bool IsBudgetDeleted { get; private set; } = default;
+	public bool IsBudgetDeleted { get; private set; }
 
 	/// <summary>
 	/// Create Budget Transaction.
@@ -76,6 +77,24 @@ public class BudgetTransactionAggregate : Aggregate
 	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
 	{
 		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);
+	}
+
+	/// <summary>
+	/// something to do. //TODO: set description.
+	/// </summary>
+	/// <param name="isDeleted">status flag.</param>
+	public void UpdateIsRemoved(bool isDeleted)
+	{
+		this.CheckRule(new SuperImportantBudgetBusinessRuleForIsDeleted(isDeleted));
+
+		var evt = new BudgetTransactionFlagIsRemovedUpdatedDomainEvent(this.Id, isDeleted);
+
+		this.Apply(evt, this.Handle);
+	}
+
+	private void Handle(BudgetTransactionFlagIsRemovedUpdatedDomainEvent @event)
+	{
+		this.IsBudgetDeleted = @event.IsBudgetDeleted;
 	}
 
 	private void Handle(BudgetTransactionCreatedDomainEvent @event)
