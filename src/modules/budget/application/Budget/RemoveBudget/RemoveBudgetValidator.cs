@@ -1,4 +1,5 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ public class RemoveBudgetValidator : AbstractValidator<RemoveBudget>
 
 	private async Task<bool> NoExistingBudget(Guid id, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(id) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
-		return !anyExistingBudget;
+		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
+		return anyExistingBudget;
 	}
 }
