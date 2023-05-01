@@ -1,7 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Domain.Rules;
-
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
@@ -12,7 +12,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 public class BudgetAggregate : Aggregate
 {
 	// For Entity
-	private BudgetAggregate(Guid id, string name, Guid userId, string? icon, string? description, DateTime createdOn)
+	private BudgetAggregate(BudgetId id, string name, Guid userId, string icon, string? description, DateTime createdOn)
 	{
 		this.Id = id;
 		this.Name = name;
@@ -22,9 +22,9 @@ public class BudgetAggregate : Aggregate
 		this.CreatedOn = createdOn;
 	}
 
-	private BudgetAggregate(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
-		if (id == Guid.Empty)
+		if (id.Value == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
@@ -36,7 +36,7 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public Guid Id { get; private set; }
+	public BudgetId Id { get; private set; }
 
 	/// <summary>
 	/// Budget name.
@@ -61,7 +61,7 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Budget icon.
 	/// </summary>
-	public string? Icon { get; private set; }
+	public string Icon { get; private set; } = default!;
 
 	/// <summary>
 	/// Budget describtion.
@@ -83,8 +83,9 @@ public class BudgetAggregate : Aggregate
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="description">Budget Description.</param>
 	/// <param name="icon">Budget Icon.</param>
+	/// <param name="description">Budget Description.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description)
 	{
 		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
 	}

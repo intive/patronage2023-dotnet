@@ -2,7 +2,7 @@ using System.Reflection;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Shared.Abstractions;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Define extension methods for DBContext modelbuilder.

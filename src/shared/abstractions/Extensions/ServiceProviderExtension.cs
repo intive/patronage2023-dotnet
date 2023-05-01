@@ -4,7 +4,7 @@ using Intive.Patronage2023.Shared.Abstractions.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Shared.Abstractions;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Define extension methods for Service Provider.
@@ -12,15 +12,15 @@ namespace Intive.Patronage2023.Shared.Abstractions;
 public static class ServiceProviderExtension
 {
 	/// <summary>
-	/// Registration from assemblies.
+	/// Register from assemblies using extra param, assemblies.
 	/// </summary>
 	/// <param name="services">Service collection.</param>
 	/// <param name="type">Type of interface implemented by the class.</param>
+	/// <param name="assemblies">Assemblies to search for concrete types.</param>
 	/// <returns>Service collection with registered class.</returns>
-	public static IServiceCollection AddFromAssemblies(this IServiceCollection services, Type type)
+	public static IServiceCollection AddFromAssemblies(this IServiceCollection services, Type type, params Assembly[] assemblies)
 	{
-		var concreteTypes = AppDomain.CurrentDomain
-			.GetAssemblies()
+		var concreteTypes = assemblies
 			.SelectMany(x => x.GetTypes())
 			.Where(x => x.GetInterfaces().Any(y => type.IsGenericType ? (y.IsGenericType && y.GetGenericTypeDefinition() == type) : y == type))
 			.ToList();

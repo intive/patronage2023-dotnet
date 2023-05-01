@@ -1,5 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +23,11 @@ public class BudgetDbContext : DbContext
 	/// BudgetAggregate DbSet.
 	/// </summary>
 	public DbSet<BudgetAggregate> Budget { get; set; }
+
+	/// <summary>
+	/// TransactionAggregate DbSet.
+	/// </summary>
+	public DbSet<BudgetTransactionAggregate> Transaction { get; set; }
 
 	/// <summary>
 	/// Domain Event Store DbSet.
