@@ -15,9 +15,9 @@ public class BudgetTransactionAggregate : Aggregate
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -62,9 +62,9 @@ public class BudgetTransactionAggregate : Aggregate
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
-	/// This property indicates whether the budget transaction has been soft deleted or not.
+	/// Status of budget.
 	/// </summary>
-	public bool IsBudgetDeleted { get; private set; }
+	public Status Status { get; private set; } = default;
 
 	/// <summary>
 	/// Create Budget Transaction.
@@ -76,29 +76,28 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <param name="value">Value of income or Expense.</param>
 	/// <param name="categoryType">Enum of income/Expense Categories.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
-	/// <param name="isBudgetDeleted">IsBudgetDeleted.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, bool isBudgetDeleted)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, isBudgetDeleted);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 	}
 
 	/// <summary>
 	/// This method updates the "soft delete" flag for budget transactions.
 	/// </summary>
-	/// <param name="isDeleted">Soft Delete Flag.</param>
-	public void UpdateIsRemoved(bool isDeleted)
+	/// <param name="status">Soft Delete Status.</param>
+	public void SoftRemove(Status status)
 	{
-		this.CheckRule(new SuperImportantBudgetBusinessRuleForIsDeleted(isDeleted));
+		this.CheckRule(new SuperImportantBudgetBusinessRuleForStatus(status));
 
-		var evt = new BudgetTransactionSoftDeleteDomainEvent(this.Id, isDeleted);
+		var evt = new BudgetTransactionSoftDeleteDomainEvent(this.Id, status);
 
 		this.Apply(evt, this.Handle);
 	}
 
 	private void Handle(BudgetTransactionSoftDeleteDomainEvent @event)
 	{
-		this.IsBudgetDeleted = @event.IsBudgetDeleted;
+		this.Status = @event.Status;
 	}
 
 	private void Handle(BudgetTransactionCreatedDomainEvent @event)
@@ -111,6 +110,5 @@ public class BudgetTransactionAggregate : Aggregate
 		this.CategoryType = @event.CategoryType;
 		this.BudgetTransactionDate = @event.BudgetTransactionDate;
 		this.CreatedOn = @event.Timestamp;
-		this.IsBudgetDeleted = @event.IsBudgetDeleted;
 	}
 }

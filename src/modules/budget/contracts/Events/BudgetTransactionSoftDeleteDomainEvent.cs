@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
@@ -12,11 +13,11 @@ public class BudgetTransactionSoftDeleteDomainEvent : DomainEvent
 	/// Initializes a new instance of the <see cref="BudgetTransactionSoftDeleteDomainEvent"/> class.
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
-	/// <param name="isBudgetDeleted">Soft Delete Flag.</param>
-	public BudgetTransactionSoftDeleteDomainEvent(TransactionId id, bool isBudgetDeleted)
+	/// <param name="status">Soft Delete Status.</param>
+	public BudgetTransactionSoftDeleteDomainEvent(TransactionId id, Status status)
 	{
 		this.Id = id;
-		this.IsBudgetDeleted = isBudgetDeleted;
+		this.Status = status;
 	}
 
 	/// <summary>
@@ -27,5 +28,5 @@ public class BudgetTransactionSoftDeleteDomainEvent : DomainEvent
 	/// <summary>
 	/// Soft Delete Flag.
 	/// </summary>
-	public bool IsBudgetDeleted { get; }
+	public Status Status { get; }
 }

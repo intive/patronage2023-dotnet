@@ -38,8 +38,6 @@ public class BudgetDbContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.ApplyAllConfigurationsFromAssemblies(typeof(BudgetDbContext).Assembly);
-		modelBuilder.Entity<BudgetAggregate>().HasQueryFilter(b => !b.IsDeleted);
-		modelBuilder.Entity<BudgetTransactionAggregate>().HasQueryFilter(b => !b.IsBudgetDeleted);
 		base.OnModelCreating(modelBuilder);
 	}
 }

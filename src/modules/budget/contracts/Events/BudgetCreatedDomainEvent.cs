@@ -19,8 +19,7 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="iconName">Budget Icon.</param>
 	/// <param name="description">Budget Describtion.</param>
-	/// <param name="isDeleted">IsDeleted.</param>
-	public BudgetCreatedDomainEvent(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string iconName, bool isDeleted)
+	public BudgetCreatedDomainEvent(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string iconName)
 	{
 		this.Id = id;
 		this.Name = name;
@@ -29,7 +28,6 @@ public class BudgetCreatedDomainEvent : DomainEvent
 		this.Period = period;
 		this.Description = description;
 		this.Icon = iconName;
-		this.IsDeleted = isDeleted;
 	}
 
 	/// <summary>

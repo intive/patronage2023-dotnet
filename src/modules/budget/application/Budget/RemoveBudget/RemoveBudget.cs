@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
@@ -30,9 +31,9 @@ public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
 	public async Task Handle(RemoveBudget command, CancellationToken cancellationToken)
 	{
 		var id = new BudgetId(command.Id);
-		bool isDeleted = true;
-		var budget = this.budgetRepository.GetById(id);
-		budget.Result.UpdateIsRemoved(isDeleted);
-		await this.budgetRepository.Update(budget.Result);
+		Status status = Status.Deleted;
+		var budget = await this.budgetRepository.GetById(id);
+		budget.SoftRemove(status);
+		await this.budgetRepository.Update(budget);
 	}
 }

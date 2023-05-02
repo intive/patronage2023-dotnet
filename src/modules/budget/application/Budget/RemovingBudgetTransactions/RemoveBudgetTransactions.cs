@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -36,14 +37,14 @@ public class RemoveBudgetTransactionsCommandHandler : ICommandHandler<RemoveBudg
 	public async Task Handle(RemoveBudgetTransactions command, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(command.Id);
-		bool isDeleted = true;
+		Status status = Status.Deleted;
 		var transactions = await this.budgetDbContext.Transaction
 			.Where(x => x.BudgetId == budgetId)
 			.ToListAsync(cancellationToken: cancellationToken);
 
 		foreach (var transaction in transactions)
 		{
-			transaction.UpdateIsRemoved(isDeleted);
+			transaction.SoftRemove(status);
 			await this.budgetTransactionRepository.Update(transaction);
 		}
 	}

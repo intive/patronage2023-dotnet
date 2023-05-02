@@ -5,6 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
@@ -55,7 +56,7 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable();
 		int totalItemsCount = await budgets
-			.Where(b => !b.IsBudgetDeleted)
+			.Where(b => b.Status == Status.Active)
 			.Where(x => x.BudgetId == query.BudgetId)
 			.CountAsync(cancellationToken: cancellationToken);
 		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)

@@ -176,10 +176,15 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Remove Budget and its Transactions.
+	/// Remove Budget and its related Transactions.
 	/// </summary>
-	/// <param name="budgetId">Budget id.</param>
-	/// <returns>Remove.</returns>
+	/// <param name="budgetId">The Id of the budget to remove.</param>
+	/// <returns>
+	/// Returns an HTTP 200 OK status code with the ID of the removed budget if successful.
+	/// Throws an AppException if there are validation errors.
+	/// </returns>
+	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="401">If the user is unauthorized.</response>
 	[HttpDelete("{budgetId:guid}")]
 	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
 	{
@@ -256,7 +261,7 @@ public class BudgetController : ControllerBase
 	///
 	///     {
 	///         "pageSize": 1,
-	///         "pageIndex": 1,
+	///         "pageIndex": 1
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>

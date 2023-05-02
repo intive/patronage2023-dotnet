@@ -45,7 +45,6 @@ public class CreateBudgetTransactionCommandHandler : ICommandHandler<CreateBudge
 	{
 		var id = new TransactionId(command.Id);
 		var budgetId = new BudgetId(command.BudgetId);
-		bool isBudgetDeleted = default;
 		var budgetTransaction = BudgetTransactionAggregate.Create(
 			id,
 			budgetId,
@@ -53,8 +52,7 @@ public class CreateBudgetTransactionCommandHandler : ICommandHandler<CreateBudge
 			command.Name,
 			command.Value,
 			command.Category,
-			command.TransactionDate,
-			isBudgetDeleted);
+			command.TransactionDate);
 
 		await this.budgetTransactionRepository.Persist(budgetTransaction);
 	}
