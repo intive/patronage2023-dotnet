@@ -20,5 +20,5 @@ public class BudgetCannotBeDeletedTwiceBusinessRule : IBusinessRule
 	}
 
 	/// <inheritdoc />
-	public bool IsBroken() => this.status.Equals(Status.Deleted);
+	public bool IsBroken() => this.status.Equals(Status.Active);
 }
