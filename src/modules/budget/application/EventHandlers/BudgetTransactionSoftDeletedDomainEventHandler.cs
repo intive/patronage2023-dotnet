@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 /// This class is a domain event handler that handles the "BudgetTransactionSoftDeleteDomainEvent" event.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetTransactionSoftDeleteDomainEventHandler : IDomainEventHandler<BudgetTransactionSoftDeleteDomainEvent>
+public class BudgetTransactionSoftDeletedDomainEventHandler : IDomainEventHandler<BudgetTransactionSoftDeletedDomainEvent>
 {
 	/// <summary>
 	/// This method is the entry point for handling the "BudgetTransactionSoftDeleteDomainEvent" event.
@@ -18,7 +18,7 @@ public class BudgetTransactionSoftDeleteDomainEventHandler : IDomainEventHandler
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetTransactionSoftDeleteDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetTransactionSoftDeletedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

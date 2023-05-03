@@ -90,12 +90,12 @@ public class BudgetTransactionAggregate : Aggregate
 	{
 		this.CheckRule(new BudgetTransactionCannotBeDeletedTwiceBusinessRule(status));
 
-		var evt = new BudgetTransactionSoftDeleteDomainEvent(this.Id, status);
+		var evt = new BudgetTransactionSoftDeletedDomainEvent(this.Id, status);
 
 		this.Apply(evt, this.Handle);
 	}
 
-	private void Handle(BudgetTransactionSoftDeleteDomainEvent @event)
+	private void Handle(BudgetTransactionSoftDeletedDomainEvent @event)
 	{
 		this.Status = @event.Status;
 	}

@@ -8,15 +8,15 @@ namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 /// <summary>
 /// This class is a domain event handler that handles the "BudgetSoftDeleteDomainEvent" event.
 /// </summary>
-public class BudgetSoftDeleteDomainEventHandler : IDomainEventHandler<BudgetSoftDeleteDomainEvent>
+public class BudgetSoftDeletedDomainEventHandler : IDomainEventHandler<BudgetSoftDeletedDomainEvent>
 {
 	private readonly ICommandBus commandBus;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetSoftDeleteDomainEventHandler"/> class.
+	/// Initializes a new instance of the <see cref="BudgetSoftDeletedDomainEventHandler"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command Bus.</param>
-	public BudgetSoftDeleteDomainEventHandler(ICommandBus commandBus)
+	public BudgetSoftDeletedDomainEventHandler(ICommandBus commandBus)
 	{
 		this.commandBus = commandBus;
 	}
@@ -27,7 +27,7 @@ public class BudgetSoftDeleteDomainEventHandler : IDomainEventHandler<BudgetSoft
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public async Task Handle(BudgetSoftDeleteDomainEvent notification, CancellationToken cancellationToken)
+	public async Task Handle(BudgetSoftDeletedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		var removeBudgetTransactions = new RemoveBudgetTransactions(notification.Id.Value);
 		await this.commandBus.Send(removeBudgetTransactions);

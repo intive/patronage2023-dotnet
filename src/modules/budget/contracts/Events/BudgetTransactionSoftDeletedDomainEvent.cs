@@ -7,14 +7,14 @@ namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 /// <summary>
 /// Budget Transaction soft delete domain event.
 /// </summary>
-public class BudgetTransactionSoftDeleteDomainEvent : DomainEvent
+public class BudgetTransactionSoftDeletedDomainEvent : DomainEvent
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetTransactionSoftDeleteDomainEvent"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionSoftDeletedDomainEvent"/> class.
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
 	/// <param name="status">Soft Delete Status.</param>
-	public BudgetTransactionSoftDeleteDomainEvent(TransactionId id, Status status)
+	public BudgetTransactionSoftDeletedDomainEvent(TransactionId id, Status status)
 	{
 		this.Id = id;
 		this.Status = status;
