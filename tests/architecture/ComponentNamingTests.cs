@@ -3,7 +3,6 @@ using ArchUnitNET.Fluent;
 using ArchUnitNET.Loader;
 using ArchUnitNET.xUnit;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
@@ -25,8 +24,7 @@ public class ComponentNamingTests
 		typeof(ICommandBus).Assembly,
 		typeof(DomainEvent).Assembly,
 		typeof(CreateExample).Assembly,
-		typeof(CreateBudget).Assembly,
-		typeof(CreateBudgetTransaction).Assembly)
+		typeof(CreateBudget).Assembly)
 		.Build();
 
 	/// <summary>
