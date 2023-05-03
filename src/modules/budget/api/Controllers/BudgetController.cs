@@ -199,7 +199,7 @@ public class BudgetController : ControllerBase
 			return this.Ok(removeBudget.Id);
 		}
 
-		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
+		throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
 	}
 
 	/// <summary>

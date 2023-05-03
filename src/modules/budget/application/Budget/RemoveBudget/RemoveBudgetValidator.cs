@@ -33,7 +33,9 @@ public class RemoveBudgetValidator : AbstractValidator<RemoveBudget>
 
 	private async Task<bool> NoExistingBudget(Guid id, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
+		////bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
+		//// TODO: Uncomment /\ and remove the line below \/ only when the create budget endpoint has automatic assignment of the creating user's ID to the UserId property.
+		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)), cancellation);
 		return anyExistingBudget;
 	}
 }
