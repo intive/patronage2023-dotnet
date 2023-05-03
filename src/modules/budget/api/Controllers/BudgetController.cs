@@ -12,7 +12,6 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -189,13 +188,11 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
 	{
 		var removeBudget = new RemoveBudget(budgetId);
-		var removeBudgetTransactions = new RemoveBudgetTransactions(budgetId);
 
 		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(removeBudget);
-			await this.commandBus.Send(removeBudgetTransactions);
 			return this.Ok(removeBudget.Id);
 		}
 
