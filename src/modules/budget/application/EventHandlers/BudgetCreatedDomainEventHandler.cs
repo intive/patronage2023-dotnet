@@ -4,21 +4,21 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
+namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 
 /// <summary>
-/// This class is a domain event handler that handles the "BudgetTransactionSoftDeleteDomainEvent" event.
+/// Budget created domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetTransactionSoftDeleteDomainEventHandler : IDomainEventHandler<BudgetTransactionSoftDeleteDomainEvent>
+public class BudgetCreatedDomainEventHandler : IDomainEventHandler<BudgetCreatedDomainEvent>
 {
 	/// <summary>
-	/// This method is the entry point for handling the "BudgetTransactionSoftDeleteDomainEvent" event.
+	/// Handle the notification.
 	/// </summary>
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetTransactionSoftDeleteDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetCreatedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
