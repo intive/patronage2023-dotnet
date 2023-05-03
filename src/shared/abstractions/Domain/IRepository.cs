@@ -12,7 +12,11 @@ public interface IRepository<T, TKey>
 	/// </summary>
 	/// <param name="id">Identifier of aggregate.</param>
 	/// <returns>Task that gets Example aggregate.</returns>
-	Task<T> GetById(TKey id);
+#nullable enable
+
+	Task<T?> GetById(TKey id);
+
+#nullable disable
 
 	/// <summary>
 	/// Persists aggregate state.

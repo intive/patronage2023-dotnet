@@ -1,14 +1,15 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
 /// <summary>
 /// Budget Transaction of aggregate root.
 /// </summary>
-public class BudgetTransactionAggregate : Aggregate
+public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 {
 	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{

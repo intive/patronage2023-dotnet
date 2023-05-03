@@ -14,5 +14,5 @@ public static class ExampleAggregateExampleInfoMapper
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns <ref name="ExampleInfo"/>ExampleInfo.</returns>
 	public static ExampleInfo Map(ExampleAggregate entity) =>
-		 new(entity.Id, entity.Name, entity.CreatedOn);
+		 new(entity.Id.Value, entity.Name, entity.CreatedOn);
 }

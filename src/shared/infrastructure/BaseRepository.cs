@@ -31,7 +31,7 @@ public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
 	}
 
 	/// <inheritdoc/>
-	public async Task<T> GetById(TKey id) => await this.dbContext.Set<T>().FirstAsync(x => x.Id!.Equals(id));
+	public async Task<T?> GetById(TKey id) => await this.dbContext.Set<T>().FirstOrDefaultAsync(x => x.Id!.Equals(id));
 
 	/// <inheritdoc/>
 	public async Task Persist(T aggregate)

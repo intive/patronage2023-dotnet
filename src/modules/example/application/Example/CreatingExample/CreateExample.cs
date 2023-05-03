@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Example.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Example.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
@@ -16,13 +17,13 @@ public record CreateExample(Guid Id, string Name) : ICommand;
 /// </summary>
 public class HandleCreateExample : ICommandHandler<CreateExample>
 {
-	private readonly IRepository<ExampleAggregate, Guid> exampleRepository;
+	private readonly IRepository<ExampleAggregate, ExampleId> exampleRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateExample"/> class.
 	/// </summary>
 	/// <param name="exampleRepository">Repository that manages example aggregate root.</param>
-	public HandleCreateExample(IRepository<ExampleAggregate, Guid> exampleRepository)
+	public HandleCreateExample(IRepository<ExampleAggregate, ExampleId> exampleRepository)
 	{
 		this.exampleRepository = exampleRepository;
 	}

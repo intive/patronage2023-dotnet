@@ -1,13 +1,13 @@
 namespace Intive.Patronage2023.Shared.Infrastructure;
 
 /// <summary>
-/// Entity interface.
+/// Entity id interface.
 /// </summary>
-/// <typeparam name="TKey">Id object.</typeparam>
-public interface IEntity<TKey>
+/// <typeparam name="TKey">Key.</typeparam>
+public interface IEntityId<TKey>
 {
 	/// <summary>
 	/// Entity id.
 	/// </summary>
-	public TKey Id { get; }
+	public TKey Value { get; }
 }
