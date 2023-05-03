@@ -34,6 +34,6 @@ public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
 		Status status = Status.Deleted;
 		var budget = await this.budgetRepository.GetById(id);
 		budget.SoftRemove(status);
-		await this.budgetRepository.Update(budget);
+		await this.budgetRepository.Persist(budget);
 	}
 }

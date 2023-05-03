@@ -44,20 +44,15 @@ public class BudgetTransactionRepository : IBudgetTransactionRepository
 	{
 		await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
 		this.HandleEvents(budgetTransaction.UncommittedEvents);
-		this.budgetDbContext.Transaction.Add(budgetTransaction);
-		await this.budgetDbContext.SaveChangesAsync();
-	}
+		if (!this.budgetDbContext.Transaction.Local.Contains(budgetTransaction))
+		{
+			this.budgetDbContext.Transaction.Add(budgetTransaction);
+		}
+		else
+		{
+			this.budgetDbContext.Transaction.Update(budgetTransaction);
+		}
 
-	/// <summary>
-	/// Updates aggregate state.
-	/// </summary>
-	/// <param name="budgetTransaction">Aggregate.</param>
-	/// <returns>Task.</returns>
-	public async Task Update(BudgetTransactionAggregate budgetTransaction)
-	{
-		await this.domainEventDispatcher.Publish(budgetTransaction.UncommittedEvents);
-		this.HandleEvents(budgetTransaction.UncommittedEvents);
-		this.budgetDbContext.Transaction.Update(budgetTransaction);
 		await this.budgetDbContext.SaveChangesAsync();
 	}
 

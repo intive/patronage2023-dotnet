@@ -5,7 +5,7 @@ using ArchUnitNET.xUnit;
 
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 using Microsoft.AspNetCore.Mvc;

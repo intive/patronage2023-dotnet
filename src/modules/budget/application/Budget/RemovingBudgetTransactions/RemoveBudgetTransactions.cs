@@ -45,7 +45,7 @@ public class RemoveBudgetTransactionsCommandHandler : ICommandHandler<RemoveBudg
 		foreach (var transaction in transactions)
 		{
 			transaction.SoftRemove(status);
-			await this.budgetTransactionRepository.Update(transaction);
+			await this.budgetTransactionRepository.Persist(transaction);
 		}
 	}
 }
