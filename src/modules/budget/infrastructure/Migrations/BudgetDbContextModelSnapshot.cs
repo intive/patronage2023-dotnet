@@ -102,7 +102,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("BudgetTransaction", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Shared.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

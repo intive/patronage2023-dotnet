@@ -8,6 +8,7 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
@@ -68,6 +69,7 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDo
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {

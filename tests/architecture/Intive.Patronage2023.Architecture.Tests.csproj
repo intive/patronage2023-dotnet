@@ -21,6 +21,8 @@
 	  </PackageReference>
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\modules\budget\api\Intive.Patronage2023.Modules.Budget.Api.csproj" />
+	  <ProjectReference Include="..\..\src\modules\budget\application\Intive.Patronage2023.Modules.Budget.Application.csproj" />
 	  <ProjectReference Include="..\..\src\modules\example\api\Intive.Patronage2023.Modules.Example.Api.csproj" />
 	  <ProjectReference Include="..\..\src\modules\example\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
 	  <ProjectReference Include="..\..\src\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />

@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
-
+using Intive.Patronage2023.Shared.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
