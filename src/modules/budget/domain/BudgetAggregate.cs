@@ -111,12 +111,11 @@ public class BudgetAggregate : Aggregate
 	/// <summary>
 	/// Update Flag.
 	/// </summary>
-	/// <param name="status">Soft Delete Status.</param>
-	public void SoftRemove(Status status)
+	public void SoftRemove()
 	{
-		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(status));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
 
-		var evt = new BudgetSoftDeletedDomainEvent(this.Id, status);
+		var evt = new BudgetSoftDeletedDomainEvent(this.Id, Status.Deleted);
 
 		this.Apply(evt, this.Handle);
 	}

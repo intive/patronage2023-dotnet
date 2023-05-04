@@ -85,12 +85,11 @@ public class BudgetTransactionAggregate : Aggregate
 	/// <summary>
 	/// This method updates the "soft delete" flag for budget transactions.
 	/// </summary>
-	/// <param name="status">Soft Delete Status.</param>
-	public void SoftRemove(Status status)
+	public void SoftRemove()
 	{
-		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(status));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
 
-		var evt = new BudgetTransactionSoftDeletedDomainEvent(this.Id, status);
+		var evt = new BudgetTransactionSoftDeletedDomainEvent(this.Id, Status.Deleted);
 
 		this.Apply(evt, this.Handle);
 	}

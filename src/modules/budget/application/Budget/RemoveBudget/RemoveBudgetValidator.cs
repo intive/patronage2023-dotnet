@@ -27,15 +27,14 @@ public class RemoveBudgetValidator : AbstractValidator<RemoveBudget>
 			.NotNull();
 
 		this.RuleFor(budget => new { budget.Id })
-			.MustAsync((x, cancellation) => this.NoExistingBudget(x.Id, executionContextAccessor, cancellation))
+			.MustAsync((x, cancellation) => this.IsExistingBudget(x.Id, executionContextAccessor, cancellation))
 			.WithMessage("{BudgetId} don't exists. Choose a different number id");
 	}
 
-	private async Task<bool> NoExistingBudget(Guid id, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
+	private async Task<bool> IsExistingBudget(Guid id, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		////bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
+		////return await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
 		//// TODO: Uncomment /\ and remove the line below \/ only when the create budget endpoint has automatic assignment of the creating user's ID to the UserId property.
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)), cancellation);
-		return anyExistingBudget;
+		return await this.budgetDbContext.Budget.AnyAsync(b => b.Id.Equals(new BudgetId(id)), cancellation);
 	}
 }
