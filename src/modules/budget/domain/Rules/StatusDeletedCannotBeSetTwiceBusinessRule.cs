@@ -6,15 +6,15 @@ namespace Intive.Patronage2023.Modules.Budget.Domain.Rules;
 /// <summary>
 /// Budget and Budget Transaction Soft Delete business rule.
 /// </summary>
-public class BudgetCannotBeDeletedTwiceBusinessRule : IBusinessRule
+public class StatusDeletedCannotBeSetTwiceBusinessRule : IBusinessRule
 {
 	private readonly Status status;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetCannotBeDeletedTwiceBusinessRule"/> class.
+	/// Initializes a new instance of the <see cref="StatusDeletedCannotBeSetTwiceBusinessRule"/> class.
 	/// </summary>
 	/// <param name="status">Budget Soft Delete flag.</param>
-	public BudgetCannotBeDeletedTwiceBusinessRule(Status status)
+	public StatusDeletedCannotBeSetTwiceBusinessRule(Status status)
 	{
 		this.status = status;
 	}

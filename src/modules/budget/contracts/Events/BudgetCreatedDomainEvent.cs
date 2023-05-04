@@ -64,9 +64,4 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// Budget describtion.
 	/// </summary>
 	public string? Description { get; private set; }
-
-	/// <summary>
-	/// IsDeleted.
-	/// </summary>
-	public bool IsDeleted { get; private set; } = default;
 }

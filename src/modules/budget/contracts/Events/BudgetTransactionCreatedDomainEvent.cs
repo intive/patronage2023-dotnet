@@ -64,9 +64,4 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// Budget Transaction creation date.
 	/// </summary>
 	public DateTime BudgetTransactionDate { get; set; }
-
-	/// <summary>
-	/// IsBudgetDeleted.
-	/// </summary>
-	public bool IsBudgetDeleted { get; set; } = default;
 }

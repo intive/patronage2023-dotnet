@@ -114,7 +114,7 @@ public class BudgetAggregate : Aggregate
 	/// <param name="status">Soft Delete Status.</param>
 	public void SoftRemove(Status status)
 	{
-		this.CheckRule(new BudgetCannotBeDeletedTwiceBusinessRule(status));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(status));
 
 		var evt = new BudgetSoftDeletedDomainEvent(this.Id, status);
 
