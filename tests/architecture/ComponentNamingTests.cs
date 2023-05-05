@@ -2,7 +2,7 @@ using ArchUnitNET.Domain.Extensions;
 using ArchUnitNET.Fluent;
 using ArchUnitNET.Loader;
 using ArchUnitNET.xUnit;
-
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
@@ -22,7 +22,8 @@ public class ComponentNamingTests
 	private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
 		typeof(ICommandBus).Assembly,
 		typeof(DomainEvent).Assembly,
-		typeof(CreateExample).Assembly)
+		typeof(CreateExample).Assembly,
+		typeof(CreateBudget).Assembly)
 		.Build();
 
 	/// <summary>
@@ -44,7 +45,13 @@ public class ComponentNamingTests
 	{
 		var baseInterface = Modules.GetInterfaceOfType(typeof(IRepository<,>));
 
-		IArchRule repositoryNameConvetnionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("Repository");
+		IArchRule repositoryNameConvetnionRule = ArchRuleDefinition.Classes()
+			.That()
+			.ImplementInterface(baseInterface)
+			.And()
+			.AreNotAbstract()
+			.Should()
+			.HaveNameEndingWith("Repository");
 
 		repositoryNameConvetnionRule.Check(Modules);
 	}
@@ -57,7 +64,13 @@ public class ComponentNamingTests
 	{
 		var baseInterface = Modules.GetInterfaceOfType(typeof(ICommandHandler<>));
 
-		IArchRule commandHandlerNameConventionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameStartingWith("Handle");
+		IArchRule commandHandlerNameConventionRule = ArchRuleDefinition.Classes()
+			.That()
+			.ImplementInterface(baseInterface)
+			.And()
+			.AreNotAbstract()
+			.Should()
+			.HaveNameStartingWith("Handle");
 
 		commandHandlerNameConventionRule.Check(Modules);
 	}

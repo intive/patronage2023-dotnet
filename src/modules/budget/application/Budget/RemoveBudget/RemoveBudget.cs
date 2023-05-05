@@ -1,6 +1,7 @@
-using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
@@ -15,13 +16,13 @@ public record RemoveBudget(Guid Id) : ICommand;
 /// </summary>
 public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RemoveBudgetCommandHandler"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public RemoveBudgetCommandHandler(IBudgetRepository budgetRepository)
+	public RemoveBudgetCommandHandler(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 	}
@@ -31,7 +32,7 @@ public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
 	{
 		var id = new BudgetId(command.Id);
 		var budget = await this.budgetRepository.GetById(id);
-		budget.SoftRemove();
+		budget!.SoftRemove();
 		await this.budgetRepository.Persist(budget);
 	}
 }

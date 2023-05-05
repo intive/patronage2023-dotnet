@@ -2,7 +2,7 @@ using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
@@ -18,7 +18,7 @@ public record RemoveBudgetTransactions(Guid Id) : ICommand;
 /// </summary>
 public class RemoveBudgetTransactionsCommandHandler : ICommandHandler<RemoveBudgetTransactions>
 {
-	private readonly IBudgetTransactionRepository budgetTransactionRepository;
+	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
@@ -26,7 +26,7 @@ public class RemoveBudgetTransactionsCommandHandler : ICommandHandler<RemoveBudg
 	/// </summary>
 	/// <param name="budgetTransactionRepository">Repository that manages Budget Transaction aggregate root.</param>
 	/// <param name="budgetDbContext">Repository that manages Budget aggregate root.</param>
-	public RemoveBudgetTransactionsCommandHandler(IBudgetTransactionRepository budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public RemoveBudgetTransactionsCommandHandler(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;

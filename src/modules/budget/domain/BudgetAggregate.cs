@@ -1,7 +1,8 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
-using Intive.Patronage2023.Modules.Budget.Domain.Rules;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain.Rules;
+using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
@@ -10,7 +11,7 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// <summary>
 /// Budget of aggregate root.
 /// </summary>
-public class BudgetAggregate : Aggregate
+public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 {
 	// For Entity
 	private BudgetAggregate(BudgetId id, string name, Guid userId, string icon, string? description, DateTime createdOn)

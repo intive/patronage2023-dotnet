@@ -5,6 +5,7 @@ using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
@@ -68,6 +69,7 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDo
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {

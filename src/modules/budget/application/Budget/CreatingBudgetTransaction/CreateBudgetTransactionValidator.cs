@@ -1,7 +1,8 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
-using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
@@ -10,13 +11,13 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// </summary>
 public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	public CreateBudgetTransactionValidator(IBudgetRepository budgetRepository)
+	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 		this.RuleFor(transaction => transaction.Id).NotNull();

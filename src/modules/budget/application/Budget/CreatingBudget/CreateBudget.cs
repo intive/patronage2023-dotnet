@@ -1,6 +1,7 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -22,13 +23,13 @@ public record CreateBudget(Guid Id, string Name, Guid UserId, Money Limit, Perio
 /// </summary>
 public class HandleCreateBudget : ICommandHandler<CreateBudget>
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateBudget"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public HandleCreateBudget(IBudgetRepository budgetRepository)
+	public HandleCreateBudget(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 	}
