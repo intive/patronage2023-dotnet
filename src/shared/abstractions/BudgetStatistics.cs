@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Shared.Abstractions;
 
 /// <summary>
-/// Base class of collection response.
+/// Model for Retriving data for Budget statistics.
 /// </summary>
 /// <typeparam name="T">Type of elements in collection.</typeparam>
 public class BudgetStatistics<T>
