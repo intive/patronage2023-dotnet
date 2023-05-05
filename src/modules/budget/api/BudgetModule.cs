@@ -3,6 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -30,6 +31,7 @@ public static class BudgetModule
 		services.AddScoped<IValidator<CreateBudgetTransaction>, CreateBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetTransactions>, GetBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetDetails>, GetBudgetDetailsValidator>();
+		services.AddScoped<IValidator<GetBudgetStatistic>, GetBudgetStatisticValidator>();
 
 		return services;
 	}

@@ -11,6 +11,7 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -28,6 +29,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
+	private readonly IValidator<GetBudgetStatistic> getBudgetStatisticValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -39,6 +41,7 @@ public class BudgetController : ControllerBase
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
+	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -46,7 +49,8 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-		IValidator<GetBudgetDetails> getBudgetDetailsValidator)
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
+		IValidator<GetBudgetStatistic> getBudgetStatisticValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -55,6 +59,7 @@ public class BudgetController : ControllerBase
 		this.queryBus = queryBus;
 		this.createTransactionValidator = createTransactionValidator;
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
+		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 	}
 
 	/// <summary>
@@ -249,6 +254,34 @@ public class BudgetController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
+			return this.Ok(pagedList);
+		}
+
+		throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Get calculated values for budget between two dates.
+	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="request">Query Parameters.</param>
+	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	[HttpPost("{budgetId:guid}/budgetStatistic")]
+	[ProducesResponseType(typeof(PagedList<int>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetBudgetStatisticBetweenDates([FromRoute] Guid budgetId, [FromBody] GetBudgetStatisticDateInfo request)
+	{
+		var getBudgetStatistic = new GetBudgetStatistic
+		{
+			Id = budgetId,
+			StartDate = request.StartDate,
+			EndDate = request.EndDate,
+		};
+
+		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistic);
+		if (validationResult.IsValid)
+		{
+			var pagedList = await this.queryBus.Query<GetBudgetStatistic, BudgetStatistics<BudgetStatisticInfo>>(getBudgetStatistic);
 			return this.Ok(pagedList);
 		}
 
