@@ -20,7 +20,7 @@ public class GetBudgetStatisticValidator : AbstractValidator<GetBudgetStatistic>
 	public GetBudgetStatisticValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
-		this.RuleFor(budget => budget.Id).NotEmpty().NotNull();
+		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 		this.RuleFor(budget => budget.StartDate).NotEmpty().NotNull().LessThan(budget => budget.EndDate);
 		this.RuleFor(budget => budget.EndDate).NotEmpty().NotNull();
 	}
