@@ -14,15 +14,15 @@ public record RemoveBudget(Guid Id) : ICommand;
 /// <summary>
 /// Remove Budget.
 /// </summary>
-public class RemoveBudgetCommandHandler : ICommandHandler<RemoveBudget>
+public class HandlerRemoveBudget : ICommandHandler<RemoveBudget>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="RemoveBudgetCommandHandler"/> class.
+	/// Initializes a new instance of the <see cref="HandlerRemoveBudget"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public RemoveBudgetCommandHandler(IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	public HandlerRemoveBudget(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 	}

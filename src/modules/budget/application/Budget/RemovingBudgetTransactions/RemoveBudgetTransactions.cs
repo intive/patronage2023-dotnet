@@ -16,17 +16,17 @@ public record RemoveBudgetTransactions(Guid Id) : ICommand;
 /// <summary>
 /// Remove Budget Transactions Command Handler.
 /// </summary>
-public class RemoveBudgetTransactionsCommandHandler : ICommandHandler<RemoveBudgetTransactions>
+public class HandleRemoveBudgetTransactions : ICommandHandler<RemoveBudgetTransactions>
 {
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="RemoveBudgetTransactionsCommandHandler"/> class.
+	/// Initializes a new instance of the <see cref="HandleRemoveBudgetTransactions"/> class.
 	/// </summary>
 	/// <param name="budgetTransactionRepository">Repository that manages Budget Transaction aggregate root.</param>
 	/// <param name="budgetDbContext">Repository that manages Budget aggregate root.</param>
-	public RemoveBudgetTransactionsCommandHandler(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public HandleRemoveBudgetTransactions(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;
