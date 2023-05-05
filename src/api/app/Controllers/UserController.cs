@@ -2,8 +2,10 @@ using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Api.User.CreatingUser;
+using Intive.Patronage2023.Api.User.GettingUsers;
 using Intive.Patronage2023.Api.User.SignIn;
 using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -121,5 +123,22 @@ public class UserController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured while trying to create user.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Retrieves list of users filtered by query.
+	/// TODO: ADD AUTHORIZATION.
+	/// </summary>
+	/// <param name="query">Query.</param>
+	/// <returns>Created command.</returns>
+	/// <response code="200">Indicates if the request to create user was done correctly.</response>
+	/// <response code="400">If the body is not valid.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[HttpPost("list")]
+	public async Task<IActionResult> GetUsers([FromBody] GetUsers query)
+	{
+		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfo>>(query);
+		return this.Ok(result);
 	}
 }

@@ -124,4 +124,21 @@ public class KeycloakService
 
 		return await this.httpClient.PostAsJsonAsync(url, content, cancellationToken);
 	}
+
+	/// <summary>
+	/// Get users from keycloak.
+	/// </summary>
+	/// <param name="accessToken">Client token.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>List of users corresponding to query.</returns>
+	public async Task<HttpResponseMessage> GetUsers(string accessToken, CancellationToken cancellationToken)
+	{
+		string realm = this.apiKeycloakSettings.Realm;
+
+		string url = $"/admin/realms/{realm}/users";
+
+		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+		return await this.httpClient.GetAsync(url, cancellationToken);
+	}
 }
