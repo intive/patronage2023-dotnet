@@ -4,6 +4,10 @@ using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+
+using Moq;
 
 using Xunit;
 
@@ -14,24 +18,23 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetTransactionsValidatorTests
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly Mock<IBudgetRepository> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
 	/// </summary>
-	/// <param name="budgetRepository">Injected budget repository.</param>
-	public GetBudgetTransactionsValidatorTests(IBudgetRepository budgetRepository)
+	public GetBudgetTransactionsValidatorTests()
 	{
-		this.budgetRepository = budgetRepository;
-		this.getBudgetTransactionValidator = new GetBudgetTransactionValidator(this.budgetRepository);
+		this.budgetRepositoryMock = new Mock<IBudgetRepository>();
+		this.getBudgetTransactionValidator = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 
 	/// <summary>
-	/// Validator should return false when budget with that not existing in database.
+	/// Validation should return Validation Error List when budget with that not existing in database.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenBudgetIdDoesNotExistInDatabase_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenBudgetIdDoesNotExistInDatabase_ShouldHaveValidationErrorForBudgetId()
 	{
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must not be existing BudgetId in database.
@@ -46,22 +49,22 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = this.getBudgetTransactionValidator.TestValidate(getBudgetTransactions);
+		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.BudgetId);
 	}
 
 	/// <summary>
-	/// Validator should return false when page index or page size is lower or equal 0.
+	/// Validation should return Validation Error List when page index or page size is lower or equal 0.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenPageIndexOrAndSizeIsLowerOrEqual0_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenPageIndexAndSizeIsLowerOrEqual0_ShouldHaveValidationErrorForPageIndexAndPageSize()
 	{
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		int pageIndex = 0;
-		int pageSize = -1;
+		int pageSize = 0;
 
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
@@ -71,7 +74,7 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = this.getBudgetTransactionValidator.TestValidate(getBudgetTransactions);
+		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.PageSize);
@@ -79,15 +82,24 @@ public class GetBudgetTransactionsValidatorTests
 	}
 
 	/// <summary>
-	/// Validator should return true when budget with that id existing in database.
+	/// Validation should return empty list of errors when budget with that id existing in database.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenAllPropertiesAreValid_ShouldReturnTrue()
+	[Fact]
+	public async Task Validate_WhenAllPropertiesAreValid_ShouldNoReturnValidationErrors()
 	{
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		int pageIndex = new Faker().Random.Number(1, 10);
 		int pageSize = new Faker().Random.Number(1, 10);
+		string name = new Faker().Name.FirstName();
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var userId = new Faker().Random.Guid();
+		var limit = new Money(value, Currency.PLN);
+		var period = new Period(new Faker().Date.Recent(), new Faker().Date.Recent().AddMonths(1));
+		string? icon = new Faker().Random.String(1, 10);
+		string? description = new Faker().Random.String(1, 10);
+		var budget = BudgetAggregate.Create(budgetId, name, userId, limit, period, icon, description);
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
@@ -97,7 +109,7 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = this.getBudgetTransactionValidator.TestValidate(getBudgetTransactions);
+		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldNotHaveAnyValidationErrors();

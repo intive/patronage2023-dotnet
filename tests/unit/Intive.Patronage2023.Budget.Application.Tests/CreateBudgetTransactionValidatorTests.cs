@@ -5,32 +5,36 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+
+using Moq;
+
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
 
 /// <summary>
-/// Validator tests.
+/// Create Budget Transaction Validator tests.
 /// </summary>
 public class CreateBudgetTransactionValidatorTests
 {
+	private readonly Mock<IBudgetRepository> budgetRepositoryMock;
 	private readonly IValidator<CreateBudgetTransaction> createBudgetTransactionValidator;
-	private readonly IBudgetRepository budgetRepository;
-
 	/// <summary>
-	/// Contructor of CreateBudgetTransactionValidator.
+	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
-	public CreateBudgetTransactionValidatorTests(IBudgetRepository budgetRepository)
+	public CreateBudgetTransactionValidatorTests()
 	{
-		this.budgetRepository = budgetRepository;
-		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(budgetRepository);
+		this.budgetRepositoryMock = new Mock<IBudgetRepository>();
+		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 
 	/// <summary>
-	/// Validator should return true when all properties are valid.
+	/// Validation should return Empty Validation Errors list when all properties are valid.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenAllPropertiesAreValid_ShouldReturnTrue()
+	[Fact]
+	public async Task Validate_WhenAllPropertiesAreValid_ShouldNotHaveAnyValidationErrors()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
@@ -40,21 +44,27 @@ public class CreateBudgetTransactionValidatorTests
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-
+		var userId = new Faker().Random.Guid();
+		var limit = new Money(value, Currency.PLN);
+		var period = new Period(new Faker().Date.Recent(), new Faker().Date.Recent().AddMonths(1));
+		string? icon = new Faker().Random.String(1, 10);
+		string? description = new Faker().Random.String(1, 10);
+		var budget = BudgetAggregate.Create(budgetId, name, userId, limit, period, icon, description);
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
-		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
+		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldNotHaveAnyValidationErrors();
 	}
 
 	/// <summary>
-	/// Validator should return false when budget with given id does not exist in database.
+	/// Validation should return Validation Error List when budget with given id does not exist in database.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenBudgetIdDoesNotExistInDatabase_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenBudgetIdDoesNotExistInDatabase_ShouldHaveValidationErrorForBudgetId()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
@@ -68,17 +78,17 @@ public class CreateBudgetTransactionValidatorTests
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
-		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
+		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.BudgetId);
 	}
 
 	/// <summary>
-	/// Validator should return false when income type transaction have negative value.
+	/// Validation should return Validation Error List when income type transaction have negative value.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenIncomeTypeWithNegativeValue_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenIncomeTypeWithNegativeValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
@@ -93,17 +103,17 @@ public class CreateBudgetTransactionValidatorTests
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
-		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
+		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.Value);
 	}
 
 	/// <summary>
-	/// Validator should return false when expense type transaction have positive value.
+	/// Validation should return Validation Error List when expense type transaction have positive value.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenExpenseTypeWithPositiveValue_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenExpenseTypeWithPositiveValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
@@ -117,17 +127,17 @@ public class CreateBudgetTransactionValidatorTests
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
-		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
+		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.Value);
 	}
 
 	/// <summary>
-	/// Validator should return false when transaction created date is older than month.
+	/// Validation should return Validation Error List when transaction created date is older than month.
 	/// </summary>
-	[Fact(Skip = "Test must be skipped till it can be executed using integration test context.")]
-	public void Validator_WhenTransactionDataIsOlderThanMonth_ShouldReturnFalse()
+	[Fact]
+	public async Task Validate_WhenTransactionDataIsOlderThanMonth_ShouldHaveValidationErrorForTransactionDate()
 	{
 		//Arrange
 		var id = new TransactionId(new Faker().Random.Guid());
@@ -141,7 +151,7 @@ public class CreateBudgetTransactionValidatorTests
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, transactionData);
 
 		//Act
-		var result = this.createBudgetTransactionValidator.TestValidate(createBudgetTransaction);
+		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.TransactionDate);

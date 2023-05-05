@@ -32,7 +32,7 @@ public class BudgetTransactionAggregateTests
 		var budgetId = new BudgetId(new Faker().Random.Guid());
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal(19, 4);
+		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
 		if (type == TransactionType.Expense)

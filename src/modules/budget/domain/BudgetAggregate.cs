@@ -12,14 +12,8 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 public class BudgetAggregate : Aggregate
 {
 	// For Entity
-	private BudgetAggregate(BudgetId id, string name, Guid userId, string icon, string? description, DateTime createdOn)
+	private BudgetAggregate()
 	{
-		this.Id = id;
-		this.Name = name;
-		this.UserId = userId;
-		this.Icon = icon;
-		this.Description = description;
-		this.CreatedOn = createdOn;
 	}
 
 	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
