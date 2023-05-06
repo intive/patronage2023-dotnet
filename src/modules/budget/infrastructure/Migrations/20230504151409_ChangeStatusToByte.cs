@@ -10,52 +10,60 @@ public partial class ChangeStatusToByte : Migration
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.AlterColumn<byte>(
+		migrationBuilder.DropColumn(
+			name: "Status",
+			schema: "Budgets",
+			table: "BudgetTransaction");
+
+		migrationBuilder.DropColumn(
+			name: "Status",
+			schema: "Budgets",
+			table: "Budget");
+
+		migrationBuilder.AddColumn<bool>(
 			name: "Status",
 			schema: "Budgets",
 			table: "BudgetTransaction",
 			type: "tinyint",
 			nullable: false,
-			defaultValue: (byte)1,
-			oldClrType: typeof(string),
-			oldType: "varchar(10)",
-			oldDefaultValue: "Active");
+			defaultValue: (byte)1);
 
-		migrationBuilder.AlterColumn<byte>(
+		migrationBuilder.AddColumn<bool>(
 			name: "Status",
 			schema: "Budgets",
 			table: "Budget",
 			type: "tinyint",
 			nullable: false,
-			defaultValue: (byte)1,
-			oldClrType: typeof(string),
-			oldType: "varchar(10)",
-			oldDefaultValue: "Active");
+			defaultValue: (byte)1);
 	}
 
 	/// <inheritdoc />
 	protected override void Down(MigrationBuilder migrationBuilder)
 	{
-		migrationBuilder.AlterColumn<string>(
+		migrationBuilder.DropColumn(
+			name: "Status",
+			schema: "Budgets",
+			table: "BudgetTransaction");
+
+		migrationBuilder.DropColumn(
+			name: "Status",
+			schema: "Budgets",
+			table: "Budget");
+
+		migrationBuilder.AddColumn<string>(
 			name: "Status",
 			schema: "Budgets",
 			table: "BudgetTransaction",
-			type: "varchar(10)",
+			type: "nvarchar(max)",
 			nullable: false,
-			defaultValue: "Active",
-			oldClrType: typeof(byte),
-			oldType: "tinyint",
-			oldDefaultValue: (byte)1);
+			defaultValue: "Active");
 
-		migrationBuilder.AlterColumn<string>(
+		migrationBuilder.AddColumn<string>(
 			name: "Status",
 			schema: "Budgets",
 			table: "Budget",
-			type: "varchar(10)",
+			type: "nvarchar(max)",
 			nullable: false,
-			defaultValue: "Active",
-			oldClrType: typeof(byte),
-			oldType: "tinyint",
-			oldDefaultValue: (byte)1);
+			defaultValue: "Active");
 	}
 }
