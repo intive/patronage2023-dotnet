@@ -7,7 +7,6 @@ using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Events;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 

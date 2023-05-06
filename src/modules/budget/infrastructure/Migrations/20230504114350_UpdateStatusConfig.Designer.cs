@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230504114350_UpdateStatusConfig")]
+    partial class UpdateStatusConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,10 +48,11 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("Name");
 
-                    b.Property<byte>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1)
+                        .HasColumnType("varchar(10)")
+                        .HasDefaultValue("Active")
                         .HasColumnName("Status");
 
                     b.Property<Guid>("UserId")
@@ -92,10 +96,11 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
-                    b.Property<byte>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1)
+                        .HasColumnType("varchar(10)")
+                        .HasDefaultValue("Active")
                         .HasColumnName("Status");
 
                     b.Property<string>("TransactionType")
@@ -114,7 +119,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("BudgetTransaction", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Shared.Domain.DomainEventStore", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

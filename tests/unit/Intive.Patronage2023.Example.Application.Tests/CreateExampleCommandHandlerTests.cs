@@ -3,7 +3,7 @@ using Bogus;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Example.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Moq;
 
 using Xunit;

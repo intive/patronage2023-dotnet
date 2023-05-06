@@ -1,7 +1,7 @@
 using System.Text.Json;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Events;
 using Intive.Patronage2023.Shared.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +38,16 @@ public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
 	{
 		await this.eventDispatcher.Publish(aggregate.UncommittedEvents);
 		this.HandleEvents(aggregate.UncommittedEvents);
-		this.dbContext.Set<T>().Add(aggregate);
+
+		if (!this.dbContext.Set<T>().Local.Contains(aggregate))
+		{
+			this.dbContext.Set<T>().Add(aggregate);
+		}
+		else
+		{
+			this.dbContext.Set<T>().Update(aggregate);
+		}
+
 		await this.dbContext.SaveChangesAsync();
 	}
 
