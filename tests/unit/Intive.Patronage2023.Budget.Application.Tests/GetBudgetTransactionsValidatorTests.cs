@@ -4,6 +4,7 @@ using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -18,7 +19,7 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetTransactionsValidatorTests
 {
-	private readonly Mock<IBudgetRepository> budgetRepositoryMock;
+	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 
 	/// <summary>
@@ -26,7 +27,7 @@ public class GetBudgetTransactionsValidatorTests
 	/// </summary>
 	public GetBudgetTransactionsValidatorTests()
 	{
-		this.budgetRepositoryMock = new Mock<IBudgetRepository>();
+		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
 		this.getBudgetTransactionValidator = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 

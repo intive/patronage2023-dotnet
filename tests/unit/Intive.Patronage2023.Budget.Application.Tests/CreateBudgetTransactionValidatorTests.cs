@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -19,14 +20,14 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class CreateBudgetTransactionValidatorTests
 {
-	private readonly Mock<IBudgetRepository> budgetRepositoryMock;
+	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<CreateBudgetTransaction> createBudgetTransactionValidator;
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
 	public CreateBudgetTransactionValidatorTests()
 	{
-		this.budgetRepositoryMock = new Mock<IBudgetRepository>();
+		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
 		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 

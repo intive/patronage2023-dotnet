@@ -3,6 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 using Moq;
 
@@ -15,16 +16,16 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class CreateBudgetTransactionCommandHandlerTests
 {
-	private readonly Mock<IBudgetTransactionRepository> budgetTransactionRepositoryMock;
-	private readonly CreateBudgetTransactionCommandHandler instance;
+	private readonly Mock<IRepository<BudgetTransactionAggregate, TransactionId>> budgetTransactionRepositoryMock;
+	private readonly HandleCreateBudgetTransaction instance;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionCommandHandlerTests"/> class.
 	/// </summary>
 	public CreateBudgetTransactionCommandHandlerTests()
 	{
-		this.budgetTransactionRepositoryMock = new Mock<IBudgetTransactionRepository>();
-		this.instance = new CreateBudgetTransactionCommandHandler(this.budgetTransactionRepositoryMock.Object);
+		this.budgetTransactionRepositoryMock = new Mock<IRepository<BudgetTransactionAggregate, TransactionId>>();
+		this.instance = new HandleCreateBudgetTransaction(this.budgetTransactionRepositoryMock.Object);
 	}
 
 	/// <summary>
