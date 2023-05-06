@@ -11,12 +11,12 @@ using Xunit;
 namespace Intive.Patronage2023.Budget.Application.Tests;
 
 /// <summary>
-/// Test that checks the behavior of a query handler class "CreateBudgetTransaction".
+/// Test that checks the behavior of a command handler class "CreateBudgetTransaction".
 /// </summary>
 public class CreateBudgetTransactionCommandHandlerTests
 {
 	private readonly Mock<IBudgetTransactionRepository> budgetTransactionRepositoryMock;
-	private readonly CreateBudgetTransactionCommandHandler handleCreateBudgetTransaction;
+	private readonly CreateBudgetTransactionCommandHandler instance;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionCommandHandlerTests"/> class.
@@ -24,7 +24,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 	public CreateBudgetTransactionCommandHandlerTests()
 	{
 		this.budgetTransactionRepositoryMock = new Mock<IBudgetTransactionRepository>();
-		this.handleCreateBudgetTransaction = new CreateBudgetTransactionCommandHandler(this.budgetTransactionRepositoryMock.Object);
+		this.instance = new CreateBudgetTransactionCommandHandler(this.budgetTransactionRepositoryMock.Object);
 	}
 
 	/// <summary>
@@ -49,7 +49,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 			value *= -1;
 
 		// Act
-		await this.handleCreateBudgetTransaction.Handle(new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate), cancellationToken);
+		await this.instance.Handle(new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate), cancellationToken);
 
 		// Assert
 		this.budgetTransactionRepositoryMock.Verify(
