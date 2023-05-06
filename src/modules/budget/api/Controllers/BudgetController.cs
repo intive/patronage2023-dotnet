@@ -13,6 +13,8 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
 /// <summary>
@@ -30,6 +32,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
+	private readonly IAuthorizationService authorizationService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -42,6 +45,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
+	/// <param name="authorizationService">Authorization Service.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -50,7 +54,8 @@ public class BudgetController : ControllerBase
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
-		IValidator<RemoveBudget> removeBudgetValidator)
+		IValidator<RemoveBudget> removeBudgetValidator,
+		IAuthorizationService authorizationService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -60,6 +65,7 @@ public class BudgetController : ControllerBase
 		this.createTransactionValidator = createTransactionValidator;
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
+		this.authorizationService = authorizationService;
 	}
 
 	/// <summary>
@@ -94,6 +100,11 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
+			if (!(await this.authorizationService.AuthorizeAsync(this.HttpContext.User, request, Operations.Read)).Succeeded)
+			{
+				return new ChallengeResult();
+			}
+
 			var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 			return this.Ok(pagedList);
 		}
