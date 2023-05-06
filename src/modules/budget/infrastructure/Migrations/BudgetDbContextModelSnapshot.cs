@@ -114,7 +114,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("BudgetTransaction", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Shared.Domain.DomainEventStore", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +140,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", b =>
                 {
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Money", "Limit", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate.Limit#Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Money", "Limit", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
@@ -161,7 +161,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                                 .HasForeignKey("BudgetAggregateId");
                         });
 
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Period", "Period", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate.Period#Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Period", "Period", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
