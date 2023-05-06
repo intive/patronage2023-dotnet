@@ -22,4 +22,12 @@ public static class BudgetConverters
 	public static ValueConverter BudgetIdConverter() => new ValueConverter<BudgetId, Guid>(
 		id => id.Value,
 		guid => new BudgetId(guid));
+
+	/// <summary>
+	/// Converter which changes TransactionId to Guid.
+	/// </summary>
+	/// <returns>Returns Converted TransactionId to guid.</returns>
+	public static ValueConverter UserIdConverter() => new ValueConverter<UserId, Guid>(
+		id => id.Value,
+		guid => new UserId(guid));
 }
