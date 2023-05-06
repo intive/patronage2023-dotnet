@@ -83,11 +83,10 @@ public class BudgetAggregate : Aggregate
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="description">Budget Description.</param>
 	/// <param name="icon">Budget Icon.</param>
-	/// <param name="description">Budget Description.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description)
+	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
-		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
+		return new BudgetAggregate(id, name, userId, limit, period, description, icon);
 	}
 
 	/// <summary>
@@ -113,7 +112,7 @@ public class BudgetAggregate : Aggregate
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="description">Budget Describtion.</param>
 	/// <param name="icon">Budget Icon.</param>
-	public void EditBudget(Guid id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	public void EditBudget(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
 		var budgetEdited = new BudgetEditedDomainEvent(id, name, userId, limit, period, description, icon);
 		this.Apply(budgetEdited, this.Handle);
@@ -131,8 +130,8 @@ public class BudgetAggregate : Aggregate
 		this.UserId = @event.UserId;
 		this.Limit = @event.Limit;
 		this.Period = @event.Period;
-		this.Icon = @event.Icon;
 		this.Description = @event.Description;
+		this.Icon = @event.Icon;
 		this.CreatedOn = @event.Timestamp;
 	}
 
@@ -143,8 +142,8 @@ public class BudgetAggregate : Aggregate
 		this.UserId = @event.UserId;
 		this.Limit = @event.Limit;
 		this.Period = @event.Period;
-		this.Icon = @event.Icon;
 		this.Description = @event.Description;
+		this.Icon = @event.Icon;
 		this.CreatedOn = @event.Timestamp;
 	}
 }

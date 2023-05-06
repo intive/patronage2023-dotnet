@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
@@ -15,7 +16,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 /// <param name="Description">Description.</param>
 /// <param name="IconName">Budget icon identifier.</param>
 
-public record EditBudget(Guid Id, string Name, Guid UserId, Money Limit, Period Period, string Description, string IconName) : ICommand;
+public record EditBudget(BudgetId Id, string Name, Guid UserId, Money Limit, Period Period, string Description, string IconName) : ICommand;
 
 /// <summary>
 /// Edit Budget.

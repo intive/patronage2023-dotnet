@@ -41,6 +41,7 @@ public class BudgetController : ControllerBase
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
+	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -48,11 +49,8 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-		IValidator<GetBudgetDetails> getBudgetDetailsValidator)
-	/// <param name="createBudgetValidator">Create budget validator.</param>
-	/// <param name="getBudgetsValidator">Get budgets validator.</param>
-	/// <param name="editBudgetValidator">Edit budget validator. </param>
-	public BudgetController(ICommandBus commandBus, IQueryBus queryBus, IValidator<CreateBudget> createBudgetValidator, IValidator<GetBudgets> getBudgetsValidator, IValidator<EditBudget> editBudgetValidator)
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
+		IValidator<EditBudget> editBudgetValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -185,9 +183,7 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	///
-	///     PUT
 	///     {
-	///       "id": "3e6ca5f0-5ef8-44bc-a8bc-175c826b39b4",
 	///       "name": "budgetName",
 	///       "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///       "limit": {
@@ -211,12 +207,12 @@ public class BudgetController : ControllerBase
 	[HttpPut("{id:Guid}/edit")]
 	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
 	{
-		var editedBudget = new EditBudget(id, request.Name, request.UserId, request.Limit, request.Period, request.Description, request.IconName);
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.UserId, request.Limit, request.Period, request.Description, request.IconName);
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(editedBudget);
-			return this.Created($"Budget/{id}", id);
+			return this.Created("Budget {id} succesfully edited.", editedBudget.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);

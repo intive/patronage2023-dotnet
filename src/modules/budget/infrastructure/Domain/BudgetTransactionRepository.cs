@@ -48,6 +48,16 @@ public class BudgetTransactionRepository : IBudgetTransactionRepository
 		await this.budgetDbContext.SaveChangesAsync();
 	}
 
+	/// <summary>
+	/// Update aggregate state.
+	/// </summary>
+	/// <param name="budgetTransaction">Aggregate.</param>
+	/// <returns>Task.</returns>
+	public async Task Update(BudgetTransactionAggregate budgetTransaction)
+	{
+		await this.budgetDbContext.SaveChangesAsync();
+	}
+
 	private void HandleEvents(List<IEvent> uncommittedEvents)
 	{
 		foreach (var item in uncommittedEvents)
