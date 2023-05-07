@@ -17,15 +17,15 @@ using Xunit.Sdk;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
-public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
+public class IntegrationTests : IClassFixture<MsSqlTests>, IDisposable
 {
 	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> webApplicationFactory;
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ExampleTests"/> class.
+	/// Initializes a new instance of the <see cref="IntegrationTests"/> class.
 	/// </summary>
 	/// <param name="fixture">The database fixture.</param>
 	/// 
-	public ExampleTests(MsSqlTests fixture)
+	public IntegrationTests(MsSqlTests fixture)
 	{
 		this.webApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
