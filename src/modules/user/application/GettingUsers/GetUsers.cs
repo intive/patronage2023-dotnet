@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.User.Application.GettingUsers.Extensions;
 using Intive.Patronage2023.Modules.User.Application.User;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -10,7 +11,7 @@ namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
 /// <summary>
 /// Get users query.
 /// </summary>>
-public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSearchQuery
+public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSearchQuery, ISortableQuery
 {
 	/// <inheritdoc/>
 	public int PageSize { get; set; }
@@ -20,6 +21,9 @@ public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSea
 
 	/// <inheritdoc/>
 	public string? Search { get; set; }
+
+	/// <inheritdoc/>
+	public List<SortDescriptor> SortDescriptors { get; set; } = null!;
 }
 
 /// <summary>
@@ -67,7 +71,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 			throw new AppException(response.ToString());
 		}
 
-		response = await this.keycloakService.GetUsers(query.PageSize, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
+		response = await this.keycloakService.GetUsers(query.Search, token.AccessToken, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{
@@ -77,6 +81,9 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 		responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
 		var deserializedUsers = JsonConvert.DeserializeObject<List<UserInfo>>(responseContent);
+
+		var orderedUsers = deserializedUsers!.Sort(query.SortDescriptors);
+		deserializedUsers = orderedUsers!.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList();
 
 		return new PagedList<UserInfo>
 		{

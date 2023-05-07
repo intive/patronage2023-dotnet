@@ -35,11 +35,9 @@ public interface IKeycloakService
 	/// <summary>
 	/// Get users from keycloak.
 	/// </summary>
-	/// <param name="pageSize">Page size.</param>
-	/// <param name="pageIndex">Page index.</param>
 	/// <param name="searchText">Search text(string contained in username, first or last name, or email.</param>
 	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>List of users corresponding to query.</returns>
-	Task<HttpResponseMessage> GetUsers(int pageSize, int pageIndex, string searchText, string accessToken, CancellationToken cancellationToken);
+	Task<HttpResponseMessage> GetUsers(string searchText, string accessToken, CancellationToken cancellationToken);
 }
