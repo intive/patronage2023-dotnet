@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
+using Intive.Patronage2023.Shared.Abstractions;
 
 namespace Intive.Patronage2023.Modules.Example.Application.ExampleTests;
 
@@ -60,7 +61,20 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 
 		await dbContext.SaveChangesAsync();
 
-		var query = new GetBudgets();
+		var query = new GetBudgets
+		{
+			PageSize = 1,
+			PageIndex = 1,
+			Search = "",
+			SortDescriptors = new List<SortDescriptor>
+			{ new SortDescriptor
+			{
+				ColumnName="name",
+				SortAscending = true,
+			}
+			}
+		};
+
 		if (query == null)
 		{
 			throw new ArgumentNullException(nameof(query));
