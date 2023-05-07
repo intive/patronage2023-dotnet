@@ -2,10 +2,10 @@ using ArchUnitNET.Domain.Extensions;
 using ArchUnitNET.Fluent;
 using ArchUnitNET.Loader;
 using ArchUnitNET.xUnit;
-
+using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +23,7 @@ public class LayerReferenceTests
 	private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
 		typeof(Program).Assembly,
 		typeof(ExampleModule).Assembly,
+		typeof(BudgetModule).Assembly,
 		typeof(ICommandBus).Assembly,
 		typeof(DomainEvent).Assembly)
 		.Build();
@@ -56,8 +57,10 @@ public class LayerReferenceTests
 		IArchRule repositoryImplementationNamespaceRule = ArchRuleDefinition.Classes()
 			.That()
 			.AreAssignableTo(repositoryInterface)
+			.And()
+			.AreNotAbstract()
 			.Should()
-			.ResideInNamespace("Intive.Patronage2023.Modules.*.Infrastructure");
+			.ResideInNamespace("Intive.Patronage2023.Module.*.Infrastructure");
 
 		IArchRule repositoryInterfacesNamespaceRule = ArchRuleDefinition.Interfaces()
 			.That()

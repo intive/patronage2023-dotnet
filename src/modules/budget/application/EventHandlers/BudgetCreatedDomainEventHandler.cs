@@ -4,13 +4,13 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
+namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 
 /// <summary>
-/// Budget edited domain event handler.
+/// Budget created domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetEditedDomainEventHandler : IDomainEventHandler<BudgetEditedDomainEvent>
+public class BudgetCreatedDomainEventHandler : IDomainEventHandler<BudgetCreatedDomainEvent>
 {
 	/// <summary>
 	/// Handle the notification.
@@ -18,7 +18,7 @@ public class BudgetEditedDomainEventHandler : IDomainEventHandler<BudgetEditedDo
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetEditedDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetCreatedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

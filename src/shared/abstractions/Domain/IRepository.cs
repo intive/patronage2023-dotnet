@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
+namespace Intive.Patronage2023.Shared.Abstractions.Domain;
 
 /// <summary>
 /// Base interface of repository.
@@ -12,7 +12,7 @@ public interface IRepository<T, TKey>
 	/// </summary>
 	/// <param name="id">Identifier of aggregate.</param>
 	/// <returns>Task that gets Example aggregate.</returns>
-	Task<T> GetById(TKey id);
+	Task<T?> GetById(TKey id);
 
 	/// <summary>
 	/// Persists aggregate state.
