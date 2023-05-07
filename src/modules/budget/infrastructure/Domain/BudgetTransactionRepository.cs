@@ -1,21 +1,17 @@
-using System.Text.Json;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
 /// Budget Transaction aggregate repository.
 /// </summary>
-public class BudgetTransactionRepository : IBudgetTransactionRepository
+public class BudgetTransactionRepository : BaseRepository<BudgetTransactionAggregate, TransactionId>
 {
-	private readonly BudgetDbContext budgetDbContext;
-	private readonly IEventDispatcher<IEvent> domainEventDispatcher;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetTransactionRepository"/> class.
 	/// </summary>
@@ -70,5 +66,9 @@ public class BudgetTransactionRepository : IBudgetTransactionRepository
 			};
 			this.budgetDbContext.DomainEventStore.Add(newEvent);
 		}
+	/// <param name="eventDispatcher">Event dispatcher.</param>
+	public BudgetTransactionRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> eventDispatcher)
+			: base(budgetDbContext, eventDispatcher)
+	{
 	}
 }
