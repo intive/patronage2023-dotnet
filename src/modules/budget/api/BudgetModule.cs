@@ -31,7 +31,7 @@ public static class BudgetModule
 		services.AddScoped<IValidator<CreateBudgetTransaction>, CreateBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetTransactions>, GetBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetDetails>, GetBudgetDetailsValidator>();
-		services.AddScoped<IValidator<GetBudgetStatistic>, GetBudgetStatisticValidator>();
+		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 
 		return services;
 	}

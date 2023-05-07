@@ -7,12 +7,16 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 /// <summary>
 /// Mapper class.
 /// </summary>
-public static class BudgetStatisticInfoMapper
+public static class BudgetStatisticsInfoMapper
 {
 	/// <summary>
 	/// Mapping method.
 	/// </summary>
 	/// <returns>Returns <ref name="BudgetInfo"/>Transaction information.</returns>
-	public static Expression<Func<BudgetTransactionAggregate, BudgetStatisticInfo>> Map =>
-		 entity => new BudgetStatisticInfo() { BudgetId = entity.BudgetId, Value = entity.Value, BudgetTransactionDate = entity.BudgetTransactionDate };
+	public static Expression<Func<BudgetTransactionAggregate, BudgetAmount>> Map =>
+		entity => new BudgetAmount
+		{
+			Value = entity.Value,
+			DatePoint = entity.BudgetTransactionDate,
+		};
 }

@@ -9,15 +9,15 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 /// <summary>
 /// GetBudgetStatisticValidator class.
 /// </summary>
-public class GetBudgetStatisticValidator : AbstractValidator<GetBudgetStatistic>
+public class GetBudgetStatisticsValidator : AbstractValidator<GetBudgetStatistics>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetBudgetStatisticValidator"/> class.
+	/// Initializes a new instance of the <see cref="GetBudgetStatisticsValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	public GetBudgetStatisticValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	public GetBudgetStatisticsValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();

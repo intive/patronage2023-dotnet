@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetSt
 /// <summary>
 /// Get budget statistic query.
 /// </summary>
-public record GetBudgetStatistic() : IQuery<BudgetStatistics<BudgetStatisticInfo>>
+public record GetBudgetStatistics() : IQuery<BudgetStatistics<BudgetAmount>>
 {
 	/// <summary>
 	/// Budget Id from  which we retrive values.
@@ -31,7 +31,7 @@ public record GetBudgetStatistic() : IQuery<BudgetStatistics<BudgetStatisticInfo
 /// <summary>
 /// Get Budget statistic handler.
 /// </summary>
-public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistic, BudgetStatistics<BudgetStatisticInfo>>
+public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
@@ -50,33 +50,32 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistic, 
 	/// <param name="query">Query.</param>
 	/// <param name="cancellationToken">cancellation token.</param>
 	/// <returns> List of transaction in given period of time, and List of statistics.</returns>
-	public async Task<BudgetStatistics<BudgetStatisticInfo>> Handle(GetBudgetStatistic query, CancellationToken cancellationToken)
+	public async Task<BudgetStatistics<BudgetAmount>> Handle(GetBudgetStatistics query, CancellationToken cancellationToken)
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable();
 		var budgetId = new BudgetId(query.Id);
 
-		var budgetValues = await budgets.Select(BudgetStatisticInfoMapper.Map)
-			.Where(x => x.BudgetId == budgetId)
-			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
-			.ToListAsync(cancellationToken: cancellationToken);
+		var budgetValues = await budgets
+				.Where(x => x.BudgetId == budgetId)
+				.Select(BudgetStatisticsInfoMapper.Map)
+				.Where(x => x.DatePoint >= query.StartDate && x.DatePoint <= query.EndDate)
+				.ToListAsync(cancellationToken: cancellationToken);
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
 			.Where(x => x.BudgetId == budgetId)
 			.Sum(x => x.Value);
 
 		decimal periodValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetId == budgetId)
-			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
+			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate && x.BudgetId == budgetId)
 			.Sum(x => x.Value);
 
 		decimal startOfPeriodBudgetValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetId == budgetId)
-			.Where(x => x.BudgetTransactionDate <= query.StartDate)
+			.Where(x => x.BudgetTransactionDate <= query.StartDate && x.BudgetId == budgetId)
 			.Sum(x => x.Value);
 
 		decimal trendValue = startOfPeriodBudgetValue > 0 ? (periodValue - startOfPeriodBudgetValue) / startOfPeriodBudgetValue * 100 : 0;
 
-		var result = new BudgetStatistics<BudgetStatisticInfo> { Items = budgetValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
+		var result = new BudgetStatistics<BudgetAmount> { Items = budgetValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
 	}
 }

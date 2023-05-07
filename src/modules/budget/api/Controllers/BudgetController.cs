@@ -29,7 +29,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
-	private readonly IValidator<GetBudgetStatistic> getBudgetStatisticValidator;
+	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -50,7 +50,7 @@ public class BudgetController : ControllerBase
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
-		IValidator<GetBudgetStatistic> getBudgetStatisticValidator)
+		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -266,22 +266,22 @@ public class BudgetController : ControllerBase
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="request">Query Parameters.</param>
 	/// <returns>Returns the list of two calculated values, between two dates.</returns>
-	[HttpPost("{budgetId:guid}/budgetStatistic")]
+	[HttpGet("{budgetId:guid}/{StartDate:dateTime}/{EndDate:dateTime}/statistics")]
 	[ProducesResponseType(typeof(PagedList<int>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgetStatisticBetweenDates([FromRoute] Guid budgetId, [FromBody] GetBudgetStatisticDateInfo request)
+	public async Task<IActionResult> GetBudgetStatisticsBetweenDates([FromRoute] Guid budgetId, [FromRoute] GetBudgetStatisticsDateInfo request)
 	{
-		var getBudgetStatistic = new GetBudgetStatistic
+		var getBudgetStatistics = new GetBudgetStatistics
 		{
 			Id = budgetId,
 			StartDate = request.StartDate,
 			EndDate = request.EndDate,
 		};
 
-		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistic);
+		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistics);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetStatistic, BudgetStatistics<BudgetStatisticInfo>>(getBudgetStatistic);
+			var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 			return this.Ok(pagedList);
 		}
 
