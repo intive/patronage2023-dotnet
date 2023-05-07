@@ -294,8 +294,8 @@ public class BudgetController : ControllerBase
 	/// Get calculated values for budget between two dates.
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
-	/// <param name="startDate">st.</param>
-	/// <param name="endDate">ed.</param>
+	/// <param name="startDate">Start Date in which we want to get statistics.</param>
+	/// <param name="endDate">End date in which we want to get statistics.</param>
 	/// <returns>Returns the list of two calculated values, between two dates.</returns>
 	[HttpGet("{budgetId:guid}/statistics")]
 	[ProducesResponseType(typeof(PagedList<int>), StatusCodes.Status200OK)]
