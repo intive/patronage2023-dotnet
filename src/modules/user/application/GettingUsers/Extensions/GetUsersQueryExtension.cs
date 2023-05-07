@@ -15,9 +15,9 @@ internal static class GetUsersQueryExtension
 	/// <returns>Sorted query.</returns>
 	public static IOrderedEnumerable<UserInfo> Sort(this List<UserInfo> users, List<SortDescriptor> sortDescriptors)
 	{
-		if (sortDescriptors.Count() == 0)
+		if (!sortDescriptors.Any())
 		{
-			return users.OrderBy(x => x.Id);
+			return users.OrderByDescending(x => x.CreatedTimestamp);
 		}
 
 		var result = Sort(users, sortDescriptors.First());

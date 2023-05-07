@@ -66,7 +66,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 
 		Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
 
-		if (token == null || token?.AccessToken == null)
+		if (token?.AccessToken == null)
 		{
 			throw new AppException(response.ToString());
 		}
@@ -81,6 +81,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 		responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
 		var deserializedUsers = JsonConvert.DeserializeObject<List<UserInfo>>(responseContent);
+		int totalCount = deserializedUsers!.Count();
 
 		var orderedUsers = deserializedUsers!.Sort(query.SortDescriptors);
 		deserializedUsers = orderedUsers!.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList();
@@ -88,7 +89,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 		return new PagedList<UserInfo>
 		{
 			Items = deserializedUsers!,
-			TotalCount = deserializedUsers!.Count,
+			TotalCount = totalCount,
 		};
 	}
 }
