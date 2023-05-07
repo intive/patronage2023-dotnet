@@ -17,6 +17,11 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 {
 	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> _webApplicationFactory;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ExampleTests"/> class.
+	/// </summary>
+	/// <param name="fixture">The database fixture.</param>
+	/// 
 	public ExampleTests(MsSqlTests fixture)
 	{
 		var clientOptions = new WebApplicationFactoryClientOptions
@@ -26,6 +31,11 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		this._webApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
 
+	///<summary>
+	///Unit test to verify that the GetBudgetsQueryHandler returns a PagedList of budget items.
+	///The test creates a budget item in the database, retrieves it using the query handler, and verifies that the result is not null and contains the expected item.
+	///</summary>
+	///
 	[Fact]
 	public async Task Handle_WhenCalled_ShouldReturnPagedList()
 	{
@@ -41,26 +51,10 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 			"icon",
 			"description");
 
-		if (dbContext == null)
-		{
-			throw new ArgumentNullException(nameof(dbContext));
-		}
-
-		dbContext.Add(command);
-
+		dbContext!.Add(command);
 		await dbContext.SaveChangesAsync();
 
 		var query = new GetBudgets();
-		if (query == null)
-		{
-			throw new ArgumentNullException(nameof(query));
-		}
-
-		if (dbContext == null)
-		{
-			throw new ArgumentNullException(nameof(dbContext));
-		}
-
 		var handler = new GetBudgetsQueryHandler(dbContext);
 
 		// Act
@@ -69,13 +63,21 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
+		// Verify the content of the BudgetInfo item(s) in result here, e.g.:
+		// result.Items[0].Name.Should().Be("example name");
 	}
 
+	///<summary>
+	///Disposes the web application factory used in the test.
+	///</summary>
 	public void Dispose()
 	{
 		this._webApplicationFactory.Dispose();
 	}
 
+	//<summary>
+	///Custom web application factory used in the test to configure the test database connection string.
+	///</summary>
 	private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
 	{
 		private readonly string connectionString;

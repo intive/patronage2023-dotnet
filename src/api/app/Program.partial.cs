@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Api;
 
 /// <summary>
-/// Docs.
+/// Program.
 /// </summary>
 public partial class Program
 {

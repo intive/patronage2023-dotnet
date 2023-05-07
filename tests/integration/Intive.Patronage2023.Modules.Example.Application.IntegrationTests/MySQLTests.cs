@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
+/// <summary>
+/// Integration tests for the MS SQL database using Testcontainers.
+/// </summary>
 public class MsSqlTests : IAsyncLifetime
 {
 	public const string Database = "patronage2023";
@@ -33,11 +36,18 @@ public class MsSqlTests : IAsyncLifetime
 		.WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
 		.Build();
 
+
+	/// <summary>
+	/// Initializes the MsSql container for integration tests.
+	/// </summary>
 	public Task InitializeAsync()
 	{
 		return this._mssqlContainer?.StartAsync() ?? Task.CompletedTask;
 	}
 
+	/// <summary>
+	/// Disposes the MsSql container after integration tests have been executed.
+	/// </summary>
 	public Task DisposeAsync()
 	{
 		return this._mssqlContainer?.DisposeAsync().AsTask() ?? Task.CompletedTask;
