@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230429173605_AddFlagIsDeleted")]
+    partial class AddFlagIsDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,17 +42,15 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsDeleted");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("Name");
-
-                    b.Property<byte>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1)
-                        .HasColumnName("Status");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
@@ -87,16 +88,13 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedOn");
 
+                    b.Property<bool>("IsBudgetDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
-
-                    b.Property<byte>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1)
-                        .HasColumnName("Status");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()
@@ -140,7 +138,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", b =>
                 {
-                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate.Limit#Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Money", "Limit", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Money", "Limit", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
@@ -161,7 +159,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                                 .HasForeignKey("BudgetAggregateId");
                         });
 
-                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate.Period#Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Period", "Period", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects.Period", "Period", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");

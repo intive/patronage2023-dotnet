@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Domain.Rules;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -13,14 +14,8 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 {
 	// For Entity
-	private BudgetAggregate(BudgetId id, string name, Guid userId, string icon, string? description, DateTime createdOn)
+	private BudgetAggregate()
 	{
-		this.Id = id;
-		this.Name = name;
-		this.UserId = userId;
-		this.Icon = icon;
-		this.Description = description;
-		this.CreatedOn = createdOn;
 	}
 
 	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
@@ -75,6 +70,11 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
+	/// Status of budget.
+	/// </summary>
+	public Status Status { get; private set; } = default;
+
+	/// <summary>
 	/// Create Budget.
 	/// </summary>
 	/// <param name="id">Unique identifier.</param>
@@ -103,9 +103,26 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Update Flag.
+	/// </summary>
+	public void SoftRemove()
+	{
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
+
+		var evt = new BudgetSoftDeletedDomainEvent(this.Id, Status.Deleted);
+
+		this.Apply(evt, this.Handle);
+	}
+
 	private void Handle(BudgetNameUpdatedDomainEvent @event)
 	{
 		this.Name = @event.NewName;
+	}
+
+	private void Handle(BudgetSoftDeletedDomainEvent @event)
+	{
+		this.Status = @event.Status;
 	}
 
 	private void Handle(BudgetCreatedDomainEvent @event)

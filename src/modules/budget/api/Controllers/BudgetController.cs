@@ -11,6 +11,7 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -29,6 +30,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
+	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
 
 	/// <summary>
@@ -41,6 +43,7 @@ public class BudgetController : ControllerBase
 	/// <param name="createTransactionValidator">Create Transaction validator.</param>
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
+	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -50,6 +53,7 @@ public class BudgetController : ControllerBase
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
+		IValidator<RemoveBudget> removeBudgetValidator),
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -59,6 +63,7 @@ public class BudgetController : ControllerBase
 		this.queryBus = queryBus;
 		this.createTransactionValidator = createTransactionValidator;
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
+		this.removeBudgetValidator = removeBudgetValidator;
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 	}
 
@@ -175,6 +180,31 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
+	/// Remove Budget and its related Transactions.
+	/// </summary>
+	/// <param name="budgetId">The Id of the budget to remove.</param>
+	/// <returns>
+	/// Returns an HTTP 200 OK status code with the ID of the removed budget if successful.
+	/// Throws an AppException if there are validation errors.
+	/// </returns>
+	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpDelete("{budgetId:guid}")]
+	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
+	{
+		var removeBudget = new RemoveBudget(budgetId);
+
+		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(removeBudget);
+			return this.Ok(removeBudget.Id);
+		}
+
+		throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
+	}
+
+	/// <summary>
 	/// Creates Income / Expense Budget Transaction.
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
@@ -233,7 +263,7 @@ public class BudgetController : ControllerBase
 	///
 	///     {
 	///         "pageSize": 1,
-	///         "pageIndex": 1,
+	///         "pageIndex": 1
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
