@@ -17,23 +17,29 @@ using Xunit.Sdk;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
+///<summary>
+///This class contains integration tests for the Example module of the Patronage2023 application.
+///</summary>
+
 public class IntegrationTests : IClassFixture<MsSqlTests>, IDisposable
 {
 	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> webApplicationFactory;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="IntegrationTests"/> class.
 	/// </summary>
 	/// <param name="fixture">The database fixture.</param>
-	/// 
+	
 	public IntegrationTests(MsSqlTests fixture)
 	{
 		this.webApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
+
 	///<summary>
 	///Unit test to verify that the GetBudgetsQueryHandler returns a PagedList of budget items.
 	///The test creates a budget item in the database, retrieves it using the query handler, and verifies that the result is not null and contains the expected item.
 	///</summary>
-	///
+	
 	[Fact]
 	public async Task Handle_WhenCalled_ShouldReturnPagedList()
 	{
@@ -84,20 +90,34 @@ public class IntegrationTests : IClassFixture<MsSqlTests>, IDisposable
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
 	}
+
 	///<summary>
 	///Disposes the web application factory used in the test.
 	///</summary>
+	
 	public void Dispose()
 	{
 		this.webApplicationFactory.Dispose();
 	}
+
 	///<summary>
 	///Custom web application factory used in the test to configure the test database connection string.
 	///</summary>
+	
 	private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
 	{
+
+		///<summary>
+		///The connection string to use when creating instances of the Patronage2023 application.
+		///</summary>
+		
 		private readonly string connectionString;
 
+		///<summary>
+		///Creates a new instance of the CustomWebApplicationFactory class with the specified fixture.
+		///</summary>
+		///<param name="fixture">The MsSqlTests fixture to use when creating instances of the Patronage2023 application.</param>
+		
 		public CustomWebApplicationFactory(MsSqlTests fixture)
 		{
 			this.connectionString =
