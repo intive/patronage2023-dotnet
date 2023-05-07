@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using Intive.Patronage2023.Api.Configuration;
-using Intive.Patronage2023.Api.User.CreatingUser;
-using Intive.Patronage2023.Api.User.Models;
+using Intive.Patronage2023.Modules.User.Domain;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Microsoft.Extensions.Options;
 
 namespace Intive.Patronage2023.Api.Keycloak;
@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Api.Keycloak;
 /// <summary>
 /// Class KeycloakService.
 /// </summary>
-public class KeycloakService
+public class KeycloakService : IKeycloakService
 {
 	private readonly HttpClient httpClient;
 	private readonly ApiKeycloakSettings apiKeycloakSettings;
@@ -85,44 +85,19 @@ public class KeycloakService
 	/// <summary>
 	/// Add new user to keycloak.
 	/// </summary>
-	/// <param name="createUser">User to add.</param>
+	/// <param name="appUser">User to add.</param>
 	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
-	public async Task<HttpResponseMessage> AddUser(CreateUser createUser, string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> AddUser(AppUser appUser, string accessToken, CancellationToken cancellationToken)
 	{
 		string realm = this.apiKeycloakSettings.Realm;
 
 		string url = $"/admin/realms/{realm}/users";
 
-		UserCredentials[] credentials =
-		{
-			new UserCredentials
-			{
-				Type = "password",
-				Value = createUser.Password,
-				Temporary = false,
-			},
-		};
-
-		var attributes = new UserAttributes
-		{
-			Avatar = new string[] { createUser.Avatar },
-		};
-
-		var content = new AppUser
-		{
-			Email = createUser.Email,
-			FirstName = createUser.FirstName,
-			LastName = createUser.LastName,
-			Enabled = true,
-			Attributes = attributes,
-			Credentials = credentials,
-		};
-
 		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-		return await this.httpClient.PostAsJsonAsync(url, content, cancellationToken);
+		return await this.httpClient.PostAsJsonAsync(url, appUser, cancellationToken);
 	}
 
 	/// <summary>

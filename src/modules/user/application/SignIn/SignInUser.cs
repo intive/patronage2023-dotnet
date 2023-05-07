@@ -1,7 +1,7 @@
-using Intive.Patronage2023.Api.Keycloak;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
-namespace Intive.Patronage2023.Api.User.SignIn;
+namespace Intive.Patronage2023.Modules.User.Application.SignIn;
 
 /// <summary>
 /// SignIn user query.
@@ -20,13 +20,13 @@ public record SignInUser(string Email, string Password) : IQuery<HttpResponseMes
 /// </remarks>
 public class HandleSignInUser : IQueryHandler<SignInUser, HttpResponseMessage>
 {
-	private readonly KeycloakService keycloakService;
+	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleSignInUser"/> class.
 	/// </summary>
 	/// <param name="keycloakService">KeycloakService.</param>
-	public HandleSignInUser(KeycloakService keycloakService)
+	public HandleSignInUser(IKeycloakService keycloakService)
 	{
 		this.keycloakService = keycloakService;
 	}

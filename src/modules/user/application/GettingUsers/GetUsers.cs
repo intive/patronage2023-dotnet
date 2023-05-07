@@ -1,10 +1,11 @@
-using Intive.Patronage2023.Api.Keycloak;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
+using Intive.Patronage2023.Modules.User.Application.User;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Newtonsoft.Json;
 
-namespace Intive.Patronage2023.Api.User.GettingUsers;
+namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
 
 /// <summary>
 /// Get users query.
@@ -29,13 +30,13 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 	/// <summary>
 	/// Keycloak service.
 	/// </summary>
-	private readonly KeycloakService keycloakService;
+	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetUsersQueryHandler"/> class.
 	/// </summary>
 	/// <param name = "keycloakService" > KeycloakService.</param>
-	public GetUsersQueryHandler(KeycloakService keycloakService) => this.keycloakService = keycloakService;
+	public GetUsersQueryHandler(IKeycloakService keycloakService) => this.keycloakService = keycloakService;
 
 	/// <summary>
 	/// GetUsers query handler.
@@ -66,7 +67,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 			throw new AppException(response.ToString());
 		}
 
-		response = await this.keycloakService.GetUsers(query.PageIndex, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
+		response = await this.keycloakService.GetUsers(query.PageSize, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{
