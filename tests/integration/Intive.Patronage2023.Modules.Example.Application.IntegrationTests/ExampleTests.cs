@@ -51,10 +51,26 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 			"icon",
 			"description");
 
-		dbContext!.Add(command);
+		if (dbContext == null)
+		{
+			throw new ArgumentNullException(nameof(dbContext));
+		}
+
+		dbContext.Add(command);
+
 		await dbContext.SaveChangesAsync();
 
 		var query = new GetBudgets();
+		if (query == null)
+		{
+			throw new ArgumentNullException(nameof(query));
+		}
+
+		if (dbContext == null)
+		{
+			throw new ArgumentNullException(nameof(dbContext));
+		}
+
 		var handler = new GetBudgetsQueryHandler(dbContext);
 
 		// Act
@@ -63,8 +79,6 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
-		// Verify the content of the BudgetInfo item(s) in result here, e.g.:
-		// result.Items[0].Name.Should().Be("example name");
 	}
 
 	///<summary>
