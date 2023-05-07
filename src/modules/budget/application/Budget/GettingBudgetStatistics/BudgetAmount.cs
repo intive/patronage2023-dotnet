@@ -1,4 +1,5 @@
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+
 /// <summary>
 /// Model for statistics retrivial.
 /// </summary>

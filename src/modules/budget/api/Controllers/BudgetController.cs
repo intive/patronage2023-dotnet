@@ -294,18 +294,19 @@ public class BudgetController : ControllerBase
 	/// Get calculated values for budget between two dates.
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
-	/// <param name="request">Query Parameters.</param>
+	/// <param name="startDate">st.</param>
+	/// <param name="endDate">ed.</param>
 	/// <returns>Returns the list of two calculated values, between two dates.</returns>
-	[HttpGet("{budgetId:guid}/{StartDate:dateTime}/{EndDate:dateTime}/statistics")]
+	[HttpGet("{budgetId:guid}/statistics")]
 	[ProducesResponseType(typeof(PagedList<int>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgetStatisticsBetweenDates([FromRoute] Guid budgetId, [FromRoute] GetBudgetStatisticsDateInfo request)
+	public async Task<IActionResult> GetBudgetStatisticsBetweenDates([FromRoute] Guid budgetId, DateTime startDate, DateTime endDate)
 	{
 		var getBudgetStatistics = new GetBudgetStatistics
 		{
 			Id = budgetId,
-			StartDate = request.StartDate,
-			EndDate = request.EndDate,
+			StartDate = startDate,
+			EndDate = endDate,
 		};
 
 		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistics);
