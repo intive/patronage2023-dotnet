@@ -107,7 +107,7 @@ public class KeycloakService
 
 		var attributes = new UserAttributes
 		{
-			Avatar = createUser.Avatar,
+			Avatar = new string[] { createUser.Avatar },
 		};
 
 		var content = new AppUser
@@ -128,14 +128,17 @@ public class KeycloakService
 	/// <summary>
 	/// Get users from keycloak.
 	/// </summary>
+	/// <param name="pageSize">Page size.</param>
+	/// <param name="pageIndex">Page index.</param>
+	/// <param name="searchText">Search text(string contained in username, first or last name, or email.</param>
 	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>List of users corresponding to query.</returns>
-	public async Task<HttpResponseMessage> GetUsers(string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> GetUsers(int pageSize, int pageIndex, string searchText, string accessToken, CancellationToken cancellationToken)
 	{
 		string realm = this.apiKeycloakSettings.Realm;
 
-		string url = $"/admin/realms/{realm}/users";
+		string url = $"/admin/realms/{realm}/users?max={pageSize}&first={pageSize * pageIndex}&search={searchText}";
 
 		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 

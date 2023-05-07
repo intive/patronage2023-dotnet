@@ -8,5 +8,5 @@ public class UserAttributes
 	/// <summary>
 	/// User avatar identifier.
 	/// </summary>
-	public string Avatar { get; set; } = null!;
+	public string[] Avatar { get; set; } = null!;
 }

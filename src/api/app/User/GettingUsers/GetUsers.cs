@@ -9,27 +9,16 @@ namespace Intive.Patronage2023.Api.User.GettingUsers;
 /// <summary>
 /// Get users query.
 /// </summary>>
-public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSearchQuery, ISortableQuery
+public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSearchQuery
 {
-	/// <summary>
-	/// The amount of data to return.
-	/// </summary>
+	/// <inheritdoc/>
 	public int PageSize { get; set; }
 
-	/// <summary>
-	/// Requested page.
-	/// </summary>
+	/// <inheritdoc/>
 	public int PageIndex { get; set; }
 
-	/// <summary>
-	/// Field to search budget by name.
-	/// </summary>
+	/// <inheritdoc/>
 	public string Search { get; set; } = null!;
-
-	/// <summary>
-	/// List of criteria to sort budgets.
-	/// </summary>
-	public List<SortDescriptor> SortDescriptors { get; set; } = null!;
 }
 
 /// <summary>
@@ -53,7 +42,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 	/// </summary>
 	/// <param name="query">Query.</param>
 	/// <param name="cancellationToken">cancellation token.</param>
-	/// <returns>Paged list of Budgets.</returns>
+	/// <returns>Paged list of users.</returns>
 	public async Task<PagedList<UserInfo>> Handle(GetUsers query, CancellationToken cancellationToken)
 	{
 		var response = await this.keycloakService.GetClientToken(cancellationToken);
@@ -77,7 +66,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 			throw new AppException(response.ToString());
 		}
 
-		response = await this.keycloakService.GetUsers(token.AccessToken, cancellationToken);
+		response = await this.keycloakService.GetUsers(query.PageIndex, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{
@@ -91,7 +80,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 		return new PagedList<UserInfo>
 		{
 			Items = deserializedUsers!,
-			TotalCount = 17,
+			TotalCount = deserializedUsers!.Count,
 		};
 	}
 }

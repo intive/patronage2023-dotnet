@@ -135,8 +135,8 @@ public class UserController : ControllerBase
 	/// <response code="400">If the body is not valid.</response>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[HttpPost("list")]
-	public async Task<IActionResult> GetUsers([FromBody] GetUsers query)
+	[HttpGet("list")]
+	public async Task<IActionResult> GetUsers([FromQuery] GetUsers query)
 	{
 		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfo>>(query);
 		return this.Ok(result);
