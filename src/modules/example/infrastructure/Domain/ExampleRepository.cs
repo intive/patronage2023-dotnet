@@ -20,55 +20,5 @@ public class ExampleRepository : BaseRepository<ExampleAggregate, ExampleId>
 	public ExampleRepository(ExampleDbContext exampleDbContext, IEventDispatcher<IEvent> domainEventDispatcher)
 		: base(exampleDbContext, domainEventDispatcher)
 	{
-		this.exampleDbContext = exampleDbContext;
-		this.domainEventDispatcher = domainEventDispatcher;
-	}
-
-	/// <summary>
-	/// Retrieves example aggregate.
-	/// </summary>
-	/// <param name="id">Aggregate identifier.</param>
-	/// <returns>Aggregate.</returns>
-	public Task<ExampleAggregate> GetById(Guid id)
-		=> this.exampleDbContext.Example.FirstOrDefaultAsync(x => x.Id == id);
-
-	/// <summary>
-	/// Persist aggregate state.
-	/// </summary>
-	/// <param name="example">Aggregate.</param>
-	/// <returns>Task.</returns>
-	public async Task Persist(ExampleAggregate example)
-	{
-		await this.domainEventDispatcher.Publish(example.UncommittedEvents);
-		this.HandleEvents(example.UncommittedEvents);
-		this.exampleDbContext.Example.Add(example);
-		await this.exampleDbContext.SaveChangesAsync();
-	}
-
-	/// <summary>
-	/// Updates aggregate state.
-	/// </summary>
-	/// <param name="example">Aggregate.</param>
-	/// <returns>Task.</returns>
-	public async Task Update(ExampleAggregate example)
-	{
-		await this.domainEventDispatcher.Publish(example.UncommittedEvents);
-		this.HandleEvents(example.UncommittedEvents);
-		this.exampleDbContext.Example.Update(example);
-		await this.exampleDbContext.SaveChangesAsync();
-	}
-
-	private void HandleEvents(List<IEvent> uncommittedEvents)
-	{
-		foreach (var item in uncommittedEvents)
-		{
-			var newEvent = new DomainEventStore
-			{
-				CreatedAt = DateTimeOffset.UtcNow,
-				Type = item.GetType().FullName,
-				Data = JsonSerializer.Serialize(item),
-			};
-			this.exampleDbContext.DomainEventStore.Add(newEvent);
-		}
 	}
 }

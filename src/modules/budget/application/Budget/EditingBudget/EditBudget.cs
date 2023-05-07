@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
@@ -23,13 +24,13 @@ public record EditBudget(BudgetId Id, string Name, Guid UserId, Money Limit, Per
 /// </summary>
 public class HandleEditBudget : ICommandHandler<EditBudget>
 {
-	private readonly IBudgetRepository budgetRepository;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleEditBudget"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
-	public HandleEditBudget(IBudgetRepository budgetRepository)
+	public HandleEditBudget(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
 	}
@@ -37,8 +38,8 @@ public class HandleEditBudget : ICommandHandler<EditBudget>
 	/// <inheritdoc/>
 	public async Task Handle(EditBudget command, CancellationToken cancellationToken)
 	{
-		var b = this.budgetRepository.GetById(command.Id);
-		b.Result.EditBudget(command.Id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
-		await this.budgetRepository.Update(b.Result);
+		var budget = await this.budgetRepository.GetById(command.Id);
+		budget!.EditBudget(command.Id, command.Name, command.UserId, command.Limit, command.Period, command.Description, command.IconName);
+		await this.budgetRepository.Persist(budget);
 	}
 }

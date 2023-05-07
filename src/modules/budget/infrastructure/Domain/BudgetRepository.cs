@@ -20,55 +20,5 @@ public class BudgetRepository : BaseRepository<BudgetAggregate, BudgetId>
 	public BudgetRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> eventDispatcher)
 		: base(budgetDbContext, eventDispatcher)
 	{
-		this.budgetDbContext = budgetDbContext;
-		this.domainEventDispatcher = domainEventDispatcher;
-	}
-
-	/// <summary>
-	/// Retrieves Budget aggregate.
-	/// </summary>
-	/// <param name="id">Aggregate identifier.</param>
-	/// <returns>Aggregate.</returns>
-	public Task<BudgetAggregate> GetById(BudgetId id)
-		=> this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id == id);
-
-	/// <summary>
-	/// Persist aggregate state.
-	/// </summary>
-	/// <param name="budget">Aggregate.</param>
-	/// <returns>Task.</returns>
-	public async Task Persist(BudgetAggregate budget)
-	{
-		await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
-		this.HandleEvents(budget.UncommittedEvents);
-		this.budgetDbContext.Budget.Add(budget);
-		await this.budgetDbContext.SaveChangesAsync();
-	}
-
-	/// <summary>
-	/// Update aggregate state.
-	/// </summary>
-	/// <param name="budget">Aggregate.</param>
-	/// <returns>Task.</returns>
-	public async Task Update(BudgetAggregate budget)
-	{
-		await this.domainEventDispatcher.Publish(budget.UncommittedEvents);
-		this.HandleEvents(budget.UncommittedEvents);
-		this.budgetDbContext.Update(budget);
-		await this.budgetDbContext.SaveChangesAsync();
-	}
-
-	private void HandleEvents(List<IEvent> uncommittedEvents)
-	{
-		foreach (var item in uncommittedEvents)
-		{
-			var newEvent = new DomainEventStore
-			{
-				CreatedAt = DateTimeOffset.UtcNow,
-				Type = item.GetType().FullName,
-				Data = JsonSerializer.Serialize(item),
-			};
-			this.budgetDbContext.DomainEventStore.Add(newEvent);
-		}
 	}
 }

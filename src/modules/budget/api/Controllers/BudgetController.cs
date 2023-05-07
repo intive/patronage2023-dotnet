@@ -52,7 +52,7 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-		IValidator<RemoveBudget> removeBudgetValidator)
+		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<EditBudget> editBudgetValidator)
 	{

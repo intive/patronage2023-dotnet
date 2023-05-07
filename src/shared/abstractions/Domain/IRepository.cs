@@ -20,11 +20,4 @@ public interface IRepository<T, TKey>
 	/// <param name="example">Aggregate.</param>
 	/// <returns>Task.</returns>
 	Task Persist(T example);
-
-	/// <summary>
-	/// Updates aggregate state.
-	/// </summary>
-	/// <param name="example">Aggregate.</param>
-	/// <returns>Task.</returns>
-	Task Update(T example);
 }
