@@ -10,4 +10,10 @@ public interface IExecutionContextAccessor
 	/// </summary>
 	/// <returns>User id or null if token/claim does not exits.</returns>
 	Guid? GetUserId();
+
+	/// <summary>
+	/// Returns information that user is admin or not.
+	/// </summary>
+	/// <returns>Bool value.</returns>
+	bool IsUserAdmin();
 }

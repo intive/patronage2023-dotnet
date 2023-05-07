@@ -41,4 +41,28 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 		var userId = Guid.Parse(token.Claims.First(c => c.Type == "sub").Value);
 		return userId;
 	}
+
+	/// <inheritdoc/>
+	public bool IsUserAdmin()
+	{
+		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+		if (jwtToken == null)
+		{
+			// User is not authenticated
+			return false;
+		}
+
+		var tokenHandler = new JwtSecurityTokenHandler();
+		var token = tokenHandler.ReadJwtToken(jwtToken);
+
+		string realmAccessValue = token.Claims.First(c => c.Type == "realm_access").Value;
+		bool isAdmin = realmAccessValue.Contains("admin");
+
+		if (isAdmin)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

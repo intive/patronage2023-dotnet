@@ -40,14 +40,17 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext)
+	/// <param name="contextAccessor">Context Accessor.</param>
+	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor)
 	{
 		this.budgetDbContext = budgetDbContext;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -58,7 +61,10 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
-		var budgets = this.budgetDbContext.Budget.AsQueryable();
+		var userId = this.contextAccessor.GetUserId();
+		var userBudgets = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId).Select(y => y.BudgetId).ToList();
+
+		var budgets = this.budgetDbContext.Budget.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
 
 		if (!string.IsNullOrEmpty(query.Search))
 		{
