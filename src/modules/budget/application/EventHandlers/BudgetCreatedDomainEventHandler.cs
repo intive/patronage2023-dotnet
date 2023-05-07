@@ -24,16 +24,18 @@ public class BudgetCreatedDomainEventHandler : IDomainEventHandler<BudgetCreated
 	}
 
 	/// <summary>
-	/// Handle the notification.
+	/// This method implements the IDomainEventHandler interface and is responsible for handling the domain event.
 	/// </summary>
-	/// <param name="notification">Notification.</param>
-	/// <param name="cancellationToken">Cancelation token.</param>
-	/// <returns>Task.</returns>
+	/// <param name="notification">The domain event object that is passed to the handler.</param>
+	/// <param name="cancellationToken">A token that is used to indicate if the operation should be canceled.</param>
+	/// <returns>The method creates a new instance of the "AddUserBudget" command and sends it to the command bus.
+	/// The command is used to add the newly created budget to the UserBudget table.
+	/// Finally, the method throws a cancellation exception if the operation was canceled.</returns>
 	public async Task Handle(BudgetCreatedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		var userId = new UserId(notification.UserId);
-		var removeBudgetTransactions = new AddUserBudget(Guid.NewGuid(), userId, notification.Id, UserRole.BudgetOwner);
-		await this.commandBus.Send(removeBudgetTransactions);
+		var addUserBudget = new AddUserBudget(Guid.NewGuid(), userId, notification.Id, UserRole.BudgetOwner);
+		await this.commandBus.Send(addUserBudget);
 
 		// TODO: Use logger
 		cancellationToken.ThrowIfCancellationRequested();

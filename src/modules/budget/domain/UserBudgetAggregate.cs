@@ -29,7 +29,7 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 	}
 
 	/// <summary>
-	/// Table Index.
+	///  The unique identifier of the UserBudgetAggregate object.
 	/// </summary>
 	public Guid Id { get; set; }
 
@@ -49,7 +49,7 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 	public UserRole UserRole { get; set; }
 
 	/// <summary>
-	/// Create New UserBudgetAggregate Object.
+	/// A static factory method that creates a new instance of the UserBudgetAggregate object with the specified parameters.
 	/// </summary>
 	/// <param name="id">Id.</param>
 	/// <param name="userId">UserId.</param>

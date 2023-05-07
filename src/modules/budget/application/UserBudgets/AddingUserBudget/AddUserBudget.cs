@@ -7,16 +7,16 @@ using Intive.Patronage2023.Shared.Abstractions.Domain;
 namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 
 /// <summary>
-/// Add User Budget command.
+/// A record representing the command for adding a new user budget.
 /// </summary>
-/// <param name="Id">Record Id.</param>
-/// <param name="UserId">User Id.</param>
-/// <param name="BudgetId">Budget Id.</param>
-/// <param name="UserRole">User role.</param>
+/// <param name="Id">The unique identifier of the record.</param>
+/// <param name="UserId">The identifier of the owner of the budget.</param>
+/// <param name="BudgetId">The identifier of the budget.</param>
+/// <param name="UserRole">The role of the user associated with the budget.</param>
 public record AddUserBudget(Guid Id, UserId UserId, BudgetId BudgetId, UserRole UserRole) : ICommand;
 
 /// <summary>
-/// AddUserBudget Command Handler.
+/// The corresponding command handler for the AddUserBudget command.
 /// </summary>
 public class HandleAddUserBudget : ICommandHandler<AddUserBudget>
 {

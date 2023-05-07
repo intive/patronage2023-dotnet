@@ -9,16 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 
 /// <summary>
-/// Budget created domain event handler.
+/// This class is responsible for handling the "UserBudgetAddedDomainEvent" domain event, which occurs after a user adds a new budget.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
 public class UserBudgetAddedDomainEventHandler : IDomainEventHandler<UserBudgetAddedDomainEvent>
 {
 	/// <summary>
-	/// Handle the notification.
+	/// This method implements the IDomainEventHandler interface and is responsible for handling the domain event.
 	/// </summary>
-	/// <param name="notification">Notification.</param>
-	/// <param name="cancellationToken">Cancelation token.</param>
+	/// <param name="notification">The domain event object that is passed to the handler.</param>
+	/// <param name="cancellationToken">A token that is used to indicate if the operation should be canceled.</param>
 	/// <returns>Task.</returns>
 	public Task Handle(UserBudgetAddedDomainEvent notification, CancellationToken cancellationToken)
 	{

@@ -12,9 +12,9 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-
-using Microsoft.AspNetCore.Authorization;
+#pragma warning disable IDE0005
 using Intive.Patronage2023.Modules.Budget.Application;
+#pragma warning restore IDE0005
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -34,7 +34,6 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
-	private readonly IAuthorizationService authorizationService;
 	private readonly PermissionsService permissionsService;
 
 	/// <summary>
@@ -48,7 +47,6 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
-	/// <param name="authorizationService">Authorization Service.</param>
 	/// <param name="permissionsService">Permissions Service.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -59,7 +57,6 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
-		IAuthorizationService authorizationService,
 		PermissionsService permissionsService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -70,7 +67,6 @@ public class BudgetController : ControllerBase
 		this.createTransactionValidator = createTransactionValidator;
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
-		this.authorizationService = authorizationService;
 		this.permissionsService = permissionsService;
 	}
 
@@ -106,11 +102,6 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
-			if (!(await this.authorizationService.AuthorizeAsync(this.HttpContext.User, request, Operations.Read)).Succeeded)
-			{
-				return new ChallengeResult();
-			}
-
 			var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 			return this.Ok(pagedList);
 		}
@@ -136,10 +127,7 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetDetailsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
-			var budgetId = new BudgetId(request.Id);
-			bool permissions = this.permissionsService.IsPermission(budgetId);
-
-			if (permissions)
+			if (this.permissionsService.IsPermission(new BudgetId(request.Id)))
 			{
 				var result = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(request);
 				if (result is null)
@@ -217,10 +205,7 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
 		if (validationResult.IsValid)
 		{
-			var budgetId_ = new BudgetId(budgetId);
-			bool permissions = this.permissionsService.IsPermission(budgetId_, UserRole.BudgetOwner);
-
-			if (permissions)
+			if (this.permissionsService.IsPermission(new BudgetId(budgetId), UserRole.BudgetOwner))
 			{
 				await this.commandBus.Send(removeBudget);
 				return this.Ok(removeBudget.Id);
@@ -267,16 +252,12 @@ public class BudgetController : ControllerBase
 	{
 		var transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
-
 		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
 
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
 		{
-			var budgetId_ = new BudgetId(budgetId);
-			bool permissions = this.permissionsService.IsPermission(budgetId_);
-
-			if (permissions)
+			if (this.permissionsService.IsPermission(new BudgetId(budgetId)))
 			{
 				await this.commandBus.Send(newBudgetTransaction);
 				return this.Created(string.Empty, newBudgetTransaction.Id);
@@ -319,8 +300,13 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
 		if (validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
-			return this.Ok(pagedList);
+			if (this.permissionsService.IsPermission(new BudgetId(budgetId)))
+			{
+				var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
+				return this.Ok(pagedList);
+			}
+
+			return this.Forbid();
 		}
 
 		throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);

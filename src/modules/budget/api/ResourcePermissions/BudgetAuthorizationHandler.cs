@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 namespace Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
 /// <summary>
-/// asdfasdf.
+/// Test Authorization Class.
 /// </summary>
 public class BudgetAuthorizationHandler :
 	AuthorizationHandler<OperationAuthorizationRequirement, GetBudgets>
