@@ -30,7 +30,7 @@ public class BudgetAggregateTests
 		var id = new BudgetId(Guid.NewGuid());
 		string name = new Faker().Random.Word();
 		var userId = Guid.NewGuid();
-		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);
+		var limit = new Money(new Faker().Random.Number(1, 50000), Currency.PLN);
 		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string description = new Faker().Lorem.Sentences();
@@ -82,7 +82,7 @@ public class BudgetAggregateTests
 		string name = new Faker().Random.Word();
 		string newName = new Faker().Random.Word();
 		var userId = Guid.NewGuid();
-		var limit = new Money(new Faker().Random.Number(50000), Currency.PLN);
+		var limit = new Money(new Faker().Random.Number(1, 50000), Currency.PLN);
 		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string description = new Faker().Lorem.Sentences();

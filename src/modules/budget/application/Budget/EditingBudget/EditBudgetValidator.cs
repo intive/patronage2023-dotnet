@@ -19,7 +19,7 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
-		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync((x, cancellation) => this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.");
+		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync(async (x, cancellation) => await this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.");
 		this.RuleFor(budget => budget.Limit.Value).GreaterThan(0);
 		this.RuleFor(budget => budget.Limit.Currency).IsInEnum().WithMessage("The selected currency is not supported.");
 		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate <= x.EndDate).WithMessage("The start date must be earlier than the end date");
@@ -33,12 +33,7 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	{
 		var budget = await this.budgetDbContext.Budget.FindAsync(budgetId);
 		var budgets = this.budgetDbContext.Budget.Where(b => b.UserId == budget!.UserId);
-		if (budgets.Any(x => x.Name == name && x.Id != budgetId))
-		{
-			return false;
-		}
-
-		return true;
+		return !budgets.Any(x => x.Name == name && x.Id != budgetId);
 	}
 
 	/// <summary>
@@ -47,11 +42,6 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	/// <returns>Result.</returns>
 	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
 	{
-		if (await this.budgetDbContext.Budget.FindAsync(budgetId) != null)
-		{
-			return true;
-		}
-
-		return false;
+		return await this.budgetDbContext.Budget.FindAsync(budgetId) != null;
 	}
 }

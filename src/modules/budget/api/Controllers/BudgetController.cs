@@ -216,7 +216,7 @@ public class BudgetController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(editedBudget);
-			return this.Created("Budget {id} successfully edited.", editedBudget.Id.Value);
+			return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
 		}
 
 		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
