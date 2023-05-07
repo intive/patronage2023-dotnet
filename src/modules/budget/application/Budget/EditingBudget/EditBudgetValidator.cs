@@ -5,7 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 
 /// <summary>
-/// Budget validator class.
+/// Budget editing validator class.
 /// </summary>
 public class EditBudgetValidator : AbstractValidator<EditBudget>
 {
@@ -41,6 +41,10 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 		return true;
 	}
 
+	/// <summary>
+	/// Checks if budget with given id exists.
+	/// </summary>
+	/// <returns>Result.</returns>
 	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
 	{
 		if (await this.budgetDbContext.Budget.FindAsync(budgetId) != null)

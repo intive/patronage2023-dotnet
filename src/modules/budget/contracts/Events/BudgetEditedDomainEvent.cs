@@ -17,7 +17,7 @@ public class BudgetEditedDomainEvent : DomainEvent
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="icon">Budget Icon.</param>
-	/// <param name="description">Budget Describtion.</param>
+	/// <param name="description">Budget Description.</param>
 	public BudgetEditedDomainEvent(BudgetId id, string name, Money limit, Period period, string description, string icon)
 	{
 		this.Id = id;

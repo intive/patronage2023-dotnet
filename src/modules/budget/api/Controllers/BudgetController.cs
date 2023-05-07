@@ -182,7 +182,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Edits Budget.
 	/// </summary>
-	/// <param name="id">Budget id. </param>
+	/// <param name="id">Budget id.</param>
 	/// <param name="request">Request.</param>
 	/// <returns>Edited Result.</returns>
 	/// <remarks>
@@ -190,7 +190,6 @@ public class BudgetController : ControllerBase
 	///
 	///     {
 	///       "name": "budgetName",
-	///       "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///       "limit": {
 	///         "value": 15,
 	///         "currency": 1
@@ -217,7 +216,7 @@ public class BudgetController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(editedBudget);
-			return this.Created("Budget {id} succesfully edited.", editedBudget.Id.Value);
+			return this.Created("Budget {id} successfully edited.", editedBudget.Id.Value);
 		}
 
 		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
