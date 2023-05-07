@@ -18,7 +18,7 @@ public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSea
 	public int PageIndex { get; set; }
 
 	/// <inheritdoc/>
-	public string Search { get; set; } = null!;
+	public string? Search { get; set; }
 }
 
 /// <summary>
@@ -66,7 +66,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 			throw new AppException(response.ToString());
 		}
 
-		response = await this.keycloakService.GetUsers(query.PageIndex, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
+		response = await this.keycloakService.GetUsers(query.PageSize, query.PageIndex, query.Search, token.AccessToken, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{

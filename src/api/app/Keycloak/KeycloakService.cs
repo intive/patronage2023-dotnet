@@ -134,11 +134,16 @@ public class KeycloakService
 	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>List of users corresponding to query.</returns>
-	public async Task<HttpResponseMessage> GetUsers(int pageSize, int pageIndex, string searchText, string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> GetUsers(int pageSize, int pageIndex, string? searchText, string accessToken, CancellationToken cancellationToken)
 	{
 		string realm = this.apiKeycloakSettings.Realm;
 
-		string url = $"/admin/realms/{realm}/users?max={pageSize}&first={pageSize * pageIndex}&search={searchText}";
+		string url = $"/admin/realms/{realm}/users?max={pageSize}&first={pageSize * (pageIndex - 1)}";
+
+		if (!string.IsNullOrEmpty(searchText))
+		{
+			url += $"&search={searchText.Trim()}";
+		}
 
 		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
