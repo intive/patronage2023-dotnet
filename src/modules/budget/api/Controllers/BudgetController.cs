@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Application;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -33,6 +35,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IAuthorizationService authorizationService;
+	private readonly PermissionsService permissionsService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -46,6 +49,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="authorizationService">Authorization Service.</param>
+	/// <param name="permissionsService">Permissions Service.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -55,7 +59,8 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
-		IAuthorizationService authorizationService)
+		IAuthorizationService authorizationService,
+		PermissionsService permissionsService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -66,6 +71,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
 		this.authorizationService = authorizationService;
+		this.permissionsService = permissionsService;
 	}
 
 	/// <summary>
@@ -130,13 +136,21 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.getBudgetDetailsValidator.ValidateAsync(request);
 		if (validationResult.IsValid)
 		{
-			var result = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(request);
-			if (result is null)
+			var budgetId = new BudgetId(request.Id);
+			bool permissions = this.permissionsService.IsPermission(budgetId);
+
+			if (permissions)
 			{
-				return this.NotFound();
+				var result = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(request);
+				if (result is null)
+				{
+					return this.NotFound();
+				}
+
+				return this.Ok(result);
 			}
 
-			return this.Ok(result);
+			return this.Forbid();
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
@@ -203,8 +217,16 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(removeBudget);
-			return this.Ok(removeBudget.Id);
+			var budgetId_ = new BudgetId(budgetId);
+			bool permissions = this.permissionsService.IsPermission(budgetId_, UserRole.BudgetOwner);
+
+			if (permissions)
+			{
+				await this.commandBus.Send(removeBudget);
+				return this.Ok(removeBudget.Id);
+			}
+
+			return this.Forbid();
 		}
 
 		throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
@@ -251,8 +273,16 @@ public class BudgetController : ControllerBase
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(newBudgetTransaction);
-			return this.Created(string.Empty, newBudgetTransaction.Id);
+			var budgetId_ = new BudgetId(budgetId);
+			bool permissions = this.permissionsService.IsPermission(budgetId_);
+
+			if (permissions)
+			{
+				await this.commandBus.Send(newBudgetTransaction);
+				return this.Created(string.Empty, newBudgetTransaction.Id);
+			}
+
+			return this.Forbid();
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);

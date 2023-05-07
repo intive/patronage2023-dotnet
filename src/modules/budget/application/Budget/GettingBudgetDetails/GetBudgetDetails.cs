@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
@@ -20,17 +22,14 @@ public record GetBudgetDetails() : IQuery<BudgetDetailsInfo?>
 public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, BudgetDetailsInfo?>
 {
 	private readonly BudgetDbContext budgetDbContext;
-	private readonly PermissionsService permissionsService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	/// <param name="permissionsService">Permissions Service.</param>
-	public GetBudgetDetailsQueryHandler(BudgetDbContext budgetDbContext, PermissionsService permissionsService)
+	public GetBudgetDetailsQueryHandler(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.permissionsService = permissionsService;
 	}
 
 	/// <summary>
@@ -41,12 +40,8 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 	/// <returns>BudgetDetailsInfo or null.</returns>
 	public async Task<BudgetDetailsInfo?> Handle(GetBudgetDetails query, CancellationToken cancellationToken)
 	{
-		return await this.permissionsService.GetBudgetDetails(query, cancellationToken);
-
-		////var budgetId = new BudgetId(query.Id);
-
-		////var budget = await this.budgetDbContext.Budget.FindAsync(new object?[] { budgetId }, cancellationToken: cancellationToken);
-
-		////return budget is null ? null : BudgetAggregateBudgetDetailsInfoMapper.Map(budget);
+		var budgetId = new BudgetId(query.Id);
+		var budget = await this.budgetDbContext.Budget.FindAsync(new object?[] { budgetId }, cancellationToken: cancellationToken);
+		return budget is null ? null : BudgetAggregateBudgetDetailsInfoMapper.Map(budget);
 	}
 }
