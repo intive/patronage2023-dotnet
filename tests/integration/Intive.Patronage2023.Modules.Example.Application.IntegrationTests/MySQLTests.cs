@@ -23,7 +23,7 @@ public class MsSqlTests : IAsyncLifetime
 	public const ushort MsSqlPort = 1433;
 	public const ushort MappedPort = 5000;
 
-	public readonly IContainer _mssqlContainer = new ContainerBuilder()
+	public readonly IContainer? _mssqlContainer = new ContainerBuilder()
 		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding(MappedPort.ToString(), MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
@@ -35,11 +35,11 @@ public class MsSqlTests : IAsyncLifetime
 
 	public Task InitializeAsync()
 	{
-		return this._mssqlContainer.StartAsync();
+		return this._mssqlContainer?.StartAsync() ?? Task.CompletedTask;
 	}
 
 	public Task DisposeAsync()
 	{
-		return this._mssqlContainer.DisposeAsync().AsTask();
+		return this._mssqlContainer?.DisposeAsync().AsTask() ?? Task.CompletedTask;
 	}
 }
