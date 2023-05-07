@@ -1,23 +1,25 @@
 using FluentAssertions;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
-using Intive.Patronage2023.Shared.Abstractions;
 
-namespace Intive.Patronage2023.Modules.Example.Application.ExampleTests;
+using Xunit.Sdk;
+
+namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
 public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 {
-	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> _webApplicationFactory;
-
+	private readonly WebApplicationFactory<Intive.Patronage2023.Api.Program> webApplicationFactory;
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExampleTests"/> class.
 	/// </summary>
@@ -25,13 +27,8 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 	/// 
 	public ExampleTests(MsSqlTests fixture)
 	{
-		var clientOptions = new WebApplicationFactoryClientOptions
-		{
-			AllowAutoRedirect = false
-		};
-		this._webApplicationFactory = new CustomWebApplicationFactory(fixture);
+		this.webApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
-
 	///<summary>
 	///Unit test to verify that the GetBudgetsQueryHandler returns a PagedList of budget items.
 	///The test creates a budget item in the database, retrieves it using the query handler, and verifies that the result is not null and contains the expected item.
@@ -41,7 +38,7 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 	public async Task Handle_WhenCalled_ShouldReturnPagedList()
 	{
 		// Arrange
-		var scope = this._webApplicationFactory.Services.CreateScope();
+		var scope = this.webApplicationFactory.Services.CreateScope();
 		var dbContext = scope.ServiceProvider.GetService<BudgetDbContext>();
 		var command = BudgetAggregate.Create(
 			Guid.NewGuid(),
@@ -52,37 +49,30 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 			"icon",
 			"description");
 
-		if (dbContext == null)
-		{
-			throw new ArgumentNullException(nameof(dbContext));
-		}
-
-		dbContext.Add(command);
-
-		await dbContext.SaveChangesAsync();
-
+		dbContext?.Add(command);
+		await dbContext!.SaveChangesAsync();
 		var query = new GetBudgets
 		{
 			PageSize = 1,
 			PageIndex = 1,
 			Search = "",
 			SortDescriptors = new List<SortDescriptor>
-			{ new SortDescriptor
 			{
-				ColumnName="name",
-				SortAscending = true,
-			}
+				new SortDescriptor
+				{
+					ColumnName = "name",
+					SortAscending = true
+				}
 			}
 		};
-
 		if (query == null)
 		{
-			throw new ArgumentNullException(nameof(query));
+			throw new NotNullException();
 		}
 
 		if (dbContext == null)
 		{
-			throw new ArgumentNullException(nameof(dbContext));
+			throw new NotEmptyException();
 		}
 
 		var handler = new GetBudgetsQueryHandler(dbContext);
@@ -94,16 +84,14 @@ public class ExampleTests : IClassFixture<MsSqlTests>, IDisposable
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
 	}
-
 	///<summary>
 	///Disposes the web application factory used in the test.
 	///</summary>
 	public void Dispose()
 	{
-		this._webApplicationFactory.Dispose();
+		this.webApplicationFactory.Dispose();
 	}
-
-	//<summary>
+	///<summary>
 	///Custom web application factory used in the test to configure the test database connection string.
 	///</summary>
 	private class CustomWebApplicationFactory : WebApplicationFactory<Intive.Patronage2023.Api.Program>
