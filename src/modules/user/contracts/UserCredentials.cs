@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Api.User.Models;
+namespace Intive.Patronage2023.Modules.User.Contracts;
 
 /// <summary>
 /// User information about credentials.

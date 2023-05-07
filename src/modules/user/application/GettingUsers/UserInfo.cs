@@ -1,6 +1,6 @@
-using Intive.Patronage2023.Api.User.Models;
+using Intive.Patronage2023.Modules.User.Contracts;
 
-namespace Intive.Patronage2023.Api.User.GettingUsers;
+namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
 
 /// <summary>
 /// User information.
