@@ -39,27 +39,27 @@ public static class Architecture
 		/// <summary>
 		/// Const that stores regex that match module application namespace.
 		/// </summary>
-		private const string ApplicationRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Application\\.(.*)";
+		private const string ApplicationRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Application(.*)";
 
 		/// <summary>
 		/// Const that stores regex that match module domain namespace.
 		/// </summary>
-		private const string DomainRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Domain\\.(.*)";
+		private const string DomainRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Domain(.*)";
 
 		/// <summary>
 		/// Const that stores regex that match module infrastructure namespace.
 		/// </summary>
-		private const string InfrastructureRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Infrastructure\\.(.*)";
+		private const string InfrastructureRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Infrastructure(.*)";
 
 		/// <summary>
 		/// Const that stores regex that match module contracts namespace.
 		/// </summary>
-		private const string ContractsRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Contracts\\.(.*)";
+		private const string ContractsRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Contracts(.*)";
 
 		/// <summary>
 		/// Const that stores regex that match module Api namespace.
 		/// </summary>
-		private const string ApiRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Api\\.(.*)";
+		private const string ApiRegex = "Intive\\.Patronage2023\\.Modules\\.([A-Z]{1})([a-z]*)\\.Api(.*)";
 
 		/// <summary>
 		/// Application layer definition.
