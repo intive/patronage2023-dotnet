@@ -57,7 +57,7 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
-		IValidator<EditBudget> editBudgetValidator),
+		IValidator<EditBudget> editBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
