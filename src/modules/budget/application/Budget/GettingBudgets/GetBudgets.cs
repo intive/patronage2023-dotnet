@@ -1,10 +1,6 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
-using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
-using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 
@@ -41,16 +37,19 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IExecutionContextAccessor contextAccessor;
+	private readonly PermissionsService permissionsService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
 	/// <param name="contextAccessor">Context Accessor.</param>
-	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor)
+	/// <param name="permissionsService">Permissions Service.</param>
+	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor, PermissionsService permissionsService)
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.contextAccessor = contextAccessor;
+		this.permissionsService = permissionsService;
 	}
 
 	/// <summary>
@@ -61,19 +60,21 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
-		var userId = this.contextAccessor.GetUserId();
-		var userBudgets = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId).Select(y => y.BudgetId).ToList();
+		return await this.permissionsService.GetBudgets(query, cancellationToken);
 
-		var budgets = this.budgetDbContext.Budget.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
+		////var userId = this.contextAccessor.GetUserId();
+		////var userBudgets = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId).Select(y => y.BudgetId).ToList();
 
-		if (!string.IsNullOrEmpty(query.Search))
-		{
-			budgets = budgets.Where(x => x.Name.Contains(query.Search));
-		}
+		////var budgets = this.budgetDbContext.Budget.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
 
-		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync(cancellationToken: cancellationToken);
-		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
-		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
-		return result;
+		////if (!string.IsNullOrEmpty(query.Search))
+		////{
+		////	budgets = budgets.Where(x => x.Name.Contains(query.Search));
+		////}
+
+		////var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync(cancellationToken: cancellationToken);
+		////int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
+		////var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
+		////return result;
 	}
 }
