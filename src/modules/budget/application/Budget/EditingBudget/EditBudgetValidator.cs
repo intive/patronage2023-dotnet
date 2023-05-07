@@ -18,7 +18,8 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	public EditBudgetValidator(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.RuleFor(budget => new { budget.UserId, budget.Id, budget.Name }).Must(x => this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, x.UserId)).WithMessage("Name already exists in your budgets. Choose a different name.");
+		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync((x, cancellation) => this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.");
 		this.RuleFor(budget => budget.Limit.Value).GreaterThan(0);
 		this.RuleFor(budget => budget.Limit.Currency).IsInEnum().WithMessage("The selected currency is not supported.");
 		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate <= x.EndDate).WithMessage("The start date must be earlier than the end date");
@@ -28,11 +29,21 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	/// Checks if the name is unique.
 	/// </summary>
 	/// <returns>Result.</returns>
-	private bool IsNameUniqueWithinUserBudgets(BudgetId budgetId, string name, Guid userId)
+	private async Task<bool> IsNameUniqueWithinUserBudgets(BudgetId budgetId, string name, CancellationToken cancellationToken)
 	{
-		var budgets = this.budgetDbContext.Budget.Where(b => b.UserId == userId);
-		var budget = budgets.FirstOrDefault(b => b.Name == name);
-		if (budget == null || budget.Id == budgetId)
+		var budget = await this.budgetDbContext.Budget.FindAsync(budgetId);
+		var budgets = this.budgetDbContext.Budget.Where(b => b.UserId == budget!.UserId);
+		if (budgets.Any(x => x.Name == name && x.Id != budgetId))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
+	{
+		if (await this.budgetDbContext.Budget.FindAsync(budgetId) != null)
 		{
 			return true;
 		}

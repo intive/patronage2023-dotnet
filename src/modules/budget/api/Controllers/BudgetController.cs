@@ -212,12 +212,12 @@ public class BudgetController : ControllerBase
 	[HttpPut("{id:Guid}/edit")]
 	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
 	{
-		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.UserId, request.Limit, request.Period, request.Description, request.IconName);
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Limit, request.Period, request.Description, request.IconName);
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(editedBudget);
-			return this.Created("Budget {id} succesfully edited.", editedBudget.Id);
+			return this.Created("Budget {id} succesfully edited.", editedBudget.Id.Value);
 		}
 
 		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);

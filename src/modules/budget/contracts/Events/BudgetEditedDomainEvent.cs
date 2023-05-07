@@ -14,16 +14,14 @@ public class BudgetEditedDomainEvent : DomainEvent
 	/// </summary>
 	/// <param name="id">Budget id.</param>
 	/// <param name="name">Budget name.</param>
-	/// <param name="userId">User id.</param>
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="icon">Budget Icon.</param>
 	/// <param name="description">Budget Describtion.</param>
-	public BudgetEditedDomainEvent(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	public BudgetEditedDomainEvent(BudgetId id, string name, Money limit, Period period, string description, string icon)
 	{
 		this.Id = id;
 		this.Name = name;
-		this.UserId = userId;
 		this.Limit = limit;
 		this.Period = period;
 		this.Description = description;
@@ -39,11 +37,6 @@ public class BudgetEditedDomainEvent : DomainEvent
 	/// Budget name.
 	/// </summary>
 	public string Name { get; private set; } = default!;
-
-	/// <summary>
-	/// Budget owner user Id.
-	/// </summary>
-	public Guid UserId { get; private set; }
 
 	/// <summary>
 	/// Budget limit.

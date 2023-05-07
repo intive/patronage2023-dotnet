@@ -120,14 +120,13 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// </summary>
 	/// <param name="id">Budget id.</param>
 	/// <param name="name">Budget name.</param>
-	/// <param name="userId">User id.</param>
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="description">Budget Describtion.</param>
 	/// <param name="icon">Budget Icon.</param>
-	public void EditBudget(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	public void EditBudget(BudgetId id, string name, Money limit, Period period, string description, string icon)
 	{
-		var budgetEdited = new BudgetEditedDomainEvent(id, name, userId, limit, period, description, icon);
+		var budgetEdited = new BudgetEditedDomainEvent(id, name, limit, period, description, icon);
 		this.Apply(budgetEdited, this.Handle);
 	}
 
@@ -157,7 +156,6 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	{
 		this.Id = @event.Id;
 		this.Name = @event.Name;
-		this.UserId = @event.UserId;
 		this.Limit = @event.Limit;
 		this.Period = @event.Period;
 		this.Description = @event.Description;
