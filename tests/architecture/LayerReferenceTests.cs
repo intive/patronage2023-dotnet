@@ -3,6 +3,7 @@ using ArchUnitNET.Fluent;
 
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Commands;
 
 using MediatR;
@@ -119,8 +120,11 @@ public class LayerReferenceTests
 	public void MediatRInterfaceShouldNotBeUsedInCommandsTest()
 	{
 		IArchRule referenceToMediatRForbidenRule = ArchRuleDefinition.Classes()
+			.That()
+			.ImplementInterface(typeof(IRequest))
 			.Should()
-			.NotImplementInterface(typeof(IRequest));
+			.ImplementInterface(typeof(ICommand))
+			.Because("ICommands wrap also IRequest interface so if we are implementing ICommand we can remove IRequest because it is redundant.");
 
 		referenceToMediatRForbidenRule.CheckSolution();
 	}
@@ -135,7 +139,8 @@ public class LayerReferenceTests
 			.That()
 			.ImplementInterface(typeof(IRequest<>))
 			.Should()
-			.NotDependOnAny(typeof(IRequest<>));
+			.ImplementInterface(typeof(IQuery<>))
+			.Because("IQuery<> wrap also IRequest<> interface so if we are implementing IQuery<> we can remove IRequest<> because it is redundant.");
 
 		referenceToMediatRForbidenRule.CheckSolution();
 	}
