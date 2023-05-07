@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure;
 /// </summary>
 public class ExecutionContextAccessor : IExecutionContextAccessor
 {
-	private IHttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor httpContextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExecutionContextAccessor"/> class.
@@ -42,7 +42,10 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 		return userId;
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Returns information that user is admin or not.
+	/// </summary>
+	/// <returns>Bool value.</returns>
 	public bool IsUserAdmin()
 	{
 		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

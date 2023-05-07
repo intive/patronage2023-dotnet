@@ -35,12 +35,7 @@ public class PermissionsService
 		var userId = this.contextAccessor.GetUserId();
 		bool isPermissions = this.budgetDbContext.UserBudget.AsEnumerable().Any(x => x.UserId.Value == userId && x.BudgetId == budgetId);
 
-		if (isAdmin || isPermissions)
-		{
-			return true;
-		}
-
-		return false;
+		return isAdmin || isPermissions;
 	}
 
 	/// <summary>
@@ -54,13 +49,8 @@ public class PermissionsService
 		bool isAdmin = false; //// this.contextAccessor.IsUserAdmin();
 		var userId = this.contextAccessor.GetUserId();
 		bool isPermissions = this.budgetDbContext.UserBudget.AsEnumerable().Any(x => x.UserId.Value == userId && x.BudgetId == budgetId);
-		var roles = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId).Select(x => x.UserRole).First();
+		var roles = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId && x.BudgetId == budgetId).Select(x => x.UserRole).First();
 
-		if (isAdmin || (isPermissions && roles == userRole))
-		{
-			return true;
-		}
-
-		return false;
+		return isAdmin || (isPermissions && roles == userRole);
 	}
 }

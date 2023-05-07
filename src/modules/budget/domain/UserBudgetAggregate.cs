@@ -1,3 +1,6 @@
+#pragma warning disable IDE0005
+using Intive.Patronage2023.Modules.Budget.Contracts.Events;
+#pragma warning restore IDE0005
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure;
@@ -10,6 +13,21 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 {
+	private UserBudgetAggregate()
+	{
+	}
+
+	private UserBudgetAggregate(Guid id, UserId userId, BudgetId budgetId, UserRole userRole)
+	{
+		if (id == Guid.Empty)
+		{
+			throw new InvalidOperationException("Id value cannot be empty!");
+		}
+
+		var userBudgetCreated = new UserBudgetAddedDomainEvent(id, userId, budgetId, userRole);
+		this.Apply(userBudgetCreated, this.Handle);
+	}
+
 	/// <summary>
 	/// Table Index.
 	/// </summary>
@@ -29,4 +47,25 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 	/// The "Type" property is a UserRole enum that specifies the user's role in relation to the budget.
 	/// </summary>
 	public UserRole UserRole { get; set; }
+
+	/// <summary>
+	/// Create New UserBudgetAggregate Object.
+	/// </summary>
+	/// <param name="id">Id.</param>
+	/// <param name="userId">UserId.</param>
+	/// <param name="budgetId">BudgetId.</param>
+	/// <param name="userRole">User Role.</param>
+	/// <returns>New UserBudgetAggregate Object.</returns>
+	public static UserBudgetAggregate Create(Guid id, UserId userId, BudgetId budgetId, UserRole userRole)
+	{
+		return new UserBudgetAggregate(id, userId, budgetId, userRole);
+	}
+
+	private void Handle(UserBudgetAddedDomainEvent @event)
+	{
+		this.Id = @event.Id;
+		this.UserId = @event.UserId;
+		this.BudgetId = @event.BudgetId;
+		this.UserRole = @event.UserRole;
+	}
 }
