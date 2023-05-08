@@ -4,6 +4,8 @@
 		<!-- Enable raising errors due not clean source code -->
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		 <GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<!-- Code analysis ruleset configuration -->
 		<CodeAnalysisRuleset>$(MSBuildThisFileDirectory)Intive.Patronage2023.ruleset</CodeAnalysisRuleset>
 	</PropertyGroup>
 	<ItemGroup>
