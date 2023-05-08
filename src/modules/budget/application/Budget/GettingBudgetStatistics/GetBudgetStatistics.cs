@@ -77,7 +77,13 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 
 		for (int i = 1; i < budgetValues.Count; i++)
 		{
-			budgetValues[i].Value += budgetValues[i - 1].Value;
+			BudgetAmount prevBudget = budgetValues[i - 1];
+			var updatedBudget = new BudgetAmount()
+			{
+				DatePoint = prevBudget.DatePoint,
+				Value = prevBudget.Value + budgetValues[i].Value,
+			};
+			budgetValues[i] = updatedBudget;
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
