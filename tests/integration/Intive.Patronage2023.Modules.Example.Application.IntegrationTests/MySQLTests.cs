@@ -9,14 +9,33 @@ namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 public class MsSqlTests : IAsyncLifetime
 {
 	///<summary>
-	/// This class contains constants used for MS SQL tests.
+	/// The name of the database used for MS SQL tests.
 	///</summary>
 	public const string Database = "patronage2023";
+
+	///<summary>
+	/// The username used for MS SQL connection string.
+	///</summary>
 	public const string Username = "sa";
+
+	///<summary>
+	/// The password used for MS SQL connection string.
+	///</summary>
 	public const string Password = "yourStrong(!)Password";
+
+	///<summary>
+	/// The port number used for MS SQL tests.
+	///</summary>
 	public const ushort MsSqlPort = 1433;
+
+	///<summary>
+	/// The port number used for mapping to the container port.
+	///</summary>
 	public const ushort MappedPort = 5000;
 
+	///<summary>
+	/// The container used for running the MS SQL server for testing.
+	///</summary>
 	public readonly IContainer mssqlContainer = new ContainerBuilder()
 		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
 		.WithPortBinding(MappedPort.ToString(), MsSqlPort.ToString())
