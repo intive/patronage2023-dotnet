@@ -13,6 +13,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -127,7 +128,7 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
 		}
 
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, request, Operations.Read)).Succeeded)
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(request.Id), Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
 		}
@@ -205,7 +206,7 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
 		}
 
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, budgetId, Operations.Update)).Succeeded)
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
 			return this.Forbid();
 		}
@@ -257,7 +258,7 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);
 		}
 
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, budgetId, Operations.Create)).Succeeded)
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
 		{
 			return this.Forbid();
 		}
@@ -301,7 +302,7 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
 		}
 
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, budgetId, Operations.Read)).Succeeded)
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
 		}

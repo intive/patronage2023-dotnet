@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
-namespace Intive.Patronage2023.Modules.Budget.Api;
+namespace Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
 /// <summary>
 /// Operations.

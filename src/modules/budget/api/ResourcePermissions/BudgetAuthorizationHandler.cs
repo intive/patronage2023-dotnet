@@ -41,7 +41,12 @@ public class BudgetAuthorizationHandler :
 		OperationAuthorizationRequirement requirement,
 		BudgetId budgetId)
 	{
-		bool isAdmin = this.contextAccessor.IsUserAdmin();
+		if (this.contextAccessor.IsUserAdmin())
+		{
+			context.Succeed(requirement);
+			return;
+		}
+
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
 
 		bool isPermissions = await this.budgetDbContext.UserBudget.AnyAsync(x => x.UserId == userId && x.BudgetId == budgetId);
