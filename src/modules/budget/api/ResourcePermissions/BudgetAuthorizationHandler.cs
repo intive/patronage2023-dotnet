@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
 /// <summary>
-/// Test Authorization Class.
+/// The BudgetAuthorizationHandler class handles authorization logic for
+/// budget operations including create, read, and update.
+/// It grants access to all operations for admins, checks user permission for a specific budget,
+/// and grants access to the update operation only if the user is the budget owner.
 /// </summary>
 public class BudgetAuthorizationHandler :
 	AuthorizationHandler<OperationAuthorizationRequirement, BudgetId>
@@ -29,13 +32,24 @@ public class BudgetAuthorizationHandler :
 		this.budgetDbContext = budgetDbContext;
 	}
 
+	private BudgetId BudgetId { get; set; }
+
+	private UserId UserId { get; set; }
+
 	/// <summary>
-	/// asdfasdf.
+	/// This method handles the authorization logic for different operations on a budget,
+	/// such as creating, reading, and updating. It first checks if the user is an admin,
+	/// in which case it grants access to all operations.
+	/// Then, it checks if the user has the necessary permission for the specific budget in question.
+	/// Finally, it checks if the user role is budget owner before granting access to the update operation.
 	/// </summary>
-	/// <param name="context">asdfassdf.</param>
-	/// <param name="requirement">qweqweqwe.</param>
-	/// <param name="budgetId">qweqaweqwe.</param>
-	/// <returns>afsdfasdfasdf.</returns>
+	/// <param name="context">The AuthorizationHandlerContext instance
+	/// that contains information about the current authorization request.</param>
+	/// <param name="requirement">The OperationAuthorizationRequirement instance
+	/// that represents the requirement to be checked.</param>
+	/// <param name="budgetId">The BudgetId instance that represents the ID of the budget
+	/// on which the operation is to be performed.</param>
+	/// <returns>The method returns a Task representing the asynchronous authorization operation.</returns>
 	protected override async Task HandleRequirementAsync(
 		AuthorizationHandlerContext context,
 		OperationAuthorizationRequirement requirement,
@@ -47,36 +61,30 @@ public class BudgetAuthorizationHandler :
 			return;
 		}
 
-		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+		this.UserId = new UserId(this.contextAccessor.GetUserId()!.Value);
+		this.BudgetId = budgetId;
 
-		bool isPermissions = await this.budgetDbContext.UserBudget.AnyAsync(x => x.UserId == userId && x.BudgetId == budgetId);
-		var roles = await this.budgetDbContext.UserBudget
-			.Where(x => x.UserId == userId && x.BudgetId == budgetId)
-			.Select(x => x.UserRole)
-			.FirstAsync();
-
-		if (!isPermissions)
+		if (!await this.IsUserContributor())
 		{
 			context.Fail();
+			return;
 		}
 
 		switch (requirement.Name)
 		{
 			case nameof(Operations.Create):
-
 				context.Succeed(requirement);
 				break;
 
 			case nameof(Operations.Read):
-
 				context.Succeed(requirement);
 				break;
 
 			case nameof(Operations.Update):
-
-				if (roles != UserRole.BudgetOwner)
+				if (!await this.IsUserBudgetOwner())
 				{
 					context.Fail();
+					break;
 				}
 
 				context.Succeed(requirement);
@@ -86,4 +94,17 @@ public class BudgetAuthorizationHandler :
 				throw new ArgumentException("Unknown permission requirement.", nameof(requirement));
 		}
 	}
+
+	private async Task<bool> IsUserContributor() =>
+		await this.budgetDbContext.UserBudget
+			.AnyAsync(x => x.UserId == this.UserId && x.BudgetId == this.BudgetId);
+
+	private async Task<UserRole> GetUserRoleForBudget() =>
+		await this.budgetDbContext.UserBudget
+		.Where(x => x.UserId == this.UserId && x.BudgetId == this.BudgetId)
+		.Select(x => x.UserRole)
+		.FirstAsync();
+
+	private async Task<bool> IsUserBudgetOwner() =>
+		await this.GetUserRoleForBudget() == UserRole.BudgetOwner;
 }

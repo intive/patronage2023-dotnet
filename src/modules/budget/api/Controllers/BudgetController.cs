@@ -98,13 +98,13 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> GetBudgets([FromBody] GetBudgets request)
 	{
 		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
-			return this.Ok(pagedList);
+			throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
+		var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
+		return this.Ok(pagedList);
 	}
 
 	/// <summary>
@@ -176,13 +176,13 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> CreateBudget([FromBody] CreateBudget request)
 	{
 		var validationResult = await this.createBudgetValidator.ValidateAsync(request);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			await this.commandBus.Send(request);
-			return this.Created(string.Empty, request.Id);
+			throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
+		await this.commandBus.Send(request);
+		return this.Created(string.Empty, request.Id);
 	}
 
 	/// <summary>
@@ -201,7 +201,7 @@ public class BudgetController : ControllerBase
 		var removeBudget = new RemoveBudget(budgetId);
 
 		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
 			throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
 		}
@@ -253,7 +253,7 @@ public class BudgetController : ControllerBase
 		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
 
 		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
 			throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);
 		}
@@ -297,7 +297,7 @@ public class BudgetController : ControllerBase
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
 			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
 		}

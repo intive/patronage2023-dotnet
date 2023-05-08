@@ -61,11 +61,6 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 		string realmAccessValue = token.Claims.First(c => c.Type == "realm_access").Value;
 		bool isAdmin = realmAccessValue.Contains("admin");
 
-		if (isAdmin)
-		{
-			return true;
-		}
-
-		return false;
+		return isAdmin;
 	}
 }

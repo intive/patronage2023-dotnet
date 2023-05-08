@@ -3,24 +3,24 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 namespace Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
 /// <summary>
-/// Operations.
+/// This class defines authorization requirements for different operations on a budget.
 /// </summary>
 public static class Operations
 {
 	/// <summary>
-	/// create.
+	/// Represents the "create" operation authorization requirement.
 	/// </summary>
 	public static readonly OperationAuthorizationRequirement Create =
 		new OperationAuthorizationRequirement { Name = nameof(Create) };
 
 	/// <summary>
-	/// read.
+	/// Represents the "read" operation authorization requirement.
 	/// </summary>
 	public static readonly OperationAuthorizationRequirement Read =
 		new OperationAuthorizationRequirement { Name = nameof(Read) };
 
 	/// <summary>
-	/// update.
+	/// Represents the "update" operation authorization requirement.
 	/// </summary>
 	public static readonly OperationAuthorizationRequirement Update =
 		new OperationAuthorizationRequirement { Name = nameof(Update) };
