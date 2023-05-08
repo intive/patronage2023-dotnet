@@ -13,5 +13,15 @@ public enum Status
 	/// <summary>
 	/// Status of soft deleted budget or transaction.
 	/// </summary>
-	Deleted = 2,
+	Cancelled = 2,
+
+	/// <summary>
+	/// Status of transaction.
+	/// </summary>
+	Reccuring = 3,
+
+	/// <summary>
+	/// Status of transaction.
+	/// </summary>
+	Due = 4,
 }

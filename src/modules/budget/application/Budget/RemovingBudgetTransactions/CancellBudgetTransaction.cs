@@ -3,44 +3,42 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
 
 /// <summary>
-/// Remove Budget Transactions command.
+/// Cancell Budget Transaction Command.
 /// </summary>
 /// <param name="Id">Budget identifier.</param>
-public record RemoveBudgetTransactions(Guid Id) : ICommand;
+public record CancellBudgetTransaction(Guid Id) : ICommand;
 
 /// <summary>
-/// Remove Budget Transactions Command Handler.
+/// Cancell Budget Transaction Command Handler.
 /// </summary>
-public class HandleRemoveBudgetTransactions : ICommandHandler<RemoveBudgetTransactions>
+public class HandleCancellBudgetTransaction : ICommandHandler<CancellBudgetTransaction>
 {
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleRemoveBudgetTransactions"/> class.
+	/// Initializes a new instance of the <see cref="HandleCancellBudgetTransaction"/> class.
 	/// </summary>
 	/// <param name="budgetTransactionRepository">Repository that manages Budget Transaction aggregate root.</param>
 	/// <param name="budgetDbContext">Repository that manages Budget aggregate root.</param>
-	public HandleRemoveBudgetTransactions(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public HandleCancellBudgetTransaction(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;
 	}
 
 	/// <inheritdoc/>
-	public async Task Handle(RemoveBudgetTransactions command, CancellationToken cancellationToken)
+	public async Task Handle(CancellBudgetTransaction command, CancellationToken cancellationToken)
 	{
-		var budgetId = new BudgetId(command.Id);
-		var transactions = await this.budgetDbContext.Transaction
-			.Where(x => x.BudgetId == budgetId)
-			.ToListAsync(cancellationToken: cancellationToken);
+		var transactionId = new TransactionId(command.Id);
+		var transaction = this.budgetDbContext.Transaction
+			.FirstOrDefault(x => x.Id == transactionId);
 
-		foreach (var transaction in transactions)
+		if (transaction != null)
 		{
 			transaction.SoftRemove();
 			await this.budgetTransactionRepository.Persist(transaction);

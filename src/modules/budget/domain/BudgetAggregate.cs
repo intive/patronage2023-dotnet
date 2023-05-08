@@ -108,9 +108,9 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// </summary>
 	public void SoftRemove()
 	{
-		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Cancelled));
 
-		var evt = new BudgetSoftDeletedDomainEvent(this.Id, Status.Deleted);
+		var evt = new BudgetSoftDeletedDomainEvent(this.Id, Status.Cancelled);
 
 		this.Apply(evt, this.Handle);
 	}
