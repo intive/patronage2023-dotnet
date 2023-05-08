@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
+		<!-- Enable raising errors due not clean source code -->
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		 <GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<CodeAnalysisRuleset>$(MSBuildThisFileDirectory)Intive.Patronage2023.ruleset</CodeAnalysisRuleset>
 	</PropertyGroup>
