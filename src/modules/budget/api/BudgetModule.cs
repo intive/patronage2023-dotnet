@@ -1,6 +1,7 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
@@ -30,6 +31,7 @@ public static class BudgetModule
 
 		services.AddScoped<IValidator<CreateBudget>, CreateBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgets>, GetBudgetsValidator>();
+		services.AddScoped<IValidator<EditBudget>, EditBudgetValidator>();
 		services.AddScoped<IValidator<CreateBudgetTransaction>, CreateBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetTransactions>, GetBudgetTransactionValidator>();
 		services.AddScoped<IValidator<GetBudgetDetails>, GetBudgetDetailsValidator>();
