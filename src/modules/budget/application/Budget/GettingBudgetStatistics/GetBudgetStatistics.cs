@@ -55,11 +55,30 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		var budgets = this.budgetDbContext.Transaction.AsQueryable();
 		var budgetId = new BudgetId(query.Id);
 
+		decimal budgetValueAtStartDate = budgets
+				.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate <= query.StartDate)
+				.Sum(x => x.Value);
 		var budgetValues = await budgets
-				.Where(x => x.BudgetId == budgetId)
-				.Select(BudgetStatisticsInfoMapper.Map)
-				.Where(x => x.DatePoint >= query.StartDate && x.DatePoint <= query.EndDate)
+			.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate > query.StartDate && x.BudgetTransactionDate <= query.EndDate)
+			.Select(BudgetStatisticsInfoMapper.Map)
+				.GroupBy(x => x.DatePoint.Date)
+				.Select(x => new BudgetAmount
+				{
+					DatePoint = x.Key,
+					Value = x.Sum(x => x.Value),
+				})
 				.ToListAsync(cancellationToken: cancellationToken);
+
+		budgetValues.Insert(0, new BudgetAmount()
+		{
+			Value = budgetValueAtStartDate,
+			DatePoint = query.StartDate,
+		});
+
+		for (int i = 1; i < budgetValues.Count; i++)
+		{
+			budgetValues[i].Value += budgetValues[i - 1].Value;
+		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
 			.Where(x => x.BudgetId == budgetId)

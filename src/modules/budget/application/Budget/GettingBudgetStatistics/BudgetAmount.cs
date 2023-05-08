@@ -8,7 +8,7 @@ public record BudgetAmount()
 	/// <summary>
 	/// Value of transaction.
 	/// </summary>
-	public decimal Value { get; init; }
+	public decimal Value { get; set; }
 
 	/// <summary>
 	/// Date Point.
