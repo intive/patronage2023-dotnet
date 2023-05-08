@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -27,6 +28,7 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
+	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
@@ -44,6 +46,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
 	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
+	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -52,12 +55,14 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgets> getBudgetsValidator,
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
+		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
+		IValidator<EditBudget> editBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
+		this.editBudgetValidator = editBudgetValidator;
 		this.getBudgetDetailsValidator = getBudgetDetailsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
@@ -177,6 +182,49 @@ public class BudgetController : ControllerBase
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
+	}
+
+	/// <summary>
+	/// Edits Budget.
+	/// </summary>
+	/// <param name="id">Budget id.</param>
+	/// <param name="request">Request.</param>
+	/// <returns>Edited Result.</returns>
+	/// <remarks>
+	/// Sample request:
+	///
+	///     {
+	///       "name": "budgetName",
+	///       "limit": {
+	///         "value": 15,
+	///         "currency": 1
+	///       },
+	///       "period": {
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	///       },
+	///       "description": "some budget description",
+	///       "iconName": "yellowIcon"
+	///     }
+	///
+	/// .</remarks>
+	/// <response code="201">Returns the edited item.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[HttpPut("{id:Guid}/edit")]
+	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
+	{
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Limit, request.Period, request.Description, request.IconName);
+		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(editedBudget);
+			return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
+		}
+
+		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
 	}
 
 	/// <summary>
