@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -66,8 +67,8 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 
 		if (!isAdmin)
 		{
-			var userId = this.contextAccessor.GetUserId();
-			var userBudgets = this.budgetDbContext.UserBudget.AsEnumerable().Where(x => x.UserId.Value == userId).Select(y => y.BudgetId).ToList();
+			var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+			var userBudgets = this.budgetDbContext.UserBudget.Where(x => x.UserId == userId).Select(y => y.BudgetId);
 			budgets = budgets.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
 		}
 

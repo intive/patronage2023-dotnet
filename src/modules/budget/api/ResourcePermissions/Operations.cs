@@ -24,10 +24,4 @@ public static class Operations
 	/// </summary>
 	public static readonly OperationAuthorizationRequirement Update =
 		new OperationAuthorizationRequirement { Name = nameof(Update) };
-
-	/// <summary>
-	/// delete.
-	/// </summary>
-	public static readonly OperationAuthorizationRequirement Delete =
-		new OperationAuthorizationRequirement { Name = nameof(Delete) };
 }
