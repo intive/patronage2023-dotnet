@@ -29,7 +29,7 @@ public class BudgetSoftDeletedDomainEventHandler : IDomainEventHandler<BudgetSof
 	/// <returns>Task.</returns>
 	public async Task Handle(BudgetSoftDeletedDomainEvent notification, CancellationToken cancellationToken)
 	{
-		var removeBudgetTransactions = new CancellBudgetTransactions(notification.Id.Value);
+		var removeBudgetTransactions = new RemoveBudgetTransactions(notification.Id.Value);
 		await this.commandBus.Send(removeBudgetTransactions);
 
 		// TODO: Use logger

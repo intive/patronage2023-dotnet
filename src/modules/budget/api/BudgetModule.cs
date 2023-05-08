@@ -10,7 +10,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
 
 namespace Intive.Patronage2023.Modules.Budget.Api;
 

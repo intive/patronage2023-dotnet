@@ -4,7 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
 
 /// <summary>
 /// Cancell Budget Transaction Command.
@@ -40,7 +40,7 @@ public class HandleCancellBudgetTransaction : ICommandHandler<CancellBudgetTrans
 
 		if (transaction != null)
 		{
-			transaction.SoftRemove();
+			transaction.CancellTransaction();
 			await this.budgetTransactionRepository.Persist(transaction);
 		}
 	}

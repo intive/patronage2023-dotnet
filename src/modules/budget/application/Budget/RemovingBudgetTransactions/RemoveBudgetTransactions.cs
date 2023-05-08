@@ -11,12 +11,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetT
 /// Remove Budget Transactions command.
 /// </summary>
 /// <param name="Id">Budget identifier.</param>
-public record CancellBudgetTransactions(Guid Id) : ICommand;
+public record RemoveBudgetTransactions(Guid Id) : ICommand;
 
 /// <summary>
 /// Remove Budget Transactions Command Handler.
 /// </summary>
-public class HandleCancellBudgetTransactions : ICommandHandler<CancellBudgetTransactions>
+public class HandleCancellBudgetTransactions : ICommandHandler<RemoveBudgetTransactions>
 {
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
@@ -33,7 +33,7 @@ public class HandleCancellBudgetTransactions : ICommandHandler<CancellBudgetTran
 	}
 
 	/// <inheritdoc/>
-	public async Task Handle(CancellBudgetTransactions command, CancellationToken cancellationToken)
+	public async Task Handle(RemoveBudgetTransactions command, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(command.Id);
 		var transactions = await this.budgetDbContext.Transaction

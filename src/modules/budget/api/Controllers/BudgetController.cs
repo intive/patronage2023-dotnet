@@ -14,7 +14,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.RemovingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
