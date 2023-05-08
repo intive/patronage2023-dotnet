@@ -8,7 +8,7 @@ public class SortDescriptor
 	/// <summary>
 	/// Column.
 	/// </summary>
-	public string ColumnName { get; set; }
+	public string ColumnName { get; set; } = null!;
 
 	/// <summary>
 	/// SortOrder.
