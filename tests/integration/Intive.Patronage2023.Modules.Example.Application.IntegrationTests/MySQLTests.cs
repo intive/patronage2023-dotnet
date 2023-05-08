@@ -14,11 +14,15 @@ using IContainer = DotNet.Testcontainers.Containers.IContainer;
 using System.Threading.Tasks;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
+
 /// <summary>
 /// Integration tests for the MS SQL database using Testcontainers.
 /// </summary>
 public class MsSqlTests : IAsyncLifetime
 {
+	///<summary>
+	/// This class contains constants used for MS SQL tests.
+	///</summary>
 	public const string Database = "patronage2023";
 	public const string Username = "sa";
 	public const string Password = "yourStrong(!)Password";
@@ -42,6 +46,7 @@ public class MsSqlTests : IAsyncLifetime
 	{
 		return this.mssqlContainer.StartAsync();
 	}
+
 	/// <summary>
 	/// Disposes the MsSql container after integration tests have been executed.
 	/// </summary>
