@@ -38,6 +38,6 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 		builder.Property(x => x.Status).HasColumnName("Status").HasConversion<byte>().HasColumnType("tinyint").HasDefaultValue(Status.Active);
 
-		builder.HasQueryFilter(b => b.Status == Status.Active);
+		builder.HasQueryFilter(b => b.Status != Status.Deleted);
 	}
 }

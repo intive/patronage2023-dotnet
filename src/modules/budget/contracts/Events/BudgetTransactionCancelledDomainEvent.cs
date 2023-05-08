@@ -5,7 +5,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Events;
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 
 /// <summary>
-/// Budget Transaction soft delete domain event.
+/// Budget Transaction Cancelled domain event.
 /// </summary>
 public class BudgetTransactionCancelledDomainEvent : DomainEvent
 {
@@ -13,7 +13,7 @@ public class BudgetTransactionCancelledDomainEvent : DomainEvent
 	/// Initializes a new instance of the <see cref="BudgetTransactionCancelledDomainEvent"/> class.
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
-	/// <param name="status">Soft Delete Status.</param>
+	/// <param name="status">Soft Cancelled Status.</param>
 	public BudgetTransactionCancelledDomainEvent(TransactionId id, Status status)
 	{
 		this.Id = id;
