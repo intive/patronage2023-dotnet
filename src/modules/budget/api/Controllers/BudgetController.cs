@@ -60,10 +60,9 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
-		IValidator<CancellBudgetTransaction> cancellBudgetTransaction)
+		IValidator<CancellBudgetTransaction> cancellBudgetTransaction,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
-		IValidator<EditBudget> editBudgetValidator,
-		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
+		IValidator<EditBudget> editBudgetValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
