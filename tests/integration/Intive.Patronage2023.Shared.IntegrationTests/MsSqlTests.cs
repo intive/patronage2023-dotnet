@@ -1,7 +1,7 @@
 using DotNet.Testcontainers.Builders;
-using IContainer = DotNet.Testcontainers.Containers.IContainer;
+using DotNet.Testcontainers.Containers;
 
-namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
+namespace Intive.Patronage2023.Shared.IntegrationTests;
 
 /// <summary>
 /// Integration tests for the MS SQL database using Testcontainers.

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\..\app.props" />
 	<PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -27,6 +27,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\api\app\Intive.Patronage2023.Api.csproj" />
       <ProjectReference Include="..\..\..\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
+      <ProjectReference Include="..\Intive.Patronage2023.Shared.IntegrationTests\Intive.Patronage2023.Shared.IntegrationTests.csproj" />
     </ItemGroup>
 
 </Project>
