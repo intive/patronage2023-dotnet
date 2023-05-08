@@ -1,17 +1,5 @@
 using DotNet.Testcontainers.Builders;
-using FluentAssertions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using IContainer = DotNet.Testcontainers.Containers.IContainer;
-using System.Threading.Tasks;
 
 namespace Intive.Patronage2023.Modules.Example.Application.IntegrationTests;
 
