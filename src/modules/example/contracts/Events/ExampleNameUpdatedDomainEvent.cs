@@ -1,4 +1,5 @@
-﻿using Intive.Patronage2023.Shared.Infrastructure.Events;
+using Intive.Patronage2023.Modules.Example.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 namespace Intive.Patronage2023.Modules.Example.Contracts.Events;
 
@@ -12,7 +13,7 @@ public class ExampleNameUpdatedDomainEvent : DomainEvent
 	/// </summary>
 	/// <param name="id">Example identifier.</param>
 	/// <param name="newName">New name.</param>
-	public ExampleNameUpdatedDomainEvent(Guid id, string newName)
+	public ExampleNameUpdatedDomainEvent(ExampleId id, string newName)
 	{
 		this.Id = id;
 		this.NewName = newName;
@@ -21,7 +22,7 @@ public class ExampleNameUpdatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Example identifier.
 	/// </summary>
-	public Guid Id { get; }
+	public ExampleId Id { get; }
 
 	/// <summary>
 	/// New Example name.

@@ -26,12 +26,12 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 	/// <summary>
 	/// Field to search budget by name.
 	/// </summary>
-	public string? Search { get; set; }
+	public string Search { get; set; } = null!;
 
 	/// <summary>
 	/// List of criteria to sort budgets.
 	/// </summary>
-	public List<SortDescriptor>? SortDescriptors { get; set; }
+	public List<SortDescriptor> SortDescriptors { get; set; } = null!;
 }
 
 /// <summary>

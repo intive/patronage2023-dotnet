@@ -1,9 +1,13 @@
+using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Api.User;
+using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
@@ -55,7 +59,9 @@ builder.Services.AddControllers(options =>
 	options.Filters.Add(new AuthorizeFilter(
 		new AuthorizationPolicyBuilder()
 			.RequireAuthenticatedUser()
-			.Build())));
+			.Build())))
+			.AddJsonOptions(options =>
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
@@ -64,6 +70,7 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDo
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
@@ -83,7 +90,7 @@ app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.UseExampleModule();

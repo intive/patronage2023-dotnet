@@ -1,5 +1,7 @@
 using Intive.Patronage2023.Modules.Example.Contracts.Events;
+using Intive.Patronage2023.Modules.Example.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Example.Domain.Rules;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Example.Domain;
@@ -7,11 +9,15 @@ namespace Intive.Patronage2023.Modules.Example.Domain;
 /// <summary>
 /// Example of aggregate root.
 /// </summary>
-public class ExampleAggregate : Aggregate
+public class ExampleAggregate : Aggregate, IEntity<ExampleId>
 {
-	private ExampleAggregate(Guid id, string name)
+	private ExampleAggregate()
 	{
-		if (id == Guid.Empty)
+	}
+
+	private ExampleAggregate(ExampleId id, string name)
+	{
+		if (id.Value == Guid.Empty)
 		{
 			throw new InvalidOperationException("Id value cannot be empty!");
 		}
@@ -23,7 +29,7 @@ public class ExampleAggregate : Aggregate
 	/// <summary>
 	/// Example identifier.
 	/// </summary>
-	public Guid Id { get; private set; }
+	public ExampleId Id { get; private set; }
 
 	/// <summary>
 	/// Example name.
@@ -43,7 +49,8 @@ public class ExampleAggregate : Aggregate
 	/// <returns>New aggregate.</returns>
 	public static ExampleAggregate Create(Guid id, string name)
 	{
-		return new ExampleAggregate(id, name);
+		var exampleId = new ExampleId(id);
+		return new ExampleAggregate(exampleId, name);
 	}
 
 	/// <summary>

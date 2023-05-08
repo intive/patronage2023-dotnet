@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
@@ -12,7 +13,7 @@ public class BudgetNameUpdatedDomainEvent : DomainEvent
 	/// </summary>
 	/// <param name="id">Budget identifier.</param>
 	/// <param name="newName">New name.</param>
-	public BudgetNameUpdatedDomainEvent(Guid id, string newName)
+	public BudgetNameUpdatedDomainEvent(BudgetId id, string newName)
 	{
 		this.Id = id;
 		this.NewName = newName;
@@ -21,7 +22,7 @@ public class BudgetNameUpdatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Budget identifier.
 	/// </summary>
-	public Guid Id { get; }
+	public BudgetId Id { get; }
 
 	/// <summary>
 	/// New Budget name.
