@@ -258,10 +258,15 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Sets up flag for Transaction's status to be cancelled.
+	/// Cancell transaction by Id.
 	/// </summary>
-	/// <param name="transactionId">Transaction Id.</param>
-	/// <returns>Returns Id, of Cancelled Transaction.</returns>
+	/// <param name="transactionId">The Id of the transaction to cancell.</param>
+	/// <returns>
+	/// Returns an HTTP 200 OK status code with the ID of the cancelled transaction if successful.
+	/// Throws an AppException if there are validation errors.
+	/// </returns>
+	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="401">If the user is unauthorized.</response>
 	[HttpDelete("{transactionId:guid}/transaction")]
 	public async Task<IActionResult> CancellTransaction([FromRoute] Guid transactionId)
 	{
