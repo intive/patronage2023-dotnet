@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\..\app.props" />
 	<PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
