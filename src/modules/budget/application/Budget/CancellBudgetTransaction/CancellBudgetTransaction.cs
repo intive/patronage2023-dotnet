@@ -35,8 +35,7 @@ public class HandleCancellBudgetTransaction : ICommandHandler<CancellBudgetTrans
 	public async Task Handle(CancellBudgetTransaction command, CancellationToken cancellationToken)
 	{
 		var transactionId = new TransactionId(command.Id);
-		var transaction = this.budgetDbContext.Transaction
-			.FirstOrDefault(x => x.Id == transactionId);
+		var transaction = await this.budgetTransactionRepository.GetById(transactionId);
 
 		if (transaction != null)
 		{
