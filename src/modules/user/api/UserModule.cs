@@ -20,7 +20,6 @@ public static class UserModule
 		services.AddScoped<IValidator<SignInUser>, SignInUserValidator>();
 		services.AddScoped<IValidator<CreateUser>, CreateUserValidator>();
 		services.AddScoped<IValidator<GetUsers>, GetUsersValidator>();
-		//// services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		return services;
 	}
 
