@@ -46,7 +46,7 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 	/// Returns information that user is admin or not.
 	/// </summary>
 	/// <returns>Bool value.</returns>
-	public bool IsUserAdmin()
+	public bool IsAdmin()
 	{
 		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 		if (jwtToken == null)

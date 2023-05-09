@@ -62,7 +62,7 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
-		bool isAdmin = this.contextAccessor.IsUserAdmin();
+		bool isAdmin = this.contextAccessor.IsAdmin();
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
 
 		if (!isAdmin)

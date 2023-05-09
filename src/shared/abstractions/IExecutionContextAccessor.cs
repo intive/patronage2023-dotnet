@@ -15,5 +15,5 @@ public interface IExecutionContextAccessor
 	/// Returns information that user is admin or not.
 	/// </summary>
 	/// <returns>Bool value.</returns>
-	bool IsUserAdmin();
+	bool IsAdmin();
 }

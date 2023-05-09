@@ -37,8 +37,6 @@ public class BudgetAuthorizationHandler :
 
 	private BudgetId BudgetId { get; set; }
 
-	private UserBudgetRoleInfo? Role { get; set; }
-
 	/// <summary>
 	/// This method handles the authorization logic for different operations on a budget,
 	/// such as creating, reading, and updating. It first checks if the user is an admin,
@@ -58,7 +56,7 @@ public class BudgetAuthorizationHandler :
 		OperationAuthorizationRequirement requirement,
 		BudgetId budgetId)
 	{
-		if (this.contextAccessor.IsUserAdmin())
+		if (this.contextAccessor.IsAdmin())
 		{
 			context.Succeed(requirement);
 			return;
@@ -72,7 +70,7 @@ public class BudgetAuthorizationHandler :
 
 		var userRole = await this.queryBus.Query<GetUserBudgetRole, UserBudgetRoleInfo?>(query);
 
-		if (!this.IsUserContributor(userRole))
+		if (!this.IsUserContributor(userRole!))
 		{
 			context.Fail();
 			return;
@@ -89,7 +87,7 @@ public class BudgetAuthorizationHandler :
 				break;
 
 			case nameof(Operations.Update):
-				if (!this.IsUserBudgetOwner(userRole))
+				if (!this.IsUserBudgetOwner(userRole!))
 				{
 					context.Fail();
 					break;
@@ -103,9 +101,9 @@ public class BudgetAuthorizationHandler :
 		}
 	}
 
-	private bool IsUserContributor(UserBudgetRoleInfo? userBudgetRoleInfo) =>
-		userBudgetRoleInfo?.UserRole != null;
+	private bool IsUserContributor(UserBudgetRoleInfo userBudgetRoleInfo) =>
+		userBudgetRoleInfo.UserRole != null;
 
-	private bool IsUserBudgetOwner(UserBudgetRoleInfo? userBudgetRoleInfo) =>
-		userBudgetRoleInfo?.UserRole == UserRole.BudgetOwner;
+	private bool IsUserBudgetOwner(UserBudgetRoleInfo userBudgetRoleInfo) =>
+		userBudgetRoleInfo.UserRole == UserRole.BudgetOwner;
 }

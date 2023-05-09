@@ -9,46 +9,47 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 
 /// <summary>
-/// Get budget details query.
+///  A record representing the query to retrieve information about a user's role in a specific budget.
 /// </summary>
 public record GetUserBudgetRole() : IQuery<UserBudgetRoleInfo?>
 {
 	/// <summary>
-	/// Budget id to retrive details for.
+	///  Object representing the ID of the budget that needs to be retrieved.
 	/// </summary>
-	public BudgetId BudgetId { get; set; }
+	public BudgetId BudgetId { get; init; }
 }
 
 /// <summary>
-/// Get Budget details handler.
+/// This Class is a query handler for the GetUserBudgetRole query.
 /// </summary>
-public class GetBudgetDetailsQueryHandler : IQueryHandler<GetUserBudgetRole, UserBudgetRoleInfo?>
+public class GetUserBudgetRoleQueryHandler : IQueryHandler<GetUserBudgetRole, UserBudgetRoleInfo?>
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandler"/> class.
+	/// Initializes a new instance of the <see cref="GetUserBudgetRoleQueryHandler"/> class.
 	/// </summary>
-	/// <param name="budgetDbContext">Budget dbContext.</param>
-	/// <param name="contextAccessor">sfasdfasd.</param>
-	public GetBudgetDetailsQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor)
+	/// <param name="budgetDbContext">Object representing the database context used to retrieve data.</param>
+	/// <param name="contextAccessor">Object representing an accessor for the current execution context.</param>
+	public GetUserBudgetRoleQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor)
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
-	/// GetBudgetDetails query handler.
+	/// Representing the asynchronous operation to retrieve information about a user's role in the specified budget.
 	/// </summary>
 	/// <param name="query">Query.</param>
-	/// <param name="cancellationToken">cancellation token.</param>
-	/// <returns>BudgetDetailsInfo or null.</returns>
+	/// <param name="cancellationToken">Object representing a cancellation token that can be used to cancel the asynchronous operation.</param>
+	/// <returns>Returns a UserBudgetRoleInfo object with a UserRole property that returns the user or null role.</returns>
 	public async Task<UserBudgetRoleInfo?> Handle(GetUserBudgetRole query, CancellationToken cancellationToken)
 	{
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
 		var entity = await this.budgetDbContext.UserBudget
 			.FirstOrDefaultAsync(x => x.UserId == userId && x.BudgetId == query.BudgetId, cancellationToken: cancellationToken);
-		return entity is null ? null : UserBudgetAggregateRoleInfoMapper.Map(entity!);
+
+		return entity is null ? UserBudgetAggregateRoleInfoMapper.Map(null) : UserBudgetAggregateRoleInfoMapper.Map(entity.UserRole);
 	}
 }
