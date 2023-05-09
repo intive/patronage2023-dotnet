@@ -1,6 +1,4 @@
-#pragma warning disable IDE0005
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
-#pragma warning restore IDE0005
 using Intive.Patronage2023.Shared.Abstractions.Attributes;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
