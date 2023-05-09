@@ -12,7 +12,7 @@ public class GetUsersValidator : AbstractValidator<GetUsers>
 	/// </summary>
 	public GetUsersValidator()
 	{
-		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
-		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
+		this.RuleFor(user => user.PageIndex).GreaterThan(0);
+		this.RuleFor(user => user.PageSize).GreaterThan(0);
 	}
 }
