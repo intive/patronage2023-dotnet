@@ -24,7 +24,7 @@ public class GetBudgetDetailsQueryHandlerTests
 		// Arrange
 		var id = new BudgetId(Guid.NewGuid());
 		string budgetName = new Faker().Random.Word();
-		var userId = Guid.NewGuid();
+		var userId = new UserId(Guid.NewGuid());
 		var limit = new Money(new Faker().Random.Decimal(min: .1M), Currency.PLN);
 		var startDate = new Faker().Date.Recent();
 		var endDate = startDate.AddDays(1);

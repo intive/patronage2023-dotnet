@@ -45,7 +45,7 @@ public class CreateBudgetTransactionValidatorTests
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-		var userId = new Faker().Random.Guid();
+		var userId = new UserId(new Faker().Random.Guid());
 		var limit = new Money(value, Currency.PLN);
 		var period = new Period(new Faker().Date.Recent(), new Faker().Date.Recent().AddMonths(1));
 		string? icon = new Faker().Random.String(1, 10);

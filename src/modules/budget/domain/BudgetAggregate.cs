@@ -18,7 +18,7 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	{
 	}
 
-	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	private BudgetAggregate(BudgetId id, string name, UserId userId, Money limit, Period period, string description, string icon)
 	{
 		if (id.Value == Guid.Empty)
 		{
@@ -42,7 +42,7 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// <summary>
 	/// Budget owner user Id.
 	/// </summary>
-	public Guid UserId { get; private set; }
+	public UserId UserId { get; private set; }
 
 	/// <summary>
 	/// Budget limit.
@@ -85,7 +85,7 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// <param name="description">Budget Description.</param>
 	/// <param name="icon">Budget Icon.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
+	public static BudgetAggregate Create(BudgetId id, string name, UserId userId, Money limit, Period period, string description, string icon)
 	{
 		return new BudgetAggregate(id, name, userId, limit, period, description, icon);
 	}

@@ -179,9 +179,8 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> CreateBudget([FromBody] CreateBudget request)
 	{
 		var budgetId = request.Id == default ? Guid.NewGuid() : request.Id;
-		var userId = request.UserId == default ? this.contextAccessor.GetUserId()! : request.UserId;
-
-		var newBudget = new CreateBudget(budgetId, request.Name, (Guid)userId, request.Limit, request.Period, request.Description, request.IconName);
+		var userId = request.UserId == default ? this.contextAccessor.GetUserId()!.Value : request.UserId;
+		var newBudget = new CreateBudget(budgetId, request.Name, userId, request.Limit, request.Period, request.Description, request.IconName);
 
 		var validationResult = await this.createBudgetValidator.ValidateAsync(newBudget);
 		if (validationResult.IsValid)

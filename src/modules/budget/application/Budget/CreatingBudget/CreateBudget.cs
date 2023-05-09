@@ -38,10 +38,11 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	public async Task Handle(CreateBudget command, CancellationToken cancellationToken)
 	{
 		var id = new BudgetId(command.Id);
+		var userId = new UserId(command.UserId);
 		var budget = BudgetAggregate.Create(
 			id,
 			command.Name,
-			command.UserId,
+			userId,
 			command.Limit,
 			command.Period,
 			command.Description,
