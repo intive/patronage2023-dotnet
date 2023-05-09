@@ -100,7 +100,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// </summary>
 	public void CancellTransaction()
 	{
-		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(this.Status));
+		this.CheckRule(new StatusCancelledCannotBeSetTwiceBusinessRule(this.Status));
 
 		var evt = new BudgetTransactionCancelledDomainEvent(this.Id, Status.Cancelled);
 
