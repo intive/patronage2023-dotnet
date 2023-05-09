@@ -53,6 +53,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Module
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Budget.Domain.Tests", "tests\unit\Intive.Patronage2023.Budget.Domain.Tests\Intive.Patronage2023.Budget.Domain.Tests.csproj", "{FC82E26F-63D3-47F9-80D1-098190A05D67}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration", "{505B0B82-9C7C-4A23-8BA3-A4F49BC2C0AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.Budget.Application.IntegrationTests", "tests\integration\Intive.Patronage2023.Modules.Example.Application.IntegrationTests\Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.csproj", "{BFC18BFA-3813-4379-AA4E-199B8EFC75BA}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Budget.Application.Tests", "tests\unit\Intive.Patronage2023.Budget.Application.Tests\Intive.Patronage2023.Budget.Application.Tests.csproj", "{D4117491-2AB8-4A24-8866-41B862B2678A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Shared.Domain", "src\shared\domain\Intive.Patronage2023.Shared.Domain.csproj", "{5BB415AD-09EF-413C-A2B9-4FFFF46306AB}"
@@ -73,6 +77,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.User.Application", "src\modules\user\application\Intive.Patronage2023.Modules.User.Application.csproj", "{58058413-3498-4764-A14E-2E766727F17E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Modules.User.Api", "src\modules\user\api\Intive.Patronage2023.Modules.User.Api.csproj", "{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Example.Api.Tests", "tests\unit\Intive.Patronage2023.Api.Tests\Intive.Patronage2023.Example.Api.Tests.csproj", "{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Shared.IntegrationTests", "tests\integration\Intive.Patronage2023.Shared.IntegrationTests\Intive.Patronage2023.Shared.IntegrationTests.csproj", "{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +156,10 @@ Global
 		{FC82E26F-63D3-47F9-80D1-098190A05D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC82E26F-63D3-47F9-80D1-098190A05D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC82E26F-63D3-47F9-80D1-098190A05D67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC18BFA-3813-4379-AA4E-199B8EFC75BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC18BFA-3813-4379-AA4E-199B8EFC75BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC18BFA-3813-4379-AA4E-199B8EFC75BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC18BFA-3813-4379-AA4E-199B8EFC75BA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4117491-2AB8-4A24-8866-41B862B2678A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -179,6 +191,14 @@ Global
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +225,8 @@ Global
 		{7C8E5EFA-D576-44E1-B750-C6AD2DA18775} = {E0DDA671-F144-4893-9DB8-9ED358EA423D}
 		{7F2A9947-43A1-406B-A503-14A771B76210} = {E0DDA671-F144-4893-9DB8-9ED358EA423D}
 		{FC82E26F-63D3-47F9-80D1-098190A05D67} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
+		{505B0B82-9C7C-4A23-8BA3-A4F49BC2C0AB} = {138E58F8-3FAE-4CCC-A92A-3A85E7E4D35B}
+		{BFC18BFA-3813-4379-AA4E-199B8EFC75BA} = {505B0B82-9C7C-4A23-8BA3-A4F49BC2C0AB}
 		{D4117491-2AB8-4A24-8866-41B862B2678A} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
 		{5BB415AD-09EF-413C-A2B9-4FFFF46306AB} = {24E13834-FC03-40CF-9B9D-4BCE3C8E4BEB}
 		{2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D} = {B581E464-B295-4D63-BB10-97AC3E19A52F}
@@ -213,6 +235,8 @@ Global
 		{7A288C75-D619-41B0-978A-879218466249} = {2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D}
 		{58058413-3498-4764-A14E-2E766727F17E} = {2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D}
 		{98A8FB57-3217-47AF-AD93-8959E6D9FDFC} = {2DA3BEE9-2A83-4E9E-891B-5E71B5532D3D}
+		{6DDB9695-1B3A-4AB4-960E-B9F605E510EB} = {751EFD73-0C2F-4917-8738-EF0C2A391FDA}
+		{EDAEB2C4-BA20-4A93-9907-233253A3AAEB} = {505B0B82-9C7C-4A23-8BA3-A4F49BC2C0AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7483708-EA69-4509-A749-B4BA172FC7D3}

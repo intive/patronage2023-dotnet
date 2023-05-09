@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Budget.Api;
@@ -89,7 +90,7 @@ app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.UseExampleModule();
