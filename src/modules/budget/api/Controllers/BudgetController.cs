@@ -34,6 +34,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
+	private IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -48,6 +49,7 @@ public class BudgetController : ControllerBase
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
+	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -58,7 +60,8 @@ public class BudgetController : ControllerBase
 		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<EditBudget> editBudgetValidator,
-		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
+		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
+		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -70,6 +73,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -174,11 +178,16 @@ public class BudgetController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateBudget([FromBody] CreateBudget request)
 	{
-		var validationResult = await this.createBudgetValidator.ValidateAsync(request);
+		var budgetId = request.Id == default ? Guid.NewGuid() : request.Id;
+		var userId = request.UserId == default ? this.contextAccessor.GetUserId()! : request.UserId;
+
+		var newBudget = new CreateBudget(budgetId, request.Name, (Guid)userId, request.Limit, request.Period, request.Description, request.IconName);
+
+		var validationResult = await this.createBudgetValidator.ValidateAsync(newBudget);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(request);
-			return this.Created(string.Empty, request.Id);
+			await this.commandBus.Send(newBudget);
+			return this.Created(string.Empty, newBudget.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
