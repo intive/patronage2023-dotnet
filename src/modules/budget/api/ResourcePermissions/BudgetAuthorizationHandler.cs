@@ -1,10 +1,12 @@
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 
@@ -18,7 +20,7 @@ public class BudgetAuthorizationHandler :
 	AuthorizationHandler<OperationAuthorizationRequirement, BudgetId>
 {
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly BudgetDbContext budgetDbContext;
+	private readonly IQueryBus queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetAuthorizationHandler"/> class.
@@ -26,15 +28,16 @@ public class BudgetAuthorizationHandler :
 	/// </summary>
 	/// <param name="contextAccessor">.</param>
 	/// <param name="budgetDbContext">Instance used to access the database.</param>
-	public BudgetAuthorizationHandler(IExecutionContextAccessor contextAccessor, BudgetDbContext budgetDbContext)
+	/// <param name="queryBus">dfasdfasdf.</param>
+	public BudgetAuthorizationHandler(IExecutionContextAccessor contextAccessor, BudgetDbContext budgetDbContext, IQueryBus queryBus)
 	{
 		this.contextAccessor = contextAccessor;
-		this.budgetDbContext = budgetDbContext;
+		this.queryBus = queryBus;
 	}
 
 	private BudgetId BudgetId { get; set; }
 
-	private UserId UserId { get; set; }
+	private UserBudgetRoleInfo? Role { get; set; }
 
 	/// <summary>
 	/// This method handles the authorization logic for different operations on a budget,
@@ -61,10 +64,15 @@ public class BudgetAuthorizationHandler :
 			return;
 		}
 
-		this.UserId = new UserId(this.contextAccessor.GetUserId()!.Value);
 		this.BudgetId = budgetId;
+		var query = new GetUserBudgetRole
+		{
+			BudgetId = this.BudgetId,
+		};
 
-		if (!await this.IsUserContributor())
+		var userRole = await this.queryBus.Query<GetUserBudgetRole, UserBudgetRoleInfo?>(query);
+
+		if (!this.IsUserContributor(userRole))
 		{
 			context.Fail();
 			return;
@@ -81,7 +89,7 @@ public class BudgetAuthorizationHandler :
 				break;
 
 			case nameof(Operations.Update):
-				if (!await this.IsUserBudgetOwner())
+				if (!this.IsUserBudgetOwner(userRole))
 				{
 					context.Fail();
 					break;
@@ -95,16 +103,9 @@ public class BudgetAuthorizationHandler :
 		}
 	}
 
-	private async Task<bool> IsUserContributor() =>
-		await this.budgetDbContext.UserBudget
-			.AnyAsync(x => x.UserId == this.UserId && x.BudgetId == this.BudgetId);
+	private bool IsUserContributor(UserBudgetRoleInfo? userBudgetRoleInfo) =>
+		userBudgetRoleInfo?.UserRole != null;
 
-	private async Task<UserRole> GetUserRoleForBudget() =>
-		await this.budgetDbContext.UserBudget
-		.Where(x => x.UserId == this.UserId && x.BudgetId == this.BudgetId)
-		.Select(x => x.UserRole)
-		.FirstAsync();
-
-	private async Task<bool> IsUserBudgetOwner() =>
-		await this.GetUserRoleForBudget() == UserRole.BudgetOwner;
+	private bool IsUserBudgetOwner(UserBudgetRoleInfo? userBudgetRoleInfo) =>
+		userBudgetRoleInfo?.UserRole == UserRole.BudgetOwner;
 }
