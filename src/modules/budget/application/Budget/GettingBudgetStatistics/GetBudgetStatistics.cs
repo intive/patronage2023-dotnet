@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -56,10 +57,13 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		var budgetId = new BudgetId(query.Id);
 
 		decimal budgetValueAtStartDate = budgets
-				.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate <= query.StartDate)
+				.For(budgetId)
+				.Where(x => x.BudgetTransactionDate <= query.StartDate)
 				.Sum(x => x.Value);
+
 		var budgetValues = await budgets
-			.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate > query.StartDate && x.BudgetTransactionDate <= query.EndDate)
+			.For(budgetId)
+			.Within(query.StartDate, query.EndDate)
 			.Select(BudgetStatisticsInfoMapper.Map)
 				.GroupBy(x => x.DatePoint.Date)
 				.Select(x => new BudgetAmount
@@ -77,18 +81,30 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 
 		for (int i = 1; i < budgetValues.Count; i++)
 		{
-			budgetValues[i].Value += budgetValues[i - 1].Value;
+			BudgetAmount prevBudget = budgetValues[i - 1];
+			var updatedBudget = new BudgetAmount()
+			{
+				DatePoint = prevBudget.DatePoint,
+				Value = prevBudget.Value + budgetValues[i].Value,
+			};
+			budgetValues[i] = updatedBudget;
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetId == budgetId)
+			.For(budgetId)
 			.Sum(x => x.Value);
 
 		decimal periodValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate && x.BudgetId == budgetId)
+			.For(budgetId)
+			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
 			.Sum(x => x.Value);
 
-		decimal trendValue = budgetValues[0].Value != 0 ? (budgetValues.Last().Value - budgetValueAtStartDate) / budgetValueAtStartDate * 100 : 0;
+		decimal startOfPeriodBudgetValue = this.budgetDbContext.Transaction
+			.For(budgetId)
+			.Where(x => x.BudgetTransactionDate <= query.StartDate)
+			.Sum(x => x.Value);
+
+		decimal trendValue = startOfPeriodBudgetValue > 0 ? (periodValue - startOfPeriodBudgetValue) / startOfPeriodBudgetValue * 100 : 0;
 
 		var result = new BudgetStatistics<BudgetAmount> { Items = budgetValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
