@@ -57,8 +57,10 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		var budgetId = new BudgetId(query.Id);
 
 		decimal budgetValueAtStartDate = budgets
-				.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate <= query.StartDate)
+				.For(budgetId)
+				.Where(x => x.BudgetTransactionDate <= query.StartDate)
 				.Sum(x => x.Value);
+
 		var budgetValues = await budgets
 			.For(budgetId)
 			.Within(query.StartDate, query.EndDate)
@@ -89,15 +91,17 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetId == budgetId)
+			.For(budgetId)
 			.Sum(x => x.Value);
 
 		decimal periodValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate && x.BudgetId == budgetId)
+			.For(budgetId)
+			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
 			.Sum(x => x.Value);
 
 		decimal startOfPeriodBudgetValue = this.budgetDbContext.Transaction
-			.Where(x => x.BudgetTransactionDate <= query.StartDate && x.BudgetId == budgetId)
+			.For(budgetId)
+			.Where(x => x.BudgetTransactionDate <= query.StartDate)
 			.Sum(x => x.Value);
 
 		decimal trendValue = startOfPeriodBudgetValue > 0 ? (periodValue - startOfPeriodBudgetValue) / startOfPeriodBudgetValue * 100 : 0;
