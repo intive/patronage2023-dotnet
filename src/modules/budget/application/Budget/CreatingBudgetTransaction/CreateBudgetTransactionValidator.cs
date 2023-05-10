@@ -1,7 +1,8 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
@@ -10,15 +11,15 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 /// </summary>
 public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
-	private readonly BudgetDbContext budgetDbContext;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
-	/// <param name="budgetDbContext">budgetRepository, so we can validate BudgetId.</param>
-	public CreateBudgetTransactionValidator(BudgetDbContext budgetDbContext)
+	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
+	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
-		this.budgetDbContext = budgetDbContext;
+		this.budgetRepository = budgetRepository;
 		this.RuleFor(transaction => transaction.Id).NotNull();
 		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
@@ -32,7 +33,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(budgetGuid);
-		var budget = await this.budgetDbContext.Budget.FindAsync(budgetId);
+		var budget = await this.budgetRepository.GetById(budgetId);
 		return budget != null;
 	}
 
@@ -54,7 +55,11 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	private async Task<bool> IsDateInBudgetPeriod(Guid budgetGuid, DateTime transactionDate, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(budgetGuid);
-		var budget = await this.budgetDbContext.Budget.FindAsync(budgetId);
+		var budget = await this.budgetRepository.GetById(budgetId);
+		if (budget == null)
+		{
+			return false;
+		}
 
 		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
