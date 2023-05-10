@@ -5,7 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 
@@ -20,15 +20,15 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class CreateBudgetTransactionValidatorTests
 {
-	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
+	private readonly Mock<BudgetDbContext> budgetDbContextMock;
 	private readonly IValidator<CreateBudgetTransaction> createBudgetTransactionValidator;
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
 	public CreateBudgetTransactionValidatorTests()
 	{
-		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.budgetDbContextMock = new Mock<BudgetDbContext>();
+		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(this.budgetDbContextMock.Object);
 	}
 
 	/// <summary>
@@ -51,7 +51,7 @@ public class CreateBudgetTransactionValidatorTests
 		string? icon = new Faker().Random.String(1, 10);
 		string? description = new Faker().Random.String(1, 10);
 		var budget = BudgetAggregate.Create(budgetId, name, userId, limit, period, icon, description);
-		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
+		this.budgetDbContextMock.Setup(x => x.Budget.FindAsync(budgetId)).ReturnsAsync(budget);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
 
 		//Act
