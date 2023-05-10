@@ -1,4 +1,4 @@
-﻿version: '3.4'
+version: '3.4'
 
 services:
   db:
@@ -48,6 +48,13 @@ services:
     volumes:
       - ./realm-config.json:/root/data/import/realm-config.json
     restart: always
+  smtp4dev:
+    ports:
+      - '3000:80' # WebInterface
+      - '25:25' # SMTP server
+      - '143:143' # IMAP server
+    environment:
+      - ServerOptions__HostName=smtp4dev
   azurite:
     container_name: "azurite"
     hostname: azurite

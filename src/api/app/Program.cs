@@ -10,7 +10,9 @@ using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
+
 using Keycloak.AuthServices.Authentication;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -22,7 +24,9 @@ string corsPolicyName = "CorsPolicy";
 builder.Services.AddCors(builder.Configuration, corsPolicyName);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+builder.AddTelemetry();
 builder.Services.AddHttpLogging(logging =>
 {
 	logging.LoggingFields = HttpLoggingFields.All;
@@ -33,6 +37,8 @@ builder.Services.AddHttpLogging(logging =>
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
 
+builder.Services.AddBudgetModule(builder.Configuration);
+builder.Services.AddHttpClient();
 builder.Services.AddUserModule(builder.Configuration);
 
 builder.Services.AddBudgetModule(builder.Configuration);
@@ -51,10 +57,10 @@ builder.Services.AddControllers(options =>
 			.RequireAuthenticatedUser()
 			.Build())));
 
-builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>));
-builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>));
-builder.Services.AddFromAssemblies(typeof(ICommandHandler<>));
-builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>));
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), typeof(IDomainEventHandler<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), typeof(IEventDispatcher<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), typeof(IQueryHandler<,>).Assembly);
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();

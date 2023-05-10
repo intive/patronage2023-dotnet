@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420164630_RenameAggregateValueObjectsColumns")]
+    partial class RenameAggregateValueObjectsColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,7 +86,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", b =>
                 {
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.Money", "Limit", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.BudgetLimit", "Limit", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");
@@ -104,7 +107,7 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                                 .HasForeignKey("BudgetAggregateId");
                         });
 
-                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.Period", "Period", b1 =>
+                    b.OwnsOne("Intive.Patronage2023.Shared.Infrastructure.Domain.OwnedEntities.BudgetPeriod", "Period", b1 =>
                         {
                             b1.Property<Guid>("BudgetAggregateId")
                                 .HasColumnType("uniqueidentifier");

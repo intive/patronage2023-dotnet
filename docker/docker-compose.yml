@@ -22,5 +22,7 @@ services:
     depends_on:
       - db
       - mssqlscripts
+  smtp4dev:
+    image: "rnwood/smtp4dev"
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
