@@ -41,7 +41,7 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		string budgetName = new Faker().Random.Word();
-		var userId = new Faker().Random.Guid();
+		var userId = new UserId(new Faker().Random.Guid());
 		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var limit = new Money(limitValue, Currency.PLN);
 		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
@@ -96,7 +96,7 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		string budgetName = new Faker().Random.Word();
-		var userId = new Faker().Random.Guid();
+		var userId = new UserId(new Faker().Random.Guid());
 		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var limit = new Money(limitValue, Currency.PLN);
 		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
@@ -128,7 +128,7 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		string budgetName = new Faker().Random.Word();
-		var userId = new Faker().Random.Guid();
+		var userId = new UserId(new Faker().Random.Guid());
 		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var limit = new Money(limitValue, Currency.PLN);
 		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
@@ -161,7 +161,7 @@ public class CreateBudgetTransactionValidatorTests
 		//Arrange
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		string budgetName = new Faker().Random.Word();
-		var userId = new Faker().Random.Guid();
+		var userId = new UserId(new Faker().Random.Guid());
 		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var limit = new Money(limitValue, Currency.PLN);
 		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));

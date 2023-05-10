@@ -65,7 +65,6 @@ public class BudgetController : ControllerBase
 		IValidator<CancelBudgetTransaction> cancelBudgetTransaction,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<EditBudget> editBudgetValidator,
-		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
