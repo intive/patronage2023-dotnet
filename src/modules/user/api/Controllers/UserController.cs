@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 namespace Intive.Patronage2023.Modules.User.Api.Controllers;
 
 /// <summary>
-/// User Controller.
+/// Api controller for user management and login.
 /// </summary>
 [Route("user")]
 [ApiController]
