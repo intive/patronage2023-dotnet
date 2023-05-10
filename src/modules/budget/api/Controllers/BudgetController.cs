@@ -1,21 +1,21 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Microsoft.AspNetCore.Authorization;
-using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -30,13 +30,13 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IValidator<CreateBudget> createBudgetValidator;
 	private readonly IValidator<GetBudgets> getBudgetsValidator;
-	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
 	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IAuthorizationService authorizationService;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
+	private readonly IValidator<EditBudget> editBudgetValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -61,8 +61,7 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
-		IValidator<RemoveBudget> removeBudgetValidator,
-		IAuthorizationService authorizationService)
+		IAuthorizationService authorizationService,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator)
 	{
@@ -229,14 +228,20 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
 	{
 		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Limit, request.Period, request.Description, request.IconName);
+
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			await this.commandBus.Send(editedBudget);
-			return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
+			throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(id), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		await this.commandBus.Send(editedBudget);
+		return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
 	}
 
 	/// <summary>
@@ -363,9 +368,7 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
 		return this.Ok(pagedList);
-			var pagedList = await this.queryBus.Query<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>(getBudgetTransactions);
-			return this.Ok(pagedList);
-		}
+	}
 
 	/// <summary>
 	/// Get calculated values for budget between two dates.
@@ -387,12 +390,17 @@ public class BudgetController : ControllerBase
 		};
 
 		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistics);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
-			return this.Ok(pagedList);
+			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
+		return this.Ok(pagedList);
 	}
 }
