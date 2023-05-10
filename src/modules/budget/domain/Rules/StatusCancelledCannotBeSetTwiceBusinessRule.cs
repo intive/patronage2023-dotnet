@@ -22,6 +22,6 @@ public class StatusCancelledCannotBeSetTwiceBusinessRule : IBusinessRule
 	/// <inheritdoc />
 	public bool IsBroken()
 	{
-		return this.status.Equals(Status.Deleted);
+		return this.status.Equals(Status.Cancelled);
 	}
 }
