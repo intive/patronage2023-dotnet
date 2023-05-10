@@ -30,6 +30,11 @@ public class BudgetDbContext : DbContext
 	public DbSet<BudgetTransactionAggregate> Transaction { get; set; }
 
 	/// <summary>
+	/// This DbSet represents a database table that will store instances of the UserBudgetAggregate entity.
+	/// </summary>
+	public DbSet<UserBudgetAggregate> UserBudget { get; set; }
+
+	/// <summary>
 	/// Domain Event Store DbSet.
 	/// </summary>
 	public DbSet<DomainEventStore> DomainEventStore { get; set; }

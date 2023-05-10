@@ -41,12 +41,10 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
-
 builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.AddHttpClient();
 builder.Services.AddUserModule();
 
-builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
