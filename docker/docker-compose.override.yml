@@ -56,7 +56,6 @@ services:
     environment:
       - ServerOptions__HostName=smtp4dev
   azurite:
-    container_name: "azurite"
     hostname: azurite
     restart: always
     ports:

@@ -26,3 +26,4 @@ services:
     image: "rnwood/smtp4dev"
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
