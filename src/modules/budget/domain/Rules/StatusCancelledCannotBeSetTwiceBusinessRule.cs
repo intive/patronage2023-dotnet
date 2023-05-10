@@ -20,7 +20,7 @@ public class StatusCancelledCannotBeSetTwiceBusinessRule : IBusinessRule
 	}
 
 	/// <inheritdoc/>
-	public string RuleName => "Is broken " + nameof(StatusCancelledCannotBeSetTwiceBusinessRule);
+	public string RuleName => "Status is already cancelled.";
 
 	/// <inheritdoc />
 	public bool IsBroken()

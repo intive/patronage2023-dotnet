@@ -19,7 +19,7 @@ public class SuperImportantExampleBusinessRule : IBusinessRule
 	}
 
 	/// <inheritdoc/>
-	public string RuleName => "Is brokem " + nameof(SuperImportantExampleBusinessRule);
+	public string RuleName => nameof(SuperImportantExampleBusinessRule) + "doesn't meet requirement";
 
 	/// <inheritdoc />
 	public bool IsBroken() => this.name.StartsWith("brokenRule");

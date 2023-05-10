@@ -19,7 +19,7 @@ public class SuperImportantBudgetBusinessRule : IBusinessRule
 	}
 
 	/// <inheritdoc/>
-	public string RuleName => "Is broken " + nameof(SuperImportantBudgetBusinessRule);
+	public string RuleName => nameof(SuperImportantBudgetBusinessRule) + "doesn't meet requirement";
 
 	/// <inheritdoc />
 	public bool IsBroken() => this.name.StartsWith("brokenRule");
