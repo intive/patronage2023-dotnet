@@ -6,7 +6,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Extensions;
 /// <summary>
 /// BudgetTransaction Query Extension class.
 /// </summary>
-internal static class BudgetTransactionQueryExtension
+internal static class BudgetTransactionsQueryExtension
 {
 	/// <summary>
 	/// Specifies BudgetTransactions for which query is done.
@@ -20,7 +20,7 @@ internal static class BudgetTransactionQueryExtension
 	}
 
 	/// <summary>
-	/// Checks if date of transaction is in specified date.
+	/// Checks if date of transactions is in specified date.
 	/// </summary>
 	/// <param name="query">query.</param>
 	/// <param name="startDate">Start date.</param>
