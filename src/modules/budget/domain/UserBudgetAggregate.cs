@@ -31,22 +31,22 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 	/// <summary>
 	///  The unique identifier of the UserBudgetAggregate object.
 	/// </summary>
-	public Guid Id { get; set; }
+	public Guid Id { get; private set; }
 
 	/// <summary>
 	/// The "UserId" property is a UserId object that identifies the user.
 	/// </summary>
-	public UserId UserId { get; set; }
+	public UserId UserId { get; private set; }
 
 	/// <summary>
 	/// The "BudgetId" property is a BudgetId object that identifies the budget.
 	/// </summary>
-	public BudgetId BudgetId { get; set; }
+	public BudgetId BudgetId { get; private set; }
 
 	/// <summary>
 	/// The "Type" property is a UserRole enum that specifies the user's role in relation to the budget.
 	/// </summary>
-	public UserRole UserRole { get; set; }
+	public UserRole UserRole { get; private set; }
 
 	/// <summary>
 	/// A static factory method that creates a new instance of the UserBudgetAggregate object with the specified parameters.
