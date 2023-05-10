@@ -39,22 +39,24 @@ public class CreateBudgetTransactionValidatorTests
 	public async Task Validate_WhenAllPropertiesAreValid_ShouldNotHaveAnyValidationErrors()
 	{
 		//Arrange
-		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
-		var type = TransactionType.Income;
-		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
-		var createdDate = new Faker().Date.Recent();
-		var userId = new UserId(new Faker().Random.Guid());
-		var limit = new Money(value, Currency.PLN);
-		var period = new Period(new Faker().Date.Recent(), new Faker().Date.Recent().AddMonths(1));
+		string budgetName = new Faker().Random.Word();
+		var userId = new Faker().Random.Guid();
+		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var limit = new Money(limitValue, Currency.PLN);
+		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
 		string? icon = new Faker().Random.String(1, 10);
 		string? description = new Faker().Random.String(1, 10);
-		var budget = BudgetAggregate.Create(budgetId, name, userId, limit, period, icon, description);
+		var budget = BudgetAggregate.Create(budgetId, budgetName, userId, limit, period, icon, description);
+		var type = TransactionType.Income;
+		var id = new TransactionId(new Faker().Random.Guid());
+		string transactionName= new Faker().Random.Word();
+		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
+		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		var createdDate = new Faker().Date.Between(period.StartDate, period.EndDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, createdDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
-
+		
 		//Act
 		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
@@ -69,23 +71,22 @@ public class CreateBudgetTransactionValidatorTests
 	public async Task Validate_WhenBudgetIdDoesNotExistInDatabase_ShouldHaveValidationErrorForBudgetId()
 	{
 		//Arrange
-		var id = new TransactionId(new Faker().Random.Guid());
+		var transactionId = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be not existing BudgetId in database.
 		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
-
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, name, value, category, createdDate);
+		
 		//Act
 		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.BudgetId);
 	}
-
+	
 	/// <summary>
 	/// Validation should return Validation Error List when income type transaction have negative value.
 	/// </summary>
@@ -93,16 +94,23 @@ public class CreateBudgetTransactionValidatorTests
 	public async Task Validate_WhenIncomeTypeWithNegativeValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
-		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
+		string budgetName = new Faker().Random.Word();
+		var userId = new Faker().Random.Guid();
+		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var limit = new Money(limitValue, Currency.PLN);
+		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
+		string? icon = new Faker().Random.String(1, 10);
+		string? description = new Faker().Random.String(1, 10);
+		var budget = BudgetAggregate.Create(budgetId, budgetName, userId, limit, period, icon, description);
 		var type = TransactionType.Income;
-		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
-		var createdDate = new Faker().Date.Recent();
-		value *= -1;
-
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
+		var transactionId = new TransactionId(new Faker().Random.Guid());
+		string transactionName = new Faker().Random.Word();
+		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999)*-1;
+		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionCreatedDate);
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		//Act
 		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
@@ -118,15 +126,24 @@ public class CreateBudgetTransactionValidatorTests
 	public async Task Validate_WhenExpenseTypeWithPositiveValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
-		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
+		string budgetName = new Faker().Random.Word();
+		var userId = new Faker().Random.Guid();
+		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var limit = new Money(limitValue, Currency.PLN);
+		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
+		string? icon = new Faker().Random.String(1, 10);
+		string? description = new Faker().Random.String(1, 10);
+		var budget = BudgetAggregate.Create(budgetId, budgetName, userId, limit, period, icon, description);
 		var type = TransactionType.Expense;
-		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
-		var createdDate = new Faker().Date.Recent();
-
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate);
+		var transactionId = new TransactionId(new Faker().Random.Guid());
+		string transactionName = new Faker().Random.Word();
+		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
+		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionCreatedDate);
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
+		
 
 		//Act
 		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
@@ -142,20 +159,28 @@ public class CreateBudgetTransactionValidatorTests
 	public async Task Validate_WhenTransactionDataIsOlderThanMonth_ShouldHaveValidationErrorForTransactionDate()
 	{
 		//Arrange
-		var id = new TransactionId(new Faker().Random.Guid());
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
+		string budgetName = new Faker().Random.Word();
+		var userId = new Faker().Random.Guid();
+		decimal limitValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var limit = new Money(limitValue, Currency.PLN);
+		var period = new Period(new DateTime(2022, 04, 13), new DateTime(2023, 05, 13));
+		string? icon = new Faker().Random.String(1, 10);
+		string? description = new Faker().Random.String(1, 10);
+		var budget = BudgetAggregate.Create(budgetId, budgetName, userId, limit, period, icon, description);
 		var type = TransactionType.Income;
-		string name = new Faker().Name.FirstName();
-		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
-		var transactionData = DateTime.UtcNow.AddMonths(-2);
-
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, transactionData);
-
+		var transactionId = new TransactionId(new Faker().Random.Guid());
+		string transactionName = new Faker().Random.Word();
+		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
+		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		var transactionDate = new Faker().Date.Past(new Faker().Random.Int(1,10), period.StartDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionDate);
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
+		
 		//Act
 		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
-		result.ShouldHaveValidationErrorFor(x => x.TransactionDate);
+		result.ShouldHaveValidationErrorFor(x => new { x.BudgetId, x.TransactionDate });
 	}
 }

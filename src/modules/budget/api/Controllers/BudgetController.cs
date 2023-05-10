@@ -14,6 +14,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -34,6 +35,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
+	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransaction;
 	private IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
@@ -49,6 +51,7 @@ public class BudgetController : ControllerBase
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
+	/// <param name="cancelBudgetTransaction">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -58,6 +61,8 @@ public class BudgetController : ControllerBase
 		IValidator<CreateBudgetTransaction> createTransactionValidator,
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
+		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
+		IValidator<CancelBudgetTransaction> cancelBudgetTransaction,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
@@ -73,6 +78,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
+		this.cancelBudgetTransaction = cancelBudgetTransaction;
 		this.contextAccessor = contextAccessor;
 	}
 
@@ -309,6 +315,31 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
+	/// Cancel transaction by Id.
+	/// </summary>
+	/// <param name="transactionId">The Id of the transaction to cancel.</param>
+	/// <returns>
+	/// Returns an HTTP 200 OK status code with the ID of the cancelled transaction if successful.
+	/// Throws an AppException if there are validation errors.
+	/// </returns>
+	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpDelete("{transactionId:guid}/transaction")]
+	public async Task<IActionResult> CancelTransaction([FromRoute] Guid transactionId)
+	{
+		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId);
+
+		var validationResult = await this.cancelBudgetTransaction.ValidateAsync(cancelBudgetTransaction);
+		if (validationResult.IsValid)
+		{
+			await this.commandBus.Send(cancelBudgetTransaction);
+			return this.Ok(cancelBudgetTransaction.Id);
+		}
+
+		throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
+	}
+
+	/// <summary>
 	/// Get Budget by id with transactions.
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
@@ -354,7 +385,7 @@ public class BudgetController : ControllerBase
 	/// <param name="endDate">End date in which we want to get statistics.</param>
 	/// <returns>Returns the list of two calculated values, between two dates.</returns>
 	[HttpGet("{budgetId:guid}/statistics")]
-	[ProducesResponseType(typeof(PagedList<int>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(BudgetStatistics<BudgetAmount>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetBudgetStatisticsBetweenDates([FromRoute] Guid budgetId, DateTime startDate, DateTime endDate)
 	{

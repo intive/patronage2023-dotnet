@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Intive.Patronage2023.Api.User;
+namespace Intive.Patronage2023.Shared.Infrastructure;
 
 /// <summary>
 /// Class represents a JWT token used for authentication.

@@ -1,9 +1,12 @@
-using Intive.Patronage2023.Api.Keycloak;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
+using Intive.Patronage2023.Modules.User.Application.User;
+using Intive.Patronage2023.Modules.User.Contracts;
+using Intive.Patronage2023.Modules.User.Domain;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Newtonsoft.Json;
 
-namespace Intive.Patronage2023.Api.User.CreatingUser;
+namespace Intive.Patronage2023.Modules.User.Application.CreatingUser;
 
 /// <summary>
 /// Create user command.
@@ -20,13 +23,13 @@ public record CreateUser(string Avatar, string FirstName, string LastName, strin
 /// </summary>
 public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 {
-	private readonly KeycloakService keycloakService;
+	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateUserCommandHandler"/> class.
 	/// </summary>
 	/// <param name="keycloakService">KeycloakService.</param>
-	public CreateUserCommandHandler(KeycloakService keycloakService) => this.keycloakService = keycloakService;
+	public CreateUserCommandHandler(IKeycloakService keycloakService) => this.keycloakService = keycloakService;
 
 	/// <summary>
 	/// Handle sign up operation in keycloak api.
@@ -57,7 +60,32 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 			throw new AppException("One or more error occured while trying to create user.");
 		}
 
-		response = await this.keycloakService.AddUser(command, token.AccessToken, cancellationToken);
+		UserCredentials[] credentials =
+		{
+			new UserCredentials
+			{
+				Type = "password",
+				Value = command.Password,
+				Temporary = false,
+			},
+		};
+
+		var attributes = new UserAttributes
+		{
+			Avatar = new string[] { command.Avatar },
+		};
+
+		var appUser = new AppUser
+		{
+			Email = command.Email,
+			FirstName = command.FirstName,
+			LastName = command.LastName,
+			Enabled = true,
+			Attributes = attributes,
+			Credentials = credentials,
+		};
+
+		response = await this.keycloakService.AddUser(appUser, token.AccessToken, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{

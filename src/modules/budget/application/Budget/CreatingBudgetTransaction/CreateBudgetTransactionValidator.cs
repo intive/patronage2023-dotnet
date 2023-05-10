@@ -26,7 +26,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
 			.WithMessage("Value must be positive for income or negative for expense");
 		this.RuleFor(transaction => transaction.Category).Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.TransactionDate).Must(date => date >= DateTime.Now.AddMonths(-1));
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 
@@ -50,5 +50,17 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		}
 
 		return false;
+	}
+
+	private async Task<bool> IsDateInBudgetPeriod(Guid budgetGuid, DateTime transactionDate, CancellationToken cancellationToken)
+	{
+		var budgetId = new BudgetId(budgetGuid);
+		var budget = await this.budgetRepository.GetById(budgetId);
+		if (budget == null)
+		{
+			return false;
+		}
+
+		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
 }

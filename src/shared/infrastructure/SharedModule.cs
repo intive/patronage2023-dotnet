@@ -23,7 +23,7 @@ public static class SharedModule
 		services.AddTransient(typeof(INotificationHandler<>), typeof(MediatrEventHandlerAdapter<>));
 		services.AddTransient(typeof(IRequestHandler<,>), typeof(MediatRQueryHandlerAdapter<,>));
 		services.AddTransient(typeof(IRequestHandler<>), typeof(MediatRCommandHandlerAdapter<>));
-
+		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 		return services;

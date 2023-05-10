@@ -8,5 +8,5 @@ public interface ITextSearchQuery
 	/// <summary>
 	/// Search text.
 	/// </summary>
-	string Search { get; set; }
+	string? Search { get; set; }
 }

@@ -35,7 +35,7 @@ public abstract class Aggregate
 	{
 		if (rule.IsBroken())
 		{
-			throw new BusinessRuleValidationException(rule);
+			throw new BusinessRuleValidationException(rule.RuleName);
 		}
 	}
 }
