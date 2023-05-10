@@ -19,6 +19,9 @@ public class StatusCancelledCannotBeSetTwiceBusinessRule : IBusinessRule
 		this.status = status;
 	}
 
+	/// <inheritdoc/>
+	public string RuleName => "Is broken " + nameof(StatusCancelledCannotBeSetTwiceBusinessRule);
+
 	/// <inheritdoc />
 	public bool IsBroken()
 	{

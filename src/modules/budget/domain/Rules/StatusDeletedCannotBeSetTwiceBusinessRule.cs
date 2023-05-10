@@ -19,6 +19,9 @@ public class StatusDeletedCannotBeSetTwiceBusinessRule : IBusinessRule
 		this.status = status;
 	}
 
+	/// <inheritdoc/>
+	public string RuleName => "Is broken " + nameof(StatusDeletedCannotBeSetTwiceBusinessRule);
+
 	/// <inheritdoc />
 	public bool IsBroken() => this.status.Equals(Status.Deleted);
 }
