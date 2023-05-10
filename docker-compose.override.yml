@@ -49,7 +49,6 @@ services:
       - ./realm-config.json:/root/data/import/realm-config.json
     restart: always
   azurite:
-    image: mcr.microsoft.com/azure-storage/azurite
     container_name: "azurite"
     hostname: azurite
     restart: always
