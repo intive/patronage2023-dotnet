@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
@@ -30,7 +31,7 @@ public record CreateBudgetTransaction(
 /// </summary>
 public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransaction>
 {
-	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
+	private readonly BudgetDbContext budgetTransactionRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateBudgetTransaction"/> class.
