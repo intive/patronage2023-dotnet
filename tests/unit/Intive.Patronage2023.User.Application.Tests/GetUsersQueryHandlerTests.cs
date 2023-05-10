@@ -55,7 +55,7 @@ public class GetUsersQueryHandlerTests
 	/// Test that checks if the query returns sorted values.
 	/// </summary>
 	[Fact]
-	public async Task Handle_WhenCalled_ShouldApplySortingForUsersList()
+	public async Task Handle_WhenCalledWithValidSortParameters_ShouldApplySortingForUsersList()
 	{
 		// Arrange
 		int pageSize = 20;
@@ -75,11 +75,28 @@ public class GetUsersQueryHandlerTests
 	}
 
 	/// <summary>
-	/// Test that checks if the pagination is applied for returned values.
+	/// Test that checks if the exception is thrown when the sort parameteres are not valid.
+	/// </summary>
+	[Fact]
+	public async Task Handle_WhenCalledWithInvalidSortParameters_ShouldThrowException()
+	{
+		// Arrange
+		int pageSize = 20;
+		var sortDescriptors = new List<SortDescriptor>() { new SortDescriptor { ColumnName = "invalidname", SortAscending = true } };
+		var users = this.SetupUsers(pageSize);
+
+		var query = new GetUsers() { PageSize = pageSize, SortDescriptors = sortDescriptors };
+
+		// Act and Assert
+		await Assert.ThrowsAsync<NotSupportedException>(async () => await this.handler.Handle(query, CancellationToken.None));
+	}
+
+	/// <summary>
+	/// Test that checks if the pagination, if specified, is applied for returned values.
 	/// </summary>
 
 	[Fact]
-	public async Task Handle_WhenCalled_ShouldApplyPaginationForUsersList()
+	public async Task Handle_WhenPaginationSpecified_ShouldApplyPaginationForUsersList()
 	{
 		// Arrange
 		int pageSize = 20;
