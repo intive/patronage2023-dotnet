@@ -4,6 +4,7 @@ using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;

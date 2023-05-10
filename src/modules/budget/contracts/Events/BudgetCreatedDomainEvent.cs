@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 

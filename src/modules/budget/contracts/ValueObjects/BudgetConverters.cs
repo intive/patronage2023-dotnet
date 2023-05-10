@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;

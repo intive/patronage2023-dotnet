@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Shared.Infrastructure;
 
-namespace Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+namespace Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 
 /// <summary>
 /// record which represents User Id.
