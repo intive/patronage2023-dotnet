@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 

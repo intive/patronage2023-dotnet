@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230506184402_AddUserBudgetTable")]
+    [Migration("20230510204559_AddUserBudgetTable")]
     partial class AddUserBudgetTable
     {
         /// <inheritdoc />

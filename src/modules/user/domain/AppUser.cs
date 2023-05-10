@@ -1,4 +1,6 @@
-namespace Intive.Patronage2023.Api.User.Models;
+using Intive.Patronage2023.Modules.User.Contracts;
+
+namespace Intive.Patronage2023.Modules.User.Domain;
 
 /// <summary>
 /// Information required to create new user.

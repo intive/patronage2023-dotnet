@@ -1,7 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
@@ -33,7 +32,7 @@ public class BudgetCreatedDomainEventHandler : IDomainEventHandler<BudgetCreated
 	/// Finally, the method throws a cancellation exception if the operation was canceled.</returns>
 	public async Task Handle(BudgetCreatedDomainEvent notification, CancellationToken cancellationToken)
 	{
-		var userId = new UserId(notification.UserId);
+		var userId = notification.UserId;
 		var addUserBudget = new AddUserBudget(Guid.NewGuid(), userId, notification.Id, UserRole.BudgetOwner);
 		await this.commandBus.Send(addUserBudget);
 

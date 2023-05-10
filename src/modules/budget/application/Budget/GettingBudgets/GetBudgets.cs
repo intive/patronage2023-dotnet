@@ -1,7 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -27,7 +27,7 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 	/// <summary>
 	/// Field to search budget by name.
 	/// </summary>
-	public string Search { get; set; } = null!;
+	public string? Search { get; set; }
 
 	/// <summary>
 	/// List of criteria to sort budgets.

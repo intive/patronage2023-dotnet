@@ -3,9 +3,7 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
-using Intive.Patronage2023.Shared.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,8 +23,6 @@ public static class ExampleModule
 	public static IServiceCollection AddExampleModule(this IServiceCollection services, ConfigurationManager configurationManager)
 	{
 		services.AddDbContext<ExampleDbContext>(options => options.UseSqlServer(configurationManager.GetConnectionString("AppDb")));
-
-		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddScoped<IValidator<CreateExample>, CreateExampleValidator>();
 		services.AddScoped<IValidator<GetExamples>, GetExamplesValidator>();
 		return services;

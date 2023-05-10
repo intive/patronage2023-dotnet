@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
@@ -19,7 +20,7 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <param name="period">Budget Duration.</param>
 	/// <param name="description">Budget Describtion.</param>
 	/// <param name="iconName">Budget Icon.</param>
-	public BudgetCreatedDomainEvent(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string iconName)
+	public BudgetCreatedDomainEvent(BudgetId id, string name, UserId userId, Money limit, Period period, string description, string iconName)
 	{
 		this.Id = id;
 		this.Name = name;
@@ -43,7 +44,7 @@ public class BudgetCreatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Budget owner user Id.
 	/// </summary>
-	public Guid UserId { get; private set; }
+	public UserId UserId { get; private set; }
 
 	/// <summary>
 	/// Budget limit.

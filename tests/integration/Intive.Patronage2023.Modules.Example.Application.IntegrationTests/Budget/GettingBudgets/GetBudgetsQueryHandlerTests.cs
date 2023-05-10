@@ -1,16 +1,14 @@
 using FluentAssertions;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Moq;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.Budget.GettingBudgets;
@@ -45,7 +43,7 @@ public class GetBudgetsQueryHandlerTests : AbstractIntegrationTests
 	public async Task Handle_WhenCalledFirstPage_ShouldReturnPagedList()
 	{
 		// Arrange
-		var userId = Guid.NewGuid();
+		var userId = new UserId(Guid.NewGuid());
 		var budgetId = new BudgetId(Guid.NewGuid());
 		var command = BudgetAggregate.Create(
 			budgetId,
@@ -56,10 +54,10 @@ public class GetBudgetsQueryHandlerTests : AbstractIntegrationTests
 			"icon",
 			"description");
 
-		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), new UserId(userId), budgetId, UserRole.BudgetOwner);
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
 
 		this.dbContext.UserBudget.Add(userBudget);
-		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(command);
 		await this.dbContext.SaveChangesAsync();

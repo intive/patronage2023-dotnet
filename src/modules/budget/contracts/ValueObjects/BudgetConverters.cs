@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -24,9 +25,9 @@ public static class BudgetConverters
 		guid => new BudgetId(guid));
 
 	/// <summary>
-	/// Converter which changes TransactionId to Guid.
+	/// Converter which changes UserId to Guid.
 	/// </summary>
-	/// <returns>Returns Converted TransactionId to guid.</returns>
+	/// <returns>Returns Converted UserId to guid.</returns>
 	public static ValueConverter UserIdConverter() => new ValueConverter<UserId, Guid>(
 		id => id.Value,
 		guid => new UserId(guid));

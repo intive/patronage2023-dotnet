@@ -12,6 +12,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
 using Microsoft.AspNetCore.Authorization;
 
@@ -40,6 +41,7 @@ public static class BudgetModule
 		services.AddScoped<IValidator<GetBudgetDetails>, GetBudgetDetailsValidator>();
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
+		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
 
 		return services;
 	}
