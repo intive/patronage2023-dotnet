@@ -1,13 +1,10 @@
 using ArchUnitNET.Domain.Extensions;
 using ArchUnitNET.Fluent;
-using ArchUnitNET.Loader;
-using ArchUnitNET.xUnit;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
-using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Events;
-using Intive.Patronage2023.Shared.Infrastructure.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Events;
 
@@ -20,13 +17,6 @@ namespace Intive.Patronage2023.Architecture.Tests;
 /// </summary>
 public class ComponentNamingTests
 {
-	private static readonly ArchUnitNET.Domain.Architecture Modules = new ArchLoader().LoadAssemblies(
-		typeof(ICommandBus).Assembly,
-		typeof(DomainEvent).Assembly,
-		typeof(CreateExample).Assembly,
-		typeof(CreateBudget).Assembly)
-		.Build();
-
 	/// <summary>
 	/// Test that check if all classes are in PascalCase.
 	/// </summary>
@@ -35,7 +25,7 @@ public class ComponentNamingTests
 	{
 		IArchRule classNameConventionRule = ArchRuleDefinition.Classes().Should().HaveName("^[A-Z][a-zA-Z0-9`]*$", true);
 
-		classNameConventionRule.Check(Modules);
+		classNameConventionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -44,7 +34,7 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllRepositoryImplementationShouldEndsWithRepositoryPostfixTest()
 	{
-		var baseInterface = Modules.GetInterfaceOfType(typeof(IRepository<,>));
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IRepository<,>));
 
 		IArchRule repositoryNameConvetnionRule = ArchRuleDefinition.Classes()
 			.That()
@@ -54,7 +44,7 @@ public class ComponentNamingTests
 			.Should()
 			.HaveNameEndingWith("Repository");
 
-		repositoryNameConvetnionRule.Check(Modules);
+		repositoryNameConvetnionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -63,7 +53,7 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllCommandHandlerImplementationShouldStartsWithHandlePrefixTest()
 	{
-		var baseInterface = Modules.GetInterfaceOfType(typeof(ICommandHandler<>));
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(ICommandHandler<>));
 
 		IArchRule commandHandlerNameConventionRule = ArchRuleDefinition.Classes()
 			.That()
@@ -71,9 +61,32 @@ public class ComponentNamingTests
 			.And()
 			.AreNotAbstract()
 			.Should()
-			.HaveNameStartingWith("Handle");
+			.HaveNameStartingWith("Handle")
+			.OrShould()
+			.HaveNameEndingWith("CommandHandler");
 
-		commandHandlerNameConventionRule.Check(Modules);
+		commandHandlerNameConventionRule.CheckSolution();
+	}
+
+	/// <summary>
+	/// Checks if repository has handle prefix.
+	/// </summary>
+	[Fact]
+	public void AllQueryHandlerImplementationShouldStartsWithHandlePrefixTest()
+	{
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IQueryHandler<,>));
+
+		IArchRule queryHandlerNameConventionRule = ArchRuleDefinition.Classes()
+			.That()
+			.ImplementInterface(baseInterface)
+			.And()
+			.AreNotAbstract()
+			.Should()
+			.HaveNameStartingWith("Handle")
+			.OrShould()
+			.HaveNameEndingWith("QueryHandler");
+
+		queryHandlerNameConventionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -82,11 +95,11 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllEventImplementationShouldEndsWithEventPostfixTest()
 	{
-		var baseInterface = Modules.GetInterfaceOfType(typeof(IEvent));
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IEvent));
 
 		IArchRule eventNameConvetnionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("Event");
 
-		eventNameConvetnionRule.Check(Modules);
+		eventNameConvetnionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -95,11 +108,11 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllDomainEventImplementationShouldEndsWithDomainEventPostfixTest()
 	{
-		var baseClass = Modules.GetClassOfType(typeof(DomainEvent));
+		var baseClass = Architecture.All.GetClassOfType(typeof(DomainEvent));
 
 		IArchRule domainEventNameConvetnionRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("DomainEvent");
 
-		domainEventNameConvetnionRule.Check(Modules);
+		domainEventNameConvetnionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -108,11 +121,11 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllBussinessRuleImplementationShouldEndsWithBussinessRulePostfixTest()
 	{
-		var baseInterface = Modules.GetInterfaceOfType(typeof(IBusinessRule));
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IBusinessRule));
 
 		IArchRule bussinessRuleNameConventionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("BusinessRule");
 
-		bussinessRuleNameConventionRule.Check(Modules);
+		bussinessRuleNameConventionRule.CheckSolution();
 	}
 
 	/// <summary>
@@ -121,10 +134,10 @@ public class ComponentNamingTests
 	[Fact]
 	public void AllAggregateImplementationShouldEndsWithAggregatePostfixTest()
 	{
-		var baseClass = Modules.GetClassOfType(typeof(Aggregate));
+		var baseClass = Architecture.All.GetClassOfType(typeof(Aggregate));
 
 		IArchRule aggregateNameConventionRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("Aggregate");
 
-		aggregateNameConventionRule.Check(Modules);
+		aggregateNameConventionRule.CheckSolution();
 	}
 }

@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Domain.Rules;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -13,14 +14,8 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 {
 	// For Entity
-	private BudgetAggregate(BudgetId id, string name, Guid userId, string icon, string? description, DateTime createdOn)
+	private BudgetAggregate()
 	{
-		this.Id = id;
-		this.Name = name;
-		this.UserId = userId;
-		this.Icon = icon;
-		this.Description = description;
-		this.CreatedOn = createdOn;
 	}
 
 	private BudgetAggregate(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
@@ -75,6 +70,11 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
+	/// Status of budget.
+	/// </summary>
+	public Status Status { get; private set; } = default;
+
+	/// <summary>
 	/// Create Budget.
 	/// </summary>
 	/// <param name="id">Unique identifier.</param>
@@ -82,12 +82,12 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// <param name="userId">Budget owner user id.</param>
 	/// <param name="limit">Budget Limit.</param>
 	/// <param name="period">Budget Duration.</param>
-	/// <param name="icon">Budget Icon.</param>
 	/// <param name="description">Budget Description.</param>
+	/// <param name="icon">Budget Icon.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string icon, string description)
+	public static BudgetAggregate Create(BudgetId id, string name, Guid userId, Money limit, Period period, string description, string icon)
 	{
-		return new BudgetAggregate(id, name, userId, limit, period, icon, description);
+		return new BudgetAggregate(id, name, userId, limit, period, description, icon);
 	}
 
 	/// <summary>
@@ -103,9 +103,41 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Update Flag.
+	/// </summary>
+	public void SoftRemove()
+	{
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
+
+		var evt = new BudgetSoftDeletedDomainEvent(this.Id, Status.Deleted);
+
+		this.Apply(evt, this.Handle);
+	}
+
+	/// <summary>
+	/// Edit budget.
+	/// </summary>
+	/// <param name="id">Budget id.</param>
+	/// <param name="name">Budget name.</param>
+	/// <param name="limit">Budget Limit.</param>
+	/// <param name="period">Budget Duration.</param>
+	/// <param name="description">Budget Describtion.</param>
+	/// <param name="icon">Budget Icon.</param>
+	public void EditBudget(BudgetId id, string name, Money limit, Period period, string description, string icon)
+	{
+		var budgetEdited = new BudgetEditedDomainEvent(id, name, limit, period, description, icon);
+		this.Apply(budgetEdited, this.Handle);
+	}
+
 	private void Handle(BudgetNameUpdatedDomainEvent @event)
 	{
 		this.Name = @event.NewName;
+	}
+
+	private void Handle(BudgetSoftDeletedDomainEvent @event)
+	{
+		this.Status = @event.Status;
 	}
 
 	private void Handle(BudgetCreatedDomainEvent @event)
@@ -115,8 +147,19 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 		this.UserId = @event.UserId;
 		this.Limit = @event.Limit;
 		this.Period = @event.Period;
-		this.Icon = @event.Icon;
 		this.Description = @event.Description;
+		this.Icon = @event.Icon;
+		this.CreatedOn = @event.Timestamp;
+	}
+
+	private void Handle(BudgetEditedDomainEvent @event)
+	{
+		this.Id = @event.Id;
+		this.Name = @event.Name;
+		this.Limit = @event.Limit;
+		this.Period = @event.Period;
+		this.Description = @event.Description;
+		this.Icon = @event.Icon;
 		this.CreatedOn = @event.Timestamp;
 	}
 }

@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain.Rules;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
@@ -11,6 +12,10 @@ namespace Intive.Patronage2023.Modules.Budget.Domain;
 /// </summary>
 public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 {
+	private BudgetTransactionAggregate()
+	{
+	}
+
 	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
 		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
@@ -43,7 +48,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home spendings," "Subscriptions," "Car," "Grocery".
+	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 
@@ -56,6 +61,11 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// Budget Transaction creation date.
 	/// </summary>
 	public DateTime CreatedOn { get; private set; }
+
+	/// <summary>
+	/// Status of budget.
+	/// </summary>
+	public Status Status { get; private set; } = default;
 
 	/// <summary>
 	/// Create Budget Transaction.
@@ -71,6 +81,23 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
 		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+	}
+
+	/// <summary>
+	/// This method updates the "soft delete" flag for budget transactions.
+	/// </summary>
+	public void SoftRemove()
+	{
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
+
+		var evt = new BudgetTransactionSoftDeletedDomainEvent(this.Id, Status.Deleted);
+
+		this.Apply(evt, this.Handle);
+	}
+
+	private void Handle(BudgetTransactionSoftDeletedDomainEvent @event)
+	{
+		this.Status = @event.Status;
 	}
 
 	private void Handle(BudgetTransactionCreatedDomainEvent @event)

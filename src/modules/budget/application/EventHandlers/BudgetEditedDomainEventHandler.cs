@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
 
 /// <summary>
-/// Budget name updated domain event handler.
+/// Budget edited domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetNameUpdatedDomainEventHandler : IDomainEventHandler<BudgetNameUpdatedDomainEvent>
+public class BudgetEditedDomainEventHandler : IDomainEventHandler<BudgetEditedDomainEvent>
 {
 	/// <summary>
 	/// Handle the notification.
@@ -18,11 +18,11 @@ public class BudgetNameUpdatedDomainEventHandler : IDomainEventHandler<BudgetNam
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetNameUpdatedDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetEditedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		// TODO: Add logging using ILogger
+		// TODO: Use logger
 		return Task.CompletedTask;
 	}
 }
