@@ -1,10 +1,13 @@
 using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
-using Intive.Patronage2023.Api.User;
 using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
+using Intive.Patronage2023.Modules.User.Api;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
@@ -38,15 +41,13 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
-
 builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.AddHttpClient();
-builder.Services.AddUserModule(builder.Configuration);
+builder.Services.AddUserModule();
 
-builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<KeycloakService>();
+builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -68,6 +69,7 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDo
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
@@ -87,7 +89,7 @@ app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.UseExampleModule();

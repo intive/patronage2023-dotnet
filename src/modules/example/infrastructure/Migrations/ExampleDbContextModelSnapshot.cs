@@ -22,7 +22,28 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Example.Domain.DomainEventStore", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Example.Domain.ExampleAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedOn");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Example", "Examples");
+                });
+
+            modelBuilder.Entity("Intive.Patronage2023.Shared.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,28 +65,6 @@ namespace Intive.Patronage2023.Modules.Example.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DomainEventStore", "Examples");
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Example.Domain.ExampleAggregate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedOn");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasColumnName("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Example", "Examples");
                 });
 #pragma warning restore 612, 618
         }

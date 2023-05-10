@@ -16,9 +16,9 @@ public static class BudgetAggregateBudgetDetailsInfoMapper
 	public static BudgetDetailsInfo Map(BudgetAggregate entity) =>
 		new()
 		{
-			Id = entity.Id,
+			Id = entity.Id.Value,
 			Name = entity.Name,
-			UserId = entity.UserId,
+			UserId = entity.UserId.Value,
 			Limit = entity.Limit.Value,
 			Currency = entity.Limit.Currency.ToString(),
 			StartDate = entity.Period.StartDate,

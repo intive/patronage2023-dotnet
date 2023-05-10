@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,8 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 			.HasConversion(BudgetConverters.BudgetIdConverter());
 		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
+		builder.Property(e => e.UserId)
+					.HasConversion(BudgetConverters.UserIdConverter());
 		builder.Property(x => x.UserId).HasColumnName("UserId");
 		builder.OwnsOne(x => x.Limit, limit =>
 		{
@@ -35,5 +38,8 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 			period.Property(p => p.EndDate).HasColumnName("EndDate");
 		});
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
+		builder.Property(x => x.Status).HasColumnName("Status").HasConversion<byte>().HasColumnType("tinyint").HasDefaultValue(Status.Active);
+
+		builder.HasQueryFilter(b => b.Status != Status.Deleted);
 	}
 }

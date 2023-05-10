@@ -1,4 +1,4 @@
-﻿using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Domain.Rules;
 
@@ -17,6 +17,9 @@ public class SuperImportantBudgetBusinessRule : IBusinessRule
 	{
 		this.name = name;
 	}
+
+	/// <inheritdoc/>
+	public string RuleName => nameof(SuperImportantBudgetBusinessRule) + "doesn't meet requirement";
 
 	/// <inheritdoc />
 	public bool IsBroken() => this.name.StartsWith("brokenRule");

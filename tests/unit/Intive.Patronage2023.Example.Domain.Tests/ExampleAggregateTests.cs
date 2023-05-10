@@ -44,7 +44,7 @@ public class ExampleAggregateTests
 		this.output.WriteLine($"{aggregate.Id} {aggregate.Name}");
 
 		aggregate.Should().NotBeNull();
-		aggregate.Id.Should().Be(id);
+		aggregate.Id.Value.Should().Be(id);
 		aggregate.Name.Should().Be(name);
 	}
 

@@ -25,8 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference
-			Include="..\..\..\src\modules\budget\application\Intive.Patronage2023.Modules.Budget.Application.csproj" />
+		<ProjectReference Include="..\..\..\src\modules\budget\application\Intive.Patronage2023.Modules.Budget.Application.csproj" />
 	</ItemGroup>
 
 </Project>

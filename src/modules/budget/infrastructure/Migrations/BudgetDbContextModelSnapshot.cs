@@ -45,6 +45,12 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasColumnName("Name");
 
+                    b.Property<byte>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint")
+                        .HasDefaultValue((byte)1)
+                        .HasColumnName("Status");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("UserId");
@@ -86,6 +92,12 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
+                    b.Property<byte>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint")
+                        .HasDefaultValue((byte)1)
+                        .HasColumnName("Status");
+
                     b.Property<string>("TransactionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -102,7 +114,31 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("BudgetTransaction", "Budgets");
                 });
 
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.DomainEventStore", b =>
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.UserBudgetAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("BudgetId");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
+
+                    b.Property<int>("UserRole")
+                        .HasColumnType("int")
+                        .HasColumnName("UserRole");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserBudget", "Budgets");
+                });
+
+            modelBuilder.Entity("Intive.Patronage2023.Shared.Domain.DomainEventStore", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
