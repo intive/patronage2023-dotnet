@@ -1,10 +1,12 @@
 using System.Net.Http.Headers;
 
 using Intive.Patronage2023.Modules.User.Api.Configuration;
+using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
-
+using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Intive.Patronage2023.Modules.User.Api;
 
@@ -34,13 +36,7 @@ public class KeycloakService : IKeycloakService
 		}
 	}
 
-	/// <summary>
-	/// SignInGetToken method.
-	/// </summary>
-	/// <param name="email">User email.</param>
-	/// <param name="password">User password.</param>
-	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>HttpResponseMessage object.</returns>
+	/// <inheritdoc/>
 	public async Task<HttpResponseMessage> SignInGetToken(string email, string password, CancellationToken cancellationToken)
 	{
 		string resource = this.apiKeycloakSettings.Resource;
@@ -61,11 +57,7 @@ public class KeycloakService : IKeycloakService
 		return await this.httpClient.PostAsync(url, content, cancellationToken);
 	}
 
-	/// <summary>
-	/// Get client token method.
-	/// </summary>
-	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>HttpResponseMessage object.</returns>
+	/// <inheritdoc/>
 	public async Task<HttpResponseMessage> GetClientToken(CancellationToken cancellationToken)
 	{
 		string resource = this.apiKeycloakSettings.Resource;
@@ -84,13 +76,7 @@ public class KeycloakService : IKeycloakService
 		return await this.httpClient.PostAsync(url, content, cancellationToken);
 	}
 
-	/// <summary>
-	/// Add new user to keycloak.
-	/// </summary>
-	/// <param name="appUser">User to add.</param>
-	/// <param name="accessToken">Client token.</param>
-	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
+	/// <inheritdoc/>
 	public async Task<HttpResponseMessage> AddUser(AppUser appUser, string accessToken, CancellationToken cancellationToken)
 	{
 		string realm = this.apiKeycloakSettings.Realm;
@@ -102,13 +88,7 @@ public class KeycloakService : IKeycloakService
 		return await this.httpClient.PostAsJsonAsync(url, appUser, cancellationToken);
 	}
 
-	/// <summary>
-	/// Get users from keycloak.
-	/// </summary>
-	/// <param name="searchText">Search text(string contained in username, first or last name, or email.</param>
-	/// <param name="accessToken">Client token.</param>
-	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>List of users corresponding to query.</returns>
+	/// <inheritdoc/>
 	public async Task<HttpResponseMessage> GetUsers(string? searchText, string accessToken, CancellationToken cancellationToken)
 	{
 		string realm = this.apiKeycloakSettings.Realm;
@@ -123,5 +103,65 @@ public class KeycloakService : IKeycloakService
 		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
 		return await this.httpClient.GetAsync(url, cancellationToken);
+	}
+
+	/// <inheritdoc/>
+	public async Task<string> ExtractAccessTokenFromClientToken(CancellationToken cancellationToken)
+	{
+		var response = await this.GetClientToken(cancellationToken);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new AppException();
+		}
+
+		string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+		if (string.IsNullOrEmpty(responseContent))
+		{
+			throw new AppException();
+		}
+
+		Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
+
+		if (token == null || token?.AccessToken == null)
+		{
+			throw new AppException();
+		}
+
+		return token.AccessToken;
+	}
+
+	/// <inheritdoc/>
+	public async Task<HttpResponseMessage> GetUserById(string id, string accessToken, CancellationToken cancellationToken)
+	{
+		string realm = this.apiKeycloakSettings.Realm;
+
+		string url = $"/admin/realms/{realm}/users/{id}";
+
+		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+		return await this.httpClient.GetAsync(url, cancellationToken);
+	}
+
+	/// <inheritdoc/>
+	public async Task<bool> HasUserAdminRole(string id, string accessToken, CancellationToken cancellationToken)
+	{
+		string realm = this.apiKeycloakSettings.Realm;
+
+		string url = $"/admin/realms/{realm}/users/{id}/role-mappings/realm";
+
+		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+		var response = await this.httpClient.GetAsync(url, cancellationToken);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new AppException($"User with id {id} not found.");
+		}
+
+		var responseContent = await response.Content.ReadFromJsonAsync<RealmRole[]>();
+
+		return responseContent?.Any(x => x.Name == "admin") ?? false;
 	}
 }

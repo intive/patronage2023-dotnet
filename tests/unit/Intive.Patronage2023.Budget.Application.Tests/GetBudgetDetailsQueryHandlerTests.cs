@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Xunit;
 using Currency = Intive.Patronage2023.Shared.Infrastructure.Domain.Currency;
@@ -16,6 +17,17 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetDetailsQueryHandlerTests
 {
+	private readonly IKeycloakService keycloakService;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandlerTests"/> class.
+	/// </summary>
+	/// <param name="keycloakService"></param>
+	public GetBudgetDetailsQueryHandlerTests(IKeycloakService keycloakService)
+	{
+		this.keycloakService = keycloakService;
+	}
+
 	/// <summary>
 	/// Test that check if the query returns expected values from database.
 	/// </summary>
@@ -40,7 +52,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakService); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);
@@ -59,7 +71,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakService); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);

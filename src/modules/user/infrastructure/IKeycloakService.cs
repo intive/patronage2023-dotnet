@@ -24,6 +24,13 @@ public interface IKeycloakService
 	Task<HttpResponseMessage> GetClientToken(CancellationToken cancellationToken);
 
 	/// <summary>
+	/// Extract access token.
+	/// </summary>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>Access token.</returns>
+	Task<string> ExtractAccessTokenFromClientToken(CancellationToken cancellationToken);
+
+	/// <summary>
 	/// Add new user to keycloak.
 	/// </summary>
 	/// <param name="appUser">User to add.</param>
@@ -40,4 +47,22 @@ public interface IKeycloakService
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>List of users corresponding to query.</returns>
 	Task<HttpResponseMessage> GetUsers(string searchText, string accessToken, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Get user from keycloak.
+	/// </summary>
+	/// <param name="id">User id.</param>
+	/// <param name="accessToken">Client token.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>User corresponding to query.</returns>
+	Task<HttpResponseMessage> GetUserById(string id, string accessToken, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Check is user has admin role.
+	/// </summary>
+	/// <param name="id">User id.</param>
+	/// <param name="accessToken">Client token.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>Is admin.</returns>
+	Task<bool> HasUserAdminRole(string id, string accessToken, CancellationToken cancellationToken);
 }

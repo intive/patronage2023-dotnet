@@ -1,0 +1,129 @@
+using System.Net;
+using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Application.Budget;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers;
+using Intive.Patronage2023.Modules.User.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+
+namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+
+/// <summary>
+/// Budget Users validator class.
+/// </summary>
+public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
+{
+	private readonly IKeycloakService keycloakService;
+	private readonly BudgetDbContext budgetDbContext;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AddUsersToBudgetValidator"/> class.
+	/// </summary>
+	/// <param name="keycloakService">Keycloak service to validate users ids.</param>
+	/// <param name="budgetDbContext">Budget repository to validate budget ids.</param>
+	public AddUsersToBudgetValidator(IKeycloakService keycloakService, BudgetDbContext budgetDbContext)
+	{
+		this.keycloakService = keycloakService;
+		this.budgetDbContext = budgetDbContext;
+
+		this.RuleFor(x => x.BudgetId).NotEmpty().NotNull().CustomAsync(async (id, validationContext, cancellationToken) =>
+		{
+			if (!(await this.IsBudgetExists(id, cancellationToken)))
+			{
+				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("BudgetId", $"Budget with id {id} does not exist."));
+			}
+		});
+
+		this.RuleFor(x => x.UsersIds).NotEmpty().NotNull().CustomAsync(async (usersIds, validationContext, cancellationToken) =>
+		{
+			var budgetGuid = validationContext.InstanceToValidate.BudgetId;
+
+			usersIds.GroupBy(x => x)
+			.Where(x => x.Count() > 1)
+			.Select(x => $"User id {x} duplicated.")
+			.ToList()
+			.ForEach(x => validationContext.AddFailure(x));
+
+			var budgetUsersRoles = await this.GetAllBudgetUsers(budgetGuid, cancellationToken);
+
+			foreach (Guid userId in usersIds)
+			{
+				var user = await this.IsUserExists(userId, cancellationToken);
+
+				if (user == null)
+				{
+					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist."));
+					break;
+				}
+
+				bool isAdmin = await this.IsAdmin(userId, cancellationToken);
+
+				if (isAdmin)
+				{
+					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} can not be added."));
+					break;
+				}
+
+				if (budgetUsersRoles.Contains(userId))
+				{
+					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} has already been added earlier."));
+				}
+			}
+		});
+	}
+
+	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
+	{
+		var budgetId = new BudgetId(budgetGuid);
+		var budget = await this.budgetDbContext.Budget
+			.SingleOrDefaultAsync(x => x.Id == budgetId, cancellationToken: cancellationToken);
+
+		return budget != null;
+	}
+
+	private async Task<UserInfo?> IsUserExists(Guid id, CancellationToken cancellationToken)
+	{
+		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
+
+		var response = await this.keycloakService.GetUserById(id.ToString(), accessToken, cancellationToken);
+
+		if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			return null;
+		}
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new AppException(response.ToString());
+		}
+
+		string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+		var deserializedUsers = JsonConvert.DeserializeObject<UserInfo>(responseContent);
+
+		return deserializedUsers;
+	}
+
+	private async Task<List<Guid>> GetAllBudgetUsers(Guid budgetGuid, CancellationToken cancellationToken)
+	{
+		var budgetId = new BudgetId(budgetGuid);
+
+		var budgetUsersIds = await this.budgetDbContext.UserBudget
+			.Where(x => x.BudgetId == budgetId)
+			.Select(x => x.UserId.Value)
+			.ToListAsync(cancellationToken: cancellationToken);
+
+		return budgetUsersIds;
+	}
+
+	private async Task<bool> IsAdmin(Guid id, CancellationToken cancellationToken)
+	{
+		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
+
+		bool isAdmin = await this.keycloakService.HasUserAdminRole(id.ToString(), accessToken, cancellationToken);
+
+		return isAdmin;
+	}
+}

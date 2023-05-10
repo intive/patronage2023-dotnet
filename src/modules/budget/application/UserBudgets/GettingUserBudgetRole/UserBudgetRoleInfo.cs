@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
+namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudgetRole;
 
 /// <summary>
 ///  The record is used to store information about a user's role in relation to a specific budget.
