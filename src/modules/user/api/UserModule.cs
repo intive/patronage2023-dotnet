@@ -1,5 +1,7 @@
-using Intive.Patronage2023.Shared.Abstractions;
-using Intive.Patronage2023.Shared.Infrastructure;
+using FluentValidation;
+using Intive.Patronage2023.Modules.User.Application.CreatingUser;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers;
+using Intive.Patronage2023.Modules.User.Application.SignIn;
 
 namespace Intive.Patronage2023.Modules.User.Api;
 
@@ -12,11 +14,12 @@ public static class UserModule
 	/// Add module services.
 	/// </summary>
 	/// <param name="services">IServiceCollection.</param>
-	/// <param name="configurationManager">ConfigurationManager.</param>
 	/// <returns>Updated IServiceCollection.</returns>
-	public static IServiceCollection AddUserModule(this IServiceCollection services, ConfigurationManager configurationManager)
+	public static IServiceCollection AddUserModule(this IServiceCollection services)
 	{
-		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
+		services.AddScoped<IValidator<SignInUser>, SignInUserValidator>();
+		services.AddScoped<IValidator<CreateUser>, CreateUserValidator>();
+		services.AddScoped<IValidator<GetUsers>, GetUsersValidator>();
 		return services;
 	}
 

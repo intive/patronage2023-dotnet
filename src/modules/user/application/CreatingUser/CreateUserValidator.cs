@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Intive.Patronage2023.Api.User.CreatingUser;
+namespace Intive.Patronage2023.Modules.User.Application.CreatingUser;
 
 /// <summary>
 /// User validator class.
