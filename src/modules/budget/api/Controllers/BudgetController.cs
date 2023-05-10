@@ -35,7 +35,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
 	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
-	private readonly IValidator<CancellBudgetTransaction> cancellBudgetTransaction;
+	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransaction;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -50,7 +50,7 @@ public class BudgetController : ControllerBase
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
-	/// <param name="cancellBudgetTransaction">Cancell budget transaction validator.</param>
+	/// <param name="cancelBudgetTransaction">Cancell budget transaction validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -60,7 +60,7 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
 		IValidator<RemoveBudget> removeBudgetValidator,
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
-		IValidator<CancellBudgetTransaction> cancellBudgetTransaction,
+		IValidator<CancelBudgetTransaction> cancelBudgetTransaction,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IValidator<EditBudget> editBudgetValidator)
 	{
@@ -74,7 +74,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
 		this.removeBudgetValidator = removeBudgetValidator;
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
-		this.cancellBudgetTransaction = cancellBudgetTransaction;
+		this.cancelBudgetTransaction = cancelBudgetTransaction;
 	}
 
 	/// <summary>
@@ -306,7 +306,7 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Cancell transaction by Id.
+	/// Cancel transaction by Id.
 	/// </summary>
 	/// <param name="transactionId">The Id of the transaction to cancell.</param>
 	/// <returns>
@@ -316,11 +316,11 @@ public class BudgetController : ControllerBase
 	/// <response code="200">Returns Id of removed budget.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpDelete("{transactionId:guid}/transaction")]
-	public async Task<IActionResult> CancellTransaction([FromRoute] Guid transactionId)
+	public async Task<IActionResult> CancelTransaction([FromRoute] Guid transactionId)
 	{
-		var cancellBudgetTransaction = new CancellBudgetTransaction(transactionId);
+		var cancellBudgetTransaction = new CancelBudgetTransaction(transactionId);
 
-		var validationResult = await this.cancellBudgetTransaction.ValidateAsync(cancellBudgetTransaction);
+		var validationResult = await this.cancelBudgetTransaction.ValidateAsync(cancellBudgetTransaction);
 		if (validationResult.IsValid)
 		{
 			await this.commandBus.Send(cancellBudgetTransaction);

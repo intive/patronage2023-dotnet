@@ -98,9 +98,10 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <summary>
 	/// This method updates the flag  to Cancelled for budget transactions.
 	/// </summary>
-	public void CancellTransaction()
+	public void CancelTransaction()
 	{
 		this.CheckRule(new StatusCancelledCannotBeSetTwiceBusinessRule(this.Status));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(this.Status));
 
 		var evt = new BudgetTransactionCancelledDomainEvent(this.Id, Status.Cancelled);
 
