@@ -94,7 +94,6 @@ public class GetUsersQueryHandlerTests
 	/// <summary>
 	/// Test that checks if the pagination, if specified, is applied for returned values.
 	/// </summary>
-
 	[Fact]
 	public async Task Handle_WhenPaginationSpecified_ShouldApplyPaginationForUsersList()
 	{
