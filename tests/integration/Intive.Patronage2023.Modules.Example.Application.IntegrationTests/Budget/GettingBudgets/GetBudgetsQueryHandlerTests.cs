@@ -3,6 +3,7 @@ using FluentAssertions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
@@ -38,7 +39,7 @@ public class GetBudgetsQueryHandlerTests : AbstractIntegrationTests
 		var command = BudgetAggregate.Create(
 			new(Guid.NewGuid()),
 			"example name",
-			Guid.NewGuid(),
+			new UserId(Guid.NewGuid()),
 			new Money(1, (Currency)1),
 			new Period(DateTime.Now, DateTime.Now.AddDays(1)),
 			"icon",

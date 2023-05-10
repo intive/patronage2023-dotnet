@@ -24,6 +24,8 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 			.HasConversion(BudgetConverters.BudgetIdConverter());
 		builder.Property(x => x.Id).HasColumnName("Id");
 		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(256);
+		builder.Property(e => e.UserId)
+					.HasConversion(BudgetConverters.UserIdConverter());
 		builder.Property(x => x.UserId).HasColumnName("UserId");
 		builder.OwnsOne(x => x.Limit, limit =>
 		{
