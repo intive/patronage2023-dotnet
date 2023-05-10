@@ -327,7 +327,7 @@ public class BudgetController : ControllerBase
 			return this.Ok(cancelBudgetTransaction.Id);
 		}
 
-		throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
+		throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
 	}
 
 	/// <summary>
