@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -59,7 +60,8 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 				.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate <= query.StartDate)
 				.Sum(x => x.Value);
 		var budgetValues = await budgets
-			.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate > query.StartDate && x.BudgetTransactionDate <= query.EndDate)
+			.For(budgetId)
+			.Within(query.StartDate, query.EndDate)
 			.Select(BudgetStatisticsInfoMapper.Map)
 				.GroupBy(x => x.DatePoint.Date)
 				.Select(x => new BudgetAmount
