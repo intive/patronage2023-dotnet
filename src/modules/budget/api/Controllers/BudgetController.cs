@@ -14,7 +14,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -50,7 +50,7 @@ public class BudgetController : ControllerBase
 	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
-	/// <param name="cancelBudgetTransaction">Cancell budget transaction validator.</param>
+	/// <param name="cancelBudgetTransaction">Cancel budget transaction validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -308,7 +308,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Cancel transaction by Id.
 	/// </summary>
-	/// <param name="transactionId">The Id of the transaction to cancell.</param>
+	/// <param name="transactionId">The Id of the transaction to cancel.</param>
 	/// <returns>
 	/// Returns an HTTP 200 OK status code with the ID of the cancelled transaction if successful.
 	/// Throws an AppException if there are validation errors.
@@ -318,13 +318,13 @@ public class BudgetController : ControllerBase
 	[HttpDelete("{transactionId:guid}/transaction")]
 	public async Task<IActionResult> CancelTransaction([FromRoute] Guid transactionId)
 	{
-		var cancellBudgetTransaction = new CancelBudgetTransaction(transactionId);
+		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId);
 
-		var validationResult = await this.cancelBudgetTransaction.ValidateAsync(cancellBudgetTransaction);
+		var validationResult = await this.cancelBudgetTransaction.ValidateAsync(cancelBudgetTransaction);
 		if (validationResult.IsValid)
 		{
-			await this.commandBus.Send(cancellBudgetTransaction);
-			return this.Ok(cancellBudgetTransaction.Id);
+			await this.commandBus.Send(cancelBudgetTransaction);
+			return this.Ok(cancelBudgetTransaction.Id);
 		}
 
 		throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);

@@ -4,28 +4,28 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
 /// <summary>
-/// Cancell Budget Transaction Command.
+/// Cancel Budget Transaction Command.
 /// </summary>
 /// <param name="Id">Budget identifier.</param>
 public record CancelBudgetTransaction(Guid Id) : ICommand;
 
 /// <summary>
-/// Cancell Budget Transaction Command Handler.
+/// Cancel Budget Transaction Command Handler.
 /// </summary>
-public class HandleCancellBudgetTransaction : ICommandHandler<CancelBudgetTransaction>
+public class HandleCancelBudgetTransaction : ICommandHandler<CancelBudgetTransaction>
 {
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleCancellBudgetTransaction"/> class.
+	/// Initializes a new instance of the <see cref="HandleCancelBudgetTransaction"/> class.
 	/// </summary>
 	/// <param name="budgetTransactionRepository">Repository that manages Budget Transaction aggregate root.</param>
 	/// <param name="budgetDbContext">Repository that manages Budget aggregate root.</param>
-	public HandleCancellBudgetTransaction(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public HandleCancelBudgetTransaction(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;

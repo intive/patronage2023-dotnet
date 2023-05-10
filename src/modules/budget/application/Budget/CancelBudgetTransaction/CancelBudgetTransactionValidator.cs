@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancellBudgetTransaction;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
 /// <summary>
 /// Cancel Budget validator class.
