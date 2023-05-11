@@ -88,11 +88,29 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// </summary>
 	public void SoftRemove()
 	{
-		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(Status.Deleted));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(this.Status));
 
 		var evt = new BudgetTransactionSoftDeletedDomainEvent(this.Id, Status.Deleted);
 
 		this.Apply(evt, this.Handle);
+	}
+
+	/// <summary>
+	/// This method updates the flag  to Cancelled for budget transactions.
+	/// </summary>
+	public void CancelTransaction()
+	{
+		this.CheckRule(new StatusCancelledCannotBeSetTwiceBusinessRule(this.Status));
+		this.CheckRule(new StatusDeletedCannotBeSetTwiceBusinessRule(this.Status));
+
+		var evt = new BudgetTransactionCancelledDomainEvent(this.Id, Status.Cancelled);
+
+		this.Apply(evt, this.Handle);
+	}
+
+	private void Handle(BudgetTransactionCancelledDomainEvent @event)
+	{
+		this.Status = @event.Status;
 	}
 
 	private void Handle(BudgetTransactionSoftDeletedDomainEvent @event)

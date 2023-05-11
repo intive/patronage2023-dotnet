@@ -18,6 +18,9 @@ public class SuperImportantUserBusinessRule : IBusinessRule
 		this.name = name;
 	}
 
+	/// <inheritdoc/>
+	public string RuleName => "Is broken " + nameof(SuperImportantUserBusinessRule);
+
 	/// <inheritdoc />
 	public bool IsBroken() => this.name.StartsWith("brokenRule");
 }
