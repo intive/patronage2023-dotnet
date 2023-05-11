@@ -415,7 +415,7 @@ public class BudgetController : ControllerBase
 	/// <param name="startDate">Start Date in which we want to get statistics.</param>
 	/// <param name="endDate">End date in which we want to get statistics.</param>
 	/// <remarks>
-	/// Sample Date Points:
+	/// Sample Id and Date Points:
 	///
 	///         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 	///         "startDate": "2023-04-20T19:14:20.152Z",
