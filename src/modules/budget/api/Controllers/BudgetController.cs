@@ -372,10 +372,13 @@ public class BudgetController : ControllerBase
 	/// <returns>Budget details, list of incomes and Expenses.</returns>
 	/// <remarks>
 	/// Sample request:
+	/// Types: "Income", "Expense"
+	/// Set transactionType to null or don't include at all to get both types.
 	///
 	///     {
-	///         "pageSize": 1,
-	///         "pageIndex": 1
+	///         "pageSize": 10,
+	///         "pageIndex": 1,
+	///         "transactionType": null
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -384,13 +387,14 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsPaginationInfo request)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsQueryInfo request)
 	{
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			BudgetId = new BudgetId(budgetId),
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
+			TransactionType = request.TransactionType,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
