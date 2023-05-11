@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -29,5 +30,15 @@ internal static class BudgetTransactionsQueryExtension
 	public static IQueryable<BudgetTransactionAggregate> Within(this IQueryable<BudgetTransactionAggregate> query, DateTime startDate, DateTime endDate)
 	{
 		return query.Where(x => x.BudgetTransactionDate > startDate && x.BudgetTransactionDate <= endDate);
+	}
+
+	/// <summary>
+	/// Extension method which filters transactions with status set to cancelled.
+	/// </summary>
+	/// <param name="query">Query to filter.</param>
+	/// <returns>Transactions which have different status than Cancelled.</returns>
+	public static IQueryable<BudgetTransactionAggregate> FilterCancelledTransactions(this IQueryable<BudgetTransactionAggregate> query)
+	{
+		return query.Where(x => x.Status != Status.Cancelled);
 	}
 }

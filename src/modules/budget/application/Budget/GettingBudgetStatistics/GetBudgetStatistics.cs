@@ -58,11 +58,13 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 
 		decimal budgetValueAtStartDate = budgets
 				.For(budgetId)
+				.FilterCancelledTransactions()
 				.Where(x => x.BudgetTransactionDate <= query.StartDate)
 				.Sum(x => x.Value);
 
 		var budgetValues = await budgets
 			.For(budgetId)
+			.FilterCancelledTransactions()
 			.Within(query.StartDate, query.EndDate)
 			.Select(BudgetStatisticsInfoMapper.Map)
 				.GroupBy(x => x.DatePoint.Date)
@@ -84,7 +86,7 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			BudgetAmount prevBudget = budgetValues[i - 1];
 			var updatedBudget = new BudgetAmount()
 			{
-				DatePoint = prevBudget.DatePoint,
+				DatePoint = budgetValues[i].DatePoint,
 				Value = prevBudget.Value + budgetValues[i].Value,
 			};
 			budgetValues[i] = updatedBudget;
@@ -92,19 +94,22 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
 			.For(budgetId)
+			.FilterCancelledTransactions()
 			.Sum(x => x.Value);
 
 		decimal periodValue = this.budgetDbContext.Transaction
 			.For(budgetId)
+			.FilterCancelledTransactions()
 			.Where(x => x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
 			.Sum(x => x.Value);
 
 		decimal startOfPeriodBudgetValue = this.budgetDbContext.Transaction
 			.For(budgetId)
+			.FilterCancelledTransactions()
 			.Where(x => x.BudgetTransactionDate <= query.StartDate)
 			.Sum(x => x.Value);
 
-		decimal trendValue = startOfPeriodBudgetValue > 0 ? (periodValue - startOfPeriodBudgetValue) / startOfPeriodBudgetValue * 100 : 0;
+		decimal trendValue = budgetValues[0].Value > 0 ? (budgetValues.Last().Value - budgetValueAtStartDate) / budgetValueAtStartDate * 100 : 0;
 
 		var result = new BudgetStatistics<BudgetAmount> { Items = budgetValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
