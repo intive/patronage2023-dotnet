@@ -90,7 +90,7 @@ public class BudgetAggregateTests
 		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, description);
 
 		// Act
-		budgetAggregate.EditBudget(id, newName, limit, period, description, icon);
+		budgetAggregate.EditBudget(id, newName, period, description, icon);
 
 		// Assert
 		budgetAggregate.Should().NotBeNull()
