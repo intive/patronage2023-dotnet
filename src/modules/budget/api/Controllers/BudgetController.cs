@@ -267,6 +267,8 @@ public class BudgetController : ControllerBase
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
 	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpDelete("{budgetId:guid}")]
 	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
 	{
@@ -342,6 +344,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Cancel transaction by Id.
 	/// </summary>
+	/// <param name="budgetId">Id of the budget for which the given transaction will be canceled.</param>
 	/// <param name="transactionId">The Id of the transaction to cancel.</param>
 	/// <returns>
 	/// Returns an HTTP 200 OK status code with the ID of the cancelled transaction if successful.
@@ -349,19 +352,26 @@ public class BudgetController : ControllerBase
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpDelete("{transactionId:guid}/transaction")]
-	public async Task<IActionResult> CancelTransaction([FromRoute] Guid transactionId)
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[HttpPut("{budgetId:guid}/transactions/{transactionId:guid}/cancel")]
+	public async Task<IActionResult> CancelBudgetTransaction([FromRoute] Guid budgetId, [FromRoute] Guid transactionId)
 	{
-		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId);
+		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId, budgetId);
 
 		var validationResult = await this.cancelBudgetTransactionValidator.ValidateAsync(cancelBudgetTransaction);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			await this.commandBus.Send(cancelBudgetTransaction);
-			return this.Ok(cancelBudgetTransaction.Id);
+			throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		await this.commandBus.Send(cancelBudgetTransaction);
+		return this.Ok(cancelBudgetTransaction.TransactionId);
 	}
 
 	/// <summary>
@@ -384,7 +394,7 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsPaginationInfo request)
+	public async Task<IActionResult> GetTransactionsByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsPaginationInfo request)
 	{
 		var getBudgetTransactions = new GetBudgetTransactions
 		{

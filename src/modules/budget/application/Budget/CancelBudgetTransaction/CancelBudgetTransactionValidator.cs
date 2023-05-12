@@ -1,7 +1,7 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 
@@ -10,26 +10,31 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTra
 /// </summary>
 public class CancelBudgetTransactionValidator : AbstractValidator<CancelBudgetTransaction>
 {
-	private readonly BudgetDbContext budgetDbContext;
+	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CancelBudgetTransactionValidator"/> class.
 	/// </summary>
-	/// <param name="budgetDbContext">BudgetDbContext.</param>
-	public CancelBudgetTransactionValidator(BudgetDbContext budgetDbContext)
+	/// <param name="budgetTransactionRepository">Budget Transaction Repository.</param>
+	public CancelBudgetTransactionValidator(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository)
 	{
-		this.budgetDbContext = budgetDbContext;
+		this.budgetTransactionRepository = budgetTransactionRepository;
 
-		this.RuleFor(transaction => transaction.Id)
+		this.RuleFor(transaction => transaction.BudgetId)
 			.NotEmpty()
 			.NotNull();
 
-		this.RuleFor(transaction => transaction.Id)
-			.MustAsync(async (x, cancellation) => await this.IsTransactionExists(x));
+		this.RuleFor(transaction => transaction.TransactionId)
+			.NotEmpty()
+			.NotNull();
+
+		this.RuleFor(transaction => transaction)
+			.MustAsync(async (x, cancellation) => await this.IsTransactionBelongingToBudget(x.BudgetId, x.TransactionId));
 	}
 
-	private async Task<bool> IsTransactionExists(Guid id)
+	private async Task<bool> IsTransactionBelongingToBudget(Guid budgetId, Guid transactionId)
 	{
-		return await this.budgetDbContext.Transaction.AnyAsync(b => b.Id.Equals(new TransactionId(id)));
+		var transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
+		return budgetId == transaction!.BudgetId.Value;
 	}
 }
