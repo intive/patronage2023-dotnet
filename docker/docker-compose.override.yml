@@ -9,7 +9,7 @@ services:
       - "1433:1433"
     restart: always
   mssqlscripts:
-    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Keycloak"; do sleep 5; done'    
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Keycloak"; do sleep 5; done'
   intive.patronage2023.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -20,16 +20,16 @@ services:
       - "5080:80"
       - "5081:443"
     volumes:
-      - ${HOME}/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
-      - ${HOME}/.aspnet/https:/root/.aspnet/https:ro
-      - ${HOME}/.aspnet/https:/https/
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${USERPROFILE}/.aspnet/https:/https/
   keycloak:
     command:
-     - "-Dkeycloak.migration.action=import"
-     - "-Dkeycloak.migration.provider=singleFile"
-     - "-Dkeycloak.migration.file=/root/data/import/realm-config.json"
-     - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
-     - start-dev
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=singleFile"
+      - "-Dkeycloak.migration.file=/root/data/import/realm-config.json"
+      - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
+      - start-dev
     environment:
       - KEYCLOAK_ADMIN=admin1
       - KEYCLOAK_ADMIN_PASSWORD=admin1
