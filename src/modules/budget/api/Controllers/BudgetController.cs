@@ -38,7 +38,7 @@ public class BudgetController : ControllerBase
 	private readonly IAuthorizationService authorizationService;
 	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly IValidator<EditBudgetWithId> editBudgetValidator;
+	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 
 	/// <summary>
@@ -68,7 +68,7 @@ public class BudgetController : ControllerBase
 		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
 		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IAuthorizationService authorizationService,
-		IValidator<EditBudgetWithId> editBudgetValidator,
+		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
@@ -238,9 +238,9 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPut("{id:Guid}/edit")]
-	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
+	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudgetDetails request)
 	{
-		var editedBudget = new EditBudgetWithId(new BudgetId(id), request.Name, request.Period, request.Description, request.IconName);
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Period, request.Description, request.IconName);
 
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
 		if (!validationResult.IsValid)

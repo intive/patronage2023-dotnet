@@ -7,7 +7,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 /// <summary>
 /// Budget editing validator class.
 /// </summary>
-public class EditBudgetValidator : AbstractValidator<EditBudgetWithId>
+public class EditBudgetValidator : AbstractValidator<EditBudget>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
