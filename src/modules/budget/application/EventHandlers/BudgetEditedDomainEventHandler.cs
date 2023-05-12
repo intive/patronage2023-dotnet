@@ -4,7 +4,7 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain.EventHandlers;
+namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 
 /// <summary>
 /// Budget edited domain event handler.

@@ -4,6 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Domain\EventHandlers\**" />
+	  <EmbeddedResource Remove="Domain\EventHandlers\**" />
+	  <None Remove="Domain\EventHandlers\**" />
+	</ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
@@ -27,7 +32,7 @@
 
     <ItemGroup>
       <Folder Include="Data\DataConfiguration\" />
-      <Folder Include="Domain\EventHandlers\" />
+      <Folder Include="Domain\" />
     </ItemGroup>
 
 </Project>
