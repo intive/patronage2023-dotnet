@@ -25,8 +25,4 @@
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.User.Domain.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.User.Infrastructure.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="EventHandlers\" />
-  </ItemGroup>
 </Project>
