@@ -24,8 +24,4 @@
       <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.User.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Data\DataConfiguration\" />
-    </ItemGroup>
-
 </Project>
