@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Shared.Infrastructure;
 /// </summary>
 public class ExecutionContextAccessor : IExecutionContextAccessor
 {
-	private IHttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor httpContextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ExecutionContextAccessor"/> class.
@@ -40,5 +40,27 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 
 		var userId = Guid.Parse(token.Claims.First(c => c.Type == "sub").Value);
 		return userId;
+	}
+
+	/// <summary>
+	/// Returns information that user is admin or not.
+	/// </summary>
+	/// <returns>Bool value.</returns>
+	public bool IsAdmin()
+	{
+		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+		if (jwtToken == null)
+		{
+			// User is not authenticated
+			return false;
+		}
+
+		var tokenHandler = new JwtSecurityTokenHandler();
+		var token = tokenHandler.ReadJwtToken(jwtToken);
+
+		string realmAccessValue = token.Claims.First(c => c.Type == "realm_access").Value;
+		bool isAdmin = realmAccessValue.Contains("admin");
+
+		return isAdmin;
 	}
 }

@@ -1,9 +1,14 @@
+using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
+using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
-using Intive.Patronage2023.Api.User;
+using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
-using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Modules.User.Api;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
@@ -36,15 +41,13 @@ builder.Services.AddHttpLogging(logging =>
 
 builder.Services.AddSharedModule();
 builder.Services.AddExampleModule(builder.Configuration);
-
 builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.AddHttpClient();
-builder.Services.AddUserModule(builder.Configuration);
+builder.Services.AddUserModule();
 
-builder.Services.AddBudgetModule(builder.Configuration);
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<KeycloakService>();
+builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -55,15 +58,18 @@ builder.Services.AddControllers(options =>
 	options.Filters.Add(new AuthorizeFilter(
 		new AuthorizationPolicyBuilder()
 			.RequireAuthenticatedUser()
-			.Build())));
+			.Build())))
+			.AddJsonOptions(options =>
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), typeof(IDomainEventHandler<>).Assembly);
-builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), typeof(IEventDispatcher<>).Assembly);
-builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), typeof(ICommandHandler<>).Assembly);
-builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), typeof(IQueryHandler<,>).Assembly);
+builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(ICommandHandler<>), AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
+builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {
@@ -83,7 +89,7 @@ app.UseCors(corsPolicyName);
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.UseExampleModule();

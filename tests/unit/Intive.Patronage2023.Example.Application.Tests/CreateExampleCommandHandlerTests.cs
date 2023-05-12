@@ -1,8 +1,9 @@
 using Bogus;
 
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
+using Intive.Patronage2023.Modules.Example.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Example.Domain;
-
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Moq;
 
 using Xunit;
@@ -14,7 +15,7 @@ namespace Intive.Patronage2023.Example.Application.Tests;
 /// </summary>
 public class CreateExampleCommandHandlerTests
 {
-	private readonly Mock<IExampleRepository> exampleRepositoryMock;
+	private readonly Mock<IRepository<ExampleAggregate, ExampleId>> exampleRepositoryMock;
 	private readonly HandleCreateExample handleCreateExample;
 
 	/// <summary>
@@ -22,7 +23,7 @@ public class CreateExampleCommandHandlerTests
 	/// </summary>
 	public CreateExampleCommandHandlerTests()
 	{
-		this.exampleRepositoryMock = new Mock<IExampleRepository>();
+		this.exampleRepositoryMock = new Mock<IRepository<ExampleAggregate, ExampleId>>();
 		this.handleCreateExample = new HandleCreateExample(this.exampleRepositoryMock.Object);
 	}
 
@@ -46,7 +47,7 @@ public class CreateExampleCommandHandlerTests
 		// Assert
 		this.exampleRepositoryMock.Verify(
 			r => r.Persist(It.Is<ExampleAggregate>(e =>
-				e.Id == id &&
+				e.Id.Value == id &&
 				e.Name == name)),
 			Times.Once);
 	}

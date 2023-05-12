@@ -1,5 +1,4 @@
-using Intive.Patronage2023.Modules.Example.Domain;
-
+using Intive.Patronage2023.Shared.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

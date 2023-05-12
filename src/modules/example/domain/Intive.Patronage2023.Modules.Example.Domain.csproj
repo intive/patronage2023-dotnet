@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
       <ProjectReference Include="..\contracts\Intive.Patronage2023.Modules.Example.Contracts.csproj" />
     </ItemGroup>
 

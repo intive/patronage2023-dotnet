@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
@@ -31,7 +32,7 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 	/// <summary>
 	/// List of criteria to sort budgets.
 	/// </summary>
-	public List<SortDescriptor>? SortDescriptors { get; set; }
+	public List<SortDescriptor> SortDescriptors { get; set; } = null!;
 }
 
 /// <summary>
@@ -39,14 +40,17 @@ public record GetBudgets() : IQuery<PagedList<BudgetInfo>>, IPageableQuery, ITex
 /// </summary>
 public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<BudgetInfo>>
 {
+	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetsQueryHandler"/> class.
 	/// </summary>
+	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetBudgetsQueryHandler(BudgetDbContext budgetDbContext)
+	public GetBudgetsQueryHandler(IExecutionContextAccessor contextAccessor, BudgetDbContext budgetDbContext)
 	{
+		this.contextAccessor = contextAccessor;
 		this.budgetDbContext = budgetDbContext;
 	}
 
@@ -58,7 +62,15 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetInfo>> Handle(GetBudgets query, CancellationToken cancellationToken)
 	{
+		bool isAdmin = this.contextAccessor.IsAdmin();
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
+
+		if (!isAdmin)
+		{
+			var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+			var userBudgets = this.budgetDbContext.UserBudget.Where(x => x.UserId == userId).Select(y => y.BudgetId);
+			budgets = budgets.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
+		}
 
 		if (!string.IsNullOrEmpty(query.Search))
 		{
