@@ -11,6 +11,10 @@ namespace Intive.Patronage2023.Modules.Example.Domain;
 /// </summary>
 public class ExampleAggregate : Aggregate, IEntity<ExampleId>
 {
+	private ExampleAggregate()
+	{
+	}
+
 	private ExampleAggregate(ExampleId id, string name)
 	{
 		if (id.Value == Guid.Empty)

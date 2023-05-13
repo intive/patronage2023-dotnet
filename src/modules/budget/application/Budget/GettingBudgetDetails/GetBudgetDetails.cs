@@ -41,9 +41,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 	public async Task<BudgetDetailsInfo?> Handle(GetBudgetDetails query, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(query.Id);
-
 		var budget = await this.budgetDbContext.Budget.FindAsync(new object?[] { budgetId }, cancellationToken: cancellationToken);
-
 		return budget is null ? null : BudgetAggregateBudgetDetailsInfoMapper.Map(budget);
 	}
 }

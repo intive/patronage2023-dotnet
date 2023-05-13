@@ -266,6 +266,10 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# Azurite data
+/azurite_data
+.idea
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
@@ -396,3 +400,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+CodeMaid.config

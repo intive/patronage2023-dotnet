@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetail
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Xunit;
 using Currency = Intive.Patronage2023.Shared.Infrastructure.Domain.Currency;
@@ -24,7 +25,7 @@ public class GetBudgetDetailsQueryHandlerTests
 		// Arrange
 		var id = new BudgetId(Guid.NewGuid());
 		string budgetName = new Faker().Random.Word();
-		var userId = Guid.NewGuid();
+		var userId = new UserId(Guid.NewGuid());
 		var limit = new Money(new Faker().Random.Decimal(min: .1M), Currency.PLN);
 		var startDate = new Faker().Date.Recent();
 		var endDate = startDate.AddDays(1);
