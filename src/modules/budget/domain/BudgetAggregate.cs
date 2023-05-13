@@ -97,7 +97,7 @@ public class BudgetAggregate : Aggregate, IEntity<BudgetId>
 	/// <param name="name">New name.</param>
 	public void UpdateName(string name)
 	{
-		this.CheckRule(new BudgetCannotHaveNameEndedWithBrokenRuleBusinessRule(name));
+		this.CheckRule(new BudgetCannotHaveNameStartedWithBrokenRuleBusinessRule(name));
 
 		var evt = new BudgetNameUpdatedDomainEvent(this.Id, name);
 
