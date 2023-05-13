@@ -1,15 +1,13 @@
 using Bogus;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -40,7 +38,7 @@ public class RemoveBudgetCommandHandlerTests
 		// Arrange
 		var id = new BudgetId(Guid.NewGuid());
 		string budgetName = new Faker().Random.Word();
-		var userId = Guid.NewGuid();
+		var userId = new UserId(Guid.NewGuid());
 		var limit = new Money(new Faker().Random.Decimal(min: .1M), Currency.PLN);
 		var startDate = new Faker().Date.Recent();
 		var endDate = startDate.AddDays(1);
@@ -60,5 +58,32 @@ public class RemoveBudgetCommandHandlerTests
 		this.budgetRepositoryMock.Verify(x =>
 			x.Persist(It.Is<BudgetAggregate>(e =>
 				e.Status == Status.Deleted)));
+	}
+
+	/// <summary>
+	/// This unit test verifies whether calling Remove Budget Handle method on deleted budget throws BusinessRuleValidationException.
+	/// </summary>
+	[Fact]
+	public async Task Handle_WhenCalledOnDeletedBudget_ShouldBusinessRuleValidationException()
+	{
+		// Arrange
+		var id = new BudgetId(Guid.NewGuid());
+		string budgetName = new Faker().Random.Word();
+		var userId = new UserId(Guid.NewGuid());
+		var limit = new Money(new Faker().Random.Decimal(min: .1M), Currency.PLN);
+		var startDate = new Faker().Date.Recent();
+		var endDate = startDate.AddDays(1);
+		var period = new Period(startDate, endDate);
+		string icon = new Faker().Random.Word();
+		string description = new Faker().Lorem.Paragraph();
+		var budget = BudgetAggregate.Create(id, budgetName, userId, limit, period, icon, description);
+		budget.SoftRemove();
+		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
+
+		var removeBudget = new RemoveBudget(id.Value);
+		var cancellationToken = CancellationToken.None;
+
+		// Act + Assert
+		await Assert.ThrowsAsync<BusinessRuleValidationException>(() => this.instance.Handle(removeBudget, cancellationToken));
 	}
 }
