@@ -59,7 +59,7 @@ public class ExampleAggregate : Aggregate, IEntity<ExampleId>
 	/// <param name="name">New name.</param>
 	public void UpdateName(string name)
 	{
-		this.CheckRule(new SuperImportantExampleBusinessRule(name));
+		this.CheckRule(new ExampleCannotHaveNameEndedWithBrokenRuleBusinessRule(name));
 
 		var evt = new ExampleNameUpdatedDomainEvent(this.Id, name);
 
