@@ -9,7 +9,7 @@ services:
       - "1433:1433"
     restart: always
   mssqlscripts:
-    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Keycloak"; do sleep 5; done'    
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Keycloak"; do sleep 5; done'
   intive.patronage2023.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -25,7 +25,11 @@ services:
       - ${USERPROFILE}/.aspnet/https:/https/
   keycloak:
     command:
-     - start-dev --import-realm
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=singleFile"
+      - "-Dkeycloak.migration.file=/root/data/import/realm-config.json"
+      - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
+      - start-dev
     environment:
       - KEYCLOAK_ADMIN=admin1
       - KEYCLOAK_ADMIN_PASSWORD=admin1
@@ -42,7 +46,7 @@ services:
       - 8080:8080
       - 8443:8443
     volumes:
-      - ./realm-config.json:/opt/keycloak/data/import/realm-config.json
+      - ./realm-config.json:/root/data/import/realm-config.json
     restart: always
   smtp4dev:
     ports:
@@ -51,3 +55,10 @@ services:
       - '143:143' # IMAP server
     environment:
       - ServerOptions__HostName=smtp4dev
+  azurite:
+    hostname: azurite
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"

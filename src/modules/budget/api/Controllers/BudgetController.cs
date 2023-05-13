@@ -243,9 +243,9 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPut("{id:Guid}/edit")]
-	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
+	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudgetDetails request)
 	{
-		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Limit, request.Period, request.Description, request.IconName);
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Period, request.Description, request.IconName);
 
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
 		if (!validationResult.IsValid)
@@ -259,7 +259,7 @@ public class BudgetController : ControllerBase
 		}
 
 		await this.commandBus.Send(editedBudget);
-		return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
+		return this.Created($"Budget/{id}/edit", id);
 	}
 
 	/// <summary>
