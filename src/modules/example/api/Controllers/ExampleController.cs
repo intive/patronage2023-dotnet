@@ -1,5 +1,5 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Modules.User.Application.User;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
 using Intive.Patronage2023.Shared.Abstractions;

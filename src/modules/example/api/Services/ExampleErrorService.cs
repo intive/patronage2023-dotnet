@@ -1,5 +1,5 @@
 using System.Security.Authentication;
-using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Modules.User.Application.User;
 
 namespace Intive.Patronage2023.Modules.Example.Api.Services;
 
