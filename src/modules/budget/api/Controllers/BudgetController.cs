@@ -459,4 +459,16 @@ public class BudgetController : ControllerBase
 		int result = await this.dataService.Export();
 		return result != 404 ? this.Ok() : this.NotFound();
 	}
+
+	/// <summary>
+	/// Import Budgets.
+	/// </summary>
+	/// <param name="fileName">fileName.</param>
+	/// <returns>a.</returns>
+	[HttpGet("import")]
+	public async Task<IActionResult> Import([FromRoute] string fileName)
+	{
+		await this.dataService.Import(fileName);
+		return this.Ok();
+	}
 }

@@ -77,4 +77,24 @@ public class DataService
 
 		return (int)HttpStatusCode.OK;
 	}
+
+	/// <summary>
+	/// Method to import budgets to CSV file.
+	/// </summary>
+	/// <param name="fileName">fileName.</param>
+	/// <returns>CSV file.</returns>
+	public async Task Import(string fileName)
+	{
+		string containerName = "csv";
+		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+
+		// Get a reference to the blob that needs to be read
+		BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+		var memoryStream = new MemoryStream();
+		await blobClient.DownloadToAsync(memoryStream);
+		memoryStream.Position = 0;
+
+		string content = new StreamReader(memoryStream).ReadToEnd();
+	}
 }
