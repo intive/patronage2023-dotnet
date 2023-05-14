@@ -11,13 +11,14 @@ namespace Intive.Patronage2023.Shared.IntegrationTests;
 /// <summary>
 /// Base class used for integration tests.
 /// </summary>
+[CollectionDefinition("Database collection")]
 public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDisposable
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AbstractIntegrationTests"/> class.
 	/// </summary>
 	/// <param name="fixture">The database fixture.</param>
-	public AbstractIntegrationTests(MsSqlTests fixture)
+	protected AbstractIntegrationTests(MsSqlTests fixture)
 	{
 		this.WebApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
