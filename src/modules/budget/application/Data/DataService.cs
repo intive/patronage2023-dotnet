@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using Azure.Storage.Blobs;
 using CsvHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
@@ -14,14 +15,6 @@ public class DataService
 {
 	private readonly IQueryBus queryBus;
 	private readonly BlobServiceClient blobServiceClient;
-
-	/////// <summary>
-	/////// Initializes a new instance of the <see cref="DataService"/> class.
-	/////// DataService.
-	/////// </summary>
-	////public DataService()
-	////{
-	////}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataService"/> class.
@@ -39,16 +32,20 @@ public class DataService
 	/// Method to export budgets to CSV file.
 	/// </summary>
 	/// <returns>CSV file.</returns>
-	public async Task Export()
+	public async Task<int> Export()
 	{
 		// Create a unique name for the container
 		string containerName = "csv";
+		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+		await containerClient.CreateIfNotExistsAsync();
 
 		var query = new GetBudgetsToExport() { };
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>(query);
 
-		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-		await containerClient.CreateIfNotExistsAsync();
+		if (budgets!.Count == 0)
+		{
+			return (int)HttpStatusCode.NotFound;
+		}
 
 		// Create a local file in the ./data/ directory for uploading and downloading
 		string localPath = "data";
@@ -77,5 +74,7 @@ public class DataService
 
 		// Delete the local file after uploading to Azure Blob Storage
 		File.Delete(localFilePath);
+
+		return (int)HttpStatusCode.OK;
 	}
 }
