@@ -1,9 +1,9 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -11,7 +11,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// Get Budget's Transactions query.
 /// </summary>
-public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
+public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery, ITextSearchQuery
 {
 	/// <summary>
 	/// The amount of data to return.
@@ -27,6 +27,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// Budget Id.
 	/// </summary>
 	public BudgetId BudgetId { get; init; }
+
+	/// <summary>
+	/// Search text.
+	/// </summary>
+	public string? Search { get; set; }
 }
 
 /// <summary>
@@ -54,6 +59,12 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 	public async Task<PagedList<BudgetTransactionInfo>> Handle(GetBudgetTransactions query, CancellationToken cancellationToken)
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable();
+
+		if (!string.IsNullOrEmpty(query.Search))
+		{
+			budgets = budgets.Where(x => x.Name.Contains(query.Search));
+		}
+
 		int totalItemsCount = await budgets
 			.Where(x => x.BudgetId == query.BudgetId)
 			.CountAsync(cancellationToken: cancellationToken);

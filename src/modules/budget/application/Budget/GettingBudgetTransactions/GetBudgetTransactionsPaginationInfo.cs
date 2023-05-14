@@ -3,4 +3,4 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// Get Number of Records on Page and Page Index.
 /// </summary>
-public record GetBudgetTransactionsPaginationInfo(int PageSize, int PageIndex);
+public record GetBudgetTransactionsPaginationInfo(int PageSize, int PageIndex, string Search);

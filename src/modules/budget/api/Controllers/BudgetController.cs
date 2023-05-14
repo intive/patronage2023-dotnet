@@ -3,20 +3,20 @@ using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -375,7 +375,8 @@ public class BudgetController : ControllerBase
 	///
 	///     {
 	///         "pageSize": 1,
-	///         "pageIndex": 1
+	///         "pageIndex": 1,
+	///         "search": "text"
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -391,6 +392,7 @@ public class BudgetController : ControllerBase
 			BudgetId = new BudgetId(budgetId),
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
+			Search = request.Search,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
