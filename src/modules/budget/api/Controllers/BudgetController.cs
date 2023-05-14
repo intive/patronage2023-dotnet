@@ -466,7 +466,7 @@ public class BudgetController : ControllerBase
 	/// <param name="fileName">fileName.</param>
 	/// <returns>a.</returns>
 	[HttpGet("import")]
-	public async Task<IActionResult> Import([FromRoute] string fileName)
+	public async Task<IActionResult> Import(string fileName)
 	{
 		await this.dataService.Import(fileName);
 		return this.Ok();

@@ -1,9 +1,16 @@
 using System.Globalization;
 using System.Net;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using CsvHelper;
+using CsvHelper.Configuration;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Microsoft.Extensions.Configuration;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
@@ -14,6 +21,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 public class DataService
 {
 	private readonly IQueryBus queryBus;
+	private readonly ICommandBus commandBus;
 	private readonly BlobServiceClient blobServiceClient;
 
 	/// <summary>
@@ -21,10 +29,12 @@ public class DataService
 	/// DataService.
 	/// </summary>
 	/// <param name="queryBus">QueryBus.</param>
+	/// <param name="commandBus">ICommand.</param>
 	/// <param name="configuration">IConfiguration.</param>
-	public DataService(IQueryBus queryBus, IConfiguration configuration)
+	public DataService(IQueryBus queryBus, ICommandBus commandBus, IConfiguration configuration)
 	{
 		this.queryBus = queryBus;
+		this.commandBus = commandBus;
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 	}
 
@@ -88,13 +98,38 @@ public class DataService
 		string containerName = "csv";
 		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 
-		// Get a reference to the blob that needs to be read
+		////Get a reference to the blob that needs to be read
 		BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
-		var memoryStream = new MemoryStream();
-		await blobClient.DownloadToAsync(memoryStream);
-		memoryStream.Position = 0;
+		// Pobieranie strumienia danych z pliku CSV
+		BlobDownloadInfo download = await blobClient.DownloadAsync();
+		var reader = new StreamReader(download.Content);
 
-		string content = new StreamReader(memoryStream).ReadToEnd();
+		// Ustawienia dla CSVHelper
+		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+		{
+			HasHeaderRecord = false, // nagłówek pliku CSV jest obecny
+			Delimiter = ",", // separator pól w pliku CSV
+		};
+
+		// Parsowanie pliku CSV przy użyciu CSVHelper
+		using (var csv = new CsvReader(reader, csvConfig))
+		{
+			csv.Read();
+
+			// Wyodrębnianie danych z pliku CSV
+			var budgets = csv.GetRecords<CreateBudgetsToImport>();
+
+			foreach (var budget in budgets)
+			{
+				decimal limit = decimal.Parse(budget.Limit, CultureInfo.InvariantCulture);
+
+				var newbudget = new CreateBudget(Guid.NewGuid(), budget.Name, Guid.NewGuid(), new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency)), new Period(DateTime.Parse(budget.StarTime), DateTime.Parse(budget.EndTime)), budget.Description, budget.IconName);
+
+				await this.commandBus.Send(newbudget);
+			}
+		}
+
+		reader.Close();
 	}
 }
