@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Net;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CsvHelper;
@@ -42,50 +41,31 @@ public class DataService
 	/// Method to export budgets to CSV file.
 	/// </summary>
 	/// <returns>CSV file.</returns>
-	public async Task<int> Export()
+	public async Task<string?> Export()
 	{
-		// Create a unique name for the container
 		string containerName = "csv";
-		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-		await containerClient.CreateIfNotExistsAsync();
+		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
 
-		var query = new GetBudgetsToExport() { };
-		var budgets = await this.queryBus.Query<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>(query);
+		var budgets = await this.GetBudgetsToExport();
 
-		if (budgets!.Count == 0)
+		string localFilePath = this.GenerateLocalCsvFilePath();
+		string? filePath = this.WriteBudgetsToCsvFile(budgets!, localFilePath);
+
+		if (filePath == null)
 		{
-			return (int)HttpStatusCode.NotFound;
-		}
-
-		// Create a local file in the ./data/ directory for uploading and downloading
-		string localPath = "data";
-		Directory.CreateDirectory(localPath);
-		string fileName = "quickstart" + Guid.NewGuid().ToString() + ".csv";
-		string localFilePath = Path.Combine(localPath, fileName);
-
-		// Write text to the file
-		using (var writer = new StreamWriter(localFilePath))
-		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-		{
-			csv.WriteHeader<GetBudgetsToExportInfo>();
-			csv.NextRecord();
-			foreach (var budget in budgets!)
-			{
-				csv.WriteRecord(budget);
-				csv.NextRecord();
-			}
+			return null;
 		}
 
 		// Get a reference to a blob
-		BlobClient blobClient = containerClient.GetBlobClient(fileName);
+		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
 
 		// Upload data from the local file
-		await blobClient.UploadAsync(localFilePath, true);
+		await blobClient.UploadAsync(filePath, true);
 
 		// Delete the local file after uploading to Azure Blob Storage
-		File.Delete(localFilePath);
+		File.Delete(filePath);
 
-		return (int)HttpStatusCode.OK;
+		return blobClient.Name;
 	}
 
 	/// <summary>
@@ -131,5 +111,57 @@ public class DataService
 		}
 
 		reader.Close();
+	}
+
+	private async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
+	{
+		var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+		await containerClient.CreateIfNotExistsAsync();
+		return containerClient;
+	}
+
+	private async Task<List<GetBudgetsToExportInfo>?> GetBudgetsToExport()
+	{
+		var query = new GetBudgetsToExport() { };
+		return await this.queryBus.Query<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>(query);
+	}
+
+	private async Task<string> UploadFileToBlobStorage(string localFilePath, BlobContainerClient containerClient)
+	{
+		string fileName = Path.GetFileName(localFilePath);
+		BlobClient blobClient = containerClient.GetBlobClient(fileName);
+		await blobClient.UploadAsync(localFilePath, true);
+		return fileName;
+	}
+
+	private string GenerateLocalCsvFilePath()
+	{
+		string localPath = "data";
+		Directory.CreateDirectory(localPath);
+		string fileName = "quickstart" + Guid.NewGuid().ToString() + ".csv";
+		return Path.Combine(localPath, fileName);
+	}
+
+	private string WriteBudgetsToCsvFile(List<GetBudgetsToExportInfo> budgets, string filePath)
+	{
+		if (budgets.Count == 0)
+		{
+			return string.Empty;
+		}
+
+		// Write text to the file
+		using (var writer = new StreamWriter(filePath))
+		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+		{
+			csv.WriteHeader<GetBudgetsToExportInfo>();
+			csv.NextRecord();
+			foreach (var budget in budgets)
+			{
+				csv.WriteRecord(budget);
+				csv.NextRecord();
+			}
+		}
+
+		return filePath;
 	}
 }
