@@ -3,6 +3,7 @@ using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Modules.Budget.Api;
+using Intive.Patronage2023.Modules.Budget.Application.Data;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Infrastructure;
@@ -48,6 +49,7 @@ builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddScoped<DataService>();
 
 builder.Services.AddMediatR(cfg =>
 {

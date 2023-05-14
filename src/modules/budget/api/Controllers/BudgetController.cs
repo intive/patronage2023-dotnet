@@ -17,6 +17,7 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Application.Data;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -40,6 +41,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
+	private readonly DataService dataService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -57,6 +59,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
+	/// <param name="dataService">DataService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -70,7 +73,8 @@ public class BudgetController : ControllerBase
 		IAuthorizationService authorizationService,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
-		IExecutionContextAccessor contextAccessor)
+		IExecutionContextAccessor contextAccessor,
+		DataService dataService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -85,6 +89,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
+		this.dataService = dataService;
 	}
 
 	/// <summary>
@@ -121,6 +126,8 @@ public class BudgetController : ControllerBase
 		{
 			throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
 		}
+
+		////var data = new DataService();
 
 		var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 		return this.Ok(pagedList);
@@ -440,5 +447,28 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 		return this.Ok(pagedList);
+	}
+
+	/// <summary>
+	/// Export Budgets.
+	/// </summary>
+	/// <returns>.</returns>
+	[HttpGet]
+	public async Task<IActionResult> ExportBudgets()
+	{
+		string? result = await this.dataService.Export();
+		return result != null ? this.Ok(result) : this.NotFound();
+	}
+
+	/// <summary>
+	/// Import Budgets.
+	/// </summary>
+	/// <param name="fileName">fileName.</param>
+	/// <returns>a.</returns>
+	[HttpGet("import")]
+	public async Task<IActionResult> Import(string fileName)
+	{
+		await this.dataService.Import(fileName);
+		return this.Ok();
 	}
 }
