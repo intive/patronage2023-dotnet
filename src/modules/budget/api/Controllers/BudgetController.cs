@@ -127,7 +127,7 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
 		}
 
-		var data = new DataService();
+		////var data = new DataService();
 
 		var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 		return this.Ok(pagedList);

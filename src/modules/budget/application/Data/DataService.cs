@@ -1,5 +1,9 @@
+using System.Globalization;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
+using CsvHelper;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Microsoft.Extensions.Configuration;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
@@ -8,12 +12,27 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 /// </summary>
 public class DataService
 {
+	private readonly IQueryBus queryBus;
+	private readonly BlobServiceClient blobServiceClient;
+
+	/////// <summary>
+	/////// Initializes a new instance of the <see cref="DataService"/> class.
+	/////// DataService.
+	/////// </summary>
+	////public DataService()
+	////{
+	////}
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataService"/> class.
 	/// DataService.
 	/// </summary>
-	public DataService()
+	/// <param name="queryBus">QueryBus.</param>
+	/// <param name="configuration">IConfiguration.</param>
+	public DataService(IQueryBus queryBus, IConfiguration configuration)
 	{
+		this.queryBus = queryBus;
+		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 	}
 
 	/// <summary>
@@ -22,61 +41,41 @@ public class DataService
 	/// <returns>CSV file.</returns>
 	public async Task Export()
 	{
-		// TODO: Replace <storage-account-name> with your actual storage account name
-		var blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;");
-
 		// Create a unique name for the container
-		string containerName = "quickstartblobs" + Guid.NewGuid().ToString();
+		string containerName = "csv";
 
-		// Create the container and return a container client object
-		BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containerName);
+		var query = new GetBudgetsToExport() { };
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>(query);
+
+		BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+		await containerClient.CreateIfNotExistsAsync();
 
 		// Create a local file in the ./data/ directory for uploading and downloading
 		string localPath = "data";
 		Directory.CreateDirectory(localPath);
-		string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
+		string fileName = "quickstart" + Guid.NewGuid().ToString() + ".csv";
 		string localFilePath = Path.Combine(localPath, fileName);
 
 		// Write text to the file
-		await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+		using (var writer = new StreamWriter(localFilePath))
+		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+		{
+			csv.WriteHeader<GetBudgetsToExportInfo>();
+			csv.NextRecord();
+			foreach (var budget in budgets!)
+			{
+				csv.WriteRecord(budget);
+				csv.NextRecord();
+			}
+		}
 
 		// Get a reference to a blob
 		BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
-		Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
-
 		// Upload data from the local file
 		await blobClient.UploadAsync(localFilePath, true);
 
-		Console.WriteLine("Listing blobs...");
-
-		// List all blobs in the container
-		await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
-		{
-			Console.WriteLine("\t" + blobItem.Name);
-		}
-
-		// Download the blob to a local file
-		// Append the string "DOWNLOADED" before the .txt extension.
-		// so you can compare the files in the data directory
-		string downloadFilePath = localFilePath.Replace(".txt", "DOWNLOADED.txt");
-
-		Console.WriteLine("\nDownloading blob to\n\t{0}\n", downloadFilePath);
-
-		// Download the blob's contents and save it to a file
-		await blobClient.DownloadToAsync(downloadFilePath);
-
-		//// Clean up
-		// Console.Write("Press any key to begin clean up");
-		// Console.ReadLine();
-
-		// Console.WriteLine("Deleting blob container...");
-		// await containerClient.DeleteAsync();
-
-		// Console.WriteLine("Deleting the local source and downloaded files...");
-		// File.Delete(localFilePath);
-		// File.Delete(downloadFilePath);
-
-		// Console.WriteLine("Done");
+		// Delete the local file after uploading to Azure Blob Storage
+		File.Delete(localFilePath);
 	}
 }
