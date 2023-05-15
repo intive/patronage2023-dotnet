@@ -18,4 +18,8 @@
       <ProjectReference Include="..\contracts\Intive.Patronage2023.Modules.User.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Rules\" />
+    </ItemGroup>
+
 </Project>
