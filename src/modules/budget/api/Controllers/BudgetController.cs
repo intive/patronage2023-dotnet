@@ -457,7 +457,7 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> ExportBudgets()
 	{
 		string? result = await this.dataService.Export();
-		return result != null ? this.Ok(result) : this.NotFound();
+		return this.Ok(result);
 	}
 
 	/// <summary>
