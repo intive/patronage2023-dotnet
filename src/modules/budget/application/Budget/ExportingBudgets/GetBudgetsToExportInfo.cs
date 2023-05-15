@@ -31,12 +31,12 @@ public record GetBudgetsToExportInfo
 	public DateTime EndDate { get; init; }
 
 	/// <summary>
-	/// Budget icon.
-	/// </summary>
-	public string? Icon { get; init; }
-
-	/// <summary>
 	/// Budget describtion.
 	/// </summary>
 	public string? Description { get; init; }
+
+	/// <summary>
+	/// Budget icon.
+	/// </summary>
+	public string? Icon { get; init; }
 }

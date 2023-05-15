@@ -453,7 +453,7 @@ public class BudgetController : ControllerBase
 	/// Export Budgets.
 	/// </summary>
 	/// <returns>.</returns>
-	[HttpGet]
+	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
 		string? result = await this.dataService.Export();
@@ -463,12 +463,12 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Import Budgets.
 	/// </summary>
-	/// <param name="fileName">fileName.</param>
+	/// <param name="file">File in .csv to import.</param>
 	/// <returns>a.</returns>
-	[HttpGet("import")]
-	public async Task<IActionResult> Import(string fileName)
+	[HttpPost("import")]
+	public async Task<IActionResult> Import(IFormFile file)
 	{
-		await this.dataService.Import(fileName);
+		await this.dataService.Import(file);
 		return this.Ok();
 	}
 }

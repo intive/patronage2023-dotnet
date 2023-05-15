@@ -12,4 +12,4 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudget
 /// <param name="EndTime">EndTime.</param>
 /// <param name="Description">Description.</param>
 /// <param name="IconName">Budget icon identifier.</param>
-public record CreateBudgetsToImport(string Name, string Limit, string Currency, string StarTime, string EndTime, string IconName, string Description) : ICommand;
+public record ConvertBudgetsToImport(string Name, string Limit, string Currency, string StarTime, string EndTime, string IconName, string Description) : ICommand;
