@@ -40,10 +40,10 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
 		result.Should().NotBeNull().And.BeEquivalentTo(BudgetAggregateBudgetDetailsInfoMapper.Map(budget));
@@ -59,10 +59,10 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
 		result.Should().BeNull();

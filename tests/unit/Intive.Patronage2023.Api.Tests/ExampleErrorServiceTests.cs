@@ -11,14 +11,14 @@ namespace Intive.Patronage2023.Example.Api.Tests;
 /// </summary>
 public class ExampleErrorServiceTests
 {
-	private readonly ExampleErrorService errorService;
+	private readonly ExampleErrorService instance;
 
 	/// <summary>
 	/// Constructor for the ExampleErrorServiceTests class.
 	/// </summary>
 	public ExampleErrorServiceTests()
 	{
-		this.errorService = new ExampleErrorService();
+		this.instance = new ExampleErrorService();
 	}
 
 	/// <summary>
@@ -28,7 +28,7 @@ public class ExampleErrorServiceTests
 	public void ThrowAppException_ShouldThrowAppException()
 	{
 		// Act & Assert
-		FluentActions.Invoking(this.errorService.ThrowAppException)
+		FluentActions.Invoking(this.instance.ThrowAppException)
 			.Should()
 			.Throw<AppException>()
 			.WithMessage("e.g. \"An exception has been raised that is likely due to a transient failure." +
@@ -42,7 +42,7 @@ public class ExampleErrorServiceTests
 	public void ThrowUnauthorizedAccessException_ShouldThrowUnauthorizedAccessException()
 	{
 		// Act & Assert
-		FluentActions.Invoking(this.errorService.ThrowUnauthorizedAccessException)
+		FluentActions.Invoking(this.instance.ThrowUnauthorizedAccessException)
 			.Should()
 			.Throw<UnauthorizedAccessException>()
 			.WithMessage("Access denied: you are not authorized to access this resource.");
@@ -55,7 +55,7 @@ public class ExampleErrorServiceTests
 	public void ThrowAuthenticationException_ShouldThrowAuthenticationException()
 	{
 		// Act & Assert
-		FluentActions.Invoking(this.errorService.ThrowAuthenticationException)
+		FluentActions.Invoking(this.instance.ThrowAuthenticationException)
 			.Should()
 			.Throw<AuthenticationException>()
 			.WithMessage("Authentication failed: please provide valid credentials.");
@@ -68,7 +68,7 @@ public class ExampleErrorServiceTests
 	public void ThrowException_ShouldThrowException()
 	{
 		// Act & Assert
-		FluentActions.Invoking(this.errorService.ThrowException)
+		FluentActions.Invoking(this.instance.ThrowException)
 			.Should()
 			.Throw<Exception>()
 			.WithMessage("An unexpected error has occurred.");
