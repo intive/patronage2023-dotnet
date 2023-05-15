@@ -32,31 +32,31 @@ public class CancelBudgetTransactionValidator : AbstractValidator<CancelBudgetTr
 			.NotNull();
 
 		this.RuleFor(transaction => transaction.TransactionId)
-			.MustAsync(async (x, cancellation) => await this.IsTransactionExists(x))
+			.MustAsync(async (x, cancellation) => await this.TransactionExists(x))
 			.WithMessage("Transaction doesn't exist.");
 
 		this.RuleFor(transaction => transaction.BudgetId)
-			.MustAsync(async (x, cancellation) => await this.IsBudgetExists(x))
+			.MustAsync(async (x, cancellation) => await this.BudgetExists(x))
 			.WithMessage("Budget doesn't exist.");
 
 		this.RuleFor(transaction => transaction)
-			.MustAsync(async (x, cancellation) => await this.IsTransactionBelongingToBudget(x.BudgetId, x.TransactionId))
+			.MustAsync(async (x, cancellation) => await this.BelongsToBudget(x.BudgetId, x.TransactionId))
 			.WithMessage("This transaction does not belong to the specified budget.");
 	}
 
-	private async Task<bool> IsTransactionExists(Guid transactionId)
+	private async Task<bool> TransactionExists(Guid transactionId)
 	{
 		BudgetTransactionAggregate? transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
 		return transaction != null;
 	}
 
-	private async Task<bool> IsBudgetExists(Guid budgetId)
+	private async Task<bool> BudgetExists(Guid budgetId)
 	{
 		BudgetAggregate? budget = await this.budgetRepository.GetById(new BudgetId(budgetId));
 		return budget != null;
 	}
 
-	private async Task<bool> IsTransactionBelongingToBudget(Guid budgetId, Guid transactionId)
+	private async Task<bool> BelongsToBudget(Guid budgetId, Guid transactionId)
 	{
 		var transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
 		return budgetId == transaction!.BudgetId.Value;
