@@ -59,8 +59,8 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 			.CountAsync(cancellationToken: cancellationToken);
 		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)
 			.Where(x => x.BudgetId == query.BudgetId)
+			.OrderByDescending(x => x.BudgetTransactionDate)
 			.Paginate(query)
-			.OrderBy(x => x.BudgetTransactionDate)
 			.ToListAsync(cancellationToken: cancellationToken);
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
