@@ -13,5 +13,5 @@ public record BudgetAmount()
 	/// <summary>
 	/// Date Point.
 	/// </summary>
-	public DateTime DatePoint { get; init; }
+	public string DatePoint { get; init; } = null!;
 }
