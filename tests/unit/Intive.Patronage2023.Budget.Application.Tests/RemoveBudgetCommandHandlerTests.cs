@@ -64,7 +64,7 @@ public class RemoveBudgetCommandHandlerTests
 	/// This unit test verifies whether calling Remove Budget Handle method on deleted budget throws BusinessRuleValidationException.
 	/// </summary>
 	[Fact]
-	public async Task Handle_WhenCalledOnDeletedBudget_ShouldBusinessRuleValidationException()
+	public async Task Handle_WhenCalledOnDeletedBudget_ShouldThrowBusinessRuleValidationException()
 	{
 		// Arrange
 		var id = new BudgetId(Guid.NewGuid());
