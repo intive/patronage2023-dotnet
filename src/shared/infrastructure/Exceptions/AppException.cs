@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Intive.Patronage2023.Modules.User.Application.User;
+namespace Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 
 /// <summary>
 /// AppException class.
