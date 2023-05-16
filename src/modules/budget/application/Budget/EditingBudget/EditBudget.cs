@@ -7,16 +7,14 @@ using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 
 /// <summary>
-/// Edit Budget command.
+/// Edit Budget command with Id.
 /// </summary>
-/// <param name="Id">Budget identifier.</param>
+/// <param name="Id">Budget Id.</param>
 /// <param name="Name">Budget name.</param>
-/// <param name="Limit">Budget limit.</param>
 /// <param name="Period">Budget time span.</param>
 /// <param name="Description">Description.</param>
 /// <param name="IconName">Budget icon identifier.</param>
-
-public record EditBudget(BudgetId Id, string Name, Money Limit, Period Period, string Description, string IconName) : ICommand;
+public record EditBudget(BudgetId Id, string Name, Period Period, string Description, string IconName) : ICommand;
 
 /// <summary>
 /// Edit Budget.
@@ -38,7 +36,7 @@ public class HandleEditBudget : ICommandHandler<EditBudget>
 	public async Task Handle(EditBudget command, CancellationToken cancellationToken)
 	{
 		var budget = await this.budgetRepository.GetById(command.Id);
-		budget!.EditBudget(command.Id, command.Name, command.Limit, command.Period, command.Description, command.IconName);
+		budget!.EditBudget(command.Id, command.Name, command.Period, command.Description, command.IconName);
 		await this.budgetRepository.Persist(budget);
 	}
 }

@@ -12,11 +12,11 @@ services:
       - db
     image: intivepatronage2023api
     build:
-      context: ./..
+      context: ../
       dockerfile: src/api/app/Dockerfile
   keycloak:
     build:
-        context: ./..
+        context: ../
         dockerfile: src/api/app/Keycloak/Dockerfile
     container_name: keycloak
     depends_on:
@@ -24,3 +24,6 @@ services:
       - mssqlscripts
   smtp4dev:
     image: "rnwood/smtp4dev"
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"

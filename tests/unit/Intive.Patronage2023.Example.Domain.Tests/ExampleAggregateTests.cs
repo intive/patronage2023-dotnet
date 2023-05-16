@@ -76,14 +76,14 @@ public class ExampleAggregateTests
 		var id = Guid.NewGuid();
 		string name = new Faker().Name.FirstName();
 		string newName = new Faker().Name.FirstName();
-		var aggregate = ExampleAggregate.Create(id, name);
+		var instance = ExampleAggregate.Create(id, name);
 
 		// Act
-		aggregate.UpdateName(newName);
+		instance.UpdateName(newName);
 
 		// Assert
-		this.output.WriteLine($"{newName} {aggregate.Name}");
-		aggregate.Name.Should().Be(newName);
+		this.output.WriteLine($"{newName} {instance.Name}");
+		instance.Name.Should().Be(newName);
 	}
 
 	/// <summary>
@@ -97,13 +97,13 @@ public class ExampleAggregateTests
 		var id = Guid.NewGuid();
 		string name = new Faker().Name.FirstName();
 		string nameWithDigits = name + "123";
-		var aggregate = ExampleAggregate.Create(id, name);
+		var instance = ExampleAggregate.Create(id, name);
 
 		// Act
-		aggregate.UpdateName(nameWithDigits);
+		instance.UpdateName(nameWithDigits);
 
 		// Assert
-		aggregate.Name.Should().MatchRegex(@"\d+");
+		instance.Name.Should().MatchRegex(@"\d+");
 	}
 
 	/// <summary>
@@ -117,13 +117,13 @@ public class ExampleAggregateTests
 		var id = Guid.NewGuid();
 		string name = new Faker().Name.FirstName();
 		string newName = name;
-		var aggregate = ExampleAggregate.Create(id, name);
+		var instance = ExampleAggregate.Create(id, name);
 
 		// Act
-		aggregate.UpdateName(newName);
+		instance.UpdateName(newName);
 
 		// Assert
 		this.output.WriteLine($"{name} {newName}");
-		aggregate.Name.Should().Be(name);
+		instance.Name.Should().Be(name);
 	}
 }

@@ -266,6 +266,10 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# Azurite data
+/azurite_data
+.idea
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
