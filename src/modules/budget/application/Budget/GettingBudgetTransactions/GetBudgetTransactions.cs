@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -60,11 +61,8 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 	public async Task<PagedList<BudgetTransactionInfo>> Handle(GetBudgetTransactions query, CancellationToken cancellationToken)
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable()
-			.Where(x => x.BudgetId == query.BudgetId);
-		if (query.TransactionType is not null)
-		{
-			budgets = budgets.Where(x => x.TransactionType == query.TransactionType);
-		}
+			.For(query.BudgetId)
+			.WithType(query.TransactionType);
 
 		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
 		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)
