@@ -29,7 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\user\application\Intive.Patronage2023.Modules.User.Application.csproj" />
     <ProjectReference Include="..\application\Intive.Patronage2023.Modules.Example.Application.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
   </ItemGroup>
