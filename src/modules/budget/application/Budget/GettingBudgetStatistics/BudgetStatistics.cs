@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Shared.Abstractions;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 
 /// <summary>
 /// Model for Retriving data for Budget statistics.

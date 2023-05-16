@@ -1,10 +1,10 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 
 /// <summary>
 /// GetBudgetStatisticValidator class.

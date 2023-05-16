@@ -1,11 +1,12 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 
 /// <summary>
 /// Get budget statistic query.
