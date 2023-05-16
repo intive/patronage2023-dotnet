@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Infrastructure;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 
@@ -22,7 +21,7 @@ public static class BudgetTransactionInfoMapper
 			TransactionId = x.Id,
 			Name = x.Name,
 			Value = x.Value,
-			BudgetTransactionDate = x.BudgetTransactionDate.ToISO8601(),
+			BudgetTransactionDate = x.BudgetTransactionDate,
 			CategoryType = x.CategoryType,
 		});
 }

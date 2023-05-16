@@ -33,12 +33,12 @@ public record BudgetDetailsInfo()
 	/// <summary>
 	/// Budget start date.
 	/// </summary>
-	public string StartDate { get; init; } = null!;
+	public DateTime StartDate { get; init; }
 
 	/// <summary>
 	/// Budget end date.
 	/// </summary>
-	public string EndDate { get; init; } = null!;
+	public DateTime EndDate { get; init; }
 
 	/// <summary>
 	/// Budget icon.

@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Infrastructure;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 
@@ -22,8 +21,8 @@ public static class BudgetAggregateBudgetDetailsInfoMapper
 			UserId = entity.UserId.Value,
 			Limit = entity.Limit.Value,
 			Currency = entity.Limit.Currency.ToString(),
-			StartDate = entity.Period.StartDate.ToISO8601(),
-			EndDate = entity.Period.EndDate.ToISO8601(),
+			StartDate = entity.Period.StartDate,
+			EndDate = entity.Period.EndDate,
 			Icon = entity.Icon,
 			Description = entity.Description,
 		};

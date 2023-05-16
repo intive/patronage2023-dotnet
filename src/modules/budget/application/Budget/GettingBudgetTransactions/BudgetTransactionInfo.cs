@@ -36,7 +36,7 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction Date.
 	/// </summary>
-	public string BudgetTransactionDate { get; init; } = null!;
+	public DateTime BudgetTransactionDate { get; init; }
 
 	/// <summary>
 	/// Transaction Category.

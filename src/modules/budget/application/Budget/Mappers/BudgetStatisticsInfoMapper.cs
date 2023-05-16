@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Infrastructure;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 
@@ -18,6 +17,6 @@ public static class BudgetStatisticsInfoMapper
 		query.Select(x => new BudgetAmount
 		{
 			Value = x.Value,
-			DatePoint = x.BudgetTransactionDate.ToISO8601(),
+			DatePoint = x.BudgetTransactionDate,
 		});
 }
