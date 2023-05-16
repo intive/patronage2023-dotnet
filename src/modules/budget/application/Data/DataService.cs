@@ -1,5 +1,6 @@
 using System.Globalization;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -12,7 +13,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Azure.Storage.Blobs.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
@@ -73,7 +74,6 @@ public class DataService
 	/// <returns>CSV file.</returns>
 	public async Task<string> Import(IFormFile file)
 	{
-		// sprawdzenie zaciągniętego pliku, jeżeli nie przejdzie walidacji to zwracany string z błedem
 		using var stream = file.OpenReadStream();
 		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
 		{
@@ -84,43 +84,49 @@ public class DataService
 		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
 		{
 			csv.Read();
-			var budgetsToValidate = csv.GetRecords<ConvertBudgetsToImport>();
+			var budgets = csv.GetRecords<ConvertBudgetsToImport>();
+			var budgetInfos = new List<GetBudgetsToExportInfo>();
 
-			foreach (var budget in budgetsToValidate)
+			foreach (var budget in budgets)
 			{
-				string response = this.ValidateBudget(budget);
+				string result = this.ValidateBudget(budget);
 
-				// jeżeli response inne niż "" to wtedy zwracamy błąd który się pojawił, czy może trzeba sprawdzić wszystkie dane i zebrać je i zbiorczo
-				// dać wiadomość o błędach.
+				if (!result.IsNullOrEmpty())
+				{
+					return result;
+				}
+
+				var budgetInfo = new GetBudgetsToExportInfo
+				{
+					Name = budget.Name,
+					Limit = decimal.Parse(budget.Limit),
+					Currency = budget.Currency,
+					StartDate = DateTime.Parse(budget.StarTime),
+					EndDate = DateTime.Parse(budget.EndTime),
+					Icon = budget.IconName,
+					Description = budget.Description!,
+				};
+
+				budgetInfos.Add(budgetInfo);
 			}
-		}
 
-		// jeżeli przejdzie walidację to zapisać do pliku csv na dysku
-		var budgets = new List<GetBudgetsToExport>();
+			string containerName = this.contextAccessor.GetUserId().ToString()!;
+			BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
 
-		// gdy plik ok:
-		// tworzymy kontener jeśli nie istnieje dla danego usera
-		string containerName = this.contextAccessor.GetUserId().ToString()!;
-		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
+			string localFilePath = this.GenerateLocalCsvFilePath();
+			string filePath = this.WriteBudgetsToCsvFile(budgetInfos, localFilePath);
 
-		// zapisujemy plik w lokalizacji "data", zapisanie go do blob storage, usunięcie go z lokalizacji "data"
-		string localFilePath = this.GenerateLocalCsvFilePath();
-		string filePath = this.WriteBudgetsToCsvFileImport(budgets, localFilePath);
+			BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
+			await blobClient.UploadAsync(filePath, true);
+			File.Delete(filePath);
 
-		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
-		await blobClient.UploadAsync(filePath, true);
-		File.Delete(filePath);
+			BlobDownloadInfo download = await blobClient.DownloadAsync();
+			////var reader = new StreamReader(download.Content);
 
-		//// gdy plik zostaje zapisany do blob storage to następnie zapisuje budgety do bazy sql
-		BlobDownloadInfo download = await blobClient.DownloadAsync();
-		var reader = new StreamReader(download.Content);
-		using (var csv = new CsvReader(reader, csvConfig))
-		{
 			csv.Read();
+			var budgetsToImport = csv.GetRecords<ConvertBudgetsToImport>();
 
-			var budgetsToImport2 = csv.GetRecords<ConvertBudgetsToImport>();
-
-			foreach (var budget in budgetsToImport2)
+			foreach (var budget in budgetsToImport)
 			{
 				decimal limit = decimal.Parse(budget.Limit, CultureInfo.InvariantCulture);
 				var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
@@ -132,9 +138,7 @@ public class DataService
 			}
 		}
 
-		reader.Close();
-
-		return "is ok";
+		return "ok";
 	}
 
 	private string ValidateBudget(ConvertBudgetsToImport budget)
@@ -196,24 +200,6 @@ public class DataService
 		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 		{
 			csv.WriteHeader<GetBudgetsToExportInfo>();
-			csv.NextRecord();
-			foreach (var budget in budgets)
-			{
-				csv.WriteRecord(budget);
-				csv.NextRecord();
-			}
-		}
-
-		return filePath;
-	}
-
-	private string WriteBudgetsToCsvFileImport(List<GetBudgetsToExport> budgets, string filePath)
-	{
-		// Write text to the file
-		using (var writer = new StreamWriter(filePath))
-		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-		{
-			csv.WriteHeader<GetBudgetsToExport>();
 			csv.NextRecord();
 			foreach (var budget in budgets)
 			{
