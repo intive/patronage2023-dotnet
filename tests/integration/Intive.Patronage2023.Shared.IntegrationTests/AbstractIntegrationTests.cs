@@ -11,7 +11,7 @@ namespace Intive.Patronage2023.Shared.IntegrationTests;
 /// <summary>
 /// Base class used for integration tests.
 /// </summary>
-[CollectionDefinition("Database collection")]
+[Collection("Database collection")]
 public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDisposable
 {
 	/// <summary>
@@ -68,4 +68,12 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDis
 				});
 		}
 	}
+}
+
+/// <summary>
+/// Dummy class for collection definition.
+/// </summary>
+[CollectionDefinition("Database collection")]
+public class DatabaseDefinitionTestFixtureCollection : ICollectionFixture<MsSqlTests>
+{
 }

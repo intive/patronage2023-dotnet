@@ -17,7 +17,6 @@ namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.Budge
 ///<summary>
 ///This class contains integration tests for getting Transactions in the Budget module of the Patronage2023 application.
 ///</summary>
-[Collection("Database collection")]
 public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 {
 	private readonly Mock<IExecutionContextAccessor>? contextAccessor;
