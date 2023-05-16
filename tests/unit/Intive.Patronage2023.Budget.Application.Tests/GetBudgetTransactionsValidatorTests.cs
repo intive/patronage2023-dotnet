@@ -21,7 +21,7 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 public class GetBudgetTransactionsValidatorTests
 {
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
-	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
+	private readonly IValidator<GetBudgetTransactions> instance;
 
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
@@ -29,7 +29,7 @@ public class GetBudgetTransactionsValidatorTests
 	public GetBudgetTransactionsValidatorTests()
 	{
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.getBudgetTransactionValidator = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 
 	/// <summary>
@@ -51,7 +51,7 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
+		var result = await this.instance.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.BudgetId);
@@ -76,7 +76,7 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
+		var result = await this.instance.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.PageSize);
@@ -111,7 +111,7 @@ public class GetBudgetTransactionsValidatorTests
 		};
 
 		//Act
-		var result = await this.getBudgetTransactionValidator.TestValidateAsync(getBudgetTransactions);
+		var result = await this.instance.TestValidateAsync(getBudgetTransactions);
 
 		//Assert
 		result.ShouldNotHaveAnyValidationErrors();
