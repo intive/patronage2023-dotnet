@@ -32,11 +32,11 @@ public class DataService
 	/// Initializes a new instance of the <see cref="DataService"/> class.
 	/// DataService.
 	/// </summary>
-	/// <param name="commandBus">Command bus.</param>
-	/// <param name="queryBus">Query bus.</param>
-	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
-	/// <param name="configuration">IConfiguration.</param>
-	/// <param name="budgetDbContext">BudgetDbContext.</param>
+	/// <param name="commandBus">The Command bus used for executing commands.</param>
+	/// <param name="queryBus">The Query bus used for executing queries.</param>
+	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
+	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
+	/// <param name="budgetDbContext">The DbContext for accessing budget data in the database.</param>
 	public DataService(IQueryBus queryBus, ICommandBus commandBus, IExecutionContextAccessor contextAccessor, IConfiguration configuration, BudgetDbContext budgetDbContext)
 	{
 		this.queryBus = queryBus;
@@ -47,9 +47,9 @@ public class DataService
 	}
 
 	/// <summary>
-	/// Method to save butgets to CSV file and export to Azure Blob Storage.
+	/// Exports the budgets to a CSV file and uploads it to Azure Blob Storage.
 	/// </summary>
-	/// <returns>Name of the uploaded file.</returns>
+	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
 	public async Task<string?> Export()
 	{
 		string containerName = this.contextAccessor.GetUserId().ToString()!;
@@ -60,10 +60,12 @@ public class DataService
 	}
 
 	/// <summary>
-	/// Method to import budgets to CSV file.
+	/// Imports budgets from a provided .csv file, validates them, and stores them in the system.
 	/// </summary>
-	/// <param name="file">file.</param>
-	/// <returns>CSV file.</returns>
+	/// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/// <returns>A tuple containing a list of any errors encountered during the import process and
+	/// the URI of the saved .csv file in the Azure Blob Storage if any budgets were successfully imported.
+	/// If no budgets were imported, the URI is replaced with a message stating "No budgets were saved.".</returns>
 	public async Task<(List<string>? ErrorsList, string? Uri)> Import(IFormFile file)
 	{
 		var errors = new List<string>();

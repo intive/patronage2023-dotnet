@@ -450,9 +450,9 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Export Budgets.
+	/// Exports all user budgets to Azure Blob Storage.
 	/// </summary>
-	/// <returns>.</returns>
+	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
@@ -461,10 +461,11 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Import Budgets.
+	/// Imports budgets from a provided .csv file.
 	/// </summary>
-	/// <param name="file">File in .csv to import.</param>
-	/// <returns>a.</returns>
+	/// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/// <returns>An object containing a list of any errors encountered during the import process,
+	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
 	[HttpPost("import")]
 	public async Task<IActionResult> Import(IFormFile file)
 	{
