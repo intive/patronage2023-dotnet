@@ -12,7 +12,7 @@ internal static class BudgetTransactionsQueryExtension
 	/// <summary>
 	/// Specifies BudgetTransactions for which query is done.
 	/// </summary>
-	/// <param name="query">query.</param>
+	/// <param name="query">BudgetTransactionAggregate query which is supposed to define transactions for certain budget.</param>
 	/// <param name="id">id.</param>
 	/// <returns>Transactions with budgetId passed in method.</returns>
 	public static IQueryable<BudgetTransactionAggregate> For(this IQueryable<BudgetTransactionAggregate> query, BudgetId id)
@@ -21,9 +21,9 @@ internal static class BudgetTransactionsQueryExtension
 	}
 
 	/// <summary>
-	/// Checks if date of transactions is in specified date.
+	/// Checks if date of transactions is in between start date and end date.
 	/// </summary>
-	/// <param name="query">query.</param>
+	/// <param name="query">BudgetTransactionAggregate query which is supposed to filter transaction by start and end date.</param>
 	/// <param name="startDate">Start date.</param>
 	/// <param name="endDate">End date.</param>
 	/// <returns>Transactions within certain period of time. </returns>

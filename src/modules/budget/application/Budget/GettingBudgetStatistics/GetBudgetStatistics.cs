@@ -53,16 +53,16 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 	/// <returns> List of transaction in given period of time, and List of statistics.</returns>
 	public async Task<BudgetStatistics<BudgetAmount>> Handle(GetBudgetStatistics query, CancellationToken cancellationToken)
 	{
-		var budgets = this.budgetDbContext.Transaction.AsQueryable();
+		var transactions = this.budgetDbContext.Transaction.AsQueryable();
 		var budgetId = new BudgetId(query.Id);
 
-		decimal budgetValueAtStartDate = budgets
+		decimal budgetValueAtStartDate = transactions
 				.For(budgetId)
 				.NotCancelled()
 				.Where(x => x.BudgetTransactionDate <= query.StartDate)
 				.Sum(x => x.Value);
 
-		var budgetTransactionValues = await budgets
+		var budgetTransactionValues = await transactions
 			.For(budgetId)
 			.NotCancelled()
 			.Within(query.StartDate, query.EndDate)
@@ -84,12 +84,9 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		for (int i = 1; i < budgetTransactionValues.Count; i++)
 		{
 			BudgetAmount prevBudget = budgetTransactionValues[i - 1];
-			var updatedBudget = prevBudget with {
-				DatePoint = budgetTransactionValues[i].DatePoint,
+			budgetTransactionValues[i] = budgetTransactionValues[i] with {
 				Value = prevBudget.Value + budgetTransactionValues[i].Value,
 			};
-
-			budgetTransactionValues[i] = updatedBudget with { };
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
