@@ -1,42 +1,16 @@
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
+///
 /// <summary>
-/// GetBudgetsToExport.
+/// Create Budget command.
 /// </summary>
-public record GetBudgetsToExportInfo
-{
-	/// <summary>
-	/// Budget name.
-	/// </summary>
-	public string Name { get; init; } = null!;
+/// <param name="Name">Budget name.</param>
+/// <param name="CreatedOn">CreatedOn.</param>
+/// <param name="IconName">Budget icon identifier.</param>
+/// <param name="Description">Description.</param>
+/// <param name="Currency">Currency.</param>
+/// <param name="Value">Budget value.</param>
+/// <param name="StartDate">StartDate.</param>
+/// <param name="EndDate">EndDate.</param>
 
-	/// <summary>
-	/// Budget limit.
-	/// </summary>
-	public decimal Limit { get; init; }
-
-	/// <summary>
-	/// Budget Currency.
-	/// </summary>
-	public string Currency { get; init; } = null!;
-
-	/// <summary>
-	/// Budget start date.
-	/// </summary>
-	public DateTime StartDate { get; init; }
-
-	/// <summary>
-	/// Budget end date.
-	/// </summary>
-	public DateTime EndDate { get; init; }
-
-	/// <summary>
-	/// Budget describtion.
-	/// </summary>
-	public string? Description { get; init; }
-
-	/// <summary>
-	/// Budget icon.
-	/// </summary>
-	public string? Icon { get; init; }
-}
+public record GetBudgetsToExportInfo(string Name, string CreatedOn, string IconName, string Description, string Currency, string Value, string StartDate, string EndDate);

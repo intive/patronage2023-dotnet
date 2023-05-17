@@ -12,16 +12,15 @@ public static class BudgetAggregateGetBudgetsToExportInfoMapper
 	/// Mapping method.
 	/// </summary>
 	/// <param name="entity">Entity to be mapped.</param>
-	/// <returns>Returns <ref name="GetBudgetsToExportInfo"/>Budget details information.</returns>
+	/// <returns>Returns Budget details information.</returns>
 	public static GetBudgetsToExportInfo Map(BudgetAggregate entity) =>
-		new()
-		{
-			Name = entity.Name,
-			Limit = entity.Limit.Value,
-			Currency = entity.Limit.Currency.ToString(),
-			StartDate = entity.Period.StartDate,
-			EndDate = entity.Period.EndDate,
-			Icon = entity.Icon,
-			Description = entity.Description,
-		};
+		new GetBudgetsToExportInfo(
+			entity.Name,
+			entity.CreatedOn.ToString(),
+			entity.Icon,
+			string.IsNullOrEmpty(entity.Description) ? string.Empty : entity.Description,
+			entity.Limit.Value.ToString(),
+			entity.Limit.Currency.ToString(),
+			entity.Period.StartDate.ToString(),
+			entity.Period.EndDate.ToString());
 }

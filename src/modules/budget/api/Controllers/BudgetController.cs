@@ -460,15 +460,15 @@ public class BudgetController : ControllerBase
 		return this.Ok(result);
 	}
 
-	/// <summary>
-	/// Import Budgets.
-	/// </summary>
-	/// <param name="file">File in .csv to import.</param>
-	/// <returns>a.</returns>
-	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
-	{
-		await this.dataService.Import(file);
-		return this.Ok();
-	}
+	/////// <summary>
+	/////// Import Budgets.
+	/////// </summary>
+	/////// <param name="file">File in .csv to import.</param>
+	/////// <returns>a.</returns>
+	////[HttpPost("import")]
+	////public async Task<IActionResult> Import(IFormFile file)
+	////{
+	////	await this.dataService.Import(file);
+	////	return this.Ok();
+	////}
 }
