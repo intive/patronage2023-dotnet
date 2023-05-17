@@ -63,7 +63,7 @@ public class UserBudgetAggregateTests
 	}
 	
 	/// <summary>
-	/// User Budget aggregate create method test with empty guid Id.
+	///  This test verifies that the getter for the "Id" property of the UserBudgetAggregate class returns the correct Id.
 	/// </summary>
 	[Fact]
 	public void Property_WhenTryToGetIdProperty_ShouldReturnCorrectId()
@@ -82,7 +82,7 @@ public class UserBudgetAggregateTests
 	}
 	
 	/// <summary>
-	/// User Budget aggregate create method test with empty guid Id.
+	///  This test verifies that the getter for the "UserId" property of the UserBudgetAggregate class returns the correct UserId.
 	/// </summary>
 	[Fact]
 	public void Property_WhenTryToGetUserIdProperty_ShouldReturnCorrectUserId()
@@ -101,7 +101,7 @@ public class UserBudgetAggregateTests
 	}
 	
 	/// <summary>
-	/// User Budget aggregate create method test with empty guid Id.
+	///  This test verifies that the getter for the "BudgetId" property of the UserBudgetAggregate class returns the correct BudgetId.
 	/// </summary>
 	[Fact]
 	public void Property_WhenTryToGetBudgetIdProperty_ShouldReturnCorrectBudgetId()
@@ -120,7 +120,7 @@ public class UserBudgetAggregateTests
 	}
 	
 	/// <summary>
-	/// User Budget aggregate create method test with empty guid Id.
+	///  This test verifies that the getter for the "UserRole" property of the UserBudgetAggregate class returns the correct UserRole.
 	/// </summary>
 	[Fact]
 	public void Property_WhenTryToGetUserRoleProperty_ShouldReturnCorrectUserRole()
