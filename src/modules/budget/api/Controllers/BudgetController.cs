@@ -41,7 +41,8 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
-	private readonly DataService dataService;
+	private readonly BudgetExportService budgetExportService;
+	private readonly BudgetImportService budgetImportService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -59,7 +60,8 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
-	/// <param name="dataService">DataService.</param>
+	/// <param name="budgetExportService">BudgetExportService.</param>
+	/// <param name="budgetImportService">BudgetImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -74,7 +76,8 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
-		DataService dataService)
+		BudgetExportService budgetExportService,
+		BudgetImportService budgetImportService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -89,7 +92,8 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
-		this.dataService = dataService;
+		this.budgetExportService = budgetExportService;
+		this.budgetImportService = budgetImportService;
 	}
 
 	/// <summary>
@@ -456,7 +460,7 @@ public class BudgetController : ControllerBase
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
-		string? result = await this.dataService.Export();
+		string? result = await this.budgetExportService.Export();
 		return this.Ok(result);
 	}
 
@@ -469,7 +473,7 @@ public class BudgetController : ControllerBase
 	[HttpPost("import")]
 	public async Task<IActionResult> Import(IFormFile file)
 	{
-		var result = await this.dataService.Import(file);
+		var result = await this.budgetImportService.Import(file);
 
 		if (result.Uri != "No budgets were saved.")
 		{

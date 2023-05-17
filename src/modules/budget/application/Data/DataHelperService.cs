@@ -20,7 +20,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 /// <summary>
 /// Class DataService.
 /// </summary>
-public class DataService
+public class DataHelperService
 {
 	private readonly IQueryBus queryBus;
 	private readonly ICommandBus commandBus;
@@ -29,7 +29,7 @@ public class DataService
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DataService"/> class.
+	/// Initializes a new instance of the <see cref="DataHelperService"/> class.
 	/// DataService.
 	/// </summary>
 	/// <param name="commandBus">The Command bus used for executing commands.</param>
@@ -37,7 +37,7 @@ public class DataService
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
 	/// <param name="budgetDbContext">The DbContext for accessing budget data in the database.</param>
-	public DataService(IQueryBus queryBus, ICommandBus commandBus, IExecutionContextAccessor contextAccessor, IConfiguration configuration, BudgetDbContext budgetDbContext)
+	public DataHelperService(IQueryBus queryBus, ICommandBus commandBus, IExecutionContextAccessor contextAccessor, IConfiguration configuration, BudgetDbContext budgetDbContext)
 	{
 		this.queryBus = queryBus;
 		this.commandBus = commandBus;
@@ -47,61 +47,23 @@ public class DataService
 	}
 
 	/// <summary>
-	/// Exports the budgets to a CSV file and uploads it to Azure Blob Storage.
+	/// Checks if a blob container exists, and if not, creates one.
 	/// </summary>
-	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	public async Task<string?> Export()
-	{
-		string containerName = this.contextAccessor.GetUserId().ToString()!;
-		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
-		var budgets = await this.GetBudgetsToExport();
-		string uri = await this.UploadToBlobStorage(budgets!, containerClient);
-		return uri;
-	}
-
-	/// <summary>
-	/// Imports budgets from a provided .csv file, validates them, and stores them in the system.
-	/// </summary>
-	/// <param name="file">The .csv file containing the budgets to be imported.</param>
-	/// <returns>A tuple containing a list of any errors encountered during the import process and
-	/// the URI of the saved .csv file in the Azure Blob Storage if any budgets were successfully imported.
-	/// If no budgets were imported, the URI is replaced with a message stating "No budgets were saved.".</returns>
-	public async Task<(List<string>? ErrorsList, string? Uri)> Import(IFormFile file)
-	{
-		var errors = new List<string>();
-
-		string containerName = this.contextAccessor.GetUserId().ToString()!;
-		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
-
-		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
-		{
-			HasHeaderRecord = false,
-			Delimiter = ",",
-		};
-
-		var budgetInfos = this.ReadAndValidateBudgets(file, csvConfig, errors);
-
-		if (budgetInfos.Count() == 0)
-		{
-			return (errors, "No budgets were saved.");
-		}
-
-		string uri = await this.UploadToBlobStorage(budgetInfos, containerClient);
-
-		string fileName = new Uri(uri).LocalPath;
-		await this.ImportBudgetsFromBlobStorage(fileName, containerClient, csvConfig);
-
-		return (errors, uri);
-	}
-
-	private async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
+	/// <param name="containerName">The name of the container to be checked/created.</param>
+	/// <returns>A client reference to the newly created or existing blob container.</returns>
+	public async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
 	{
 		var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 		await containerClient.CreateIfNotExistsAsync();
 		return containerClient;
 	}
 
-	private List<string> ValidateBudget(GetBudgetsToExportInfo budget)
+	/// <summary>
+	/// Validates the properties of a budget object.
+	/// </summary>
+	/// <param name="budget">The budget object to validate.</param>
+	/// <returns>A list of error messages. If the list is empty, the budget object is valid.</returns>
+	public List<string> ValidateBudget(GetBudgetsToExportInfo budget)
 	{
 		var errors = new List<string>();
 
@@ -156,13 +118,21 @@ public class DataService
 		return errors;
 	}
 
-	private async Task<List<GetBudgetsToExportInfo>?> GetBudgetsToExport()
+	/// <summary>
+	/// Retrieves all budgets to be exported.
+	/// </summary>
+	/// <returns>A list of budget objects to be exported. Returns null if no budgets are found.</returns>
+	public async Task<List<GetBudgetsToExportInfo>?> GetBudgetsToExport()
 	{
 		var query = new GetBudgetsToExport() { };
 		return await this.queryBus.Query<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>(query);
 	}
 
-	private string GenerateLocalCsvFilePath()
+	/// <summary>
+	/// Generates a local file path for a new CSV file.
+	/// </summary>
+	/// <returns>A string representing the local path to a newly generated CSV file.</returns>
+	public string GenerateLocalCsvFilePath()
 	{
 		string localPath = "data"; ////src\api\app\data
 		Directory.CreateDirectory(localPath);
@@ -170,7 +140,13 @@ public class DataService
 		return Path.Combine(localPath, fileName);
 	}
 
-	private string WriteBudgetsToCsvFile(List<GetBudgetsToExportInfo> budgets, string filePath)
+	/// <summary>
+	/// Writes a list of budgets to a CSV file at the specified file path.
+	/// </summary>
+	/// <param name="budgets">A list of budgets to be written to the CSV file.</param>
+	/// <param name="filePath">The local path of the CSV file.</param>
+	/// <returns>The local path of the CSV file where the budgets were written.</returns>
+	public string WriteBudgetsToCsvFile(List<GetBudgetsToExportInfo> budgets, string filePath)
 	{
 		// Write text to the file
 		using (var writer = new StreamWriter(filePath))
@@ -188,7 +164,13 @@ public class DataService
 		return filePath;
 	}
 
-	private async Task<string> UploadToBlobStorage(List<GetBudgetsToExportInfo> budgetInfos, BlobContainerClient containerClient)
+	/// <summary>
+	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
+	/// </summary>
+	/// <param name="budgetInfos">A list of budgets to be written to the CSV file and uploaded.</param>
+	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
+	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
+	public async Task<string> UploadToBlobStorage(List<GetBudgetsToExportInfo> budgetInfos, BlobContainerClient containerClient)
 	{
 		string localFilePath = this.GenerateLocalCsvFilePath();
 		string filePath = this.WriteBudgetsToCsvFile(budgetInfos, localFilePath);
@@ -201,7 +183,14 @@ public class DataService
 		return blobClient.Uri.AbsoluteUri;
 	}
 
-	private async Task ImportBudgetsFromBlobStorage(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
+	/// <summary>
+	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
+	/// </summary>
+	/// <param name="filename">The name of the blob to be downloaded from Azure Blob Storage.</param>
+	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
+	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
+	/// <returns>A task that represents the asynchronous operation.</returns>
+	public async Task ImportBudgetsFromBlobStorage(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
 	{
 		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filename));
 		BlobDownloadInfo download = await blobClient.DownloadAsync();
@@ -229,7 +218,15 @@ public class DataService
 		}
 	}
 
-	private List<GetBudgetsToExportInfo> ReadAndValidateBudgets(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	/// <summary>
+	/// Reads budgets from a CSV file, validates them, and returns a list of valid budgets.
+	/// Any errors encountered during validation are added to the provided errors list.
+	/// </summary>
+	/// <param name="file">The CSV file containing the budgets to be read and validated.</param>
+	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
+	/// <param name="errors">A list to which any validation errors will be added.</param>
+	/// <returns>A list of valid budgets read from the CSV file.</returns>
+	public List<GetBudgetsToExportInfo> ReadAndValidateBudgets(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
 		var budgetInfos = new List<GetBudgetsToExportInfo>();
 		using var stream = file.OpenReadStream();
@@ -262,7 +259,13 @@ public class DataService
 		return budgetInfos;
 	}
 
-	private GetBudgetsToExportInfo? CreateBudgetInfoAsync(GetBudgetsToExportInfo budget)
+	/// <summary>
+	/// Creates a new budget based on the provided budget information.
+	/// If a budget with the same name already exists in the database, a random number is appended to the name.
+	/// </summary>
+	/// <param name="budget">The budget information used to create the new budget.</param>
+	/// <returns>Creates a new budget.</returns>
+	public GetBudgetsToExportInfo? CreateBudgetInfoAsync(GetBudgetsToExportInfo budget)
 	{
 		bool isExistingBudget = this.budgetDbContext.Budget.Any(b => b.Name.Equals(budget.Name));
 		string budgetName = isExistingBudget ? budget.Name + new Random().Next(100000, 900001) : budget.Name;
