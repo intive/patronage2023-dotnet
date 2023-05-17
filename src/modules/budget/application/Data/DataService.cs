@@ -14,7 +14,6 @@ using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
@@ -65,51 +64,27 @@ public class DataService
 	/// </summary>
 	/// <param name="file">file.</param>
 	/// <returns>CSV file.</returns>
-	public async Task<List<string>> Import(IFormFile file)
+	public async Task<(List<string>? ErrorsList, string? Uri)> Import(IFormFile file)
 	{
 		var errors = new List<string>();
 
 		string containerName = this.contextAccessor.GetUserId().ToString()!;
 		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
 
-		var budgetInfos = new List<GetBudgetsToExportInfo>();
-		using var stream = file.OpenReadStream();
 		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
 		{
 			HasHeaderRecord = false,
 			Delimiter = ",",
 		};
 
-		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
-		{
-			csv.Read();
-			var budgets = csv.GetRecords<GetBudgetsToExportInfo>().ToList();
-			int rowNumber = 0;
+		var budgetInfos = this.ReadAndValidateBudgets(file, csvConfig, errors);
 
-			foreach (var budget in budgets)
-			{
-				var results = this.ValidateBudget(budget);
-				rowNumber++;
+		string uri = await this.UploadToBlobStorage(budgetInfos, containerClient);
 
-				if (!results.IsNullOrEmpty())
-				{
-					foreach (string result in results)
-					{
-						errors.Add($"row: {rowNumber}| error: {result}");
-					}
+		string fileName = new Uri(uri).LocalPath;
+		await this.ImportBudgetsFromBlobStorage(fileName, containerClient, csvConfig);
 
-					continue;
-				}
-
-				budgetInfos.Add(budget);
-			}
-		}
-
-		string filename = await this.UploadToBlobStorage(budgetInfos, containerClient);
-
-		await this.ImportBudgetsFromBlobStorage(filename, containerClient, csvConfig);
-
-		return errors;
+		return (errors, uri);
 	}
 
 	private async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
@@ -216,7 +191,7 @@ public class DataService
 		await blobClient.UploadAsync(filePath, true);
 		File.Delete(filePath);
 
-		return blobClient.Name;
+		return blobClient.Uri.AbsoluteUri;
 	}
 
 	private async Task ImportBudgetsFromBlobStorage(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
@@ -244,5 +219,37 @@ public class DataService
 				}
 			}
 		}
+	}
+
+	private List<GetBudgetsToExportInfo> ReadAndValidateBudgets(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	{
+		var budgetInfos = new List<GetBudgetsToExportInfo>();
+		using var stream = file.OpenReadStream();
+		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
+		{
+			csv.Read();
+			var budgets = csv.GetRecords<GetBudgetsToExportInfo>().ToList();
+			int rowNumber = 0;
+
+			foreach (var budget in budgets)
+			{
+				var results = this.ValidateBudget(budget);
+				rowNumber++;
+
+				if (results.Any())
+				{
+					foreach (string result in results)
+					{
+						errors.Add($"row: {rowNumber}| error: {result}");
+					}
+
+					continue;
+				}
+
+				budgetInfos.Add(budget);
+			}
+		}
+
+		return budgetInfos;
 	}
 }

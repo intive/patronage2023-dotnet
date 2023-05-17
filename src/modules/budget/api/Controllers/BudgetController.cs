@@ -468,7 +468,7 @@ public class BudgetController : ControllerBase
 	[HttpPost("import")]
 	public async Task<IActionResult> Import(IFormFile file)
 	{
-		await this.dataService.Import(file);
-		return this.Ok();
+		var result = await this.dataService.Import(file);
+		return this.Ok(result.Uri);
 	}
 }
