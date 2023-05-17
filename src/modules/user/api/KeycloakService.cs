@@ -1,10 +1,9 @@
 using System.Net.Http.Headers;
-
 using Intive.Patronage2023.Modules.User.Api.Configuration;
-using Intive.Patronage2023.Modules.Example.Application.Example;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 

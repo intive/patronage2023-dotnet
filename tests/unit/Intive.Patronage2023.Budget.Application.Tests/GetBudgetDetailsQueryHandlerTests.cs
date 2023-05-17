@@ -58,7 +58,7 @@ public class GetBudgetDetailsQueryHandlerTests
 		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
-		result.Should().NotBeNull().And.BeEquivalentTo(budget.MapToDetailsInfo());
+		result.Should().NotBeNull().And.BeEquivalentTo(budget.MapToDetailsInfo(null));
 	}
 
 	/// <summary>

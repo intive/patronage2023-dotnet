@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
@@ -62,7 +63,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 
 		var usersBudget = tasks.Select(x => x.Result).ToArray();
 
-		return budget?.MapToDetailsInfo();
+		return budget?.MapToDetailsInfo(usersBudget!);
 	}
 
 	/// <summary>
