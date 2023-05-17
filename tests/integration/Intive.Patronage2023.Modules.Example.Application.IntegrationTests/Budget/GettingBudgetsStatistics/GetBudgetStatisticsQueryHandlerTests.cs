@@ -1,7 +1,6 @@
 using Bogus;
 using FluentAssertions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
@@ -76,7 +75,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
-				new Faker().Random.UShort(1,50),
+				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
@@ -93,13 +92,10 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 
 		// Act
 		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
-		decimal sumOfBudetTransactions = this.dbContext.Transaction.MapToBudgetAmount()
-			.Where(x => x.DatePoint <= period.EndDate)
-			.Sum(x => x.Value);
 
 
 		result.Should().NotBeNull();
-		result.TotalBudgetValue.Should().Be(sumOfBudetTransactions);
+		result.TotalBudgetValue.Should().Be(45);
 	}
 
 	///<summary>
@@ -140,7 +136,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
-				new Faker().Random.UShort(1, 50),
+				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
@@ -157,14 +153,8 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 
 		// Act
 		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
-		decimal periodValue = this.dbContext.Transaction.MapToBudgetAmount()
-			.Where(x => x.DatePoint >= period.StartDate && x.DatePoint <= period.EndDate)
-			.Sum(x => x.Value);
-
-
-
 		result.Should().NotBeNull();
-		result.PeriodValue.Should().Be(periodValue);
+		result.PeriodValue.Should().Be(45);
 	}
 
 	///<summary>
@@ -205,7 +195,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
-				new Faker().Random.UShort(1, 50),
+				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
@@ -223,10 +213,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		// Act
 		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
 
-		decimal budgetValueAtStartDate = this.dbContext.Transaction.MapToBudgetAmount().Where(x => x.DatePoint < period.StartDate.AddDays(2)).Sum(x => x.Value);
-		decimal budgetValueAtEndDate = this.dbContext.Transaction.MapToBudgetAmount().Where(x => x.DatePoint <= period.EndDate).Sum(x => x.Value);
-
-		result.Items.First().Value.Should().Be(budgetValueAtStartDate);
-		result.Items.Last().Value.Should().Be(budgetValueAtEndDate);
+		result.Items.First().Value.Should().Be(1);
+		result.Items.Last().Value.Should().Be(45);
 	}
 }
