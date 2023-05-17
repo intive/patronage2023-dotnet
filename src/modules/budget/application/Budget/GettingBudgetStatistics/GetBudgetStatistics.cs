@@ -60,14 +60,14 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		decimal budgetValueAtStartDate = transactions
 				.For(budgetId)
 				.NotCancelled()
-				.Where(x => x.BudgetTransactionDate <= query.StartDate)
+				.Where(x => x.BudgetTransactionDate < query.StartDate)
 				.Sum(x => x.Value);
 
 		var budgetTransactionValues = await transactions
 			.For(budgetId)
 			.NotCancelled()
 			.Within(query.StartDate, query.EndDate)
-			.Select(BudgetStatisticsInfoMapper.Map)
+			.MapToBudgetAmount()
 				.GroupBy(x => x.DatePoint.Date)
 				.Select(x => new BudgetAmount
 				{
@@ -79,7 +79,7 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		budgetTransactionValues.Insert(0, new BudgetAmount()
 		{
 			Value = budgetValueAtStartDate,
-			DatePoint = query.StartDate,
+			DatePoint = budgetTransactionValues[0].DatePoint.AddMinutes(-1),
 		});
 
 		for (int i = 1; i < budgetTransactionValues.Count; i++)
