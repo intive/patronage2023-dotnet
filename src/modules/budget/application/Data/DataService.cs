@@ -79,6 +79,11 @@ public class DataService
 
 		var budgetInfos = this.ReadAndValidateBudgets(file, csvConfig, errors);
 
+		if (budgetInfos.Count() == 0)
+		{
+			return (errors, "No budgets were saved.");
+		}
+
 		string uri = await this.UploadToBlobStorage(budgetInfos, containerClient);
 
 		string fileName = new Uri(uri).LocalPath;

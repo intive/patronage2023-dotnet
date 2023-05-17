@@ -469,6 +469,12 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> Import(IFormFile file)
 	{
 		var result = await this.dataService.Import(file);
-		return this.Ok(result.Uri);
+
+		if (result.Uri != "No budgets were saved.")
+		{
+			return this.Ok(new { Errors = result.ErrorsList, result.Uri });
+		}
+
+		return this.BadRequest(new { Errors = result.ErrorsList, result.Uri });
 	}
 }
