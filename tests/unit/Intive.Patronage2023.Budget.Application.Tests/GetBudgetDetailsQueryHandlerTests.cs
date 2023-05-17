@@ -46,7 +46,7 @@ public class GetBudgetDetailsQueryHandlerTests
 		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
-		result.Should().NotBeNull().And.BeEquivalentTo(BudgetAggregateBudgetDetailsInfoMapper.Map(budget));
+		result.Should().NotBeNull().And.BeEquivalentTo(budget.MapToDetailsInfo());
 	}
 
 	/// <summary>

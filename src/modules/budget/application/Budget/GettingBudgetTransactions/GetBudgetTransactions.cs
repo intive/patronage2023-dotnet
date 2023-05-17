@@ -1,9 +1,9 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -57,10 +57,11 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 		int totalItemsCount = await budgets
 			.Where(x => x.BudgetId == query.BudgetId)
 			.CountAsync(cancellationToken: cancellationToken);
-		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)
+		var mappedData = await budgets
 			.Where(x => x.BudgetId == query.BudgetId)
 			.OrderByDescending(x => x.BudgetTransactionDate)
 			.Paginate(query)
+			.MapToTransactionInfo()
 			.ToListAsync(cancellationToken: cancellationToken);
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
