@@ -409,7 +409,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			expenseId,
 			budgetId,
 			TransactionType.Expense,
-			new Faker().Random.Word(),
+			"Foo",
 			new Faker().Random.Decimal(0.1M) * -1,
 			new Faker().Random.Enum<CategoryType>(),
 			period.StartDate.AddDays(1));
@@ -425,7 +425,6 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		{
 			PageSize = 10,
 			PageIndex = 1,
-			TransactionType = TransactionType.Income,
 			BudgetId = budgetId,
 			Search = "Fo"
 		};
@@ -435,6 +434,6 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 
 		// Assert
 		result.Should().NotBeNull();
-		result.Items.Should().HaveCount(1);
+		result.Items.Should().HaveCount(2);
 	}
 }
