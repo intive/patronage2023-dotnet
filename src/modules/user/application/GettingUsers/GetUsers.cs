@@ -1,5 +1,5 @@
 using Intive.Patronage2023.Modules.User.Application.GettingUsers.Extensions;
-using Intive.Patronage2023.Modules.User.Application.User;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;

@@ -1,6 +1,6 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
