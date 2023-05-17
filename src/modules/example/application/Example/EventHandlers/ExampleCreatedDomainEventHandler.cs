@@ -4,13 +4,13 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Intive.Patronage2023.Modules.Example.Infrastructure.Domain.EventHandlers;
+namespace Intive.Patronage2023.Modules.Example.Application.EventHandlers;
 
 /// <summary>
-/// Example name updated domain event handler.
+/// Example created domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class ExampleNameUpdatedDomainEventHandler : IDomainEventHandler<ExampleNameUpdatedDomainEvent>
+public class ExampleCreatedDomainEventHandler : IDomainEventHandler<ExampleCreatedDomainEvent>
 {
 	/// <summary>
 	/// Handle the notification.
@@ -18,11 +18,11 @@ public class ExampleNameUpdatedDomainEventHandler : IDomainEventHandler<ExampleN
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(ExampleNameUpdatedDomainEvent notification, CancellationToken cancellationToken)
+	public Task Handle(ExampleCreatedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		// TODO: Add logging using ILogger
+		// TODO: Use logger
 		return Task.CompletedTask;
 	}
 }

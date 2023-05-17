@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
@@ -12,11 +11,12 @@ public static class BudgetStatisticsInfoMapper
 	/// <summary>
 	/// Mapping method.
 	/// </summary>
-	/// <returns>Returns <ref name="BudgetInfo"/>Transaction information.</returns>
-	public static Expression<Func<BudgetTransactionAggregate, BudgetAmount>> Map =>
-		entity => new BudgetAmount
+	/// <param name="query">Query.</param>
+	/// <returns>Returns <ref name="query"/>Transaction information.</returns>
+	public static IQueryable<BudgetAmount> MapToBudgetAmount(this IQueryable<BudgetTransactionAggregate> query) =>
+		query.Select(x => new BudgetAmount
 		{
-			Value = entity.Value,
-			DatePoint = entity.BudgetTransactionDate,
-		};
+			Value = x.Value,
+			DatePoint = x.BudgetTransactionDate,
+		});
 }

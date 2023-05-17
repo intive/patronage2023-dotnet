@@ -1,9 +1,11 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Application.Extensions;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -22,6 +24,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// Requested page.
 	/// </summary>
 	public int PageIndex { get; set; }
+
+	/// <summary>
+	/// Transaction type to filter. Null for all.
+	/// </summary>
+	public TransactionType? TransactionType { get; set; }
 
 	/// <summary>
 	/// Budget Id.
@@ -53,14 +60,15 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 	/// <returns>Paged list of Budgets.</returns>
 	public async Task<PagedList<BudgetTransactionInfo>> Handle(GetBudgetTransactions query, CancellationToken cancellationToken)
 	{
-		var budgets = this.budgetDbContext.Transaction.AsQueryable();
-		int totalItemsCount = await budgets
-			.Where(x => x.BudgetId == query.BudgetId)
-			.CountAsync(cancellationToken: cancellationToken);
-		var mappedData = await budgets.Select(BudgetTransactionInfoMapper.Map)
-			.Where(x => x.BudgetId == query.BudgetId)
+		var budgets = this.budgetDbContext.Transaction.AsQueryable()
+			.For(query.BudgetId)
+			.WithType(query.TransactionType);
+
+		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
+		var mappedData = await budgets
+			.OrderByDescending(x => x.BudgetTransactionDate)
 			.Paginate(query)
-			.OrderBy(x => x.BudgetTransactionDate)
+			.MapToTransactionInfo()
 			.ToListAsync(cancellationToken: cancellationToken);
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;

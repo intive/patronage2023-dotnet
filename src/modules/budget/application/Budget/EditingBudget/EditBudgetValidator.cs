@@ -20,8 +20,6 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 		this.budgetDbContext = budgetDbContext;
 		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync(async (x, cancellation) => await this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.");
-		this.RuleFor(budget => budget.Limit.Value).GreaterThan(0);
-		this.RuleFor(budget => budget.Limit.Currency).IsInEnum().WithMessage("The selected currency is not supported.");
 		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate <= x.EndDate).WithMessage("The start date must be earlier than the end date");
 	}
 

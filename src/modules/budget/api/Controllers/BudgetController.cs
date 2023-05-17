@@ -9,6 +9,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -238,9 +239,9 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPut("{id:Guid}/edit")]
-	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudget request)
+	public async Task<IActionResult> EditBudget([FromRoute] Guid id, [FromBody] EditBudgetDetails request)
 	{
-		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Limit, request.Period, request.Description, request.IconName);
+		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Period, request.Description, request.IconName);
 
 		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
 		if (!validationResult.IsValid)
@@ -254,7 +255,7 @@ public class BudgetController : ControllerBase
 		}
 
 		await this.commandBus.Send(editedBudget);
-		return this.Created($"Budget/{id}/edit", editedBudget.Id.Value);
+		return this.Created($"Budget/{id}/edit", id);
 	}
 
 	/// <summary>
@@ -267,6 +268,8 @@ public class BudgetController : ControllerBase
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
 	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpDelete("{budgetId:guid}")]
 	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
 	{
@@ -342,6 +345,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Cancel transaction by Id.
 	/// </summary>
+	/// <param name="budgetId">Id of the budget for which the given transaction will be canceled.</param>
 	/// <param name="transactionId">The Id of the transaction to cancel.</param>
 	/// <returns>
 	/// Returns an HTTP 200 OK status code with the ID of the cancelled transaction if successful.
@@ -349,19 +353,26 @@ public class BudgetController : ControllerBase
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[HttpDelete("{transactionId:guid}/transaction")]
-	public async Task<IActionResult> CancelTransaction([FromRoute] Guid transactionId)
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[HttpPut("{budgetId:guid}/transactions/{transactionId:guid}/cancel")]
+	public async Task<IActionResult> CancelBudgetTransaction([FromRoute] Guid budgetId, [FromRoute] Guid transactionId)
 	{
-		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId);
+		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId, budgetId);
 
 		var validationResult = await this.cancelBudgetTransactionValidator.ValidateAsync(cancelBudgetTransaction);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 		{
-			await this.commandBus.Send(cancelBudgetTransaction);
-			return this.Ok(cancelBudgetTransaction.Id);
+			throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
 		}
 
-		throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		await this.commandBus.Send(cancelBudgetTransaction);
+		return this.Ok(cancelBudgetTransaction.TransactionId);
 	}
 
 	/// <summary>
@@ -372,10 +383,13 @@ public class BudgetController : ControllerBase
 	/// <returns>Budget details, list of incomes and Expenses.</returns>
 	/// <remarks>
 	/// Sample request:
+	/// Types: "Income", "Expense"
+	/// Set transactionType to null or don't include at all to get both types.
 	///
 	///     {
-	///         "pageSize": 1,
-	///         "pageIndex": 1
+	///         "pageSize": 10,
+	///         "pageIndex": 1,
+	///         "transactionType": null
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -384,13 +398,14 @@ public class BudgetController : ControllerBase
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsPaginationInfo request)
+	public async Task<IActionResult> GetTransactionByBudgetId([FromRoute] Guid budgetId, [FromBody] GetBudgetTransactionsQueryInfo request)
 	{
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			BudgetId = new BudgetId(budgetId),
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
+			TransactionType = request.TransactionType,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
