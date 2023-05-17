@@ -16,11 +16,10 @@ public static class BudgetAggregateGetBudgetsToExportInfoMapper
 	public static GetBudgetsToExportInfo Map(BudgetAggregate entity) =>
 		new GetBudgetsToExportInfo(
 			entity.Name,
-			entity.CreatedOn.ToString(),
 			entity.Icon,
 			string.IsNullOrEmpty(entity.Description) ? string.Empty : entity.Description,
-			entity.Limit.Value.ToString(),
 			entity.Limit.Currency.ToString(),
+			entity.Limit.Value.ToString(),
 			entity.Period.StartDate.ToString(),
 			entity.Period.EndDate.ToString());
 }

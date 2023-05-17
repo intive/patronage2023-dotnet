@@ -1,13 +1,20 @@
 using System.Globalization;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using CsvHelper;
+using CsvHelper.Configuration;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
@@ -48,20 +55,61 @@ public class DataService
 	{
 		string containerName = this.contextAccessor.GetUserId().ToString()!;
 		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
-
 		var budgets = await this.GetBudgetsToExport();
+		string uri = await this.UploadToBlobStorage(budgets!, containerClient);
+		return uri;
+	}
 
-		string localFilePath = this.GenerateLocalCsvFilePath();
+	/// <summary>
+	/// Method to import budgets to CSV file.
+	/// </summary>
+	/// <param name="file">file.</param>
+	/// <returns>CSV file.</returns>
+	public async Task<List<string>> Import(IFormFile file)
+	{
+		var errors = new List<string>();
 
-		string filePath = this.WriteBudgetsToCsvFile(budgets!, localFilePath);
+		string containerName = this.contextAccessor.GetUserId().ToString()!;
+		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists(containerName);
 
-		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
+		var budgetInfos = new List<GetBudgetsToExportInfo>();
+		using var stream = file.OpenReadStream();
+		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+		{
+			HasHeaderRecord = false,
+			Delimiter = ",",
+		};
 
-		await blobClient.UploadAsync(filePath, true);
+		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
+		{
+			csv.Read();
+			var budgets = csv.GetRecords<GetBudgetsToExportInfo>().ToList();
+			int rowNumber = 0;
 
-		File.Delete(filePath);
+			foreach (var budget in budgets)
+			{
+				var results = this.ValidateBudget(budget);
+				rowNumber++;
 
-		return blobClient.Uri.AbsoluteUri;
+				if (!results.IsNullOrEmpty())
+				{
+					foreach (string result in results)
+					{
+						errors.Add($"row: {rowNumber}| error: {result}");
+					}
+
+					continue;
+				}
+
+				budgetInfos.Add(budget);
+			}
+		}
+
+		string filename = await this.UploadToBlobStorage(budgetInfos, containerClient);
+
+		await this.ImportBudgetsFromBlobStorage(filename, containerClient, csvConfig);
+
+		return errors;
 	}
 
 	private async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
@@ -69,6 +117,61 @@ public class DataService
 		var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 		await containerClient.CreateIfNotExistsAsync();
 		return containerClient;
+	}
+
+	private List<string> ValidateBudget(GetBudgetsToExportInfo budget)
+	{
+		var errors = new List<string>();
+
+		if (string.IsNullOrEmpty(budget.Name))
+		{
+			errors.Add("Budget name is missing");
+		}
+
+		if (string.IsNullOrEmpty(budget.IconName))
+		{
+			errors.Add("Budget icon name is missing");
+		}
+
+		if (string.IsNullOrEmpty(budget.Currency))
+		{
+			errors.Add("Budget currency is missing");
+		}
+
+		if (string.IsNullOrEmpty(budget.Value))
+		{
+			errors.Add("Budget value is missing");
+		}
+		else if (!decimal.TryParse(budget.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out _))
+		{
+			errors.Add("Budget value is not a valid decimal number");
+		}
+
+		if (string.IsNullOrEmpty(budget.StartDate))
+		{
+			errors.Add("Budget start date is missing");
+		}
+		else if (!DateTime.TryParse(budget.StartDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+		{
+			errors.Add("Budget start date is not a valid date");
+		}
+
+		if (string.IsNullOrEmpty(budget.EndDate))
+		{
+			errors.Add("Budget end date is missing");
+		}
+		else if (!DateTime.TryParse(budget.EndDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+		{
+			errors.Add("Budget end date is not a valid date");
+		}
+
+		if (!string.IsNullOrEmpty(budget.StartDate) && !string.IsNullOrEmpty(budget.EndDate) &&
+			DateTime.Parse(budget.StartDate) >= DateTime.Parse(budget.EndDate))
+		{
+			errors.Add("Budget start date cannot be later than or equal to end date");
+		}
+
+		return errors;
 	}
 
 	private async Task<List<GetBudgetsToExportInfo>?> GetBudgetsToExport()
@@ -101,5 +204,45 @@ public class DataService
 		}
 
 		return filePath;
+	}
+
+	private async Task<string> UploadToBlobStorage(List<GetBudgetsToExportInfo> budgetInfos, BlobContainerClient containerClient)
+	{
+		string localFilePath = this.GenerateLocalCsvFilePath();
+		string filePath = this.WriteBudgetsToCsvFile(budgetInfos, localFilePath);
+
+		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
+
+		await blobClient.UploadAsync(filePath, true);
+		File.Delete(filePath);
+
+		return blobClient.Name;
+	}
+
+	private async Task ImportBudgetsFromBlobStorage(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
+	{
+		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filename));
+		BlobDownloadInfo download = await blobClient.DownloadAsync();
+
+		using (var reader = new StreamReader(download.Content))
+		{
+			using (var csv = new CsvReader(reader, csvConfig))
+			{
+				csv.Read();
+				var budgetsToImport = csv.GetRecords<GetBudgetsToExportInfo>();
+
+				foreach (var budget in budgetsToImport)
+				{
+					decimal limit = decimal.Parse(budget.Value, CultureInfo.InvariantCulture);
+					var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
+					var period = new Period(DateTime.Parse(budget.StartDate), DateTime.Parse(budget.EndDate));
+					string description = string.IsNullOrEmpty(budget.Description) ? string.Empty : budget.Description;
+
+					var newbudget = new CreateBudget(Guid.NewGuid(), budget.Name, Guid.NewGuid(), money, period, description, budget.IconName);
+
+					await this.commandBus.Send(newbudget);
+				}
+			}
+		}
 	}
 }
