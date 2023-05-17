@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Api.Configuration;
+namespace Intive.Patronage2023.Modules.User.Api.Configuration;
 
 /// <summary>
 /// Api Keycloak Credentials - It is used to store the secret value required to authenticate with the Keycloak API.
