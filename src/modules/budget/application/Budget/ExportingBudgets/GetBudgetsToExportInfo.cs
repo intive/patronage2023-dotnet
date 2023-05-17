@@ -1,17 +1,43 @@
-using Intive.Patronage2023.Shared.Abstractions.Commands;
-
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
 ///
 /// <summary>
 /// Create Budget command.
 /// </summary>
-/// <param name="Name">Budget name.</param>
-/// <param name="IconName">Budget icon identifier.</param>
-/// <param name="Description">Description.</param>
-/// <param name="Currency">Currency.</param>
-/// <param name="Value">Budget value.</param>
-/// <param name="StartDate">StartDate.</param>
-/// <param name="EndDate">EndDate.</param>
+public record GetBudgetsToExportInfo()
+{
+	/// <summary>
+	/// Budget name.
+	/// </summary>
+	public string Name { get; init; } = null!;
 
-public record GetBudgetsToExportInfo(string Name, string IconName, string? Description, string Currency, string Value, string StartDate, string EndDate) : ICommand;
+	/// <summary>
+	/// Budget icon.
+	/// </summary>
+	public string IconName { get; init; } = null!;
+
+	/// <summary>
+	/// Budget describtion.
+	/// </summary>
+	public string? Description { get; init; }
+
+	/// <summary>
+	/// Budget Currency.
+	/// </summary>
+	public string Currency { get; init; } = null!;
+
+	/// <summary>
+	/// Budget limit.
+	/// </summary>
+	public string Value { get; init; } = null!;
+
+	/// <summary>
+	/// Budget start date.
+	/// </summary>
+	public string StartDate { get; init; } = null!;
+
+	/// <summary>
+	/// Budget end date.
+	/// </summary>
+	public string EndDate { get; init; } = null!;
+}

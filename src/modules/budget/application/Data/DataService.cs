@@ -247,10 +247,30 @@ public class DataService
 					continue;
 				}
 
-				budgetInfos.Add(budget);
+				var updateBudget = this.CreateBudgetInfoAsync(budget);
+				budgetInfos.Add(updateBudget!);
 			}
 		}
 
 		return budgetInfos;
+	}
+
+	private GetBudgetsToExportInfo? CreateBudgetInfoAsync(GetBudgetsToExportInfo budget)
+	{
+		bool isExistingBudget = this.budgetDbContext.Budget.Any(b => b.Name.Equals(budget.Name));
+		string budgetName = isExistingBudget ? budget.Name + new Random().Next(100000, 900001) : budget.Name;
+
+		var budgetInfo = new GetBudgetsToExportInfo
+		{
+			Name = budgetName,
+			IconName = budget.IconName,
+			Description = budget.Description,
+			Currency = budget.Currency,
+			Value = budget.Value,
+			StartDate = budget.StartDate,
+			EndDate = budget.EndDate,
+		};
+
+		return budgetInfo;
 	}
 }
