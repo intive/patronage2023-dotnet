@@ -143,25 +143,4 @@ public class KeycloakService : IKeycloakService
 
 		return await this.httpClient.GetAsync(url, cancellationToken);
 	}
-
-	/// <inheritdoc/>
-	public async Task<bool> HasUserAdminRole(string id, string accessToken, CancellationToken cancellationToken)
-	{
-		string realm = this.apiKeycloakSettings.Realm;
-
-		string url = $"/admin/realms/{realm}/users/{id}/role-mappings/realm";
-
-		this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-		var response = await this.httpClient.GetAsync(url, cancellationToken);
-
-		if (!response.IsSuccessStatusCode)
-		{
-			throw new AppException($"User with id {id} not found.");
-		}
-
-		var responseContent = await response.Content.ReadFromJsonAsync<RealmRole[]>();
-
-		return responseContent?.Any(x => x.Name == "admin") ?? false;
-	}
 }

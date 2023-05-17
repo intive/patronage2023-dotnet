@@ -44,7 +44,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
-	private readonly IValidator<AddUsersToBudget> usersIdsValidator;
+	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -92,7 +92,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
-		this.usersIdsValidator = usersIdsValidator;
+		this.addUsersToBudgetValidator = usersIdsValidator;
 	}
 
 	/// <summary>
@@ -510,13 +510,14 @@ public class BudgetController : ControllerBase
 
 		var addUsersToBudget = new AddUsersToBudget(usersIds, budgetId);
 
-		await this.usersIdsValidator.ValidateAndThrowAsync(addUsersToBudget);
+		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(addUsersToBudget);
 
 		var addUserToBudget = usersIds.Select(userId => new AddUserBudget(
-		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser));
+		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser)).ToList();
 
-		var tasks = addUserToBudget.Select(x => this.commandBus.Send(x)).ToArray();
-		await Task.WhenAll(tasks);
+		var userBudgetList = new AddUserBudgetList(addUserToBudget);
+
+		await this.commandBus.Send(userBudgetList);
 
 		return this.Ok();
 	}

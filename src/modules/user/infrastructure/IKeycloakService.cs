@@ -56,13 +56,4 @@ public interface IKeycloakService
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>User corresponding to query.</returns>
 	Task<HttpResponseMessage> GetUserById(string id, string accessToken, CancellationToken cancellationToken);
-
-	/// <summary>
-	/// Check is user has admin role.
-	/// </summary>
-	/// <param name="id">User id.</param>
-	/// <param name="accessToken">Client token.</param>
-	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>Is admin.</returns>
-	Task<bool> HasUserAdminRole(string id, string accessToken, CancellationToken cancellationToken);
 }

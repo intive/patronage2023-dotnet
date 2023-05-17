@@ -58,14 +58,6 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 					break;
 				}
 
-				bool isAdmin = await this.IsAdmin(userId, cancellationToken);
-
-				if (isAdmin)
-				{
-					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} can not be added."));
-					break;
-				}
-
 				if (budgetUsersRoles.Contains(userId))
 				{
 					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} has already been added earlier."));
@@ -116,14 +108,5 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 			.ToListAsync(cancellationToken: cancellationToken);
 
 		return budgetUsersIds;
-	}
-
-	private async Task<bool> IsAdmin(Guid id, CancellationToken cancellationToken)
-	{
-		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
-
-		bool isAdmin = await this.keycloakService.HasUserAdminRole(id.ToString(), accessToken, cancellationToken);
-
-		return isAdmin;
 	}
 }
