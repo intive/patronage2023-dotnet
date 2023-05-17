@@ -1,5 +1,4 @@
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
-using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
