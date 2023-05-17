@@ -13,8 +13,8 @@ public static class BudgetAggregateBudgetDetailsInfoMapper
 	/// </summary>
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns <ref name="BudgetDetailsInfo"/>Budget details information.</returns>
-	public static BudgetDetailsInfo Map(BudgetAggregate entity) =>
-		new()
+	public static BudgetDetailsInfo MapToDetailsInfo(this BudgetAggregate entity) =>
+		new BudgetDetailsInfo
 		{
 			Id = entity.Id.Value,
 			Name = entity.Name,

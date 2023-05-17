@@ -1,11 +1,12 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 
 /// <summary>
 /// Get budget statistic query.
@@ -56,10 +57,9 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 		var budgetId = new BudgetId(query.Id);
 
 		var budgetValues = await budgets
-				.Where(x => x.BudgetId == budgetId)
-				.Select(BudgetStatisticsInfoMapper.Map)
-				.Where(x => x.DatePoint >= query.StartDate && x.DatePoint <= query.EndDate)
-				.ToListAsync(cancellationToken: cancellationToken);
+			.Where(x => x.BudgetId == budgetId && x.BudgetTransactionDate >= query.StartDate && x.BudgetTransactionDate <= query.EndDate)
+			.MapToBudgetAmount()
+			.ToListAsync(cancellationToken: cancellationToken);
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
 			.Where(x => x.BudgetId == budgetId)

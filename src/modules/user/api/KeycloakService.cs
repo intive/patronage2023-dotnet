@@ -1,10 +1,12 @@
 using System.Net.Http.Headers;
-using Intive.Patronage2023.Api.Configuration;
+
+using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+
 using Microsoft.Extensions.Options;
 
-namespace Intive.Patronage2023.Api.Keycloak;
+namespace Intive.Patronage2023.Modules.User.Api;
 
 /// <summary>
 /// Class KeycloakService.
