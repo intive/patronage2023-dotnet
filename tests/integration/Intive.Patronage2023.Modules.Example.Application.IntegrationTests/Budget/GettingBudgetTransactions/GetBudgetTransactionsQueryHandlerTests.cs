@@ -374,7 +374,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 	}
 
 	///<summary>
-	///Integration test that verifes if query handler returns only income transactions belonging to given budget.
+	///Integration test that verifes if query handler returns only transactions containing search text.
 	///</summary>
 	[Fact]
 	public async Task Handle_WhenCalledWithSearchText_ShouldReturnPagedListWithTransactionsContainingSearchText()
