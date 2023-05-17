@@ -208,12 +208,13 @@ public class DataService
 
 				foreach (var budget in budgetsToImport)
 				{
+					var userId = this.contextAccessor.GetUserId()!.Value;
 					decimal limit = decimal.Parse(budget.Value, CultureInfo.InvariantCulture);
 					var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
 					var period = new Period(DateTime.Parse(budget.StartDate), DateTime.Parse(budget.EndDate));
 					string description = string.IsNullOrEmpty(budget.Description) ? string.Empty : budget.Description;
 
-					var newbudget = new CreateBudget(Guid.NewGuid(), budget.Name, Guid.NewGuid(), money, period, description, budget.IconName);
+					var newbudget = new CreateBudget(Guid.NewGuid(), budget.Name, userId, money, period, description, budget.IconName);
 
 					await this.commandBus.Send(newbudget);
 				}
