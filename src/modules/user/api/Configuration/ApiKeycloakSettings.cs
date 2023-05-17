@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Api.Configuration;
+namespace Intive.Patronage2023.Modules.User.Api.Configuration;
 
 /// <summary>
 /// Api Keycloak Settings -  It defines various properties which can be used to configure the Keycloak API settings required to connect to and authenticate with Keycloak.

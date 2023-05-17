@@ -47,10 +47,10 @@ public class GetTransactionsQueryHandlerTests
 		// this.budgetDbContext.SaveChanges();
 		var query = new GetBudgetTransactions() { PageSize = pageSize, PageIndex = pageIndex, BudgetId = budgetId };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetTransactionsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetTransactionsQueryHandler(null!); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
 		result.Should().NotBeNull().And

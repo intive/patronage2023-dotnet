@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
-using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Modules.Budget.Api;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
+using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
@@ -60,7 +60,10 @@ builder.Services.AddControllers(options =>
 			.RequireAuthenticatedUser()
 			.Build())))
 			.AddJsonOptions(options =>
-				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+			{
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+				options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
+			});
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
