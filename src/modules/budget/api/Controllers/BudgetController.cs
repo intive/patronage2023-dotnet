@@ -384,12 +384,17 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	/// Types: "Income", "Expense"
-	/// Set transactionType to null or don't include at all to get both types.
+	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
 	///         "pageSize": 10,
 	///         "pageIndex": 1,
-	///         "transactionType": null
+	///         "transactionType": null,
+	///         "categoryTypes": [
+	///           "HomeSpendings",
+	///           "Car"
+	///         ]
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -406,6 +411,7 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
+			CategoryTypes = request.CategoryTypes,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
