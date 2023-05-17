@@ -8,4 +8,5 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <param name="PageSize">Max object returned in page.</param>
 /// <param name="PageIndex">Page number.</param>
 /// <param name="TransactionType">Filter transactions type. Income, Expense or null for all.</param>
-public record GetBudgetTransactionsQueryInfo(int PageSize, int PageIndex, TransactionType? TransactionType);
+/// <param name="Search">Search text.</param>
+public record GetBudgetTransactionsQueryInfo(int PageSize, int PageIndex, TransactionType? TransactionType, string Search);
