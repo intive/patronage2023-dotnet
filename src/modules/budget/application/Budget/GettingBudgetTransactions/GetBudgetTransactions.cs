@@ -31,6 +31,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	public TransactionType? TransactionType { get; set; }
 
 	/// <summary>
+	/// Categories type to filter. Empty array or null for all.
+	/// </summary>
+	public CategoryType[]? CategoryTypes { get; set; }
+
+	/// <summary>
 	/// Budget Id.
 	/// </summary>
 	public BudgetId BudgetId { get; init; }
@@ -62,7 +67,8 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 	{
 		var budgets = this.budgetDbContext.Transaction.AsQueryable()
 			.For(query.BudgetId)
-			.WithType(query.TransactionType);
+			.WithType(query.TransactionType)
+			.WithCategoryTypes(query.CategoryTypes);
 
 		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
 		var mappedData = await budgets
