@@ -1,6 +1,6 @@
 using System.Security.Authentication;
 using Intive.Patronage2023.Modules.Example.Api.Services;
-using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Xunit;
 using FluentAssertions;
 

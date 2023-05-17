@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.User.Application.User;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.User.Contracts;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;

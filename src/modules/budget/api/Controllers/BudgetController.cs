@@ -1,6 +1,5 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
@@ -16,6 +15,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -384,12 +384,17 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	/// Types: "Income", "Expense"
-	/// Set transactionType to null or don't include at all to get both types.
+	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
 	///         "pageSize": 10,
 	///         "pageIndex": 1,
-	///         "transactionType": null
+	///         "transactionType": null,
+	///         "categoryTypes": [
+	///           "HomeSpendings",
+	///           "Car"
+	///         ]
 	///         "search": "text"
 	///     }
 	/// .</remarks>
@@ -407,6 +412,7 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
+			CategoryTypes = request.CategoryTypes,
 			Search = request.Search,
 		};
 

@@ -3,7 +3,7 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Application.SignIn;
-using Intive.Patronage2023.Modules.User.Application.User;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
