@@ -17,7 +17,7 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Intive.Patronage2023.Modules.Budget.Application.Data;
+using Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -41,7 +41,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
-	private readonly BudgetExportService budgetExportService;
+	private readonly IBudgetExportService budgetExportService;
 	private readonly BudgetImportService budgetImportService;
 
 	/// <summary>
@@ -76,7 +76,7 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
-		BudgetExportService budgetExportService,
+		IBudgetExportService budgetExportService,
 		BudgetImportService budgetImportService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
