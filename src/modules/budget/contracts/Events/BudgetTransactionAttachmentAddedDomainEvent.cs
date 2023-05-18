@@ -6,14 +6,14 @@ namespace Intive.Patronage2023.Modules.Budget.Contracts.Events;
 /// <summary>
 /// Budget transaction attachment added domain event.
 /// </summary>
-public class BudgetTransactionAttachmentAddedEvent : DomainEvent
+public class BudgetTransactionAttachmentAddedDomainEvent : DomainEvent
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BudgetTransactionAttachmentAddedEvent"/> class.
+	/// Initializes a new instance of the <see cref="BudgetTransactionAttachmentAddedDomainEvent"/> class.
 	/// </summary>
 	/// <param name="transactionId">Budget transaction Id.</param>
 	/// <param name="attachmentUrl">Attachment Url.</param>
-	public BudgetTransactionAttachmentAddedEvent(TransactionId transactionId, string attachmentUrl)
+	public BudgetTransactionAttachmentAddedDomainEvent(TransactionId transactionId, string attachmentUrl)
 	{
 		this.Id = transactionId;
 		this.AttachmentUrl = attachmentUrl;
