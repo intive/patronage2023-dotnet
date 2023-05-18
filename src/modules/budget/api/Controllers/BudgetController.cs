@@ -1,23 +1,23 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -461,5 +461,20 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 		return this.Ok(pagedList);
+	}
+
+	/// <summary>
+	/// Update value of favourite flag.
+	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="isFavourite">Is favourite flag value.</param>
+	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	[HttpPut("{budgetId:guid}/favourite")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, bool isFavourite)
+	{
+		await Task.CompletedTask;
+		return this.Ok();
 	}
 }

@@ -78,8 +78,22 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 		}
 
 		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync(cancellationToken: cancellationToken);
+
+		// TODO Change to get favourite info from db.
+		var budgetWithFav = mappedData.Select(x =>
+		{
+			x.IsFavourite = false;
+			return x;
+		}).ToList();
+
+		if (budgetWithFav.Count > 2)
+		{
+			budgetWithFav[0].IsFavourite = true;
+			budgetWithFav[1].IsFavourite = true;
+		}
+
 		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
-		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
+		var result = new PagedList<BudgetInfo> { Items = budgetWithFav, TotalCount = totalItemsCount };
 		return result;
 	}
 }
