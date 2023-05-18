@@ -58,6 +58,11 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public DateTime BudgetTransactionDate { get; private set; }
 
 	/// <summary>
+	/// Budget Transaction attachment Url.
+	/// </summary>
+	public string? AttachmentUrl { get; private set; }
+
+	/// <summary>
 	/// Budget Transaction creation date.
 	/// </summary>
 	public DateTime CreatedOn { get; private set; }
@@ -106,6 +111,21 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 		var evt = new BudgetTransactionCancelledDomainEvent(this.Id, Status.Cancelled);
 
 		this.Apply(evt, this.Handle);
+	}
+
+	/// <summary>
+	/// Add attachment url to Attachment url property.
+	/// </summary>
+	/// <param name="attachmentUrl">Attachment Url.</param>
+	public void AddAttachment(string attachmentUrl)
+	{
+		var attachmentAddedEvent = new BudgetTransactionAttachmentAddedEvent(this.Id, attachmentUrl);
+		this.Apply(attachmentAddedEvent, this.Handle);
+	}
+
+	public void Handle(BudgetTransactionAttachmentAddedEvent @event)
+	{
+		this.AttachmentUrl = @event.AttachmentUrl;
 	}
 
 	private void Handle(BudgetTransactionCancelledDomainEvent @event)
