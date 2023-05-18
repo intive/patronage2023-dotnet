@@ -8,6 +8,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
 	  <PackageReference Include="Azure.Storage.Files.DataLake" Version="12.14.0" />
 	  <PackageReference Include="CsvHelper" Version="30.0.1" />
 	  <PackageReference Include="FluentValidation" Version="11.5.1" />
@@ -25,5 +26,9 @@
     <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Budget.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Budget\GettingBudgetTransactionAttachment" />
   </ItemGroup>
 </Project>
