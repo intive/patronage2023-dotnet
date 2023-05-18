@@ -13,7 +13,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 public class BudgetImportService : IBudgetImportService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly BlobStorageService blobStorageService;
+	private readonly IBlobStorageService blobStorageService;
 	private readonly ImportBudgetsFromBlobStorage importBudgetsFromBlob;
 	private readonly ReadAndValidateBudgets readAndValidateBudgets;
 
@@ -25,7 +25,7 @@ public class BudgetImportService : IBudgetImportService
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="importBudgetsFromBlob">ImportBudgetsFromBlobStorage.</param>
 	/// <param name="readAndValidateBudgets">ReadAndValidateBudgets.</param>
-	public BudgetImportService(IExecutionContextAccessor contextAccessor, BlobStorageService blobStorageService, ImportBudgetsFromBlobStorage importBudgetsFromBlob, ReadAndValidateBudgets readAndValidateBudgets)
+	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, ImportBudgetsFromBlobStorage importBudgetsFromBlob, ReadAndValidateBudgets readAndValidateBudgets)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;

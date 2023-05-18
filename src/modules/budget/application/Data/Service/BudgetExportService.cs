@@ -10,7 +10,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 public class BudgetExportService : IBudgetExportService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly BlobStorageService blobStorageService;
+	private readonly IBlobStorageService blobStorageService;
 	private readonly GetBudgetsToExportAsync getBudgetsToExport;
 
 	/// <summary>
@@ -20,7 +20,7 @@ public class BudgetExportService : IBudgetExportService
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="getBudgetsToExport">GetBudgetsToExportAsync.</param>
-	public BudgetExportService(IExecutionContextAccessor contextAccessor, BlobStorageService blobStorageService, GetBudgetsToExportAsync getBudgetsToExport)
+	public BudgetExportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, GetBudgetsToExportAsync getBudgetsToExport)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;

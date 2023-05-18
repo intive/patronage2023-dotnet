@@ -2,7 +2,6 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Data.Budgets;
-using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.Extensions.Configuration;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
@@ -10,10 +9,9 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 /// <summary>
 /// Class BlobStorageService.
 /// </summary>
-public class BlobStorageService
+public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
-	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly GenerateLocalCsvFilePath generateLocalCsvFilePath;
 	private readonly WriteBudgetsToCsvFile writeBudgetsToCsvFile;
 
@@ -21,14 +19,12 @@ public class BlobStorageService
 	/// Initializes a new instance of the <see cref="BlobStorageService"/> class.
 	/// DataService.
 	/// </summary>
-	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
 	/// <param name="generateLocalCsvFilePath">GenerateLocalCsvFilePath.</param>
 	/// <param name="writeBudgetsToCsvFile">WriteBudgetsToCsvFile.</param>
-	public BlobStorageService(IConfiguration configuration, IExecutionContextAccessor contextAccessor, GenerateLocalCsvFilePath generateLocalCsvFilePath, WriteBudgetsToCsvFile writeBudgetsToCsvFile)
+	public BlobStorageService(IConfiguration configuration, GenerateLocalCsvFilePath generateLocalCsvFilePath, WriteBudgetsToCsvFile writeBudgetsToCsvFile)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
-		this.contextAccessor = contextAccessor;
 		this.generateLocalCsvFilePath = generateLocalCsvFilePath;
 		this.writeBudgetsToCsvFile = writeBudgetsToCsvFile;
 	}
