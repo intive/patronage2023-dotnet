@@ -10,6 +10,8 @@ services:
     restart: always
   mssqlscripts:
     command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Keycloak"; do sleep 5; done'
+  mssqlscripts1:
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S db -U sa -P "S3cur3P@ssW0rd!" -Q "create database Hangfire"; do sleep 5; done'
   intive.patronage2023.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

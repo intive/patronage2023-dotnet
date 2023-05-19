@@ -7,6 +7,10 @@ services:
     image: mcr.microsoft.com/mssql-tools
     depends_on:
       - db
+  mssqlscripts1:
+      image: mcr.microsoft.com/mssql-tools
+      depends_on:
+          - db
   intive.patronage2023.api:
     depends_on:
       - db
