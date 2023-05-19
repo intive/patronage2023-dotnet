@@ -38,7 +38,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 
 
 	///<summary>
-	///Integration test that verifes if query handler returns proper TotalBudgetValue which is sum of all transactions in your budget.
+	///Integration test that verifes if query handler return proper TotalBudgetValue which is sum of all transactions in your budget.
 	///</summary>
 	[Fact]
 	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldVerifyTotalBudgetValue()
@@ -57,9 +57,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 			new Faker().Random.Word());
 
 		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
-
-
-		
 
 		this.dbContext.UserBudget.Add(userBudget);
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
@@ -99,7 +96,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	}
 
 	///<summary>
-	///Integration test that verifes if query handler returns proper period value which is sum of  transaction values between start date and end date.
+	///Integration test that verifes if query handler return proper period value which is sum of  transaction values between start date and end date.
 	///</summary>
 	[Fact]
 	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldVerifyPeriodValue()
@@ -118,9 +115,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 			new Faker().Random.Word());
 
 		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
-
-
-
 
 		this.dbContext.UserBudget.Add(userBudget);
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
@@ -158,7 +152,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	}
 
 	///<summary>
-	///Integration test that verifes if query handler returns proper budgetTransactionsValues which is a list of transaction values grouped and sum by day.
+	///Integration test that verifes if query handler return proper budgetTransactionsValues which is a list of transaction values grouped and sum by day.
 	///</summary>
 	[Fact]
 	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldVerifyBudgetTransactionsValues()
@@ -177,9 +171,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 			new Faker().Random.Word());
 
 		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
-
-
-
 
 		this.dbContext.UserBudget.Add(userBudget);
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
@@ -215,5 +206,290 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 
 		result.Items.First().Value.Should().Be(1);
 		result.Items.Last().Value.Should().Be(45);
+	}
+
+	///<summary>
+	///Integration test that verifes if query handler handle expenses.
+	///</summary>
+	[Fact]
+	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldHandleExpenses()
+	{
+		// Arrange
+		var userId = new UserId(Guid.NewGuid());
+		var budgetId = new BudgetId(Guid.NewGuid());
+		var period = new Period(new Faker().Date.Recent(), DateTime.Now.AddDays(20));
+		var budget = BudgetAggregate.Create(
+			budgetId,
+			new Faker().Random.Word(),
+			userId,
+			new Money(new Faker().Random.UShort(1000, 2000), new Faker().Random.Enum<Currency>()),
+			period,
+			new Faker().Lorem.Paragraph(),
+			new Faker().Random.Word());
+
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
+
+		this.dbContext.UserBudget.Add(userBudget);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
+		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
+		this.dbContext.Add(budget);
+
+		for (int i = 0; i < 10; i++)
+		{
+			var transactionPeriod = period.StartDate.AddDays(i);
+			var incomeId = new TransactionId(Guid.NewGuid());
+			var expenseId = new TransactionId(Guid.NewGuid());
+
+			var income = BudgetTransactionAggregate.Create(
+				incomeId,
+				budgetId,
+				TransactionType.Income,
+				new Faker().Random.Word(),
+				(i + 10),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			var expense = BudgetTransactionAggregate.Create(
+				expenseId,
+				budgetId,
+				TransactionType.Expense,
+				new Faker().Random.Word(),
+				(-i),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			this.dbContext.Transaction.Add(income);
+			this.dbContext.Transaction.Add(expense);
+		}
+
+
+
+		await this.dbContext.SaveChangesAsync();
+
+		var budgetStatisticsQuery = new GetBudgetStatistics
+		{
+			Id = budgetId.Value,
+			StartDate = period.StartDate.AddDays(2),
+			EndDate = period.EndDate,
+		};
+
+
+		// Act
+		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
+
+		result.Items.Last().Value.Should().Be(100);
+	}
+
+	///<summary>
+	///Integration test that verifes if query handler handle cancelled transactions.
+	///</summary>
+	[Fact]
+	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldHandleCancelledTransactions()
+	{
+		// Arrange
+		var userId = new UserId(Guid.NewGuid());
+		var budgetId = new BudgetId(Guid.NewGuid());
+		var period = new Period(new Faker().Date.Recent(), DateTime.Now.AddDays(20));
+		var budget = BudgetAggregate.Create(
+			budgetId,
+			new Faker().Random.Word(),
+			userId,
+			new Money(new Faker().Random.UShort(1000, 2000), new Faker().Random.Enum<Currency>()),
+			period,
+			new Faker().Lorem.Paragraph(),
+			new Faker().Random.Word());
+
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
+
+		this.dbContext.UserBudget.Add(userBudget);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
+		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
+		this.dbContext.Add(budget);
+
+		for (int i = 0; i < 10; i++)
+		{
+			var transactionPeriod = period.StartDate.AddDays(i);
+			var incomeId = new TransactionId(Guid.NewGuid());;
+
+			var income = BudgetTransactionAggregate.Create(
+				incomeId,
+				budgetId,
+				TransactionType.Income,
+				new Faker().Random.Word(),
+				(i + 10),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			if(i % 2 == 0)
+			{
+				income.CancelTransaction();
+			}
+			this.dbContext.Transaction.Add(income);
+		}
+
+
+
+		await this.dbContext.SaveChangesAsync();
+
+		var budgetStatisticsQuery = new GetBudgetStatistics
+		{
+			Id = budgetId.Value,
+			StartDate = period.StartDate.AddDays(2),
+			EndDate = period.EndDate,
+		};
+
+
+		// Act
+		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
+
+		result.Items.Last().Value.Should().Be(75);
+	}
+
+	///<summary>
+	///Integration test that verifes if query handler handle cancelled transactions and expenses.
+	///</summary>
+	[Fact]
+	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldHandleCancelledTransactionsAndExpenses()
+	{
+		// Arrange
+		var userId = new UserId(Guid.NewGuid());
+		var budgetId = new BudgetId(Guid.NewGuid());
+		var period = new Period(new Faker().Date.Recent(), DateTime.Now.AddDays(20));
+		var budget = BudgetAggregate.Create(
+			budgetId,
+			new Faker().Random.Word(),
+			userId,
+			new Money(new Faker().Random.UShort(1000, 2000), new Faker().Random.Enum<Currency>()),
+			period,
+			new Faker().Lorem.Paragraph(),
+			new Faker().Random.Word());
+
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
+
+		this.dbContext.UserBudget.Add(userBudget);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
+		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
+		this.dbContext.Add(budget);
+
+		for (int i = 0; i < 10; i++)
+		{
+			var transactionPeriod = period.StartDate.AddDays(i);
+			var incomeId = new TransactionId(Guid.NewGuid());
+			var expenseId = new TransactionId(Guid.NewGuid());
+
+			var income = BudgetTransactionAggregate.Create(
+				incomeId,
+				budgetId,
+				TransactionType.Income,
+				new Faker().Random.Word(),
+				(i + 10),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			var expense = BudgetTransactionAggregate.Create(
+				expenseId,
+				budgetId,
+				TransactionType.Expense,
+				new Faker().Random.Word(),
+				(-i),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			if (i % 2 == 0)
+			{
+				income.CancelTransaction();
+			}
+			this.dbContext.Transaction.Add(income);
+			this.dbContext.Transaction.Add(expense);
+		}
+
+
+
+		await this.dbContext.SaveChangesAsync();
+
+		var budgetStatisticsQuery = new GetBudgetStatistics
+		{
+			Id = budgetId.Value,
+			StartDate = period.StartDate.AddDays(2),
+			EndDate = period.EndDate,
+		};
+
+
+		// Act
+		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
+
+		result.Items.Last().Value.Should().Be(30);
+	}
+
+	///<summary>
+	///Integration test that verifes if query handler handle sum transactions by day.
+	///</summary>
+	[Fact]
+	public async Task Handle_WhenCalledBudgetTransactionStatistics_ShouldHandleAddingByDay()
+	{
+		// Arrange
+		var userId = new UserId(Guid.NewGuid());
+		var budgetId = new BudgetId(Guid.NewGuid());
+		var period = new Period(new Faker().Date.Recent(), DateTime.Now.AddDays(20));
+		var budget = BudgetAggregate.Create(
+			budgetId,
+			new Faker().Random.Word(),
+			userId,
+			new Money(new Faker().Random.UShort(1000, 2000), new Faker().Random.Enum<Currency>()),
+			period,
+			new Faker().Lorem.Paragraph(),
+			new Faker().Random.Word());
+
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
+
+		this.dbContext.UserBudget.Add(userBudget);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
+		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
+		this.dbContext.Add(budget);
+
+		for (int i = 1; i < 10; i++)
+		{
+			var transactionPeriod = period.StartDate.AddDays(i);
+			var incomeId = new TransactionId(Guid.NewGuid());
+			////var expenseId = new TransactionId(Guid.NewGuid());
+
+			var income = BudgetTransactionAggregate.Create(
+				incomeId,
+				budgetId,
+				TransactionType.Income,
+				new Faker().Random.Word(),
+				(i),
+				new Faker().Random.Enum<CategoryType>(),
+				transactionPeriod);
+
+			this.dbContext.Transaction.Add(income);
+		}
+
+
+
+		await this.dbContext.SaveChangesAsync();
+
+		var budgetStatisticsQuery = new GetBudgetStatistics
+		{
+			Id = budgetId.Value,
+			StartDate = period.StartDate,
+			EndDate = period.EndDate,
+		};
+
+
+		// Act
+		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
+
+		decimal k = 0;
+		bool isBudgetTransactionSumOk = true;
+		for (int j = 0; j < 10; j++)
+		{
+			k += j;
+			if (result.Items[j].Value != k)
+			{
+				isBudgetTransactionSumOk = false; break;
+			}
+		}
+		isBudgetTransactionSumOk.Should().BeTrue();
 	}
 }
