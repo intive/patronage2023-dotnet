@@ -37,5 +37,12 @@ public static class HangfireConfiguration
 			IsReadOnlyFunc = (Func<DashboardContext, bool>)(_ => true),
 			Authorization = new[] { new DashboardAuthorizationFilter() },
 		});
+
+		RecurringJob.AddOrUpdate(
+			"SuperImportantJobId",
+			() => Console.WriteLine("Hello did you forget about me??"),
+			Cron.Hourly);
+
+		BackgroundJob.Schedule(() => Console.WriteLine("Schedule Job"), TimeSpan.FromDays(1));
 	}
 }
