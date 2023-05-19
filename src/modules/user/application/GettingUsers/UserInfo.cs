@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Intive.Patronage2023.Modules.User.Contracts;
 
 namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
@@ -30,7 +31,13 @@ public record UserInfo()
 	/// <summary>
 	/// User additional information.
 	/// </summary>
+	[JsonIgnore]
 	public UserAttributes Attributes { get; set; } = null!;
+
+	/// <summary>
+	/// User Avatar.
+	/// </summary>
+	public string Avatar => this.Attributes?.Avatar?.FirstOrDefault() ?? string.Empty;
 
 	/// <summary>
 	/// User created timestamp.
