@@ -1,4 +1,7 @@
 using FluentValidation;
+
+using Hangfire;
+
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.Example.Application.Example.CreatingExample;
 using Intive.Patronage2023.Modules.Example.Application.Example.GettingExamples;
@@ -55,6 +58,9 @@ public class ExampleController : ControllerBase
 		if (validationResult.IsValid)
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
+
+			BackgroundJob.Enqueue(() => Console.WriteLine("Sent From The Background Task"));
+
 			return this.Ok(pagedList);
 		}
 

@@ -1,11 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using Hangfire.Dashboard;
 
-namespace Intive.Patronage2023.Api;
+namespace Intive.Patronage2023.Api.Filters;
 
 /// <summary>
-/// DashboardAuthorizationFilter is a class that implements the IDashboardAuthorizationFilter interface.
-/// It provides authorization logic for the Hangfire Dashboard.
+/// The DashboardAuthorizationFilter class is responsible for implementing the
+/// IDashboardAuthorizationFilter interface and providing authorization logic
+/// for the Hangfire Dashboard. It handles authentication and access control for the dashboard.
 /// </summary>
 public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 {
@@ -15,7 +16,6 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DashboardAuthorizationFilter"/> class.
-	/// asdfasdf.
 	/// </summary>
 	public DashboardAuthorizationFilter()
 	{
@@ -23,30 +23,30 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 	}
 
 	/// <summary>
-	/// adfasdf.
+	/// This method is called to authorize access to the Hangfire Dashboard.
+	/// It receives the DashboardContext object containing the current context information.
 	/// </summary>
-	/// <param name="context">dd.</param>
-	/// <returns>ff.</returns>
-	/// <exception cref="Exception">hh.</exception>
+	/// <param name="context">Object containing the current context information.</param>
+	/// <returns>True if user is Admin, False otherwise.</returns>
 	public bool Authorize(DashboardContext context)
 	{
 		var httpContext = context.GetHttpContext();
 
-		string? access_token = string.Empty;
+		string? accessToken = string.Empty;
 		bool setCookie = false;
 
 		// try to get token from query string
 		if (httpContext.Request.Query.ContainsKey("access_token"))
 		{
-			access_token = httpContext.Request.Query["access_token"].FirstOrDefault();
+			accessToken = httpContext.Request.Query["access_token"].FirstOrDefault();
 			setCookie = true;
 		}
 		else
 		{
-			access_token = httpContext.Request.Cookies[HangFireCookieName];
+			accessToken = httpContext.Request.Cookies[HangFireCookieName];
 		}
 
-		if (string.IsNullOrEmpty(access_token))
+		if (string.IsNullOrEmpty(accessToken))
 		{
 			return false;
 		}
@@ -54,7 +54,7 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 		try
 		{
 			var hand = new JwtSecurityTokenHandler();
-			var token = hand.ReadJwtToken(access_token);
+			var token = hand.ReadJwtToken(accessToken);
 			string realmAccessValue = token.Claims.First(c => c.Type == "realm_access").Value;
 			if (!string.IsNullOrEmpty(this.role) && !realmAccessValue.Contains(this.role))
 			{
@@ -71,7 +71,7 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 		{
 			httpContext.Response.Cookies.Append(
 				HangFireCookieName,
-				access_token,
+				accessToken,
 				new CookieOptions()
 				{
 					Expires = DateTime.Now.AddMinutes(CookieExpirationMinutes),

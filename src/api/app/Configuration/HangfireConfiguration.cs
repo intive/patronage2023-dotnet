@@ -1,6 +1,8 @@
 using Hangfire;
 using Hangfire.Dashboard;
 
+using Intive.Patronage2023.Api.Filters;
+
 namespace Intive.Patronage2023.Api.Configuration;
 
 /// <summary>
