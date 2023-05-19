@@ -3,11 +3,11 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Application.SignIn;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -168,7 +168,7 @@ public class UserController : ControllerBase
 		var validationResult = await this.getUsersValidator.ValidateAsync(query);
 		if (validationResult.IsValid)
 		{
-			var result = await this.queryBus.Query<GetUsers, PagedList<UserInfo>>(query);
+			var result = await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(query);
 			return this.Ok(result);
 		}
 
