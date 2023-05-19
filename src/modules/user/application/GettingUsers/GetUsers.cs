@@ -1,9 +1,10 @@
 using Intive.Patronage2023.Modules.User.Application.GettingUsers.Extensions;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers.Mappers;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Newtonsoft.Json;
 
 namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
@@ -11,7 +12,7 @@ namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;
 /// <summary>
 /// Get users query.
 /// </summary>>
-public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSearchQuery, ISortableQuery
+public record GetUsers() : IQuery<PagedList<UserInfoDto>>, IPageableQuery, ITextSearchQuery, ISortableQuery
 {
 	/// <inheritdoc/>
 	public int PageSize { get; set; }
@@ -29,7 +30,7 @@ public record GetUsers() : IQuery<PagedList<UserInfo>>, IPageableQuery, ITextSea
 /// <summary>
 /// Get Users handler.
 /// </summary>
-public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
+public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfoDto>>
 {
 	/// <summary>
 	/// Keycloak service.
@@ -48,7 +49,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 	/// <param name="query">Query.</param>
 	/// <param name="cancellationToken">cancellation token.</param>
 	/// <returns>Paged list of users.</returns>
-	public async Task<PagedList<UserInfo>> Handle(GetUsers query, CancellationToken cancellationToken)
+	public async Task<PagedList<UserInfoDto>> Handle(GetUsers query, CancellationToken cancellationToken)
 	{
 		var response = await this.keycloakService.GetClientToken(cancellationToken);
 
@@ -86,9 +87,11 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfo>>
 		var orderedUsers = deserializedUsers!.Sort(query.SortDescriptors);
 		deserializedUsers = orderedUsers!.Skip((query.PageIndex - 1) * query.PageSize).Take(query.PageSize).ToList();
 
-		return new PagedList<UserInfo>
+		var dtoUsers = deserializedUsers.Select(UserInfoUserInfoDtoMapper.Map).ToList();
+
+		return new PagedList<UserInfoDto>
 		{
-			Items = deserializedUsers!,
+			Items = dtoUsers!,
 			TotalCount = totalCount,
 		};
 	}
