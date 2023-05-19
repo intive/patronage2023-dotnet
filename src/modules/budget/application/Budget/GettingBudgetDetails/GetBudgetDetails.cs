@@ -87,7 +87,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 			throw new AppException();
 		}
 
-		var budgetUser = new BudgetUser(userInfo.Id, userInfo.Attributes?.Avatar[0] ?? string.Empty);
+		var budgetUser = new BudgetUser(userInfo.Id, userInfo.Attributes?.Avatar[0] ?? string.Empty, userInfo.FirstName, userInfo.LastName);
 
 		return budgetUser;
 	}

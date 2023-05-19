@@ -28,42 +28,16 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 		this.keycloakService = keycloakService;
 		this.budgetDbContext = budgetDbContext;
 
-		this.RuleFor(x => x.BudgetId).NotEmpty().NotNull().CustomAsync(async (id, validationContext, cancellationToken) =>
-		{
-			if (!(await this.IsBudgetExists(id, cancellationToken)))
-			{
-				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("BudgetId", $"Budget with id {id} does not exist."));
-			}
-		});
+		this.RuleFor(x => x.BudgetId)
+			.NotEmpty()
+			.NotNull()
+			.MustAsync(this.IsBudgetExists)
+			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.");
 
-		this.RuleFor(x => x.UsersIds).NotEmpty().NotNull().CustomAsync(async (usersIds, validationContext, cancellationToken) =>
-		{
-			var budgetGuid = validationContext.InstanceToValidate.BudgetId;
-
-			usersIds.GroupBy(x => x)
-			.Where(x => x.Count() > 1)
-			.Select(x => $"User id {x} duplicated.")
-			.ToList()
-			.ForEach(x => validationContext.AddFailure(x));
-
-			var budgetUsersRoles = await this.GetAllBudgetUsers(budgetGuid, cancellationToken);
-
-			foreach (Guid userId in usersIds)
-			{
-				var user = await this.IsUserExists(userId, cancellationToken);
-
-				if (user == null)
-				{
-					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist."));
-					break;
-				}
-
-				if (budgetUsersRoles.Contains(userId))
-				{
-					validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} has already been added earlier."));
-				}
-			}
-		});
+		this.RuleFor(x => x.UsersIds)
+			.NotEmpty()
+			.NotNull()
+			.CustomAsync(this.AreExistingUsersIds);
 	}
 
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
@@ -104,9 +78,37 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 
 		var budgetUsersIds = await this.budgetDbContext.UserBudget
 			.Where(x => x.BudgetId == budgetId)
-			.Select(x => x.UserId.Value)
-			.ToListAsync(cancellationToken: cancellationToken);
-
+		.Select(x => x.UserId.Value)
+		.ToListAsync(cancellationToken: cancellationToken);
 		return budgetUsersIds;
+	}
+
+	private async Task AreExistingUsersIds(Guid[] usersIds, ValidationContext<AddUsersToBudget> validationContext, CancellationToken cancellationToken)
+	{
+		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
+
+		usersIds.GroupBy(x => x)
+		.Where(x => x.Count() > 1)
+		.Select(x => $"User id {x} duplicated.")
+		.ToList()
+		.ForEach(x => validationContext.AddFailure(x));
+
+		var budgetUsersRoles = await this.GetAllBudgetUsers(budgetGuid, cancellationToken);
+
+		foreach (Guid userId in usersIds)
+		{
+			var user = await this.IsUserExists(userId, cancellationToken);
+
+			if (user == null)
+			{
+				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist."));
+				break;
+			}
+
+			if (budgetUsersRoles.Contains(userId))
+			{
+				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} has already been added earlier."));
+			}
+		}
 	}
 }

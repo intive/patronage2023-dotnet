@@ -5,4 +5,6 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDe
 /// </summary>
 public record BudgetUser(
 	Guid Id,
-	string? Avatar);
+	string? Avatar,
+	string FirstName,
+	string LastName);
