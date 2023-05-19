@@ -372,4 +372,68 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(2);
 	}
+
+	///<summary>
+	///Integration test that verifes if query handler returns only transactions containing search text.
+	///</summary>
+	[Fact]
+	public async Task Handle_WhenCalledWithSearchText_ShouldReturnPagedListWithTransactionsContainingSearchText()
+	{
+		// Arrange
+		var userId = new UserId(Guid.NewGuid());
+		var budgetId = new BudgetId(Guid.NewGuid());
+		var period = new Period(new Faker().Date.Recent(), DateTime.Now.AddDays(10));
+		var budget = BudgetAggregate.Create(
+			budgetId,
+			new Faker().Random.Word(),
+			userId,
+			new Money(new Faker().Random.Decimal(0.1M), new Faker().Random.Enum<Currency>()),
+			period,
+			new Faker().Lorem.Paragraph(),
+			new Faker().Random.Word());
+
+		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
+
+		var incomeId = new TransactionId(Guid.NewGuid());
+		var income = BudgetTransactionAggregate.Create(
+			incomeId,
+			budgetId,
+			TransactionType.Income,
+			"Food",
+			new Faker().Random.Decimal(0.1M),
+			new Faker().Random.Enum<CategoryType>(),
+			period.StartDate.AddDays(1));
+
+		var expenseId = new TransactionId(Guid.NewGuid());
+		var expense = BudgetTransactionAggregate.Create(
+			expenseId,
+			budgetId,
+			TransactionType.Expense,
+			"Foo",
+			new Faker().Random.Decimal(0.1M) * -1,
+			new Faker().Random.Enum<CategoryType>(),
+			period.StartDate.AddDays(1));
+
+		this.dbContext.UserBudget.Add(userBudget);
+		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
+		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
+		this.dbContext.Add(budget);
+		this.dbContext.Transaction.Add(income);
+		this.dbContext.Transaction.Add(expense);
+		await this.dbContext.SaveChangesAsync();
+		var query = new GetBudgetTransactions
+		{
+			PageSize = 10,
+			PageIndex = 1,
+			BudgetId = budgetId,
+			Search = "Fo"
+		};
+
+		// Act
+		var result = await this.instance.Handle(query, CancellationToken.None);
+
+		// Assert
+		result.Should().NotBeNull();
+		result.Items.Should().HaveCount(2);
+	}
 }

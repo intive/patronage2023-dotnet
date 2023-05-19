@@ -395,6 +395,7 @@ public class BudgetController : ControllerBase
 	///           "HomeSpendings",
 	///           "Car"
 	///         ]
+	///         "search": "text"
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -412,6 +413,7 @@ public class BudgetController : ControllerBase
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
 			CategoryTypes = request.CategoryTypes,
+			Search = request.Search,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
