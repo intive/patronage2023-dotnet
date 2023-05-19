@@ -96,7 +96,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	}
 
 	///<summary>
-	///Integration test that verifes if period value which is sum of transaction values between start date and end date.
+	///Integration test that verifes if period value (which is sum of transaction values between start date and end date) is correct.
 	///</summary>
 	[Fact]
 	public async Task WhenCalledBudgetTransactionStatistics_ShouldVerifyPeriodValue()
