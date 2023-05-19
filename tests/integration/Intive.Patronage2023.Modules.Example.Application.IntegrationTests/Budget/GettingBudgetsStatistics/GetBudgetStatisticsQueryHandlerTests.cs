@@ -41,7 +41,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler returns correct TotalBudgetValue (which is sum of all transactions in your budget).
 	///</summary>
 	[Fact]
-	public async Task Handle_ShouldVerifyTotalBudgetValue()
+	public async Task Handle_WhenCalledBudget_ShouldVerifyTotalBudgetValue()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -99,7 +99,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler returns correct period value (which is sum of transaction values between start date and end date).
 	///</summary>
 	[Fact]
-	public async Task Handle_ShouldVerifyPeriodValue()
+	public async Task Handle_WhenCalledBudget_ShouldVerifyPeriodValue()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
