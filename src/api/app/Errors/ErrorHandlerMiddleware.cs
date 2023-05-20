@@ -1,7 +1,7 @@
 using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
-using Intive.Patronage2023.Modules.Example.Application.Example;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Api.Errors;

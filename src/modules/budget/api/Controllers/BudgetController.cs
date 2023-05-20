@@ -1,23 +1,26 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -41,6 +44,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
+	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -57,6 +61,7 @@ public class BudgetController : ControllerBase
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
+	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -71,6 +76,7 @@ public class BudgetController : ControllerBase
 		IAuthorizationService authorizationService,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
+		IValidator<AddUsersToBudget> usersIdsValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -86,6 +92,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
+		this.addUsersToBudgetValidator = usersIdsValidator;
 	}
 
 	/// <summary>
@@ -303,7 +310,7 @@ public class BudgetController : ControllerBase
 	///
 	/// Value must be positive for income or negative for expense.
 	///
-	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund"
 	///
 	///     POST
 	///     {
@@ -384,12 +391,18 @@ public class BudgetController : ControllerBase
 	/// <remarks>
 	/// Sample request:
 	/// Types: "Income", "Expense"
-	/// Set transactionType to null or don't include at all to get both types.
+	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
 	///         "pageSize": 10,
 	///         "pageIndex": 1,
-	///         "transactionType": null
+	///         "transactionType": null,
+	///         "categoryTypes": [
+	///           "HomeSpendings",
+	///           "Car"
+	///         ]
+	///         "search": "text"
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -406,6 +419,8 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
+			CategoryTypes = request.CategoryTypes,
+			Search = request.Search,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
@@ -455,5 +470,55 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 		return this.Ok(pagedList);
+	}
+
+	/// <summary>
+	/// Update value of favourite flag.
+	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="isFavourite">Is favourite flag value.</param>
+	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	[HttpPut("{budgetId:guid}/favourite")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, bool isFavourite)
+	{
+		await Task.CompletedTask;
+		return this.Ok();
+	}
+
+	/// <summary>
+	/// Add users to budget by budget owner or admin.
+	/// </summary>
+	/// <param name="budgetId">Budget id.</param>
+	/// <param name="usersIds">List of users ids to add to budget.</param>
+	/// <returns>User of the budget.</returns>
+	/// <response code="200">If users are added.</response>
+	/// <response code="400">If the query is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpPost("{budgetId:guid}/users")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> AddUsersToBudget([FromRoute] Guid budgetId, [FromBody] Guid[] usersIds)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var addUsersToBudget = new AddUsersToBudget(usersIds, budgetId);
+
+		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(addUsersToBudget);
+
+		var addUserToBudget = usersIds.Select(userId => new AddUserBudget(
+		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser)).ToList();
+
+		var userBudgetList = new AddUserBudgetList(addUserToBudget);
+
+		await this.commandBus.Send(userBudgetList);
+
+		return this.Ok();
 	}
 }

@@ -24,4 +24,14 @@ public enum CategoryType
 	/// Grocery Category.
 	/// </summary>
 	Grocery = 4,
+
+	/// <summary>
+	/// Salary Category.
+	/// </summary>
+	Salary = 5,
+
+	/// <summary>
+	/// Refund Category.
+	/// </summary>
+	Refund = 6,
 }

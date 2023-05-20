@@ -126,7 +126,7 @@ public class GetUsersQueryHandlerTests
 
 		var content = new StringContent(JsonConvert.SerializeObject(expectedUsers));
 
-		this.keycloakServiceMock.Setup(s => s.GetUsers(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Accepted) { Content = content });
+		this.keycloakServiceMock.Setup(s => s.GetUsers(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Accepted) { Content = content });
 
 		return expectedUsers;
 	}
@@ -137,5 +137,4 @@ public class GetUsersQueryHandlerTests
 		var content = new StringContent(JsonConvert.SerializeObject(token));
 		this.keycloakServiceMock.Setup(s => s.GetClientToken(It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(System.Net.HttpStatusCode.Accepted) { Content = content });
 	}
-
 }

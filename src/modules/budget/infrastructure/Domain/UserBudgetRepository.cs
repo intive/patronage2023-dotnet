@@ -1,8 +1,8 @@
+using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Events;
-using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure;
-using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
@@ -11,6 +11,8 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 /// </summary>
 internal class UserBudgetRepository : BaseRepository<UserBudgetAggregate, Guid>
 {
+	private readonly BudgetDbContext budgetDbContext;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserBudgetRepository"/> class.
 	/// </summary>
@@ -19,5 +21,6 @@ internal class UserBudgetRepository : BaseRepository<UserBudgetAggregate, Guid>
 	public UserBudgetRepository(BudgetDbContext budgetDbContext, IEventDispatcher<IEvent> eventDispatcher)
 		: base(budgetDbContext, eventDispatcher)
 	{
+		this.budgetDbContext = budgetDbContext;
 	}
 }
