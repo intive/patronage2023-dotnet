@@ -10,7 +10,10 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -41,6 +44,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
+	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -57,6 +61,7 @@ public class BudgetController : ControllerBase
 	/// <param name="editBudgetValidator">Edit budget validator.</param>
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
+	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -71,6 +76,7 @@ public class BudgetController : ControllerBase
 		IAuthorizationService authorizationService,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
+		IValidator<AddUsersToBudget> usersIdsValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -86,6 +92,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
+		this.addUsersToBudgetValidator = usersIdsValidator;
 	}
 
 	/// <summary>
@@ -477,6 +484,41 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, bool isFavourite)
 	{
 		await Task.CompletedTask;
+		return this.Ok();
+	}
+
+	/// <summary>
+	/// Add users to budget by budget owner or admin.
+	/// </summary>
+	/// <param name="budgetId">Budget id.</param>
+	/// <param name="usersIds">List of users ids to add to budget.</param>
+	/// <returns>User of the budget.</returns>
+	/// <response code="200">If users are added.</response>
+	/// <response code="400">If the query is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[HttpPost("{budgetId:guid}/users")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> AddUsersToBudget([FromRoute] Guid budgetId, [FromBody] Guid[] usersIds)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var addUsersToBudget = new AddUsersToBudget(usersIds, budgetId);
+
+		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(addUsersToBudget);
+
+		var addUserToBudget = usersIds.Select(userId => new AddUserBudget(
+		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser)).ToList();
+
+		var userBudgetList = new AddUserBudgetList(addUserToBudget);
+
+		await this.commandBus.Send(userBudgetList);
+
 		return this.Ok();
 	}
 }

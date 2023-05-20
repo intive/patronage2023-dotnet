@@ -3,7 +3,6 @@ using Intive.Patronage2023.Modules.User.Application.GettingUsers.Mappers;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Newtonsoft.Json;
 
@@ -51,7 +50,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfoDt
 	/// <returns>Paged list of users.</returns>
 	public async Task<PagedList<UserInfoDto>> Handle(GetUsers query, CancellationToken cancellationToken)
 	{
-		var response = await this.keycloakService.GetClientToken(cancellationToken);
+		var response = await this.keycloakService.GetUsers(query.Search ?? string.Empty, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{
@@ -59,27 +58,6 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfoDt
 		}
 
 		string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-
-		if (string.IsNullOrEmpty(responseContent))
-		{
-			throw new AppException(response.ToString());
-		}
-
-		Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
-
-		if (token?.AccessToken == null)
-		{
-			throw new AppException(response.ToString());
-		}
-
-		response = await this.keycloakService.GetUsers(query.Search, token.AccessToken, cancellationToken);
-
-		if (!response.IsSuccessStatusCode)
-		{
-			throw new AppException(response.ToString());
-		}
-
-		responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
 		var deserializedUsers = JsonConvert.DeserializeObject<List<UserInfo>>(responseContent);
 		int totalCount = deserializedUsers!.Count();
