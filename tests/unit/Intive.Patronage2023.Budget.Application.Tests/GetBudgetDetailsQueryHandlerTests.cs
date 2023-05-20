@@ -52,7 +52,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!, (IKeycloakService)this.keycloakServiceMock); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakServiceMock.Object); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);
@@ -71,7 +71,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!, (IKeycloakService)this.keycloakServiceMock); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakServiceMock.Object); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);
