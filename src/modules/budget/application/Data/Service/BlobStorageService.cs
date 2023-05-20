@@ -1,7 +1,6 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Data.Budgets;
 using Microsoft.Extensions.Configuration;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
@@ -12,21 +11,18 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
-	private readonly GenerateLocalCsvFilePath generateLocalCsvFilePath;
-	private readonly WriteBudgetsToCsvFile writeBudgetsToCsvFile;
+	private readonly ICsvService csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BlobStorageService"/> class.
 	/// DataService.
 	/// </summary>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
-	/// <param name="generateLocalCsvFilePath">GenerateLocalCsvFilePath.</param>
-	/// <param name="writeBudgetsToCsvFile">WriteBudgetsToCsvFile.</param>
-	public BlobStorageService(IConfiguration configuration, GenerateLocalCsvFilePath generateLocalCsvFilePath, WriteBudgetsToCsvFile writeBudgetsToCsvFile)
+	/// <param name="csvService">GenerateLocalCsvFilePath.</param>
+	public BlobStorageService(IConfiguration configuration, ICsvService csvService)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
-		this.generateLocalCsvFilePath = generateLocalCsvFilePath;
-		this.writeBudgetsToCsvFile = writeBudgetsToCsvFile;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
@@ -49,8 +45,8 @@ public class BlobStorageService : IBlobStorageService
 	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
 	public async Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient)
 	{
-		string localFilePath = this.generateLocalCsvFilePath.Generate();
-		string filePath = this.writeBudgetsToCsvFile.WriteBudgets(budgetInfos, localFilePath);
+		string localFilePath = this.csvService.GeneratePathToCsvFile();
+		string filePath = this.csvService.WriteBudgetsToCSV(budgetInfos, localFilePath);
 
 		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
 
@@ -61,11 +57,11 @@ public class BlobStorageService : IBlobStorageService
 	}
 
 	/// <summary>
-	/// x.
+	/// Downloads a specified file from Azure Blob Storage.
 	/// </summary>
-	/// <param name="filename">xxx.</param>
-	/// <param name="containerClient">xx.</param>
-	/// <returns>xxxx.</returns>
+	/// <param name="filename">The name of the file to be downloaded.</param>
+	/// <param name="containerClient">A client object for interacting with the Azure Blob Storage container.</param>
+	/// <returns>A task representing the asynchronous operation, yielding the downloaded file's information.</returns>
 	public async Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename, BlobContainerClient containerClient)
 	{
 		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filename));

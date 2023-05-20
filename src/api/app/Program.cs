@@ -3,7 +3,6 @@ using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Modules.Budget.Api;
-using Intive.Patronage2023.Modules.Budget.Application.Data.Budgets;
 using Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
@@ -53,9 +52,8 @@ builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 builder.Services.AddScoped<IBudgetExportService, BudgetExportService>();
 builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-builder.Services.AddScoped<GenerateLocalCsvFilePath>();
-builder.Services.AddScoped<WriteBudgetsToCsvFile>();
-builder.Services.AddScoped<ImportBudgetsFromBlobStorage>();
+builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<ICsvService, CsvService>();
 
 builder.Services.AddMediatR(cfg =>
 {

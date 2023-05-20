@@ -2,12 +2,12 @@ using System.Globalization;
 using CsvHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Budgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Class WriteBudgetsToCsvFile.
+/// CsvService.
 /// </summary>
-public class WriteBudgetsToCsvFile
+public class CsvService : ICsvService
 {
 	/// <summary>
 	/// Writes a list of budgets to a CSV file at the specified file path.
@@ -15,7 +15,7 @@ public class WriteBudgetsToCsvFile
 	/// <param name="budgets">A list of budgets to be written to the CSV file.</param>
 	/// <param name="filePath">The local path of the CSV file.</param>
 	/// <returns>The local path of the CSV file where the budgets were written.</returns>
-	public string WriteBudgets(GetBudgetTransferList budgets, string filePath)
+	public string WriteBudgetsToCSV(GetBudgetTransferList budgets, string filePath)
 	{
 		// Write text to the file
 		using (var writer = new StreamWriter(filePath))
@@ -31,5 +31,17 @@ public class WriteBudgetsToCsvFile
 		}
 
 		return filePath;
+	}
+
+	/// <summary>
+	/// Generates a local file path for a new CSV file.
+	/// </summary>
+	/// <returns>A string representing the local path to a newly generated CSV file.</returns>
+	public string GeneratePathToCsvFile()
+	{
+		string localPath = "data"; ////src\api\app\data
+		Directory.CreateDirectory(localPath);
+		string fileName = Guid.NewGuid().ToString() + ".csv";
+		return Path.Combine(localPath, fileName);
 	}
 }

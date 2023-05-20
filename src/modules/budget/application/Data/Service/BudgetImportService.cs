@@ -2,7 +2,6 @@ using System.Globalization;
 using Azure.Storage.Blobs;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Data.Budgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -10,14 +9,13 @@ using Microsoft.AspNetCore.Http;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// BudgetImportService.
+/// Class BudgetImportService.
 /// </summary>
 public class BudgetImportService : IBudgetImportService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
-	private readonly ImportBudgetsFromBlobStorage importBudgetsFromBlob;
-	private readonly ReadAndValidateBudgets readAndValidateBudgets;
+	private readonly IDataService dataHelper;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetImportService"/> class.
@@ -25,14 +23,12 @@ public class BudgetImportService : IBudgetImportService
 	/// </summary>
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
-	/// <param name="importBudgetsFromBlob">ImportBudgetsFromBlobStorage.</param>
-	/// <param name="readAndValidateBudgets">ReadAndValidateBudgets.</param>
-	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, ImportBudgetsFromBlobStorage importBudgetsFromBlob, ReadAndValidateBudgets readAndValidateBudgets)
+	/// <param name="dataHelper">IDataHelper.</param>
+	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IDataService dataHelper)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
-		this.importBudgetsFromBlob = importBudgetsFromBlob;
-		this.readAndValidateBudgets = readAndValidateBudgets;
+		this.dataHelper = dataHelper;
 	}
 
 	/// <summary>
@@ -55,7 +51,7 @@ public class BudgetImportService : IBudgetImportService
 			Delimiter = ",",
 		};
 
-		var budgetInfos = this.readAndValidateBudgets.ReadAndValidateBudgetsMethod(file, csvConfig, errors);
+		var budgetInfos = this.dataHelper.ReadAndValidateBudgetsMethod(file, csvConfig, errors);
 
 		if (budgetInfos.BudgetsList.Count == 0)
 		{
@@ -68,8 +64,7 @@ public class BudgetImportService : IBudgetImportService
 
 		string fileName = new Uri(uri).LocalPath;
 
-		//// zwaraca listę budgets aggregate
-		var budgetsAggregateList = await this.importBudgetsFromBlob.Import(fileName, containerClient, csvConfig);
+		var budgetsAggregateList = await this.dataHelper.Import(fileName, containerClient, csvConfig);
 
 		return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}

@@ -5,7 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// BudgetExportService.
+/// Class BudgetExportService.
 /// </summary>
 public class BudgetExportService : IBudgetExportService
 {
