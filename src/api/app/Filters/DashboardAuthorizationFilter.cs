@@ -10,16 +10,18 @@ namespace Intive.Patronage2023.Api.Filters;
 /// </summary>
 public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 {
+	private const string Role = "admin";
 	private static readonly string HangFireCookieName = "HangFireCookie";
 	private static readonly int CookieExpirationMinutes = 60;
-	private string role;
+	private readonly ILogger logger;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DashboardAuthorizationFilter"/> class.
 	/// </summary>
-	public DashboardAuthorizationFilter()
+	/// <param name="logger">Logger.</param>
+	public DashboardAuthorizationFilter(ILogger<DashboardAuthorizationFilter> logger)
 	{
-		this.role = "admin";
+		this.logger = logger;
 	}
 
 	/// <summary>
@@ -35,7 +37,6 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 		string? accessToken = string.Empty;
 		bool setCookie = false;
 
-		// try to get token from query string
 		if (httpContext.Request.Query.ContainsKey("access_token"))
 		{
 			accessToken = httpContext.Request.Query["access_token"].FirstOrDefault();
@@ -56,15 +57,15 @@ public class DashboardAuthorizationFilter : IDashboardAuthorizationFilter
 			var hand = new JwtSecurityTokenHandler();
 			var token = hand.ReadJwtToken(accessToken);
 			string realmAccessValue = token.Claims.First(c => c.Type == "realm_access").Value;
-			if (!string.IsNullOrEmpty(this.role) && !realmAccessValue.Contains(this.role))
+			if (!realmAccessValue.Contains(Role))
 			{
 				return false;
 			}
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine(e);
-			throw;
+			this.logger.LogError("Something went wrong: {E}", e);
+			return false;
 		}
 
 		if (setCookie)

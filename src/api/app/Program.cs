@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-
+using Hangfire.Dashboard;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
@@ -103,7 +103,9 @@ app.UseUserModule();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseHangfireService();
+var scope = app.Services.CreateScope();
+var authorizationFilter = scope.ServiceProvider.GetRequiredService<IDashboardAuthorizationFilter>();
+app.UseHangfireService(authorizationFilter!);
 
 app.UseSwagger();
 app.UseSwaggerUI();

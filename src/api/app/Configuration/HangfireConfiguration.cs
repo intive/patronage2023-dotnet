@@ -29,13 +29,14 @@ public static class HangfireConfiguration
 	/// Configures Hangfire Dashboard and adds it to the IApplicationBuilder.
 	/// </summary>
 	/// <param name="app">The IApplicationBuilder to configure Hangfire Dashboard on.</param>
-	public static void UseHangfireService(this IApplicationBuilder app)
+	/// <param name="dashboardAuthorizationFilter">sss.</param>
+	public static void UseHangfireService(this IApplicationBuilder app, IDashboardAuthorizationFilter dashboardAuthorizationFilter)
 	{
 		app.UseHangfireDashboard("/hangfire", new DashboardOptions
 		{
 			DashboardTitle = "Patronage Hangfire Dashboard",
 			IsReadOnlyFunc = (Func<DashboardContext, bool>)(_ => true),
-			Authorization = new[] { new DashboardAuthorizationFilter() },
+			Authorization = new[] { dashboardAuthorizationFilter },
 		});
 
 		RecurringJob.AddOrUpdate(
