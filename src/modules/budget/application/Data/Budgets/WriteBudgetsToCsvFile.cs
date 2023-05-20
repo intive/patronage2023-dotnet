@@ -15,7 +15,7 @@ public class WriteBudgetsToCsvFile
 	/// <param name="budgets">A list of budgets to be written to the CSV file.</param>
 	/// <param name="filePath">The local path of the CSV file.</param>
 	/// <returns>The local path of the CSV file where the budgets were written.</returns>
-	public string WriteBudgets(List<GetBudgetsToExportInfo> budgets, string filePath)
+	public string WriteBudgets(GetBudgetsListToExport budgets, string filePath)
 	{
 		// Write text to the file
 		using (var writer = new StreamWriter(filePath))
@@ -23,7 +23,7 @@ public class WriteBudgetsToCsvFile
 		{
 			csv.WriteHeader<GetBudgetsToExportInfo>();
 			csv.NextRecord();
-			foreach (var budget in budgets)
+			foreach (var budget in budgets.BudgetsList)
 			{
 				csv.WriteRecord(budget);
 				csv.NextRecord();

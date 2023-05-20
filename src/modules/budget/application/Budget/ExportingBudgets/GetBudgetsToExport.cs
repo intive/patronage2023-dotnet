@@ -10,12 +10,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// <summary>
 /// GetBudgetsToExport.
 /// </summary>
-public record GetBudgetsToExport : IQuery<List<GetBudgetsToExportInfo>?>;
+public record GetBudgetsToExport : IQuery<GetBudgetsListToExport?>;
 
 /// <summary>
 /// GetBudgetsToExportQueryHandler.
 /// </summary>
-public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, List<GetBudgetsToExportInfo>?>
+public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, GetBudgetsListToExport?>
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IExecutionContextAccessor contextAccessor;
@@ -37,7 +37,7 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 	/// <param name="query">Query.</param>
 	/// <param name="cancellationToken">cancellation token.</param>
 	/// <returns>List of Budgets.</returns>
-	public async Task<List<GetBudgetsToExportInfo>?> Handle(GetBudgetsToExport query, CancellationToken cancellationToken)
+	public async Task<GetBudgetsListToExport?> Handle(GetBudgetsToExport query, CancellationToken cancellationToken)
 	{
 		bool isAdmin = this.contextAccessor.IsAdmin();
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
@@ -51,6 +51,6 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 
 		var budgetInfos = await budgets.Select(entity => BudgetAggregateGetBudgetsToExportInfoMapper.Map(entity)).ToListAsync();
 
-		return budgetInfos;
+		return new GetBudgetsListToExport { BudgetsList = budgetInfos };
 	}
 }

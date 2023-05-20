@@ -18,6 +18,7 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -42,7 +43,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 	private readonly IBudgetExportService budgetExportService;
-	private readonly BudgetImportService budgetImportService;
+	////private readonly BudgetImportService budgetImportService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -77,7 +78,7 @@ public class BudgetController : ControllerBase
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
-		BudgetImportService budgetImportService)
+		////BudgetImportService budgetImportService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -460,26 +461,29 @@ public class BudgetController : ControllerBase
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
-		string? result = await this.budgetExportService.Export();
+		var query = new GetBudgetsToExport() { };
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetsListToExport?>(query);
+		string? result = await this.budgetExportService.Export(budgets);
+
 		return this.Ok(result);
 	}
 
-	/// <summary>
-	/// Imports budgets from a provided .csv file.
-	/// </summary>
-	/// <param name="file">The .csv file containing the budgets to be imported.</param>
-	/// <returns>An object containing a list of any errors encountered during the import process,
-	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
-	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
-	{
-		var result = await this.budgetImportService.Import(file);
+	/////// <summary>
+	/////// Imports budgets from a provided .csv file.
+	/////// </summary>
+	/////// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/////// <returns>An object containing a list of any errors encountered during the import process,
+	/////// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	////[HttpPost("import")]
+	////public async Task<IActionResult> Import(IFormFile file)
+	////{
+	////	var result = await this.budgetImportService.Import(file);
 
-		if (result.Uri != "No budgets were saved.")
-		{
-			return this.Ok(new { Errors = result.ErrorsList, result.Uri });
-		}
+	////	if (result.Uri != "No budgets were saved.")
+	////	{
+	////		return this.Ok(new { Errors = result.ErrorsList, result.Uri });
+	////	}
 
-		return this.BadRequest(new { Errors = result.ErrorsList, result.Uri });
-	}
+	////	return this.BadRequest(new { Errors = result.ErrorsList, result.Uri });
+	////}
 }
