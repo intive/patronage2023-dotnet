@@ -51,12 +51,11 @@ builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 builder.Services.AddScoped<IBudgetExportService, BudgetExportService>();
-builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
+////builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddScoped<GenerateLocalCsvFilePath>();
 builder.Services.AddScoped<WriteBudgetsToCsvFile>();
-builder.Services.AddScoped<GetBudgetsToExportAsync>();
-builder.Services.AddScoped<ImportBudgetsFromBlobStorage>();
+////builder.Services.AddScoped<ImportBudgetsFromBlobStorage>();
 
 builder.Services.AddMediatR(cfg =>
 {

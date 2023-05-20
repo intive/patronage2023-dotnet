@@ -62,7 +62,7 @@ public class BudgetController : ControllerBase
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
-	/// <param name="budgetImportService">BudgetImportService.</param>
+	/////// <param name="budgetImportService">BudgetImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -77,8 +77,8 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
-		IBudgetExportService budgetExportService,
-		////BudgetImportService budgetImportService)
+		IBudgetExportService budgetExportService)
+		/////*BudgetImportService budgetImportService*/)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -94,7 +94,7 @@ public class BudgetController : ControllerBase
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
 		this.budgetExportService = budgetExportService;
-		this.budgetImportService = budgetImportService;
+		////this.budgetImportService = budgetImportService;
 	}
 
 	/// <summary>
