@@ -51,9 +51,7 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 
 	private async Task<UserInfo?> IsUserExists(Guid id, CancellationToken cancellationToken)
 	{
-		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
-
-		var response = await this.keycloakService.GetUserById(id.ToString(), accessToken, cancellationToken);
+		var response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
 
 		if (response.StatusCode == HttpStatusCode.NotFound)
 		{

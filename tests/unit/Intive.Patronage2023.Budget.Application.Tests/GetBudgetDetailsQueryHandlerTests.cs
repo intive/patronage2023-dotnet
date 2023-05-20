@@ -7,6 +7,7 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Moq;
 using Xunit;
 using Currency = Intive.Patronage2023.Shared.Infrastructure.Domain.Currency;
 
@@ -17,15 +18,14 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetDetailsQueryHandlerTests
 {
-	private readonly IKeycloakService keycloakService;
+	private readonly Mock<IKeycloakService> keycloakServiceMock;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandlerTests"/> class.
 	/// </summary>
-	/// <param name="keycloakService"></param>
-	public GetBudgetDetailsQueryHandlerTests(IKeycloakService keycloakService)
+	public GetBudgetDetailsQueryHandlerTests()
 	{
-		this.keycloakService = keycloakService;
+		this.keycloakServiceMock = new Mock<IKeycloakService>();
 	}
 
 	/// <summary>
@@ -52,7 +52,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakService); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, (IKeycloakService)this.keycloakServiceMock); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);
@@ -71,7 +71,7 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakService); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, (IKeycloakService)this.keycloakServiceMock); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);

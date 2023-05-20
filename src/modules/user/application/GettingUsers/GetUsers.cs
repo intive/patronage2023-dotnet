@@ -50,9 +50,7 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsers, PagedList<UserInfoDt
 	/// <returns>Paged list of users.</returns>
 	public async Task<PagedList<UserInfoDto>> Handle(GetUsers query, CancellationToken cancellationToken)
 	{
-		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
-
-		var response = await this.keycloakService.GetUsers(query.Search ?? string.Empty, accessToken, cancellationToken);
+		var response = await this.keycloakService.GetUsers(query.Search ?? string.Empty, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{

@@ -76,8 +76,10 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
-	public async Task<HttpResponseMessage> AddUser(AppUser appUser, string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> AddUser(AppUser appUser, CancellationToken cancellationToken)
 	{
+		string accessToken = await this.ExtractAccessTokenFromClientToken(cancellationToken);
+
 		string realm = this.apiKeycloakSettings.Realm;
 
 		string url = $"/admin/realms/{realm}/users";
@@ -88,8 +90,10 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
-	public async Task<HttpResponseMessage> GetUsers(string? searchText, string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> GetUsers(string? searchText, CancellationToken cancellationToken)
 	{
+		string accessToken = await this.ExtractAccessTokenFromClientToken(cancellationToken);
+
 		string realm = this.apiKeycloakSettings.Realm;
 
 		string url = $"/admin/realms/{realm}/users";
@@ -132,8 +136,10 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
-	public async Task<HttpResponseMessage> GetUserById(string id, string accessToken, CancellationToken cancellationToken)
+	public async Task<HttpResponseMessage> GetUserById(string id, CancellationToken cancellationToken)
 	{
+		string accessToken = await this.ExtractAccessTokenFromClientToken(cancellationToken);
+
 		string realm = this.apiKeycloakSettings.Realm;
 
 		string url = $"/admin/realms/{realm}/users/{id}";

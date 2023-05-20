@@ -56,9 +56,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 			.Select(x => x.UserId.Value)
 			.ToListAsync(cancellationToken: cancellationToken);
 
-		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
-
-		var tasks = await Task.WhenAll(budgetUsers.Select(x => this.keycloakService.GetUserById(x.ToString(), accessToken, cancellationToken)
+		var tasks = await Task.WhenAll(budgetUsers.Select(x => this.keycloakService.GetUserById(x.ToString(), cancellationToken)
 			.ContinueWith(x => this.DeserializeResponse(x.Result, cancellationToken))).ToArray());
 
 		var usersBudget = tasks.Select(x => x.Result).ToArray();
@@ -84,7 +82,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 
 		if (userInfo == null)
 		{
-			throw new AppException();
+			throw new AppException("One or more error occured when trying to get user info.");
 		}
 
 		var budgetUser = new BudgetUser(userInfo.Id, userInfo.Attributes?.Avatar[0] ?? string.Empty, userInfo.FirstName, userInfo.LastName);

@@ -1,8 +1,8 @@
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Modules.User.Contracts;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 
 namespace Intive.Patronage2023.Modules.User.Application.CreatingUser;
 
@@ -37,8 +37,6 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 	/// <returns>HttpResponseMessage.</returns>
 	public async Task Handle(CreateUser command, CancellationToken cancellationToken)
 	{
-		string accessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
-
 		UserCredentials[] credentials =
 		{
 			new UserCredentials
@@ -64,7 +62,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 			Credentials = credentials,
 		};
 
-		var response = await this.keycloakService.AddUser(appUser, accessToken, cancellationToken);
+		var response = await this.keycloakService.AddUser(appUser, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{
