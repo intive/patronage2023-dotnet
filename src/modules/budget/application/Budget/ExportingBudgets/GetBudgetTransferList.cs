@@ -4,10 +4,10 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// <summary>
 /// Create Budget command.
 /// </summary>
-public record GetBudgetsListToExport()
+public record GetBudgetTransferList()
 {
 	/// <summary>
 	/// BudgetsList object.
 	/// </summary>
-	public List<GetBudgetsToExportInfo> BudgetsList { get; set; } = default!;
+	public List<GetBudgetTransferInfo> BudgetsList { get; set; } = default!;
 }

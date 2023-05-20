@@ -43,7 +43,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 	private readonly IBudgetExportService budgetExportService;
-	////private readonly BudgetImportService budgetImportService;
+	private readonly IBudgetImportService budgetImportService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -62,7 +62,7 @@ public class BudgetController : ControllerBase
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
-	/////// <param name="budgetImportService">BudgetImportService.</param>
+	/// <param name="budgetImportService">BudgetImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -77,8 +77,8 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
-		IBudgetExportService budgetExportService)
-		/////*BudgetImportService budgetImportService*/)
+		IBudgetExportService budgetExportService,
+		IBudgetImportService budgetImportService)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -94,7 +94,7 @@ public class BudgetController : ControllerBase
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
 		this.budgetExportService = budgetExportService;
-		////this.budgetImportService = budgetImportService;
+		this.budgetImportService = budgetImportService;
 	}
 
 	/// <summary>
@@ -462,28 +462,30 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> ExportBudgets()
 	{
 		var query = new GetBudgetsToExport() { };
-		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetsListToExport?>(query);
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
 		return this.Ok(result);
 	}
 
-	/////// <summary>
-	/////// Imports budgets from a provided .csv file.
-	/////// </summary>
-	/////// <param name="file">The .csv file containing the budgets to be imported.</param>
-	/////// <returns>An object containing a list of any errors encountered during the import process,
-	/////// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
-	////[HttpPost("import")]
-	////public async Task<IActionResult> Import(IFormFile file)
-	////{
-	////	var result = await this.budgetImportService.Import(file);
+	/// <summary>
+	/// Imports budgets from a provided .csv file.
+	/// </summary>
+	/// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/// <returns>An object containing a list of any errors encountered during the import process,
+	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	[HttpPost("import")]
+	public async Task<IActionResult> Import(IFormFile file)
+	{
+		////return new ImportResult { ErrorsList = errors, Uri = uri };
+		var getImportResult = await this.budgetImportService.Import(file);
+		await this.commandBus.Send(getImportResult.BudgetAggregateList);
 
-	////	if (result.Uri != "No budgets were saved.")
-	////	{
-	////		return this.Ok(new { Errors = result.ErrorsList, result.Uri });
-	////	}
+		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		{
+			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		}
 
-	////	return this.BadRequest(new { Errors = result.ErrorsList, result.Uri });
-	////}
+		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+	}
 }

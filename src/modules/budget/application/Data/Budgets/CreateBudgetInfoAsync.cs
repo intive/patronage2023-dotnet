@@ -26,12 +26,12 @@ public class CreateBudgetInfoAsync
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
 	/// <returns>Creates a new budget.</returns>
-	public GetBudgetsToExportInfo? Create(GetBudgetsToExportInfo budget)
+	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget)
 	{
 		bool isExistingBudget = this.budgetDbContext.Budget.Any(b => b.Name.Equals(budget.Name));
 		string budgetName = isExistingBudget ? budget.Name + new Random().Next(100000, 900001) : budget.Name;
 
-		var budgetInfo = new GetBudgetsToExportInfo
+		var budgetInfo = new GetBudgetTransferInfo
 		{
 			Name = budgetName,
 			IconName = budget.IconName,

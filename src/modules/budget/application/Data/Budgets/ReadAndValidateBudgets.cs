@@ -33,14 +33,14 @@ public class ReadAndValidateBudgets
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public List<GetBudgetsToExportInfo> ReadAndValidateBudgetsMethod(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	public GetBudgetTransferList ReadAndValidateBudgetsMethod(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
-		var budgetInfos = new List<GetBudgetsToExportInfo>();
+		var budgetInfos = new List<GetBudgetTransferInfo>();
 		using var stream = file.OpenReadStream();
 		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
 		{
 			csv.Read();
-			var budgets = csv.GetRecords<GetBudgetsToExportInfo>().ToList();
+			var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
 			int rowNumber = 0;
 
 			foreach (var budget in budgets)
@@ -63,6 +63,6 @@ public class ReadAndValidateBudgets
 			}
 		}
 
-		return budgetInfos;
+		return new GetBudgetTransferList { BudgetsList = budgetInfos };
 	}
 }

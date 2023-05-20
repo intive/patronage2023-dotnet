@@ -13,8 +13,8 @@ public static class BudgetAggregateGetBudgetsToExportInfoMapper
 	/// </summary>
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <returns>Returns Budget details information.</returns>
-	public static GetBudgetsToExportInfo Map(BudgetAggregate entity) =>
-		new GetBudgetsToExportInfo
+	public static GetBudgetTransferInfo Map(BudgetAggregate entity) =>
+		new GetBudgetTransferInfo
 		{
 			Name = entity.Name,
 			IconName = entity.Icon,

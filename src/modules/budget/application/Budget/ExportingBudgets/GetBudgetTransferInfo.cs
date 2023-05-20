@@ -4,7 +4,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// <summary>
 /// Create Budget command.
 /// </summary>
-public record GetBudgetsToExportInfo()
+public record GetBudgetTransferInfo()
 {
 	/// <summary>
 	/// Budget name.

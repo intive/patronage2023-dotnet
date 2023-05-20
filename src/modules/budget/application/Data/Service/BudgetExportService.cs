@@ -29,7 +29,7 @@ public class BudgetExportService : IBudgetExportService
 	/// </summary>
 	/// <param name="budgets">GetBudgetsListToExport.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	public async Task<string?> Export(GetBudgetsListToExport? budgets)
+	public async Task<string?> Export(GetBudgetTransferList? budgets)
 	{
 		string containerName = this.contextAccessor.GetUserId().ToString()!;
 		BlobContainerClient containerClient = await this.blobStorageService.CreateBlobContainerIfNotExists(containerName);

@@ -15,13 +15,13 @@ public class WriteBudgetsToCsvFile
 	/// <param name="budgets">A list of budgets to be written to the CSV file.</param>
 	/// <param name="filePath">The local path of the CSV file.</param>
 	/// <returns>The local path of the CSV file where the budgets were written.</returns>
-	public string WriteBudgets(GetBudgetsListToExport budgets, string filePath)
+	public string WriteBudgets(GetBudgetTransferList budgets, string filePath)
 	{
 		// Write text to the file
 		using (var writer = new StreamWriter(filePath))
 		using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 		{
-			csv.WriteHeader<GetBudgetsToExportInfo>();
+			csv.WriteHeader<GetBudgetTransferInfo>();
 			csv.NextRecord();
 			foreach (var budget in budgets.BudgetsList)
 			{

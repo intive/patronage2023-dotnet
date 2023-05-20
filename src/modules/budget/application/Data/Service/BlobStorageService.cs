@@ -47,7 +47,7 @@ public class BlobStorageService : IBlobStorageService
 	/// <param name="budgetInfos">A list of budgets to be written to the CSV file and uploaded.</param>
 	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
-	public async Task<string> UploadToBlobStorage(GetBudgetsListToExport budgetInfos, BlobContainerClient containerClient)
+	public async Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient)
 	{
 		string localFilePath = this.generateLocalCsvFilePath.Generate();
 		string filePath = this.writeBudgetsToCsvFile.WriteBudgets(budgetInfos, localFilePath);

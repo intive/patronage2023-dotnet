@@ -13,7 +13,7 @@ public class BudgetValidator
 	/// </summary>
 	/// <param name="budget">The budget object to validate.</param>
 	/// <returns>A list of error messages. If the list is empty, the budget object is valid.</returns>
-	public List<string> Validate(GetBudgetsToExportInfo budget)
+	public List<string> Validate(GetBudgetTransferInfo budget)
 	{
 		var errors = new List<string>();
 
