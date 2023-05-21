@@ -53,14 +53,14 @@ public class BudgetImportService : IBudgetImportService
 
 		var budgetInfos = this.budgetDataService.CreateValidBudgetsList(file, csvConfig, errors);
 
-		if (budgetInfos.BudgetsList.Count == 0)
+		if (budgetInfos.Result.BudgetsList.Count == 0)
 		{
 			return new GetImportResult(
 				new BudgetAggregateList(new List<BudgetAggregate>()),
 				new ImportResult { ErrorsList = errors, Uri = "No budgets were saved." });
 		}
 
-		string uri = await this.blobStorageService.UploadToBlobStorage(budgetInfos, containerClient);
+		string uri = await this.blobStorageService.UploadToBlobStorage(budgetInfos.Result, containerClient);
 
 		string fileName = new Uri(uri).LocalPath;
 

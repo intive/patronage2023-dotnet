@@ -84,6 +84,7 @@ public class BudgetDataService : IBudgetDataService
 	{
 		bool isExistingBudget = budgetsNames!.BudgetName!.Contains(budget.Name);
 		string budgetName = isExistingBudget ? budget.Name + new Random().Next(100000, 900001) : budget.Name;
+		budgetsNames.BudgetName.Add(budgetName);
 
 		var budgetInfo = new GetBudgetTransferInfo
 		{
