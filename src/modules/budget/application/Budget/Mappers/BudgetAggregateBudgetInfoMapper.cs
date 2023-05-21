@@ -13,7 +13,7 @@ public static class BudgetAggregateBudgetInfoMapper
 	/// Mapping method.
 	/// </summary>
 	/// <param name="query">Entity to be mapped.</param>
-	/// <param name="favouriteBudgetDictionary">Dictionary with all budets fourite flag..</param>
+	/// <param name="favouriteBudgetDictionary">Dictionary with all budets favourite flag.</param>
 	/// <returns>Returns budgets informations.</returns>
 	public static IQueryable<BudgetInfo> MapToBudgetInfo(this IQueryable<BudgetAggregate> query, List<BudgetId> favouriteBudgetDictionary) =>
 		query.Select(x => new BudgetInfo
