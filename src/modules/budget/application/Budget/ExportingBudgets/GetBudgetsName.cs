@@ -6,13 +6,14 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+
 /// <summary>
-///  A record representing the query to retrieve information about a user's role in a specific budget.
+///  A record representing the query to retrieve the names of budgets associated with a specific user.
 /// </summary>
 public record GetBudgetsName() : IQuery<GetBudgetsNameInfo?>;
 
 /// <summary>
-/// This Class is a query handler for the GetUserBudgetRole query.
+/// This class is a query handler for the GetBudgetsName query.
 /// </summary>
 public class GetBudgetsNameQueryHandler : IQueryHandler<GetBudgetsName, GetBudgetsNameInfo?>
 {
@@ -31,11 +32,11 @@ public class GetBudgetsNameQueryHandler : IQueryHandler<GetBudgetsName, GetBudge
 	}
 
 	/// <summary>
-	/// Representing the asynchronous operation to retrieve information about a user's role in the specified budget.
+	/// Asynchronously retrieves the names of budgets associated with a specific user.
 	/// </summary>
-	/// <param name="query">Query.</param>
+	/// <param name="query">An instance of the GetBudgetsName record.</param>
 	/// <param name="cancellationToken">Object representing a cancellation token that can be used to cancel the asynchronous operation.</param>
-	/// <returns>Returns a UserBudgetRoleInfo object with a UserRole property that returns the user or null role.</returns>
+	/// <returns>Returns a GetBudgetsNameInfo object that contains a list of budget names or null if no budget names are found.</returns>
 	public async Task<GetBudgetsNameInfo?> Handle(GetBudgetsName query, CancellationToken cancellationToken)
 	{
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);

@@ -14,6 +14,7 @@ public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
 	private readonly ICsvService csvService;
+	private readonly IConfiguration configuration;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BlobStorageService"/> class.
@@ -25,6 +26,7 @@ public class BlobStorageService : IBlobStorageService
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 		this.csvService = csvService;
+		this.configuration = configuration;
 	}
 
 	/// <summary>
@@ -55,32 +57,11 @@ public class BlobStorageService : IBlobStorageService
 		await blobClient.UploadAsync(filePath, true);
 		File.Delete(filePath);
 
-		// Utworzenie polityki dostępu na podstawie których wygenerujemy SAS
-		var sasBuilder = new BlobSasBuilder
-		{
-			BlobContainerName = containerClient.Name,
-			BlobName = blobClient.Name,
-			Resource = "b",
-			StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
-			ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
-		};
+		string? connectionString = this.configuration.GetConnectionString("BlobStorage");
+		string accountKey = connectionString!.Split(new[] { "AccountKey=" }, StringSplitOptions.None)[1].Split(';')[0];
+		string blobSasUri = this.GenerateSasForBlob(blobClient, accountKey);
 
-		// Ustalenie uprawnień - tutaj ustawiamy na czytanie
-		sasBuilder.SetPermissions(BlobSasPermissions.Read);
-
-		// Generowanie SAS
-		var storageSharedKeyCredential = new StorageSharedKeyCredential(containerClient.AccountName, "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==");
-		string sasToken = sasBuilder.ToSasQueryParameters(storageSharedKeyCredential).ToString();
-
-		// Dodanie SAS do URL Blobu
-		var sasUri = new UriBuilder(blobClient.Uri)
-		{
-			Query = sasToken,
-		};
-
-		return sasUri.ToString();
-
-		////return blobClient.Uri.AbsoluteUri;
+		return blobSasUri;
 	}
 
 	/// <summary>
@@ -94,5 +75,40 @@ public class BlobStorageService : IBlobStorageService
 		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filename));
 		BlobDownloadInfo download = await blobClient.DownloadAsync();
 		return download;
+	}
+
+	/// <summary>
+	/// Generates a Shared Access Signature (SAS) for a specific blob within Azure Storage.
+	/// </summary>
+	/// <param name="blobClient">An instance of BlobClient which provides access to a specific blob in Azure Storage.</param>
+	/// <param name="accountKey">The account key for your Azure Storage account. It is used in conjunction with the BlobClient to generate the SAS token.</param>
+	/// <returns>
+	/// A string representing the URI of the blob, with the generated SAS token appended as a query string.</returns>
+	public string GenerateSasForBlob(BlobClient blobClient, string accountKey)
+	{
+		// Utworzenie polityki dostępu na podstawie których wygenerujemy SAS
+		var sasBuilder = new BlobSasBuilder
+		{
+			BlobContainerName = blobClient.BlobContainerName,
+			BlobName = blobClient.Name,
+			Resource = "b",
+			StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
+			ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+		};
+
+		// Ustalenie uprawnień - tutaj ustawiamy na czytanie
+		sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+		// Generowanie SAS
+		var storageSharedKeyCredential = new StorageSharedKeyCredential(blobClient.AccountName, accountKey);
+		string sasToken = sasBuilder.ToSasQueryParameters(storageSharedKeyCredential).ToString();
+
+		// Dodanie SAS do URL Blobu
+		var sasUri = new UriBuilder(blobClient.Uri)
+		{
+			Query = sasToken,
+		};
+
+		return sasUri.ToString();
 	}
 }
