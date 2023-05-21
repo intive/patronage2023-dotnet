@@ -1,5 +1,7 @@
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Microsoft.Extensions.Configuration;
 
@@ -53,7 +55,32 @@ public class BlobStorageService : IBlobStorageService
 		await blobClient.UploadAsync(filePath, true);
 		File.Delete(filePath);
 
-		return blobClient.Uri.AbsoluteUri;
+		// Utworzenie polityki dostępu na podstawie których wygenerujemy SAS
+		var sasBuilder = new BlobSasBuilder
+		{
+			BlobContainerName = containerClient.Name,
+			BlobName = blobClient.Name,
+			Resource = "b",
+			StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
+			ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+		};
+
+		// Ustalenie uprawnień - tutaj ustawiamy na czytanie
+		sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+		// Generowanie SAS
+		var storageSharedKeyCredential = new StorageSharedKeyCredential(containerClient.AccountName, "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==");
+		string sasToken = sasBuilder.ToSasQueryParameters(storageSharedKeyCredential).ToString();
+
+		// Dodanie SAS do URL Blobu
+		var sasUri = new UriBuilder(blobClient.Uri)
+		{
+			Query = sasToken,
+		};
+
+		return sasUri.ToString();
+
+		////return blobClient.Uri.AbsoluteUri;
 	}
 
 	/// <summary>
