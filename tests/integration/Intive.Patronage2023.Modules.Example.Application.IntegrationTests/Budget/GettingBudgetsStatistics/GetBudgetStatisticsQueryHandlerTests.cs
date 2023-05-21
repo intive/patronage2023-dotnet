@@ -1,5 +1,6 @@
 using Bogus;
 using FluentAssertions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -41,7 +42,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler returns correct TotalBudgetValue (which is sum of all transactions in your budget).
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldVerifyTotalBudgetValue()
+	public async Task Handle_WhenCalledOnBudgetWithTransactions_ShouldCalculateTotalBudgetValueAsSumOfTransactions()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -99,7 +100,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler returns correct period value (which is sum of transaction values between start date and end date).
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldVerifyPeriodValue()
+	public async Task Handle_WhenCalledOnBudgetWithTransactions_ShouldCalculatePeriodValueAsSumOfTransactionsBetweenTwoDates()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -155,7 +156,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler returns correct budgetTransactionsValues (which is a list of transaction values grouped and sum by day).
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldVerifyBudgetTransactionsValues()
+	public async Task Handle_WhenCalledBudgetOnBudgetWithTransactions_ShouldCalculateBudgetBalance()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -212,7 +213,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler counts expenses.
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldCountExpenses()
+	public async Task Handle_WhenCalledOnBudgetWithExpenses_ShouldCalculateBudgetBalance()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -284,7 +285,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler does not count cancelled transactions.
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldNotCountCancelledTransactions()
+	public async Task Handle_WhenCalledOnBudgetWithCancelledTransactions_ShouldCalculateBudgetBalance()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -349,7 +350,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler should not count cancelled transactions and should count Expenses.
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldHandleCancelledTransactionsAndExpenses()
+	public async Task Handle_WhenCalledOnBudgetWithCancelledTransactionsAndExpenses_ShouldCalculateBudgetBalance()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -425,7 +426,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if GetBudgetStatisticQueryHandler counts sum of transactions by day.
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledBudget_ShouldVerifySumOfTransactionsByDay()
+	public async Task Handle_WhenCalledOnBudgetWithTransactions_ShouldCalculateBudgetBalanceEveryTransaction()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -447,7 +448,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(budget);
 
-		for (int i = 1; i < 10; i++)
+		for (int i = 1; i < 6; i++)
 		{
 			var transactionPeriod = period.StartDate.AddDays(i);
 			var incomeId = new TransactionId(Guid.NewGuid());
@@ -464,8 +465,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 			this.dbContext.Transaction.Add(income);
 		}
 
-
-
 		await this.dbContext.SaveChangesAsync();
 
 		var budgetStatisticsQuery = new GetBudgetStatistics
@@ -479,16 +478,14 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		// Act
 		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
 
-		decimal k = 0;
-		bool isBudgetTransactionSumOk = true;
-		for (int j = 0; j < 10; j++)
+		result.Items.Should().BeEquivalentTo(new List<BudgetAmount>()
 		{
-			k += j;
-			if (result.Items[j].Value != k)
-			{
-				isBudgetTransactionSumOk = false; break;
-			}
-		}
-		isBudgetTransactionSumOk.Should().BeTrue();
+			new BudgetAmount() { Value = 0 },
+			new BudgetAmount() { Value = 1 },
+			new BudgetAmount() { Value = 3 },
+			new BudgetAmount() { Value = 6 },
+			new BudgetAmount() { Value = 10 },
+			new BudgetAmount() { Value = 15 },
+		},x => x.Excluding(y => y.DatePoint));
 	}
 }
