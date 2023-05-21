@@ -8,7 +8,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 /// <summary>
 /// Defines a service for handling data operations including importing, validating, and creating budget data.
 /// </summary>
-public interface IDataService
+public interface IBudgetDataService
 {
 	/// <summary>
 	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
@@ -17,15 +17,16 @@ public interface IDataService
 	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig);
+	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.
 	/// If a budget with the same name already exists in the database, a random number is appended to the name.
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
+	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
 	/// <returns>Creates a new budget.</returns>
-	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget);
+	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames);
 
 	/// <summary>
 	/// Validates the properties of a budget object.
@@ -42,5 +43,5 @@ public interface IDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	GetBudgetTransferList CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
+	public Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
 }

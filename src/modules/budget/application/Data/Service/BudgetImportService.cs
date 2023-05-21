@@ -15,7 +15,7 @@ public class BudgetImportService : IBudgetImportService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
-	private readonly IDataService budgetDataService;
+	private readonly IBudgetDataService budgetDataService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetImportService"/> class.
@@ -24,7 +24,7 @@ public class BudgetImportService : IBudgetImportService
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="budgetDataService">IDataHelper.</param>
-	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IDataService budgetDataService)
+	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IBudgetDataService budgetDataService)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;

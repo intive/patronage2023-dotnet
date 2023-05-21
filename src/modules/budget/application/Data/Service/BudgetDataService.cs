@@ -5,9 +5,9 @@ using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +17,11 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 /// <summary>
 /// Class DataService.
 /// </summary>
-public class BudgetDataService : IDataService
+public class BudgetDataService : IBudgetDataService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
-	private readonly BudgetDbContext budgetDbContext;
+	private readonly IQueryBus queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetDataService"/> class.
@@ -29,12 +29,12 @@ public class BudgetDataService : IDataService
 	/// </summary>
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
-	/// <param name="budgetDbContext">BudgetDbContext.</param>
-	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, BudgetDbContext budgetDbContext)
+	/// <param name="queryBus">IQueryBus.</param>
+	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IQueryBus queryBus)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
-		this.budgetDbContext = budgetDbContext;
+		this.queryBus = queryBus;
 	}
 
 	/// <summary>
@@ -77,11 +77,12 @@ public class BudgetDataService : IDataService
 	/// If a budget with the same name already exists in the database, a random number is appended to the name.
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
+	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
 	/// <returns>Creates a new budget.</returns>
 	// TODO: zrob z tego extension method
-	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget)
+	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
 	{
-		bool isExistingBudget = this.budgetDbContext.Budget.Any(b => b.Name.Equals(budget.Name));
+		bool isExistingBudget = budgetsNames!.BudgetName!.Contains(budget.Name);
 		string budgetName = isExistingBudget ? budget.Name + new Random().Next(100000, 900001) : budget.Name;
 
 		var budgetInfo = new GetBudgetTransferInfo
@@ -166,9 +167,10 @@ public class BudgetDataService : IDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public GetBudgetTransferList CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	public async Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
 		var budgetInfos = new List<GetBudgetTransferInfo>();
+		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
 		using var stream = file.OpenReadStream();
 		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
 		{
@@ -191,7 +193,7 @@ public class BudgetDataService : IDataService
 					continue;
 				}
 
-				var updateBudget = this.Create(budget);
+				var updateBudget = this.Create(budget, budgetsNames);
 				budgetInfos.Add(updateBudget!);
 			}
 		}
