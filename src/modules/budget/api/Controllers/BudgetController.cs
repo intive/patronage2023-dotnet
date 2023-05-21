@@ -132,8 +132,6 @@ public class BudgetController : ControllerBase
 			throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
 		}
 
-		////var data = new DataService();
-
 		var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 		return this.Ok(pagedList);
 	}
@@ -461,7 +459,7 @@ public class BudgetController : ControllerBase
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
-		var query = new GetBudgetsToExport() { };
+		var query = new GetBudgetsToExport();
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
@@ -477,7 +475,6 @@ public class BudgetController : ControllerBase
 	[HttpPost("import")]
 	public async Task<IActionResult> Import(IFormFile file)
 	{
-		////return new ImportResult { ErrorsList = errors, Uri = uri };
 		var getImportResult = await this.budgetImportService.Import(file);
 		await this.commandBus.Send(getImportResult.BudgetAggregateList);
 

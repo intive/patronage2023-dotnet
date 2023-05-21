@@ -62,7 +62,7 @@ public class DataService : IDataService
 					decimal limit = decimal.Parse(budget.Value, CultureInfo.InvariantCulture);
 					var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
 					var period = new Period(DateTime.Parse(budget.StartDate), DateTime.Parse(budget.EndDate));
-					string description = string.IsNullOrEmpty(budget.Description) ? string.Empty : budget.Description;
+					string description = budget.Description ?? string.Empty;
 					var newBudget = BudgetAggregate.Create(budgetId, budget.Name, userId, money, period, description, budget.IconName);
 					newBudgets.Add(newBudget);
 				}

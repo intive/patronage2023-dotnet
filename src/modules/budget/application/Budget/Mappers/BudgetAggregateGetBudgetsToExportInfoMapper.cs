@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 
@@ -11,17 +12,17 @@ public static class BudgetAggregateGetBudgetsToExportInfoMapper
 	/// <summary>
 	/// Mapping method.
 	/// </summary>
-	/// <param name="entity">Entity to be mapped.</param>
+	/// <param name="query">Entity to be mapped.</param>
 	/// <returns>Returns Budget details information.</returns>
-	public static GetBudgetTransferInfo Map(BudgetAggregate entity) =>
-		new GetBudgetTransferInfo
+	public static IQueryable<GetBudgetTransferInfo> MapToGetBudgetTransferInfo(this IQueryable<BudgetAggregate> query) =>
+		query.Select(x => new GetBudgetTransferInfo
 		{
-			Name = entity.Name,
-			IconName = entity.Icon,
-			Description = string.IsNullOrEmpty(entity.Description) ? string.Empty : entity.Description,
-			Currency = entity.Limit.Currency.ToString(),
-			Value = entity.Limit.Value.ToString(),
-			StartDate = entity.Period.StartDate.ToString(),
-			EndDate = entity.Period.EndDate.ToString(),
-		};
+			Name = x.Name,
+			IconName = x.Icon,
+			Description = x.Description ?? string.Empty,
+			Currency = x.Limit.Currency.ToString(),
+			Value = x.Limit.Value.ToString(),
+			StartDate = x.Period.StartDate.ToString(),
+			EndDate = x.Period.EndDate.ToString(),
+		});
 }

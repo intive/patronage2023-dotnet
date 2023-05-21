@@ -49,7 +49,7 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 			budgets = budgets.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
 		}
 
-		var budgetInfos = await budgets.Select(entity => BudgetAggregateGetBudgetsToExportInfoMapper.Map(entity)).ToListAsync();
+		var budgetInfos = await budgets.MapToGetBudgetTransferInfo().ToListAsync(cancellationToken: cancellationToken);
 
 		return new GetBudgetTransferList { BudgetsList = budgetInfos };
 	}
