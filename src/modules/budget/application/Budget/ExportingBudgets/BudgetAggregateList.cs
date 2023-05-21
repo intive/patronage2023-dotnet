@@ -30,9 +30,6 @@ public class HandleBudgetAggregateList : ICommandHandler<BudgetAggregateList>
 	/// <inheritdoc/>
 	public async Task Handle(BudgetAggregateList command, CancellationToken cancellationToken)
 	{
-		foreach (var budget in command.ListOfBudgets)
-		{
-			await this.budgetRepository.Persist(budget);
-		}
+		await this.budgetRepository.Persist(command.ListOfBudgets);
 	}
 }
