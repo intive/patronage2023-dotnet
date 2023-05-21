@@ -17,20 +17,20 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 /// <summary>
 /// Class DataService.
 /// </summary>
-public class DataService : IDataService
+public class BudgetDataService : IDataService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="DataService"/> class.
+	/// Initializes a new instance of the <see cref="BudgetDataService"/> class.
 	/// DataService.
 	/// </summary>
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="budgetDbContext">BudgetDbContext.</param>
-	public DataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, BudgetDbContext budgetDbContext)
+	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, BudgetDbContext budgetDbContext)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
@@ -44,7 +44,7 @@ public class DataService : IDataService
 	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	public async Task<BudgetAggregateList> Import(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
+	public async Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
 	{
 		var newBudgets = new List<BudgetAggregate>();
 		var download = await this.blobStorageService.DownloadFromBlobStorage(Path.GetFileName(filename), containerClient);
@@ -78,6 +78,7 @@ public class DataService : IDataService
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
 	/// <returns>Creates a new budget.</returns>
+	// TODO: zrob z tego extension method
 	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget)
 	{
 		bool isExistingBudget = this.budgetDbContext.Budget.Any(b => b.Name.Equals(budget.Name));
@@ -102,7 +103,7 @@ public class DataService : IDataService
 	/// </summary>
 	/// <param name="budget">The budget object to validate.</param>
 	/// <returns>A list of error messages. If the list is empty, the budget object is valid.</returns>
-	public List<string> Validate(GetBudgetTransferInfo budget)
+	public List<string> BudgetValidate(GetBudgetTransferInfo budget)
 	{
 		var errors = new List<string>();
 
@@ -165,7 +166,7 @@ public class DataService : IDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public GetBudgetTransferList ReadAndValidateBudgetsMethod(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	public GetBudgetTransferList CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
 		var budgetInfos = new List<GetBudgetTransferInfo>();
 		using var stream = file.OpenReadStream();
@@ -177,7 +178,7 @@ public class DataService : IDataService
 
 			foreach (var budget in budgets)
 			{
-				var results = this.Validate(budget);
+				var results = this.BudgetValidate(budget);
 				rowNumber++;
 
 				if (results.Any())

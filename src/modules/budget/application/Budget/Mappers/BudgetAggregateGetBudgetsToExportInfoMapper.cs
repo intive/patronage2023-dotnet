@@ -1,6 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 

@@ -52,7 +52,7 @@ builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 builder.Services.AddScoped<IBudgetExportService, BudgetExportService>();
 builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<IDataService, BudgetDataService>();
 builder.Services.AddScoped<ICsvService, CsvService>();
 
 builder.Services.AddMediatR(cfg =>

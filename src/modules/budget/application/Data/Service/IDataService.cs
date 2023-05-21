@@ -17,7 +17,7 @@ public interface IDataService
 	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	Task<BudgetAggregateList> Import(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig);
+	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.
@@ -32,7 +32,7 @@ public interface IDataService
 	/// </summary>
 	/// <param name="budget">The budget object to validate.</param>
 	/// <returns>A list of error messages. If the list is empty, the budget object is valid.</returns>
-	public List<string> Validate(GetBudgetTransferInfo budget);
+	public List<string> BudgetValidate(GetBudgetTransferInfo budget);
 
 	/// <summary>
 	/// Reads budgets from a CSV file, validates them, and returns a list of valid budgets.
@@ -42,5 +42,5 @@ public interface IDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	GetBudgetTransferList ReadAndValidateBudgetsMethod(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
+	GetBudgetTransferList CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
 }

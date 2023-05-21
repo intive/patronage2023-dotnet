@@ -15,7 +15,7 @@ public class BudgetImportService : IBudgetImportService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
-	private readonly IDataService dataHelper;
+	private readonly IDataService budgetDataService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetImportService"/> class.
@@ -23,12 +23,12 @@ public class BudgetImportService : IBudgetImportService
 	/// </summary>
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
-	/// <param name="dataHelper">IDataHelper.</param>
-	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IDataService dataHelper)
+	/// <param name="budgetDataService">IDataHelper.</param>
+	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IDataService budgetDataService)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
-		this.dataHelper = dataHelper;
+		this.budgetDataService = budgetDataService;
 	}
 
 	/// <summary>
@@ -51,7 +51,7 @@ public class BudgetImportService : IBudgetImportService
 			Delimiter = ",",
 		};
 
-		var budgetInfos = this.dataHelper.ReadAndValidateBudgetsMethod(file, csvConfig, errors);
+		var budgetInfos = this.budgetDataService.CreateValidBudgetsList(file, csvConfig, errors);
 
 		if (budgetInfos.BudgetsList.Count == 0)
 		{
@@ -64,7 +64,7 @@ public class BudgetImportService : IBudgetImportService
 
 		string fileName = new Uri(uri).LocalPath;
 
-		var budgetsAggregateList = await this.dataHelper.Import(fileName, containerClient, csvConfig);
+		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsFromCsvToBudgetAggregate(fileName, containerClient, csvConfig);
 
 		return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}
