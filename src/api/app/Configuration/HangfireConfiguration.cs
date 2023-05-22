@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.Dashboard;
 
 using Intive.Patronage2023.Api.Filters;
+using Intive.Patronage2023.Shared.Infrastructure;
 
 namespace Intive.Patronage2023.Api.Configuration;
 
@@ -39,11 +40,6 @@ public static class HangfireConfiguration
 			Authorization = new[] { dashboardAuthorizationFilter },
 		});
 
-		RecurringJob.AddOrUpdate(
-			"SuperImportantJobId",
-			() => Console.WriteLine("Hello did you forget about me??"),
-			Cron.Hourly);
-
-		BackgroundJob.Schedule(() => Console.WriteLine("Schedule Job"), TimeSpan.FromDays(1));
+		BackgroundJob.Schedule<SendLogMessage>(sender => sender.LogInformation("I am doing my job every day!"), TimeSpan.FromDays(1));
 	}
 }

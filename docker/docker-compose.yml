@@ -3,11 +3,11 @@ version: '3.4'
 services:
   db:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-  mssqlscripts:
+  createKeycloakDbScript:
     image: mcr.microsoft.com/mssql-tools
     depends_on:
       - db
-  mssqlscripts1:
+  createHangfireDbScript:
       image: mcr.microsoft.com/mssql-tools
       depends_on:
           - db
@@ -25,7 +25,7 @@ services:
     container_name: keycloak
     depends_on:
       - db
-      - mssqlscripts
+      - createKeycloakDbScript
   smtp4dev:
     image: "rnwood/smtp4dev"
   azurite:

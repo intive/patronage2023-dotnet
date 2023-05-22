@@ -105,7 +105,7 @@ app.UseAuthorization();
 
 var scope = app.Services.CreateScope();
 var authorizationFilter = scope.ServiceProvider.GetRequiredService<IDashboardAuthorizationFilter>();
-app.UseHangfireService(authorizationFilter!);
+app.UseHangfireService(authorizationFilter);
 
 app.UseSwagger();
 app.UseSwaggerUI();

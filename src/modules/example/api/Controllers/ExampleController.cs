@@ -9,6 +9,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,7 +60,7 @@ public class ExampleController : ControllerBase
 		{
 			var pagedList = await this.queryBus.Query<GetExamples, PagedList<ExampleInfo>>(request);
 
-			BackgroundJob.Enqueue(() => Console.WriteLine("Sent From The Background Task"));
+			BackgroundJob.Enqueue<SendLogMessage>("example", sender => sender.LogInformation("Someone Gets Examples"));
 
 			return this.Ok(pagedList);
 		}
