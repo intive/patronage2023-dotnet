@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions.Behaviors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -17,7 +18,7 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 
 using Keycloak.AuthServices.Authentication;
-
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -85,6 +86,10 @@ builder.Services.AddAuthorization();
 builder.Services.AddSwagger();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddTransient(
+	typeof(IPipelineBehavior<,>),
+	typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 
