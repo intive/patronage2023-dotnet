@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
 /// <summary>
-/// GetBudgetsToExport.
+/// Record GetBudgetsToExport representing a query to retrieve budgets ready for export.
 /// </summary>
 public record GetBudgetsToExport : IQuery<GetBudgetTransferList?>;
 
 /// <summary>
-/// GetBudgetsToExportQueryHandler.
+/// Handles the GetBudgetsToExport query by fetching the required budgets from the BudgetDbContext.
 /// </summary>
 public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, GetBudgetTransferList?>
 {
@@ -32,11 +32,11 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 	}
 
 	/// <summary>
-	/// GetBudgetsToExportQueryHandler.
+	/// Handles the GetBudgetsToExport query.
 	/// </summary>
-	/// <param name="query">Query.</param>
-	/// <param name="cancellationToken">cancellation token.</param>
-	/// <returns>List of Budgets.</returns>
+	/// <param name="query">The GetBudgetsToExport query to be handled.</param>
+	/// <param name="cancellationToken">A token that may be used to cancel the handle operation.</param>
+	/// <returns>A GetBudgetTransferList containing the budgets to be exported, or null if no budgets are found.</returns>
 	public async Task<GetBudgetTransferList?> Handle(GetBudgetsToExport query, CancellationToken cancellationToken)
 	{
 		bool isAdmin = this.contextAccessor.IsAdmin();

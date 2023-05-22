@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Interface IBudgetExportService.
+/// IBudgetExportService interface defines a contract for services that handle the exportation of budget data.
 /// </summary>
 public interface IBudgetExportService
 {

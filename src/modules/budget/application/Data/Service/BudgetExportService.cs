@@ -5,7 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Class BudgetExportService.
+/// BudgetExportService class provides functionalities to export budgets to a .csv file and upload it to Azure Blob Storage.
 /// </summary>
 public class BudgetExportService : IBudgetExportService
 {

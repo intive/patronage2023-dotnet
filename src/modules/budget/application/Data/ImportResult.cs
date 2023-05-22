@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
 /// <summary>
-/// Class ImportResult.
+/// Class ImportResult representing the result of an import operation, containing any encountered error messages and the URI used for import.
 /// </summary>
 public record ImportResult
 {

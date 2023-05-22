@@ -8,7 +8,8 @@ using Microsoft.Extensions.Configuration;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Class BlobStorageService.
+/// BlobStorageService class implements the IBlobStorageService interface and provides methods
+/// for managing blob storage operations such as uploading, retrieving, and deleting blobs.
 /// </summary>
 public class BlobStorageService : IBlobStorageService
 {
@@ -86,7 +87,6 @@ public class BlobStorageService : IBlobStorageService
 	/// A string representing the URI of the blob, with the generated SAS token appended as a query string.</returns>
 	public string GenerateSasForBlob(BlobClient blobClient, string accountKey)
 	{
-		// Utworzenie polityki dostępu na podstawie których wygenerujemy SAS
 		var sasBuilder = new BlobSasBuilder
 		{
 			BlobContainerName = blobClient.BlobContainerName,
@@ -96,14 +96,11 @@ public class BlobStorageService : IBlobStorageService
 			ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
 		};
 
-		// Ustalenie uprawnień - tutaj ustawiamy na czytanie
 		sasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-		// Generowanie SAS
 		var storageSharedKeyCredential = new StorageSharedKeyCredential(blobClient.AccountName, accountKey);
 		string sasToken = sasBuilder.ToSasQueryParameters(storageSharedKeyCredential).ToString();
 
-		// Dodanie SAS do URL Blobu
 		var sasUri = new UriBuilder(blobClient.Uri)
 		{
 			Query = sasToken,

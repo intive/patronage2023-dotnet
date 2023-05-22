@@ -5,7 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Interface IBlobStorageService.
+/// IBudgetExportService interface defines a contract for services that handle the exportation of budget data.
 /// </summary>
 public interface IBlobStorageService
 {
@@ -25,10 +25,10 @@ public interface IBlobStorageService
 	Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient);
 
 	/// <summary>
-	/// x.
+	/// Downloads a specified file from Azure Blob Storage.
 	/// </summary>
-	/// <param name="filename">xxx.</param>
-	/// <param name="containerClient">xx.</param>
-	/// <returns>xxxx.</returns>
+	/// <param name="filename">The name of the file to be downloaded.</param>
+	/// <param name="containerClient">A client object for interacting with the Azure Blob Storage container.</param>
+	/// <returns>A task representing the asynchronous operation, yielding the downloaded file's information.</returns>
 	Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename, BlobContainerClient containerClient);
 }

@@ -5,7 +5,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// CsvService.
+/// CsvService class implements the ICsvService interface and provides methods
+/// for handling CSV data operations such as writing budget information to a CSV file
+/// and generating a local file path for a new CSV file.
 /// </summary>
 public class CsvService : ICsvService
 {

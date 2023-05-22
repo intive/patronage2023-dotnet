@@ -15,7 +15,8 @@ using Microsoft.AspNetCore.Http;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Class DataService.
+/// BudgetDataService class implements the IBudgetDataService interface and provides methods
+/// for data operations related to budgets.
 /// </summary>
 public class BudgetDataService : IBudgetDataService
 {
@@ -25,11 +26,10 @@ public class BudgetDataService : IBudgetDataService
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetDataService"/> class.
-	/// DataService.
 	/// </summary>
-	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
-	/// <param name="blobStorageService">BlobStorageService.</param>
-	/// <param name="queryBus">IQueryBus.</param>
+	/// <param name="contextAccessor">Provides access to the execution context, allowing the service to use user-specific information.</param>
+	/// <param name="blobStorageService">Provides functionality for interacting with Azure Blob Storage.</param>
+	/// <param name="queryBus">Enables the service to dispatch queries to the appropriate handlers.</param>
 	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IQueryBus queryBus)
 	{
 		this.contextAccessor = contextAccessor;
@@ -79,7 +79,6 @@ public class BudgetDataService : IBudgetDataService
 	/// <param name="budget">The budget information used to create the new budget.</param>
 	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
 	/// <returns>Creates a new budget.</returns>
-	// TODO: zrob z tego extension method
 	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
 	{
 		bool isExistingBudget = budgetsNames!.BudgetName!.Contains(budget.Name);

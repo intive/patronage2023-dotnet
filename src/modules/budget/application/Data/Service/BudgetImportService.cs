@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 
 /// <summary>
-/// Class BudgetImportService.
+/// BudgetImportService class provides functionalities to import budgets from a .csv file.
 /// </summary>
 public class BudgetImportService : IBudgetImportService
 {

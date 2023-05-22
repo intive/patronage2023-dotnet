@@ -6,13 +6,14 @@ using Intive.Patronage2023.Shared.Abstractions.Domain;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
 /// <summary>
-/// Class BudgetAggregateList.
+/// BudgetAggregateList class represents a command that holds a list of BudgetAggregate.
 /// </summary>
-/// <param name="ListOfBudgets">BudgetAggregate.</param>
+/// <param name="ListOfBudgets">A list of BudgetAggregate objects.</param>
 public record BudgetAggregateList(List<BudgetAggregate> ListOfBudgets) : ICommand;
 
 /// <summary>
-/// Create Budget.
+/// The HandleBudgetAggregateList class handles BudgetAggregateList command.
+/// It implements the ICommandHandler interface to handle BudgetAggregateList commands.
 /// </summary>
 public class HandleBudgetAggregateList : ICommandHandler<BudgetAggregateList>
 {
@@ -27,7 +28,13 @@ public class HandleBudgetAggregateList : ICommandHandler<BudgetAggregateList>
 		this.budgetRepository = budgetRepository;
 	}
 
-	/// <inheritdoc/>
+	/// <summary>
+	/// Handles the provided BudgetAggregateList command.
+	/// This involves persisting the list of BudgetAggregate objects contained in the command to the repository.
+	/// </summary>
+	/// <param name="command">The BudgetAggregateList command to be handled.</param>
+	/// <param name="cancellationToken">A token that may be used to cancel the handle operation.</param>
+	/// <returns>A <see cref="Task"/>Representing the asynchronous operation of handling the command.</returns>
 	public async Task Handle(BudgetAggregateList command, CancellationToken cancellationToken)
 	{
 		await this.budgetRepository.Persist(command.ListOfBudgets);
