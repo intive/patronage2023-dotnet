@@ -81,18 +81,22 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			return new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = 0, PeriodValue = 0, TrendValue = 0 };
 		}
 
-		budgetTransactionValues.Insert(0, new BudgetAmount()
+		for (int i = 0; i < budgetTransactionValues.Count; i++)
 		{
-			Value = budgetValueAtStartDate,
-			DatePoint = budgetTransactionValues[0].DatePoint.AddMinutes(-1),
-		});
-
-		for (int i = 1; i < budgetTransactionValues.Count; i++)
-		{
-			BudgetAmount prevBudget = budgetTransactionValues[i - 1];
-			budgetTransactionValues[i] = budgetTransactionValues[i] with {
-				Value = prevBudget.Value + budgetTransactionValues[i].Value,
-			};
+			if (i == 0)
+			{
+				budgetTransactionValues[i] = budgetTransactionValues[i] with
+				{
+					Value = budgetTransactionValues[i].Value + budgetValueAtStartDate,
+				};
+			}
+			else
+			{
+				budgetTransactionValues[i] = budgetTransactionValues[i] with
+				{
+					Value = budgetTransactionValues[i - 1].Value + budgetTransactionValues[i].Value,
+				};
+			}
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
@@ -106,7 +110,7 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			.Within(query.StartDate, query.EndDate)
 			.Sum(x => x.Value);
 
-		decimal trendValue = budgetTransactionValues[1].Value > 0 ? (budgetTransactionValues.Last().Value - budgetTransactionValues[1].Value) / budgetTransactionValues[1].Value * 100 : 0;
+		decimal trendValue = budgetTransactionValues[0].Value > 0 ? (budgetTransactionValues.Last().Value - budgetTransactionValues[0].Value) / budgetTransactionValues[0].Value * 100 : 0;
 
 		var result = new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
