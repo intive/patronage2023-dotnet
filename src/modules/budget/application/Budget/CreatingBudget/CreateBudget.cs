@@ -1,3 +1,4 @@
+using FluentDateTime;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -41,19 +42,8 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 		var id = new BudgetId(command.Id);
 		var userId = new UserId(command.UserId);
 
-		DateTime startDate;
-		DateTime endDate;
-
-		if (command.Period.StartDate.Date == command.Period.EndDate.Date)
-		{
-			 startDate = command.Period.StartDate.Date;
-			 endDate = startDate.AddDays(1).AddMilliseconds(-1);
-		}
-		else
-		{
-			startDate = command.Period.StartDate;
-			endDate = command.Period.EndDate;
-		}
+		var startDate = command.Period.StartDate.BeginningOfDay();
+		var endDate = command.Period.EndDate.EndOfDay();
 
 		var budget = BudgetAggregate.Create(
 				id,
