@@ -17,12 +17,14 @@ public class UserBudgetAddedDomainEvent : DomainEvent
 	/// <param name="userId">User Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="userRole">User Role.</param>
-	public UserBudgetAddedDomainEvent(Guid id, UserId userId, BudgetId budgetId, UserRole userRole)
+	/// <param name="isFavourite">Is favourite flag.</param>
+	public UserBudgetAddedDomainEvent(Guid id, UserId userId, BudgetId budgetId, UserRole userRole, bool isFavourite)
 	{
 		this.Id = id;
 		this.UserId = userId;
 		this.BudgetId = budgetId;
 		this.UserRole = userRole;
+		this.IsFavourite = isFavourite;
 	}
 
 	/// <summary>
@@ -44,4 +46,9 @@ public class UserBudgetAddedDomainEvent : DomainEvent
 	/// The "Type" property is a UserRole enum that specifies the user's role in relation to the budget.
 	/// </summary>
 	public UserRole UserRole { get; set; }
+
+	/// <summary>
+	/// IsFavourite flag added to budget by user.
+	/// </summary>
+	public bool IsFavourite { get; set; }
 }

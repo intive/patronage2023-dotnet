@@ -11,6 +11,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -45,6 +46,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
+	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -62,6 +64,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
+	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -77,6 +80,7 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IValidator<AddUsersToBudget> usersIdsValidator,
+		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -91,6 +95,7 @@ public class BudgetController : ControllerBase
 		this.authorizationService = authorizationService;
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
+		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
 		this.addUsersToBudgetValidator = usersIdsValidator;
 	}
@@ -477,13 +482,27 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="isFavourite">Is favourite flag value.</param>
-	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	/// <returns>Task.</returns>
 	[HttpPut("{budgetId:guid}/favourite")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, bool isFavourite)
 	{
-		await Task.CompletedTask;
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var updateFavourite = new UpdateUserBudgetFavourite(budgetId, isFavourite);
+
+		var validationResult = await this.updateUserBudgetFavouriteValidator.ValidateAsync(updateFavourite);
+		if (!validationResult.IsValid)
+		{
+			throw new AppException("One or more error occured when trying to update favourite flag.", validationResult.Errors);
+		}
+
+		await this.commandBus.Send(updateFavourite);
+
 		return this.Ok();
 	}
 

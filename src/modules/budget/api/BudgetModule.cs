@@ -6,14 +6,15 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 
 namespace Intive.Patronage2023.Modules.Budget.Api;
 
@@ -42,6 +43,7 @@ public static class BudgetModule
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
 		services.AddScoped<IValidator<AddUsersToBudget>, AddUsersToBudgetValidator>();
+		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
 
 		return services;
 	}
