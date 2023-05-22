@@ -40,14 +40,30 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	{
 		var id = new BudgetId(command.Id);
 		var userId = new UserId(command.UserId);
+
+		DateTime startDate;
+		DateTime endDate;
+
+		if (command.Period.StartDate.Date == command.Period.EndDate.Date)
+		{
+			 startDate = command.Period.StartDate.Date;
+			 endDate = startDate.AddDays(1).AddMilliseconds(-1);
+		}
+		else
+		{
+			startDate = command.Period.StartDate;
+			endDate = command.Period.EndDate;
+		}
+
 		var budget = BudgetAggregate.Create(
-			id,
-			command.Name,
-			userId,
-			command.Limit,
-			command.Period,
-			command.Description,
-			command.IconName);
+				id,
+				command.Name,
+				userId,
+				command.Limit,
+				new Period(startDate, endDate),
+				command.Description,
+				command.IconName);
+
 		await this.budgetRepository.Persist(budget);
 	}
 }

@@ -76,6 +76,11 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 				})
 				.ToListAsync(cancellationToken: cancellationToken);
 
+		if (budgetTransactionValues.Count == 0)
+		{
+			return new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = 0, PeriodValue = 0, TrendValue = 0 };
+		}
+
 		budgetTransactionValues.Insert(0, new BudgetAmount()
 		{
 			Value = budgetValueAtStartDate,
