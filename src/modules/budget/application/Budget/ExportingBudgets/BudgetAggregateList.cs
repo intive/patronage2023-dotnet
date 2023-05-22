@@ -37,6 +37,9 @@ public class HandleBudgetAggregateList : ICommandHandler<BudgetAggregateList>
 	/// <returns>A <see cref="Task"/>Representing the asynchronous operation of handling the command.</returns>
 	public async Task Handle(BudgetAggregateList command, CancellationToken cancellationToken)
 	{
-		await this.budgetRepository.Persist(command.ListOfBudgets);
+		foreach (var budget in command.ListOfBudgets)
+		{
+			await this.budgetRepository.Persist(budget);
+		}
 	}
 }
