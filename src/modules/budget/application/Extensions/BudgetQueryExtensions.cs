@@ -6,7 +6,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Extensions;
 /// <summary>
 /// Budget query extension class.
 /// </summary>
-internal static class BudgetQueryExtension
+internal static class BudgetQueryExtensions
 {
 	/// <summary>
 	/// Sorting extension method.

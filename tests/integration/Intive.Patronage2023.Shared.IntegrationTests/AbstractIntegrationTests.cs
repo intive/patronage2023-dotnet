@@ -33,6 +33,13 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDis
 	///</summary>
 	public void Dispose()
 	{
+		using (var scope = this.WebApplicationFactory.Services.CreateScope())
+		{
+			var budgetDbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
+
+			budgetDbContext.Budget.ExecuteDelete();
+			budgetDbContext.Transaction.ExecuteDelete();
+		}
 		this.WebApplicationFactory.Dispose();
 	}
 
