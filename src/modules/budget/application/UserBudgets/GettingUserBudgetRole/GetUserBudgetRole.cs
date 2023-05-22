@@ -7,12 +7,12 @@ using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
+namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudgetRole;
 
 /// <summary>
 ///  A record representing the query to retrieve information about a user's role in a specific budget.
 /// </summary>
-public record GetUserBudgetRole() : IQuery<UserBudgetRoleInfo?>
+public record GetUserBudgetRole : IQuery<UserBudgetRoleInfo?>
 {
 	/// <summary>
 	///  Object representing the ID of the budget that needs to be retrieved.
