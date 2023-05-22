@@ -10,14 +10,14 @@ public class UserBudgetFavouriteUpdatedDomainEvent : DomainEvent
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserBudgetFavouriteUpdatedDomainEvent"/> class.
 	/// </summary>
-	/// <param name="isNewBudgetFavourite">New IsFavourite value.</param>
-	public UserBudgetFavouriteUpdatedDomainEvent(bool isNewBudgetFavourite)
+	/// <param name="isFavourite">New IsFavourite value.</param>
+	public UserBudgetFavouriteUpdatedDomainEvent(bool isFavourite)
 	{
-		this.IsNewBudgetFavourite = isNewBudgetFavourite;
+		this.IsFavourite = isFavourite;
 	}
 
 	/// <summary>
 	/// New UserBudget isFavourite value.
 	/// </summary>
-	public bool IsNewBudgetFavourite { get; set; }
+	public bool IsFavourite { get; set; }
 }

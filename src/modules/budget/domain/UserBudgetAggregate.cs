@@ -92,6 +92,6 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 
 	private void Handle(UserBudgetFavouriteUpdatedDomainEvent @event)
 	{
-		this.IsFavourite = @event.IsNewBudgetFavourite;
+		this.IsFavourite = @event.IsFavourite;
 	}
 }

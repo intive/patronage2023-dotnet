@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 /// UserBudget favourite updated domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class UserBudgetFavouriteUpdatedDomianEventHandler : IDomainEventHandler<UserBudgetFavouriteUpdatedDomainEvent>
+public class UserBudgetFavouriteUpdatedDomainEventHandler : IDomainEventHandler<UserBudgetFavouriteUpdatedDomainEvent>
 {
 	/// <inheritdoc/>
 	public Task Handle(UserBudgetFavouriteUpdatedDomainEvent notification, CancellationToken cancellationToken)
