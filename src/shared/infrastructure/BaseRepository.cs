@@ -51,23 +51,6 @@ public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
 		await this.dbContext.SaveChangesAsync();
 	}
 
-	/// <summary>
-	/// Persist List of aggregates.
-	/// </summary>
-	/// <param name="aggregates">List of aggregates.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task Persist(List<T> aggregates)
-	{
-		foreach (var aggregate in aggregates)
-		{
-			await this.eventDispatcher.Publish(aggregate.UncommittedEvents);
-			this.HandleEvents(aggregate.UncommittedEvents);
-		}
-
-		this.dbContext.Set<T>().AddRange(aggregates);
-		await this.dbContext.SaveChangesAsync();
-	}
-
 	private void HandleEvents(List<IEvent> uncommittedEvents)
 	{
 		foreach (var item in uncommittedEvents)
