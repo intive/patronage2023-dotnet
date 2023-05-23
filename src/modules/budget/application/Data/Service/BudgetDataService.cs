@@ -48,25 +48,21 @@ public class BudgetDataService : IBudgetDataService
 	{
 		var newBudgets = new List<BudgetAggregate>();
 		var download = await this.blobStorageService.DownloadFromBlobStorage(Path.GetFileName(filename), containerClient);
-		using (var reader = new StreamReader(download.Content))
-		{
-			using (var csv = new CsvReader(reader, csvConfig))
-			{
-				csv.Read();
-				var budgetsToImport = csv.GetRecords<GetBudgetTransferInfo>();
+		using var reader = new StreamReader(download.Content);
+		using var csv = new CsvReader(reader, csvConfig);
+		await csv.ReadAsync();
+		var budgetsToImport = csv.GetRecords<GetBudgetTransferInfo>();
 
-				foreach (var budget in budgetsToImport)
-				{
-					var budgetId = new BudgetId(Guid.NewGuid());
-					var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
-					decimal limit = decimal.Parse(budget.Value, CultureInfo.InvariantCulture);
-					var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
-					var period = new Period(DateTime.Parse(budget.StartDate), DateTime.Parse(budget.EndDate));
-					string description = budget.Description ?? string.Empty;
-					var newBudget = BudgetAggregate.Create(budgetId, budget.Name, userId, money, period, description, budget.IconName);
-					newBudgets.Add(newBudget);
-				}
-			}
+		foreach (var budget in budgetsToImport)
+		{
+			var budgetId = new BudgetId(Guid.NewGuid());
+			var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+			decimal limit = decimal.Parse(budget.Value, CultureInfo.InvariantCulture);
+			var money = new Money(limit, (Currency)Enum.Parse(typeof(Currency), budget.Currency));
+			var period = new Period(DateTime.Parse(budget.StartDate), DateTime.Parse(budget.EndDate));
+			string description = budget.Description ?? string.Empty;
+			var newBudget = BudgetAggregate.Create(budgetId, budget.Name, userId, money, period, description, budget.IconName);
+			newBudgets.Add(newBudget);
 		}
 
 		return new BudgetAggregateList(newBudgets);
@@ -171,31 +167,29 @@ public class BudgetDataService : IBudgetDataService
 	{
 		var budgetInfos = new List<GetBudgetTransferInfo>();
 		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
-		using var stream = file.OpenReadStream();
-		using (var csv = new CsvReader(new StreamReader(stream), csvConfig))
+		await using var stream = file.OpenReadStream();
+		using var csv = new CsvReader(new StreamReader(stream), csvConfig);
+		await csv.ReadAsync();
+		var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
+		int rowNumber = 0;
+
+		foreach (var budget in budgets)
 		{
-			csv.Read();
-			var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
-			int rowNumber = 0;
+			var results = this.BudgetValidate(budget);
+			rowNumber++;
 
-			foreach (var budget in budgets)
+			if (results.Any())
 			{
-				var results = this.BudgetValidate(budget);
-				rowNumber++;
-
-				if (results.Any())
+				foreach (string result in results)
 				{
-					foreach (string result in results)
-					{
-						errors.Add($"row: {rowNumber}| error: {result}");
-					}
-
-					continue;
+					errors.Add($"row: {rowNumber}| error: {result}");
 				}
 
-				var updateBudget = this.Create(budget, budgetsNames);
-				budgetInfos.Add(updateBudget!);
+				continue;
 			}
+
+			var updateBudget = this.Create(budget, budgetsNames);
+			budgetInfos.Add(updateBudget!);
 		}
 
 		return new GetBudgetTransferList { BudgetsList = budgetInfos };
