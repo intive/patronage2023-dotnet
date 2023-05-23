@@ -16,15 +16,15 @@ public class DateTimeProviderTests
 	public void SetTimeZone_WhenTimeZoneHasFixedValue_ShouldReturnFixedLocalTime()
 	{
 		// Arrange
-		var dateTimeProvider = new DateTimeProvider();
+		var instance = new DateTimeProvider();
 		var fixedTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-		var expectedDateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeProvider.UtcNow, fixedTimeZone);
+		var expectedDateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(instance.UtcNow, fixedTimeZone);
 		var precision = TimeSpan.FromMinutes(1);
 
 		// Act
-		dateTimeProvider.SetTimeZone(fixedTimeZone);
+		instance.SetTimeZone(fixedTimeZone);
 
 		// Assert
-		dateTimeProvider.LocalNow.Should().BeCloseTo(expectedDateTimeLocal, precision);
+		instance.LocalNow.Should().BeCloseTo(expectedDateTimeLocal, precision);
 	}
 }

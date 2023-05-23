@@ -52,7 +52,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 			.GreaterThan(0);
 
 		this.RuleFor(budget => budget.Limit.Currency)
-			.NotEmpty();
+			.IsInEnum().WithMessage("The selected currency is not supported.");
 	}
 
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)

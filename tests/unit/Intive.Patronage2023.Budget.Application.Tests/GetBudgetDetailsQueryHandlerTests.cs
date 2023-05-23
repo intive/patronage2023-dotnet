@@ -5,7 +5,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Moq;
 using Xunit;
 using Currency = Intive.Patronage2023.Shared.Infrastructure.Domain.Currency;
 
@@ -16,6 +18,16 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetDetailsQueryHandlerTests
 {
+	private readonly Mock<IKeycloakService> keycloakServiceMock;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandlerTests"/> class.
+	/// </summary>
+	public GetBudgetDetailsQueryHandlerTests()
+	{
+		this.keycloakServiceMock = new Mock<IKeycloakService>();
+	}
+
 	/// <summary>
 	/// Test that check if the query returns expected values from database.
 	/// </summary>
@@ -40,13 +52,13 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id.Value };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakServiceMock.Object); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
-		result.Should().NotBeNull().And.BeEquivalentTo(BudgetAggregateBudgetDetailsInfoMapper.Map(budget));
+		result.Should().NotBeNull().And.BeEquivalentTo(budget.MapToDetailsInfo(null));
 	}
 
 	/// <summary>
@@ -59,10 +71,10 @@ public class GetBudgetDetailsQueryHandlerTests
 
 		var query = new GetBudgetDetails { Id = id };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetBudgetDetailsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetBudgetDetailsQueryHandler(null!, this.keycloakServiceMock.Object); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
 		result.Should().BeNull();

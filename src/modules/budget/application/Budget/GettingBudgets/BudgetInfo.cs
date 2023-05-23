@@ -26,4 +26,9 @@ public record BudgetInfo()
 	/// BudgetIcon.
 	/// </summary>
 	public string Icon { get; init; } = null!;
+
+	/// <summary>
+	/// Favourite flag.
+	/// </summary>
+	public bool IsFavourite { get; set; }
 }

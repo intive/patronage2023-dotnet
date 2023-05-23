@@ -1,10 +1,8 @@
-using Intive.Patronage2023.Modules.User.Application.User;
 using Intive.Patronage2023.Modules.User.Contracts;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Infrastructure;
-using Newtonsoft.Json;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 
 namespace Intive.Patronage2023.Modules.User.Application.CreatingUser;
 
@@ -39,27 +37,6 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 	/// <returns>HttpResponseMessage.</returns>
 	public async Task Handle(CreateUser command, CancellationToken cancellationToken)
 	{
-		var response = await this.keycloakService.GetClientToken(cancellationToken);
-
-		if (!response.IsSuccessStatusCode)
-		{
-			throw new AppException("One or more error occured while trying to create user.");
-		}
-
-		string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-
-		if (string.IsNullOrEmpty(responseContent))
-		{
-			throw new AppException("One or more error occured while trying to create user.");
-		}
-
-		Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
-
-		if (token == null || token?.AccessToken == null)
-		{
-			throw new AppException("One or more error occured while trying to create user.");
-		}
-
 		UserCredentials[] credentials =
 		{
 			new UserCredentials
@@ -85,7 +62,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUser>
 			Credentials = credentials,
 		};
 
-		response = await this.keycloakService.AddUser(appUser, token.AccessToken, cancellationToken);
+		var response = await this.keycloakService.AddUser(appUser, cancellationToken);
 
 		if (!response.IsSuccessStatusCode)
 		{

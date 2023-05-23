@@ -22,14 +22,14 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 public class CreateBudgetTransactionValidatorTests
 {
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
-	private readonly IValidator<CreateBudgetTransaction> createBudgetTransactionValidator;
+	private readonly IValidator<CreateBudgetTransaction> instance;
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
 	public CreateBudgetTransactionValidatorTests()
 	{
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.createBudgetTransactionValidator = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ public class CreateBudgetTransactionValidatorTests
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 		//Act
-		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
+		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldNotHaveAnyValidationErrors();
@@ -81,7 +81,7 @@ public class CreateBudgetTransactionValidatorTests
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, name, value, category, createdDate);
 		
 		//Act
-		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
+		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.BudgetId);
@@ -113,7 +113,7 @@ public class CreateBudgetTransactionValidatorTests
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		//Act
-		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
+		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.Value);
@@ -146,7 +146,7 @@ public class CreateBudgetTransactionValidatorTests
 		
 
 		//Act
-		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
+		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => x.Value);
@@ -178,7 +178,7 @@ public class CreateBudgetTransactionValidatorTests
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 		//Act
-		var result = await this.createBudgetTransactionValidator.TestValidateAsync(createBudgetTransaction);
+		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
 		//Assert
 		result.ShouldHaveValidationErrorFor(x => new { x.BudgetId, x.TransactionDate });
