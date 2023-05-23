@@ -480,6 +480,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 
 		result.Items.Should().BeEquivalentTo(new List<BudgetAmount>()
 		{
+			new BudgetAmount() { Value = 0 },
 			new BudgetAmount() { Value = 1 },
 			new BudgetAmount() { Value = 3 },
 			new BudgetAmount() { Value = 6 },

@@ -99,6 +99,15 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			}
 		}
 
+		if (!budgetTransactionValues[0].DatePoint.Date.Equals(query.StartDate.Date))
+		{
+			budgetTransactionValues.Insert(0, new BudgetAmount()
+			{
+				DatePoint = query.StartDate,
+				Value = budgetValueAtStartDate,
+			});
+		}
+
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
 			.For(budgetId)
 			.NotCancelled()
