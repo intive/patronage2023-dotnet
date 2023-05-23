@@ -75,7 +75,7 @@ public class BudgetDataService : IBudgetDataService
 	/// <param name="budget">The budget information used to create the new budget.</param>
 	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
 	/// <returns>Creates a new budget.</returns>
-	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
+	public GetBudgetTransferInfo Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
 	{
 		bool isExistingBudget = budgetsNames!.BudgetName!.Contains(budget.Name);
 		string budgetName = isExistingBudget ? budget.Name + Guid.NewGuid() : budget.Name;
@@ -168,7 +168,8 @@ public class BudgetDataService : IBudgetDataService
 		var budgetInfos = new List<GetBudgetTransferInfo>();
 		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
 		await using var stream = file.OpenReadStream();
-		using var csv = new CsvReader(new StreamReader(stream), csvConfig);
+		using var streamReader = new StreamReader(stream);
+		using var csv = new CsvReader(streamReader, csvConfig);
 		await csv.ReadAsync();
 		var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
 		int rowNumber = 0;
@@ -189,7 +190,7 @@ public class BudgetDataService : IBudgetDataService
 			}
 
 			var updateBudget = this.Create(budget, budgetsNames);
-			budgetInfos.Add(updateBudget!);
+			budgetInfos.Add(updateBudget);
 		}
 
 		return new GetBudgetTransferList { BudgetsList = budgetInfos };

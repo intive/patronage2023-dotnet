@@ -1,7 +1,12 @@
+using System.Globalization;
+
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+
+using CsvHelper;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Microsoft.Extensions.Configuration;
 
@@ -50,19 +55,32 @@ public class BlobStorageService : IBlobStorageService
 	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
 	public async Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient)
 	{
-		string localFilePath = this.csvService.GeneratePathToCsvFile();
-		string filePath = this.csvService.WriteBudgetsToCSV(budgetInfos, localFilePath);
+		string filename = this.csvService.GenerateFileName();
+		BlobClient blobClient = containerClient.GetBlobClient(filename);
 
-		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filePath));
+		var memoryStream = new MemoryStream();
+		var streamWriter = new StreamWriter(memoryStream);
+		var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
 
-		await blobClient.UploadAsync(filePath, true);
-		File.Delete(filePath);
+		try
+		{
+			this.csvService.WriteBudgetsToMemoryStream(budgetInfos, csv);
+			memoryStream.Position = 0;
 
-		string? connectionString = this.configuration.GetConnectionString("BlobStorage");
-		string accountKey = connectionString!.Split(new[] { "AccountKey=" }, StringSplitOptions.None)[1].Split(';')[0];
-		string blobSasUri = this.GenerateSasForBlob(blobClient, accountKey);
+			await blobClient.UploadAsync(memoryStream, true);
 
-		return blobSasUri;
+			string? connectionString = this.configuration.GetConnectionString("BlobStorage");
+			string accountKey = connectionString!.Split(new[] { "AccountKey=" }, StringSplitOptions.None)[1].Split(';')[0];
+			string blobSasUri = this.GenerateSasForBlob(blobClient, accountKey);
+
+			return blobSasUri;
+		}
+		finally
+		{
+			await csv.DisposeAsync();
+			await streamWriter.DisposeAsync();
+			await memoryStream.DisposeAsync();
+		}
 	}
 
 	/// <summary>
@@ -85,7 +103,7 @@ public class BlobStorageService : IBlobStorageService
 	/// <param name="accountKey">The account key for your Azure Storage account. It is used in conjunction with the BlobClient to generate the SAS token.</param>
 	/// <returns>
 	/// A string representing the URI of the blob, with the generated SAS token appended as a query string.</returns>
-	public string GenerateSasForBlob(BlobClient blobClient, string accountKey)
+	private string GenerateSasForBlob(BlobClient blobClient, string accountKey)
 	{
 		var sasBuilder = new BlobSasBuilder
 		{
