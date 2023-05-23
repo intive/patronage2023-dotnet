@@ -18,7 +18,7 @@ internal class BudgetAggregateEntityConfiguration : IEntityTypeConfiguration<Bud
 	public void Configure(EntityTypeBuilder<BudgetAggregate> builder)
 	{
 		builder.HasKey(x => x.Id);
-		builder.HasIndex(x => new { x.UserId, x.Name }, "IX_Budget_UserId_Name").IsUnique();
+		builder.HasIndex(x => new { x.UserId, x.Name }, "IX_Budget_UserId_Name").HasFilter("Status <> 2").IsUnique();
 		builder.ToTable("Budget", "Budgets");
 		builder.Property(e => e.Id)
 			.HasConversion(BudgetConverters.BudgetIdConverter());
