@@ -1,3 +1,4 @@
+using FluentDateTime;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
@@ -81,31 +82,13 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			return new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = 0, PeriodValue = 0, TrendValue = 0 };
 		}
 
-		for (int i = 0; i < budgetTransactionValues.Count; i++)
+		budgetTransactionValues.Insert(0, new BudgetAmount() { DatePoint = query.StartDate.AddDays(-1).EndOfDay(), Value = budgetValueAtStartDate });
+		for (int i = 1; i < budgetTransactionValues.Count; i++)
 		{
-			if (i == 0)
-			{
-				budgetTransactionValues[i] = budgetTransactionValues[i] with
-				{
-					Value = budgetTransactionValues[i].Value + budgetValueAtStartDate,
-				};
-			}
-			else
-			{
 				budgetTransactionValues[i] = budgetTransactionValues[i] with
 				{
 					Value = budgetTransactionValues[i - 1].Value + budgetTransactionValues[i].Value,
 				};
-			}
-		}
-
-		if (!budgetTransactionValues[0].DatePoint.Date.Equals(query.StartDate.Date))
-		{
-			budgetTransactionValues.Insert(0, new BudgetAmount()
-			{
-				DatePoint = query.StartDate,
-				Value = budgetValueAtStartDate,
-			});
 		}
 
 		decimal totalBudgetValue = this.budgetDbContext.Transaction
@@ -119,7 +102,7 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			.Within(query.StartDate, query.EndDate)
 			.Sum(x => x.Value);
 
-		decimal trendValue = budgetTransactionValues[0].Value > 0 ? (budgetTransactionValues.Last().Value - budgetTransactionValues[0].Value) / budgetTransactionValues[0].Value * 100 : 0;
+		decimal trendValue = budgetTransactionValues[0].Value > 0 ? (budgetTransactionValues.Last().Value - budgetValueAtStartDate) / budgetValueAtStartDate * 100 : 0;
 
 		var result = new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;

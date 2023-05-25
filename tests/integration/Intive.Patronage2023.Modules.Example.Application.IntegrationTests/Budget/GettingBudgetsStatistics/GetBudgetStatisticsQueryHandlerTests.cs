@@ -205,7 +205,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		// Act
 		var result = await this.instance.Handle(budgetStatisticsQuery, CancellationToken.None);
 
-		result.Items.First().Value.Should().Be(3);
+		result.Items.First().Value.Should().Be(1);
 		result.Items.Last().Value.Should().Be(45);
 	}
 
