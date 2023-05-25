@@ -14,7 +14,7 @@ public class BudgetStatistics<T>
 	/// <summary>
 	/// Trend value.
 	/// </summary>
-	public decimal TrendValue { get; set; }
+	public decimal? TrendValue { get; set; }
 
 	/// <summary>
 	/// Period value.
