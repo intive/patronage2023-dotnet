@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -5,7 +6,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ExportingBudgets;
 
 /// <summary>
 /// Record GetBudgetsToExport representing a query to retrieve budgets ready for export.

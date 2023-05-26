@@ -16,5 +16,8 @@
 	  <ProjectReference Include="..\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
 	  <ProjectReference Include="..\domain\Intive.Patronage2023.Shared.Domain.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Services\" />
+	</ItemGroup>
 
 </Project>

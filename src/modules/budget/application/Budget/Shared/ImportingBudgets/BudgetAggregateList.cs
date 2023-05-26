@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
 
 /// <summary>
 /// BudgetAggregateList class represents a command that holds a list of BudgetAggregate.

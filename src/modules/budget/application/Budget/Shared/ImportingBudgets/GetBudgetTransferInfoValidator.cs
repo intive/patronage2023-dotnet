@@ -1,9 +1,8 @@
 using System.Globalization;
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
 
 /// <summary>
 /// Validator for the GetBudgetTransferInfo model.
