@@ -1,12 +1,13 @@
 using System.Globalization;
 using Azure.Storage.Blobs;
 using CsvHelper.Configuration;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// BudgetImportService class provides functionalities to import budgets from a .csv file.

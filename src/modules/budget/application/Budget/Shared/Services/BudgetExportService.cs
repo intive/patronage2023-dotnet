@@ -1,8 +1,9 @@
 using Azure.Storage.Blobs;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.Services;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// BudgetExportService class provides functionalities to export budgets to a .csv file and upload it to Azure Blob Storage.

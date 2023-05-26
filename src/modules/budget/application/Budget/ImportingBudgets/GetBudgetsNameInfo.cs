@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 /// <summary>
 ///  The record is used to store information about the names of budgets associated with a specific user.

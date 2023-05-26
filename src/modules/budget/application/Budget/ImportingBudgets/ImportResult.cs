@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Data;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 /// <summary>
 /// Class ImportResult representing the result of an import operation, containing any encountered error messages and the URI used for import.

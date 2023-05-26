@@ -1,6 +1,6 @@
 using FluentValidation.Results;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 /// <summary>
 /// Provides extension methods for working with validation results.

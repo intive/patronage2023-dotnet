@@ -1,7 +1,7 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Microsoft.AspNetCore.Http;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// IBudgetImportService interface defines a contract for services that handle the importation of budget data.

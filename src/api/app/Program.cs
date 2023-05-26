@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
-using Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
@@ -16,7 +16,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
-
+using Intive.Patronage2023.Shared.Infrastructure.Services;
 using Keycloak.AuthServices.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
@@ -53,7 +53,7 @@ builder.Services.AddScoped<IBudgetExportService, BudgetExportService>();
 builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddScoped<IBudgetDataService, BudgetDataService>();
-builder.Services.AddScoped<ICsvService, CsvService>();
+builder.Services.AddScoped<ICsvBudgetService, CsvBudgetService>();
 
 builder.Services.AddMediatR(cfg =>
 {

@@ -1,6 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// IBudgetExportService interface defines a contract for services that handle the exportation of budget data.

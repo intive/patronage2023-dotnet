@@ -5,7 +5,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Microsoft.EntityFrameworkCore;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 /// <summary>
 ///  A record representing the query to retrieve the names of budgets associated with a specific user.

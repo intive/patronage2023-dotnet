@@ -1,14 +1,13 @@
 using CsvHelper;
-
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// Interface for CsvService that handle operations related to the CSV format.
 /// This includes tasks such as generate path co CSV file and write data to csv file.
 /// </summary>
-public interface ICsvService
+public interface ICsvBudgetService
 {
 	/// <summary>
 	/// Writes a list of budgets to a CSV file at the specified file path.

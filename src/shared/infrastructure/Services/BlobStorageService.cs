@@ -1,16 +1,12 @@
 using System.Globalization;
-
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
-
 using CsvHelper;
-
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Microsoft.Extensions.Configuration;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Shared.Infrastructure.Services;
 
 /// <summary>
 /// BlobStorageService class implements the IBlobStorageService interface and provides methods
@@ -19,7 +15,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
 public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
-	private readonly ICsvService csvService;
+	private readonly ICsvBudgetService csvService;
 	private readonly IConfiguration configuration;
 
 	/// <summary>
@@ -28,7 +24,7 @@ public class BlobStorageService : IBlobStorageService
 	/// </summary>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
 	/// <param name="csvService">GenerateLocalCsvFilePath.</param>
-	public BlobStorageService(IConfiguration configuration, ICsvService csvService)
+	public BlobStorageService(IConfiguration configuration, ICsvBudgetService csvService)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 		this.csvService = csvService;

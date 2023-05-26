@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 

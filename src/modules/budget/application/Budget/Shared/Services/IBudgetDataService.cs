@@ -1,10 +1,10 @@
 using Azure.Storage.Blobs;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Microsoft.AspNetCore.Http;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// Defines a service for handling data operations including importing, validating, and creating budget data.

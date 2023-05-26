@@ -3,7 +3,7 @@ using Azure.Storage.Blobs;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.ImportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -11,9 +11,10 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data.Service;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// BudgetDataService class implements the IBudgetDataService interface and provides methods
