@@ -1,5 +1,6 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingTransactionCategory;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetCategories;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -38,7 +39,7 @@ public class BudgetCategoryController : ControllerBase
 	}
 
 	/// <summary>
-	/// Retrieves the budget transaction categories.
+	/// Retrieves the budget transaction categories list.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget for which to retrieve the transaction categories.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
@@ -46,8 +47,8 @@ public class BudgetCategoryController : ControllerBase
 	[Route("{budgetId:guid}/list")]
 	public async Task<IActionResult> GetBudgetCategories([FromRoute]Guid budgetId)
 	{
-		var query = new GetCategories(new BudgetId(budgetId));
-		var categories = await this.queryBus.Query<GetCategories, BudgetCategoriesInfo>(query);
+		var query = new GetTransactionCategories(new BudgetId(budgetId));
+		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
 		return this.Ok(categories);
 	}
 
@@ -75,7 +76,7 @@ public class BudgetCategoryController : ControllerBase
 	[Route("{budgetId:guid}/delete/{categoryName}")]
 	public async Task<IActionResult> DeleteTransactionCategoryFromBudget([FromRoute]Guid budgetId, [FromRoute]string categoryName)
 	{
-		var command = new DeleteCategory(new BudgetId(budgetId), categoryName);
+		var command = new DeleteTransactionCategory(new BudgetId(budgetId), categoryName);
 		await this.commandBus.Send(command);
 		return this.Ok();
 	}

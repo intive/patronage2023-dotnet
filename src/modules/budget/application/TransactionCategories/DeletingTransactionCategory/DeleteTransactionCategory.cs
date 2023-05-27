@@ -3,19 +3,19 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
 
 /// <summary>
 /// Represents a command to delete a category from a specific budget.
 /// </summary>
 /// <param name="BudgetId">The ID of the budget from which to delete the category.</param>
 /// <param name="CategoryName">The name of the category to delete.</param>
-public record DeleteCategory(BudgetId BudgetId, string CategoryName) : ICommand;
+public record DeleteTransactionCategory(BudgetId BudgetId, string CategoryName) : ICommand;
 
 /// <summary>
 /// Delete transaction category from budget.
 /// </summary>
-public class HandleDeleteTransactionCategory : ICommandHandler<DeleteCategory>
+public class HandleDeleteTransactionCategory : ICommandHandler<DeleteTransactionCategory>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
@@ -29,7 +29,7 @@ public class HandleDeleteTransactionCategory : ICommandHandler<DeleteCategory>
 	}
 
 	/// <inheritdoc/>
-	public async Task Handle(DeleteCategory command, CancellationToken cancellationToken)
+	public async Task Handle(DeleteTransactionCategory command, CancellationToken cancellationToken)
 	{
 		await Task.CompletedTask;
 	}

@@ -1,9 +1,9 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetCategories;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 
 /// <summary>
 /// Represents a budget category.
 /// </summary>
-public abstract record BudgetCategory
+public abstract record TransactionCategory
 {
 	/// <summary>
 	/// Gets or sets the icon associated with the budget category.

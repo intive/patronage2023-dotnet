@@ -3,7 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingTransactionCategory;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 
 /// <summary>
 /// Represents a command to add a category to a specific budget.
