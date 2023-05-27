@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
@@ -15,7 +16,7 @@ namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 /// Controller that contains endpoints managing Budget Categories.
 /// </summary>
 [ApiController]
-[Route("categories")]
+[Route("budgets")]
 public class BudgetCategoryController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
@@ -44,25 +45,35 @@ public class BudgetCategoryController : ControllerBase
 	/// <param name="budgetId">The ID of the budget for which to retrieve the transaction categories.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[HttpGet]
-	[Route("{budgetId:guid}/list")]
+	[Route("{budgetId:guid}/categories")]
 	public async Task<IActionResult> GetBudgetCategories([FromRoute]Guid budgetId)
 	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
 		var query = new GetTransactionCategories(new BudgetId(budgetId));
 		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return this.Ok(categories);
+		return this.Ok(categories.BudgetCategoryList);
 	}
 
 	/// <summary>
 	/// Adds a transaction category to a budget.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget to which the category will be added.</param>
-	/// <param name="categoryName">The transaction category name.</param>
+	/// <param name="request">The transaction category name.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[HttpPost]
-	[Route("{budgetId:guid}/add/{categoryName}")]
-	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromRoute]string categoryName)
+	[Route("{budgetId:guid}/categories")]
+	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]TransactionCategory request)
 	{
-		var command = new AddCategory(new BudgetId(budgetId), categoryName);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var command = new AddCategory(new BudgetId(budgetId), request.Icon!, request.Name!);
 		await this.commandBus.Send(command);
 		return this.Ok();
 	}
@@ -71,13 +82,18 @@ public class BudgetCategoryController : ControllerBase
 	/// Deletes a transaction category from a budget.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
-	/// <param name="categoryName">The name of the category to delete.</param>
+	/// <param name="budgetCategoryId">The name of the category to delete.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[HttpDelete]
-	[Route("{budgetId:guid}/delete/{categoryName}")]
-	public async Task<IActionResult> DeleteTransactionCategoryFromBudget([FromRoute]Guid budgetId, [FromRoute]string categoryName)
+	[Route("{budgetId:guid}/categories/{budgetCategoryId:guid}")]
+	public async Task<IActionResult> DeleteTransactionCategoryFromBudget([FromRoute]Guid budgetId, [FromRoute]Guid budgetCategoryId)
 	{
-		var command = new DeleteTransactionCategory(new BudgetId(budgetId), categoryName);
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var command = new DeleteTransactionCategory(new TransactionCategoryId(budgetCategoryId));
 		await this.commandBus.Send(command);
 		return this.Ok();
 	}

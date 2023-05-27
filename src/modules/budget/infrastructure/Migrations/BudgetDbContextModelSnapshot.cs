@@ -115,6 +115,37 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.ToTable("BudgetTransaction", "Budgets");
                 });
 
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionCategoryAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("newsequentialid()");
+
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("BudgetId");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Icon");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BudgetId");
+
+                    b.HasIndex("Id");
+
+                    b.ToTable("BudgetTransactionCategory", "Budgets");
+                });
+
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.UserBudgetAggregate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -218,6 +249,15 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.BudgetTransactionAggregate", b =>
+                {
+                    b.HasOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", null)
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionCategoryAggregate", b =>
                 {
                     b.HasOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", null)
                         .WithMany()

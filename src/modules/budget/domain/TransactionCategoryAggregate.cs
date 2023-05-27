@@ -48,9 +48,18 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	/// <param name="icon">The icon associated with the transaction category.</param>
 	/// <param name="name">The name of the transaction category.</param>
 	/// <returns>A new instance of the TransactionCategoryAggregate class.</returns>
-	public TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, string? icon, string? name)
+	public static TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, string? icon, string? name)
 	{
 		return new TransactionCategoryAggregate(id, budgetId, icon, name);
+	}
+
+	/// <summary>
+	/// Deletes the transaction category.
+	/// </summary>
+	public void DeleteCategory()
+	{
+		var evt = new TransactionCategoryDeletedDomainEvent(this.Id);
+		this.Apply(evt, this.Handle);
 	}
 
 	private void Handle(TransactionCategoryAddedDomainEvent @event)
@@ -59,5 +68,10 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 		this.BudgetId = @event.BudgetId;
 		this.Icon = @event.Icon;
 		this.Name = @event.Name;
+	}
+
+	private void Handle(TransactionCategoryDeletedDomainEvent @event)
+	{
+		this.Id = @event.Id;
 	}
 }
