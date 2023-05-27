@@ -9,7 +9,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 /// Budget transaction attachment added domain event handler.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
-public class BudgetTransactionAttachmentAddedDomainEventHandler : IDomainEventHandler<BudgetTransactionAttachmentAddedEvent>
+public class BudgetTransactionAttachmentAddedDomainEventHandler : IDomainEventHandler<BudgetTransactionAttachmentAddedDomainEvent>
 {
 	/// <summary>
 	/// Handle the notification.
@@ -17,7 +17,7 @@ public class BudgetTransactionAttachmentAddedDomainEventHandler : IDomainEventHa
 	/// <param name="notification">Notification.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns>Task.</returns>
-	public Task Handle(BudgetTransactionAttachmentAddedEvent notification, CancellationToken cancellationToken)
+	public Task Handle(BudgetTransactionAttachmentAddedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

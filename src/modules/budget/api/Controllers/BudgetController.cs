@@ -1,6 +1,7 @@
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
@@ -40,6 +41,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
+	private readonly IValidator<AddingBudgetTransactionAttachment> attachmentValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -57,6 +59,7 @@ public class BudgetController : ControllerBase
 	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
+	/// <param name="attachmentValidator">Transaction attachment validator.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -70,7 +73,8 @@ public class BudgetController : ControllerBase
 		IAuthorizationService authorizationService,
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
-		IExecutionContextAccessor contextAccessor)
+		IExecutionContextAccessor contextAccessor,
+		IValidator<AddingBudgetTransactionAttachment> attachmentValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -85,6 +89,7 @@ public class BudgetController : ControllerBase
 		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
 		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
 		this.contextAccessor = contextAccessor;
+		this.attachmentValidator = attachmentValidator;
 	}
 
 	/// <summary>
@@ -440,5 +445,29 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 		return this.Ok(pagedList);
+	}
+
+	/// <summary>
+	/// Add budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="file">Attachment file.</param>
+	/// <returns>
+	/// Returns an HTTP 200 OK status code when successful.
+	/// Throws an AppException if there are validation errors.</returns>
+	[HttpPost("{transactionId}/transaction/attachment")]
+	public async Task<IActionResult> AddBudgetTransactionAttachment(
+		[FromRoute] TransactionId transactionId, [FromForm] IFormFile file)
+	{
+		var command = new AddingBudgetTransactionAttachment(file, transactionId);
+
+		var validationResult = this.attachmentValidator.Validate(command);
+		if (!validationResult.IsValid)
+		{
+			throw new AppException("One or more error occured when trying to upload attachment.", validationResult.Errors);
+		}
+
+		await this.commandBus.Send(command);
+		return this.Ok();
 	}
 }

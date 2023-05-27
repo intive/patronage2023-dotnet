@@ -119,11 +119,15 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="attachmentUrl">Attachment Url.</param>
 	public void AddAttachment(string attachmentUrl)
 	{
-		var attachmentAddedEvent = new BudgetTransactionAttachmentAddedEvent(this.Id, attachmentUrl);
+		var attachmentAddedEvent = new BudgetTransactionAttachmentAddedDomainEvent(this.Id, attachmentUrl);
 		this.Apply(attachmentAddedEvent, this.Handle);
 	}
 
-	public void Handle(BudgetTransactionAttachmentAddedEvent @event)
+	/// <summary>
+	/// Handle method.
+	/// </summary>
+	/// <param name="event">Event.</param>
+	public void Handle(BudgetTransactionAttachmentAddedDomainEvent @event)
 	{
 		this.AttachmentUrl = @event.AttachmentUrl;
 	}

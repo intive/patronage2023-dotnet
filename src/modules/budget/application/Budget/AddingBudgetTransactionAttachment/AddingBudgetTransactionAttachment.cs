@@ -1,4 +1,3 @@
-using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Data;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
@@ -12,6 +11,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTra
 /// Command adding budget transaction attachment.
 /// </summary>
 /// <param name="File">File.</param>
+/// <param name="TransactionId">Budget transaction Id.</param>
 public record AddingBudgetTransactionAttachment(IFormFile File, TransactionId TransactionId) : ICommand;
 
 /// <summary>
@@ -20,7 +20,6 @@ public record AddingBudgetTransactionAttachment(IFormFile File, TransactionId Tr
 public class HandleAddingBudgetTransactionAttachment : ICommandHandler<AddingBudgetTransactionAttachment>
 {
 	private readonly IBlobStorageService blobStorageService;
-	private readonly AddingBudgetTransactionAttachmentValidator attachmentValidator;
 	private readonly BudgetTransactionRepository budgetTransactionRepository;
 
 	/// <summary>
@@ -28,12 +27,10 @@ public class HandleAddingBudgetTransactionAttachment : ICommandHandler<AddingBud
 	/// Constructor.
 	/// </summary>
 	/// <param name="blobStorageService">Blob storage service.</param>
-	/// <param name="attachmentValidator">Attachment validator.</param>
 	/// <param name="budgetTransactionRepository">Budget transaction repository.</param>
-	public HandleAddingBudgetTransactionAttachment(IBlobStorageService blobStorageService, AddingBudgetTransactionAttachmentValidator attachmentValidator, BudgetTransactionRepository budgetTransactionRepository)
+	public HandleAddingBudgetTransactionAttachment(IBlobStorageService blobStorageService, BudgetTransactionRepository budgetTransactionRepository)
 	{
 		this.blobStorageService = blobStorageService;
-		this.attachmentValidator = attachmentValidator;
 		this.budgetTransactionRepository = budgetTransactionRepository;
 	}
 
@@ -41,12 +38,6 @@ public class HandleAddingBudgetTransactionAttachment : ICommandHandler<AddingBud
 	public async Task Handle(AddingBudgetTransactionAttachment command, CancellationToken cancellationToken)
 	{
 		var file = command.File;
-
-		var validationResult = this.attachmentValidator.Validate(file);
-		if (!validationResult.IsValid)
-		{
-			throw new ValidationException(validationResult.Errors);
-		}
 
 		var attachmentFile = new BudgetTransactionAttachmentModel()
 		{

@@ -1,6 +1,7 @@
 using FluentValidation;
 
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
@@ -13,7 +14,7 @@ using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
-
+using Intive.Patronage2023.Modules.Budget.Application.Data;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Intive.Patronage2023.Modules.Budget.Api;
@@ -42,6 +43,8 @@ public static class BudgetModule
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
+		services.AddScoped<IValidator<AddingBudgetTransactionAttachment>, AddingBudgetTransactionAttachmentValidator>();
+		services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 		return services;
 	}
