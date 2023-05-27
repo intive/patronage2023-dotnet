@@ -54,4 +54,9 @@ public record BudgetDetailsInfo()
 	/// Budget users.
 	/// </summary>
 	public BudgetUser[] BudgetUsers { get; set; } = null!;
+
+	/// <summary>
+	/// IsFavourite flag.
+	/// </summary>
+	public bool IsFavourite { get; set; }
 }

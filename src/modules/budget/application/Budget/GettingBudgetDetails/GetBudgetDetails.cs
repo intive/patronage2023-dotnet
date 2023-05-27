@@ -3,7 +3,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -28,16 +30,19 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IKeycloakService keycloakService;
+	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetDetailsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
 	/// <param name="keycloakService">Keycloak service.</param>
-	public GetBudgetDetailsQueryHandler(BudgetDbContext budgetDbContext, IKeycloakService keycloakService)
+	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
+	public GetBudgetDetailsQueryHandler(BudgetDbContext budgetDbContext, IKeycloakService keycloakService, IExecutionContextAccessor contextAccessor)
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.keycloakService = keycloakService;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -61,7 +66,14 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 
 		var usersBudget = tasks.Select(x => x.Result).ToArray();
 
-		return budget?.MapToDetailsInfo(usersBudget!);
+		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+
+		bool isFavourite = await this.budgetDbContext.UserBudget
+			.Where(x => x.BudgetId == budgetId && x.UserId == userId)
+			.Select(x => x.IsFavourite)
+			.FirstOrDefaultAsync();
+
+		return budget?.MapToDetailsInfo(usersBudget!, isFavourite);
 	}
 
 	/// <summary>
