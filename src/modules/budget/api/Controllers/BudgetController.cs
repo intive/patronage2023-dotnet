@@ -457,9 +457,9 @@ public class BudgetController : ControllerBase
 	/// Throws an AppException if there are validation errors.</returns>
 	[HttpPost("{transactionId}/transaction/attachment")]
 	public async Task<IActionResult> AddBudgetTransactionAttachment(
-		[FromRoute] TransactionId transactionId, [FromForm] IFormFile file)
+		[FromRoute] Guid transactionId, IFormFile file)
 	{
-		var command = new AddingBudgetTransactionAttachment(file, transactionId);
+		var command = new AddingBudgetTransactionAttachment(file, new TransactionId(transactionId));
 
 		var validationResult = this.attachmentValidator.Validate(command);
 		if (!validationResult.IsValid)
