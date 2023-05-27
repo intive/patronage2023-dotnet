@@ -1,15 +1,10 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 
 /// <summary>
 /// Represents a budget category.
 /// </summary>
-public record TransactionCategory
+public record CategoryData
 {
-	/// <summary>
-	/// Gets or sets the id associated with the category.
-	/// </summary>
-	public Guid CategoryId { get; init; }
-
 	/// <summary>
 	/// Gets or sets the icon associated with the budget category.
 	/// </summary>

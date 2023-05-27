@@ -16,6 +16,7 @@ public static class TransactionCategoriesInfoMapper
 	public static IQueryable<TransactionCategory> MapToBudgetTransactionCategoriesInfo(this IQueryable<TransactionCategoryAggregate> query) =>
 		query.Select(x => new TransactionCategory
 		{
+			CategoryId = x.Id.Value,
 			Icon = x.Icon,
 			Name = x.Name,
 		});

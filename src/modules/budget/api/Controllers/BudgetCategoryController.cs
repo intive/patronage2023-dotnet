@@ -66,7 +66,7 @@ public class BudgetCategoryController : ControllerBase
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[HttpPost]
 	[Route("{budgetId:guid}/categories")]
-	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]TransactionCategory request)
+	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]CategoryData request)
 	{
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
