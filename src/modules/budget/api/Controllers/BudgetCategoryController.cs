@@ -56,12 +56,13 @@ public class BudgetCategoryController : ControllerBase
 	/// Adds a transaction category to a budget.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget to which the category will be added.</param>
+	/// <param name="categoryName">The transaction category name.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[HttpPost]
-	[Route("{budgetId:guid}/add")]
-	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId)
+	[Route("{budgetId:guid}/add/{categoryName}")]
+	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromRoute]string categoryName)
 	{
-		var command = new AddCategory(new BudgetId(budgetId));
+		var command = new AddCategory(new BudgetId(budgetId), categoryName);
 		await this.commandBus.Send(command);
 		return this.Ok();
 	}
