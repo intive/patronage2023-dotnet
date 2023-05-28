@@ -47,7 +47,7 @@ public class BlobStorageService : IBlobStorageService
 	}
 
 	/// <summary>
-	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
+	/// Uploads a CSV file containing a list of records to Azure Blob Storage.
 	/// </summary>
 	/// <param name="stream">The stream containing the data to upload.</param>
 	/// <param name="filename">The name of the file in the blob storage.</param>
