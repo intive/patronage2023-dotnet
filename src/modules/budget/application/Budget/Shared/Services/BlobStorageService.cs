@@ -5,6 +5,8 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using CsvHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure;
 using Microsoft.Extensions.Configuration;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -16,7 +18,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
-	private readonly ICsvBudgetService csvService;
+	private readonly ICsvService<GetBudgetTransferInfo> csvService;
 	private readonly IConfiguration configuration;
 
 	/// <summary>
@@ -25,7 +27,7 @@ public class BlobStorageService : IBlobStorageService
 	/// </summary>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
 	/// <param name="csvService">GenerateLocalCsvFilePath.</param>
-	public BlobStorageService(IConfiguration configuration, ICsvBudgetService csvService)
+	public BlobStorageService(IConfiguration configuration, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 		this.csvService = csvService;
@@ -61,7 +63,9 @@ public class BlobStorageService : IBlobStorageService
 
 		try
 		{
-			this.csvService.WriteBudgetsToMemoryStream(budgetInfos, csv);
+			////this.csvService.WriteBudgetsToMemoryStream(budgetInfos, csv);
+			var csvService = new CsvService<GetBudgetTransferInfo>();
+			csvService.WriteRecordsToMemoryStream(budgetInfos.BudgetsList, csv);
 			memoryStream.Position = 0;
 
 			await blobClient.UploadAsync(memoryStream, true);

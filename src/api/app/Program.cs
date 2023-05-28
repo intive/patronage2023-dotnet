@@ -2,11 +2,13 @@ using System.Text.Json.Serialization;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -52,7 +54,7 @@ builder.Services.AddScoped<IBudgetExportService, BudgetExportService>();
 builder.Services.AddScoped<IBudgetImportService, BudgetImportService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddScoped<IBudgetDataService, BudgetDataService>();
-builder.Services.AddScoped<ICsvBudgetService, CsvBudgetService>();
+builder.Services.AddScoped<ICsvService<GetBudgetTransferInfo>, CsvService<GetBudgetTransferInfo>>();
 
 builder.Services.AddMediatR(cfg =>
 {
