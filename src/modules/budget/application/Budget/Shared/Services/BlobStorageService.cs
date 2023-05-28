@@ -18,7 +18,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public class BlobStorageService : IBlobStorageService
 {
 	private readonly BlobServiceClient blobServiceClient;
-	private readonly ICsvService<GetBudgetTransferInfo> csvService;
+	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IConfiguration configuration;
 
 	/// <summary>
@@ -26,73 +26,52 @@ public class BlobStorageService : IBlobStorageService
 	/// DataService.
 	/// </summary>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
-	/// <param name="csvService">GenerateLocalCsvFilePath.</param>
-	public BlobStorageService(IConfiguration configuration, ICsvService<GetBudgetTransferInfo> csvService)
+	/// <param name="contextAccessor">1.</param>
+	public BlobStorageService(IConfiguration configuration, IExecutionContextAccessor contextAccessor)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
-		this.csvService = csvService;
+		this.contextAccessor = contextAccessor;
 		this.configuration = configuration;
 	}
 
 	/// <summary>
-	/// Checks if a blob container exists, and if not, creates one.
+	/// 1.
 	/// </summary>
-	/// <param name="containerName">The name of the container to be checked/created.</param>
-	/// <returns>A client reference to the newly created or existing blob container.</returns>
-	public async Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName)
+	/// <param name="filename">12.</param>
+	/// <returns>11.</returns>
+	public async Task<string> GenerateLinkToDownload(string filename)
 	{
-		var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-		await containerClient.CreateIfNotExistsAsync();
-		return containerClient;
+		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();
+		BlobClient blobClient = containerClient.GetBlobClient(filename);
+		string? connectionString = this.configuration.GetConnectionString("BlobStorage");
+		string accountKey = connectionString!.Split(new[] { "AccountKey=" }, StringSplitOptions.None)[1].Split(';')[0];
+		string blobSasUri = this.GenerateSasForBlob(blobClient, accountKey);
+
+		return blobSasUri;
 	}
 
 	/// <summary>
 	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
 	/// </summary>
-	/// <param name="budgetInfos">A list of budgets to be written to the CSV file and uploaded.</param>
-	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
-	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
-	public async Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient)
+	/// <param name="stream">.</param>
+	/// <param name="filename">1.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UploadToBlobStorage(Stream stream, string filename)
 	{
-		string filename = this.csvService.GenerateFileName();
+		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();
 		BlobClient blobClient = containerClient.GetBlobClient(filename);
-
-		var memoryStream = new MemoryStream();
-		var streamWriter = new StreamWriter(memoryStream);
-		var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
-
-		try
-		{
-			////this.csvService.WriteBudgetsToMemoryStream(budgetInfos, csv);
-			var csvService = new CsvService<GetBudgetTransferInfo>();
-			csvService.WriteRecordsToMemoryStream(budgetInfos.BudgetsList, csv);
-			memoryStream.Position = 0;
-
-			await blobClient.UploadAsync(memoryStream, true);
-
-			string? connectionString = this.configuration.GetConnectionString("BlobStorage");
-			string accountKey = connectionString!.Split(new[] { "AccountKey=" }, StringSplitOptions.None)[1].Split(';')[0];
-			string blobSasUri = this.GenerateSasForBlob(blobClient, accountKey);
-
-			return blobSasUri;
-		}
-		finally
-		{
-			await csv.DisposeAsync();
-			await streamWriter.DisposeAsync();
-			await memoryStream.DisposeAsync();
-		}
+		await blobClient.UploadAsync(stream, true);
 	}
 
 	/// <summary>
 	/// Downloads a specified file from Azure Blob Storage.
 	/// </summary>
 	/// <param name="filename">The name of the file to be downloaded.</param>
-	/// <param name="containerClient">A client object for interacting with the Azure Blob Storage container.</param>
 	/// <returns>A task representing the asynchronous operation, yielding the downloaded file's information.</returns>
-	public async Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename, BlobContainerClient containerClient)
+	public async Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename)
 	{
-		BlobClient blobClient = containerClient.GetBlobClient(Path.GetFileName(filename));
+		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();
+		BlobClient blobClient = containerClient.GetBlobClient(filename);
 		BlobDownloadInfo download = await blobClient.DownloadAsync();
 		return download;
 	}
@@ -126,5 +105,17 @@ public class BlobStorageService : IBlobStorageService
 		};
 
 		return sasUri.ToString();
+	}
+
+	/// <summary>
+	/// Checks if a blob container exists, and if not, creates one.
+	/// </summary>
+	/// <returns>A client reference to the newly created or existing blob container.</returns>
+	private async Task<BlobContainerClient> CreateBlobContainerIfNotExists()
+	{
+		string containerName = this.contextAccessor.GetUserId().ToString()!;
+		var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+		await containerClient.CreateIfNotExistsAsync();
+		return containerClient;
 	}
 }

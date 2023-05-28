@@ -1,4 +1,6 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 ///
 /// <summary>
@@ -9,5 +11,5 @@ public record GetBudgetTransferList()
 	/// <summary>
 	/// BudgetsList object.
 	/// </summary>
-	public List<GetBudgetTransferInfo> BudgetsList { get; set; } = default!;
+	public List<GetBudgetTransferInfo> BudgetsList { get; init; } = default!;
 }

@@ -48,7 +48,7 @@ public class BudgetDataService : IBudgetDataService
 	public async Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig)
 	{
 		var newBudgets = new List<BudgetAggregate>();
-		var download = await this.blobStorageService.DownloadFromBlobStorage(Path.GetFileName(filename), containerClient);
+		var download = await this.blobStorageService.DownloadFromBlobStorage(filename);
 		using var reader = new StreamReader(download.Content);
 		using var csv = new CsvReader(reader, csvConfig);
 		await csv.ReadAsync();

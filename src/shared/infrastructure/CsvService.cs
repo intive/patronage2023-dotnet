@@ -34,7 +34,7 @@ public class CsvService<T> : ICsvService<T>
 	/// Generates a local file path for a new CSV file.
 	/// </summary>
 	/// <returns>A string representing the local path to a newly generated CSV file.</returns>
-	public string GenerateFileName()
+	public string GenerateFileNameWithCsvExtension()
 	{
 		return Guid.NewGuid() + ".csv";
 	}

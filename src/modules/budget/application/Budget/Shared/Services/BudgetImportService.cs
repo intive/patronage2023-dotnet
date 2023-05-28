@@ -42,9 +42,6 @@ public class BudgetImportService : IBudgetImportService
 	{
 		var errors = new List<string>();
 
-		string containerName = this.contextAccessor.GetUserId().ToString()!;
-		BlobContainerClient containerClient = await this.blobStorageService.CreateBlobContainerIfNotExists(containerName);
-
 		var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
 		{
 			HasHeaderRecord = false,
@@ -60,7 +57,7 @@ public class BudgetImportService : IBudgetImportService
 				new ImportResult { ErrorsList = errors, Uri = "No budgets were saved." });
 		}
 
-		string uri = await this.blobStorageService.UploadToBlobStorage(budgetInfos.Result, containerClient);
+		string uri = await this.blobStorageService.UploadToBlobStorage(budgetInfos.Result);
 
 		string fileName = new Uri(uri).LocalPath;
 

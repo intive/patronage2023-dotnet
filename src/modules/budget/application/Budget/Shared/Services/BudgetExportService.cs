@@ -1,4 +1,9 @@
+using System.Globalization;
+
 using Azure.Storage.Blobs;
+
+using CsvHelper;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Shared.Abstractions;
 
@@ -9,19 +14,19 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 /// </summary>
 public class BudgetExportService : IBudgetExportService
 {
-	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
+	private readonly ICsvService<GetBudgetTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetExportService"/> class.
 	/// DataService.
 	/// </summary>
-	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
-	public BudgetExportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService)
+	/// <param name="csvService">1.</param>
+	public BudgetExportService(IBlobStorageService blobStorageService, ICsvService<GetBudgetTransferInfo> csvService)
 	{
-		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
@@ -31,9 +36,17 @@ public class BudgetExportService : IBudgetExportService
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
 	public async Task<string?> Export(GetBudgetTransferList? budgets)
 	{
-		string containerName = this.contextAccessor.GetUserId().ToString()!;
-		BlobContainerClient containerClient = await this.blobStorageService.CreateBlobContainerIfNotExists(containerName);
-		string uri = await this.blobStorageService.UploadToBlobStorage(budgets!, containerClient);
-		return uri;
+		string filename = this.csvService.GenerateFileNameWithCsvExtension();
+		using (var memoryStream = new MemoryStream())
+		await using (var streamWriter = new StreamWriter(memoryStream))
+		await using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+		{
+			this.csvService.WriteRecordsToMemoryStream(budgets!.BudgetsList, csv);
+			memoryStream.Position = 0;
+
+			await this.blobStorageService.UploadToBlobStorage(memoryStream, filename);
+		}
+
+		return await this.blobStorageService.GenerateLinkToDownload(filename);
 	}
 }

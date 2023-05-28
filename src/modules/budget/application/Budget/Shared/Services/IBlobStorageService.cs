@@ -12,23 +12,28 @@ public interface IBlobStorageService
 	/// <summary>
 	/// Checks if a blob container exists, and if not, creates one.
 	/// </summary>
-	/// <param name="containerName">The name of the container to be checked/created.</param>
 	/// <returns>A client reference to the newly created or existing blob container.</returns>
-	Task<BlobContainerClient> CreateBlobContainerIfNotExists(string containerName);
+	Task<BlobContainerClient> CreateBlobContainerIfNotExists();
 
 	/// <summary>
 	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
 	/// </summary>
-	/// <param name="budgetInfos">A list of budgets to be written to the CSV file and uploaded.</param>
-	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
+	/// <param name="stream">A list of budgets to be written to the CSV file and uploaded.</param>
+	/// <param name="filename">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
-	Task<string> UploadToBlobStorage(GetBudgetTransferList budgetInfos, BlobContainerClient containerClient);
+	Task UploadToBlobStorage(Stream stream, string filename);
 
 	/// <summary>
 	/// Downloads a specified file from Azure Blob Storage.
 	/// </summary>
 	/// <param name="filename">The name of the file to be downloaded.</param>
-	/// <param name="containerClient">A client object for interacting with the Azure Blob Storage container.</param>
 	/// <returns>A task representing the asynchronous operation, yielding the downloaded file's information.</returns>
-	Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename, BlobContainerClient containerClient);
+	Task<BlobDownloadInfo> DownloadFromBlobStorage(string filename);
+
+	/// <summary>
+	/// 1.
+	/// </summary>
+	/// <param name="filename">2.</param>
+	/// <returns>3.</returns>
+	Task<string> GenerateLinkToDownload(string filename);
 }
