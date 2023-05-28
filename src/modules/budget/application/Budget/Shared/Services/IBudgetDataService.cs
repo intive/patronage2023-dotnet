@@ -11,11 +11,11 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public interface IBudgetDataService
 {
 	/// <summary>
-	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
+	/// Converts a collection of budget information from CSV format into a list of BudgetAggregate objects.
 	/// </summary>
-	/// <param name="budgetsToImport">GetBudgetTransferInfo.</param>
+	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
-	/// <returns>A task that represents the asynchronous operation.</returns>
+	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
 	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig);
 
 	/// <summary>

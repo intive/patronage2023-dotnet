@@ -2,7 +2,6 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Abstractions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
@@ -42,6 +41,6 @@ public class GetBudgetsNameQueryHandler : IQueryHandler<GetBudgetsName, GetBudge
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
 		var entity = await this.budgetDbContext.Budget.Where(x => x.UserId == userId).Select(x => x.Name).ToListAsync(cancellationToken);
 
-		return entity is null ? BudgetAggregateGetBudgetsNameInfoMapper.Map(null) : BudgetAggregateGetBudgetsNameInfoMapper.Map(entity);
+		return entity is null ? null : new GetBudgetsNameInfo { BudgetName = entity };
 	}
 }

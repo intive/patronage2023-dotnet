@@ -1,6 +1,6 @@
 using Azure.Storage.Blobs.Models;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+namespace Intive.Patronage2023.Shared.Abstractions;
 
 /// <summary>
 /// IBudgetExportService interface defines a contract for services that handle the exportation of budget data.

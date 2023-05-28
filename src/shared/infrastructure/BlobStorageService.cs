@@ -5,7 +5,7 @@ using Azure.Storage.Sas;
 using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.Extensions.Configuration;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+namespace Intive.Patronage2023.Shared.Infrastructure;
 
 /// <summary>
 /// BlobStorageService class implements the IBlobStorageService interface and provides methods
