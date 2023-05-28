@@ -12,36 +12,36 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTra
 /// </summary>
 /// <param name="File">File.</param>
 /// <param name="TransactionId">Budget transaction Id.</param>
-public record AddingBudgetTransactionAttachment(IFormFile File, TransactionId TransactionId) : ICommand;
+public record AddBudgetTransactionAttachment(IFormFile File, TransactionId TransactionId) : ICommand;
 
 /// <summary>
 /// Method that handles adding attachment to budget transaction.
 /// </summary>
-public class HandleAddingBudgetTransactionAttachment : ICommandHandler<AddingBudgetTransactionAttachment>
+public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTransactionAttachment>
 {
 	private readonly IBlobStorageService blobStorageService;
 	private readonly BudgetTransactionRepository budgetTransactionRepository;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleAddingBudgetTransactionAttachment"/> class.
+	/// Initializes a new instance of the <see cref="HandleAddBudgetTransactionAttachment"/> class.
 	/// Constructor.
 	/// </summary>
 	/// <param name="blobStorageService">Blob storage service.</param>
 	/// <param name="budgetTransactionRepository">Budget transaction repository.</param>
-	public HandleAddingBudgetTransactionAttachment(IBlobStorageService blobStorageService, BudgetTransactionRepository budgetTransactionRepository)
+	public HandleAddBudgetTransactionAttachment(IBlobStorageService blobStorageService, BudgetTransactionRepository budgetTransactionRepository)
 	{
 		this.blobStorageService = blobStorageService;
 		this.budgetTransactionRepository = budgetTransactionRepository;
 	}
 
 	/// <inheritdoc/>
-	public async Task Handle(AddingBudgetTransactionAttachment command, CancellationToken cancellationToken)
+	public async Task Handle(AddBudgetTransactionAttachment command, CancellationToken cancellationToken)
 	{
 		var file = command.File;
 
 		var attachmentFile = new BudgetTransactionAttachmentModel()
 		{
-			FileName = file.Name,
+			FileName = command.TransactionId.Value.ToString(),
 			Content = file.OpenReadStream(),
 		};
 

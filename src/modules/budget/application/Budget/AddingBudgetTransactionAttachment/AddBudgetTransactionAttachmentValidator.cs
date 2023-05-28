@@ -6,16 +6,16 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTra
 /// <summary>
 /// Adding attachment file to transaction validator class.
 /// </summary>
-public class AddingBudgetTransactionAttachmentValidator : AbstractValidator<AddingBudgetTransactionAttachment>
+public class AddBudgetTransactionAttachmentValidator : AbstractValidator<AddBudgetTransactionAttachment>
 {
 	private readonly long maxFileSize = 5000000;
 	private readonly string[] allowedFileExtensions = { ".pdf", ".jpg", ".bmp", ".png" };
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AddingBudgetTransactionAttachmentValidator"/> class.
+	/// Initializes a new instance of the <see cref="AddBudgetTransactionAttachmentValidator"/> class.
 	/// Attachment file validator.
 	/// </summary>
-	public AddingBudgetTransactionAttachmentValidator()
+	public AddBudgetTransactionAttachmentValidator()
 	{
 		this.RuleFor(command => command.File)
 			.NotNull().WithMessage("File cannot be null.")

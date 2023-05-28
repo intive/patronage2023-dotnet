@@ -41,7 +41,7 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IValidator<EditBudget> editBudgetValidator;
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
-	private readonly IValidator<AddingBudgetTransactionAttachment> attachmentValidator;
+	private readonly IValidator<AddBudgetTransactionAttachment> attachmentValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -74,7 +74,7 @@ public class BudgetController : ControllerBase
 		IValidator<EditBudget> editBudgetValidator,
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IExecutionContextAccessor contextAccessor,
-		IValidator<AddingBudgetTransactionAttachment> attachmentValidator)
+		IValidator<AddBudgetTransactionAttachment> attachmentValidator)
 	{
 		this.createBudgetValidator = createBudgetValidator;
 		this.getBudgetsValidator = getBudgetsValidator;
@@ -455,11 +455,16 @@ public class BudgetController : ControllerBase
 	/// <returns>
 	/// Returns an HTTP 200 OK status code when successful.
 	/// Throws an AppException if there are validation errors.</returns>
-	[HttpPost("{transactionId}/transaction/attachment")]
+	[HttpPost("{transactionId:guid}/transaction/attachment")]
 	public async Task<IActionResult> AddBudgetTransactionAttachment(
 		[FromRoute] Guid transactionId, IFormFile file)
 	{
-		var command = new AddingBudgetTransactionAttachment(file, new TransactionId(transactionId));
+		if (transactionId == Guid.Empty)
+		{
+			throw new ArgumentException("Provided Transaction Id is not valid.");
+		}
+
+		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId));
 
 		var validationResult = this.attachmentValidator.Validate(command);
 		if (!validationResult.IsValid)
@@ -469,5 +474,16 @@ public class BudgetController : ControllerBase
 
 		await this.commandBus.Send(command);
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Get budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <returns>Budget transaction attachment.</returns>
+	[HttpGet("{transactionId}/transaction/getAttachment)")]
+	public Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
+	{
+		throw new NotImplementedException();
 	}
 }

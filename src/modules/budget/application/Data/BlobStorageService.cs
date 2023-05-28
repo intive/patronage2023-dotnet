@@ -32,6 +32,8 @@ public class BlobStorageService : IBlobStorageService
 		BlobContainerClient blobContainerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 		BlobClient blobClient = blobContainerClient.GetBlobClient(fileName);
 
+		await blobContainerClient.CreateIfNotExistsAsync();
+
 		await blobClient.UploadAsync(fileData);
 
 		return blobClient.Uri.ToString();
