@@ -22,10 +22,9 @@ public class EmailService : IEmailService
 	/// <inheritdoc/>
 	public void SendEmail(EmailMessage emailMessage)
 	{
-		if (emailMessage is null || emailMessage.SendFromAddress is null || emailMessage.SendToAddresses is null)
-		{
-			throw new ArgumentNullException();
-		}
+		ArgumentNullException.ThrowIfNull(emailMessage);
+		ArgumentNullException.ThrowIfNull(emailMessage.SendFromAddress);
+		ArgumentNullException.ThrowIfNull(emailMessage.SendToAddresses);
 
 		var message = new MimeMessage();
 		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
