@@ -12,22 +12,22 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// Represents a request to retrieve categories for a specific budget.
 /// </summary>
 /// <param name="BudgetId">The ID of the budget for which to retrieve the categories.</param>
-public record GetTransactionCategories(BudgetId BudgetId) : IQuery<TransactionCategoriesInfo>;
+public record GetTransactionCategoriesFromDatabase(BudgetId BudgetId) : IQuery<TransactionCategoriesInfo>;
 
 /// <summary>
 /// Get Budgets handler.
 /// </summary>
-public class GetTransactionCategoriesQueryHandler : IQueryHandler<GetTransactionCategories, TransactionCategoriesInfo>
+public class GetTransactionCategoriesFromDatabaseQueryHandler : IQueryHandler<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>
 {
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetTransactionCategoriesQueryHandler"/> class.
+	/// Initializes a new instance of the <see cref="GetTransactionCategoriesFromDatabaseQueryHandler"/> class.
 	/// </summary>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetTransactionCategoriesQueryHandler(IExecutionContextAccessor contextAccessor, BudgetDbContext budgetDbContext)
+	public GetTransactionCategoriesFromDatabaseQueryHandler(IExecutionContextAccessor contextAccessor, BudgetDbContext budgetDbContext)
 	{
 		this.contextAccessor = contextAccessor;
 		this.budgetDbContext = budgetDbContext;
@@ -39,7 +39,7 @@ public class GetTransactionCategoriesQueryHandler : IQueryHandler<GetTransaction
 	/// <param name="query">Query.</param>
 	/// <param name="cancellationToken">cancellation token.</param>
 	/// <returns>Paged list of Budgets.</returns>
-	public async Task<TransactionCategoriesInfo> Handle(GetTransactionCategories query, CancellationToken cancellationToken)
+	public async Task<TransactionCategoriesInfo> Handle(GetTransactionCategoriesFromDatabase query, CancellationToken cancellationToken)
 	{
 		var categories = this.budgetDbContext.BudgetTransactionCategory.AsQueryable();
 
