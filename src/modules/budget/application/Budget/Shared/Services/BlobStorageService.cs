@@ -19,10 +19,9 @@ public class BlobStorageService : IBlobStorageService
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BlobStorageService"/> class.
-	/// DataService.
 	/// </summary>
 	/// <param name="configuration">The application's configuration, used for retrieving the connection string for the Blob Storage.</param>
-	/// <param name="contextAccessor">1.</param>
+	/// <param name="contextAccessor">Provides access to the execution context, allowing the service to use user-specific information.</param>
 	public BlobStorageService(IConfiguration configuration, IExecutionContextAccessor contextAccessor)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
@@ -31,10 +30,11 @@ public class BlobStorageService : IBlobStorageService
 	}
 
 	/// <summary>
-	/// 1.
+	/// Generates a Shared Access Signature (SAS) URI for a specified file in the Blob Storage.
+	/// This URI includes a SAS token, which allows for secure, direct access to the file.
 	/// </summary>
-	/// <param name="filename">12.</param>
-	/// <returns>11.</returns>
+	/// <param name="filename">The name of the file for which the SAS URI is to be generated.</param>
+	/// <returns>A task representing the asynchronous operation, with a string result containing the SAS URI for the specified file.</returns>
 	public async Task<string> GenerateLinkToDownload(string filename)
 	{
 		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();
@@ -49,9 +49,9 @@ public class BlobStorageService : IBlobStorageService
 	/// <summary>
 	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
 	/// </summary>
-	/// <param name="stream">.</param>
-	/// <param name="filename">1.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <param name="stream">The stream containing the data to upload.</param>
+	/// <param name="filename">The name of the file in the blob storage.</param>
+	/// <returns><see cref="Task"/>Representing the asynchronous operation of the file upload.</returns>
 	public async Task UploadToBlobStorage(Stream stream, string filename)
 	{
 		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();

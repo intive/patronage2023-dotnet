@@ -13,10 +13,10 @@ public interface IBudgetDataService
 	/// <summary>
 	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
 	/// </summary>
-	/// <param name="filename">The name of the blob to be downloaded from Azure Blob Storage.</param>
+	/// <param name="budgetsToImport">GetBudgetTransferInfo.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, CsvConfiguration csvConfig);
+	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.

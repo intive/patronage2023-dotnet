@@ -40,18 +40,12 @@ public class BudgetDataService : IBudgetDataService
 	/// <summary>
 	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
 	/// </summary>
-	/// <param name="filename">The name of the blob to be downloaded from Azure Blob Storage.</param>
+	/// <param name="budgetsToImport">GetBudgetTransferInfo.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	public async Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, CsvConfiguration csvConfig)
+	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig)
 	{
 		var newBudgets = new List<BudgetAggregate>();
-		var download = await this.blobStorageService.DownloadFromBlobStorage(filename);
-		using var reader = new StreamReader(download.Content);
-		using var csv = new CsvReader(reader, csvConfig);
-		await csv.ReadAsync();
-		var budgetsToImport = csv.GetRecords<GetBudgetTransferInfo>();
-
 		foreach (var budget in budgetsToImport)
 		{
 			var budgetId = new BudgetId(Guid.NewGuid());
@@ -64,7 +58,7 @@ public class BudgetDataService : IBudgetDataService
 			newBudgets.Add(newBudget);
 		}
 
-		return new BudgetAggregateList(newBudgets);
+		return Task.FromResult(new BudgetAggregateList(newBudgets));
 	}
 
 	/// <summary>
