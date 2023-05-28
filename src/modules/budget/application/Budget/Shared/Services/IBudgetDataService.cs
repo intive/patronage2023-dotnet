@@ -1,4 +1,3 @@
-using Azure.Storage.Blobs;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
@@ -15,10 +14,9 @@ public interface IBudgetDataService
 	/// Downloads a CSV file containing a list of budgets from Azure Blob Storage and imports the budgets into the application.
 	/// </summary>
 	/// <param name="filename">The name of the blob to be downloaded from Azure Blob Storage.</param>
-	/// <param name="containerClient">Client for interacting with a specific blob container in Azure Blob Storage.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
-	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, BlobContainerClient containerClient, CsvConfiguration csvConfig);
+	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(string filename, CsvConfiguration csvConfig);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.

@@ -1,6 +1,7 @@
 using System.Globalization;
-using Azure.Storage.Blobs;
+using CsvHelper;
 using CsvHelper.Configuration;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -16,6 +17,7 @@ public class BudgetImportService : IBudgetImportService
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBlobStorageService blobStorageService;
 	private readonly IBudgetDataService budgetDataService;
+	private readonly ICsvService<GetBudgetTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetImportService"/> class.
@@ -24,11 +26,13 @@ public class BudgetImportService : IBudgetImportService
 	/// <param name="contextAccessor">The ExecutionContextAccessor used for accessing context information.</param>
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="budgetDataService">IDataHelper.</param>
-	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IBudgetDataService budgetDataService)
+	/// <param name="csvService">GetBudgetTransferList.</param>
+	public BudgetImportService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IBudgetDataService budgetDataService, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.contextAccessor = contextAccessor;
 		this.blobStorageService = blobStorageService;
 		this.budgetDataService = budgetDataService;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
@@ -57,11 +61,20 @@ public class BudgetImportService : IBudgetImportService
 				new ImportResult { ErrorsList = errors, Uri = "No budgets were saved." });
 		}
 
-		string uri = await this.blobStorageService.UploadToBlobStorage(budgetInfos.Result);
+		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
+		using (var memoryStream = new MemoryStream())
+		await using (var streamWriter = new StreamWriter(memoryStream))
+		await using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+		{
+			this.csvService.WriteRecordsToMemoryStream(budgetInfos.Result.BudgetsList, csv);
+			memoryStream.Position = 0;
 
-		string fileName = new Uri(uri).LocalPath;
+			await this.blobStorageService.UploadToBlobStorage(memoryStream, fileName);
+		}
 
-		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsFromCsvToBudgetAggregate(fileName, containerClient, csvConfig);
+		string uri = await this.blobStorageService.GenerateLinkToDownload(fileName);
+
+		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsFromCsvToBudgetAggregate(fileName, csvConfig);
 
 		return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}

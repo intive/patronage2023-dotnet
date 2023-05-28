@@ -1,6 +1,4 @@
-using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
@@ -9,12 +7,6 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 /// </summary>
 public interface IBlobStorageService
 {
-	/// <summary>
-	/// Checks if a blob container exists, and if not, creates one.
-	/// </summary>
-	/// <returns>A client reference to the newly created or existing blob container.</returns>
-	Task<BlobContainerClient> CreateBlobContainerIfNotExists();
-
 	/// <summary>
 	/// Uploads a CSV file containing a list of budgets to Azure Blob Storage.
 	/// </summary>
