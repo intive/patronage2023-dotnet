@@ -1,7 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -13,7 +13,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// Get Budget's Transactions query.
 /// </summary>
-public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery
+public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, IPageableQuery, ITextSearchQuery
 {
 	/// <summary>
 	/// The amount of data to return.
@@ -39,6 +39,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// Budget Id.
 	/// </summary>
 	public BudgetId BudgetId { get; init; }
+
+	/// <summary>
+	/// Search text.
+	/// </summary>
+	public string? Search { get; set; }
 }
 
 /// <summary>
@@ -70,12 +75,20 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 			.WithType(query.TransactionType)
 			.WithCategoryTypes(query.CategoryTypes);
 
-		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
+		if (!string.IsNullOrEmpty(query.Search))
+		{
+			budgets = budgets.Where(x => x.Name.Contains(query.Search));
+		}
+
+		int totalItemsCount = await budgets
+			.CountAsync(cancellationToken: cancellationToken);
+
 		var mappedData = await budgets
 			.OrderByDescending(x => x.BudgetTransactionDate)
 			.Paginate(query)
 			.MapToTransactionInfo()
 			.ToListAsync(cancellationToken: cancellationToken);
+
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
 	}

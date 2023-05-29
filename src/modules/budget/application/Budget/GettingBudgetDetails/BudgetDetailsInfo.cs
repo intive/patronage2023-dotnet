@@ -46,7 +46,17 @@ public record BudgetDetailsInfo()
 	public string? Icon { get; init; }
 
 	/// <summary>
-	/// Budget describtion.
+	/// Budget description.
 	/// </summary>
 	public string? Description { get; init; }
+
+	/// <summary>
+	/// Budget users.
+	/// </summary>
+	public BudgetUser[] BudgetUsers { get; set; } = null!;
+
+	/// <summary>
+	/// IsFavourite flag.
+	/// </summary>
+	public bool IsFavourite { get; set; }
 }

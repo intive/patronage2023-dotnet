@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
+using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -64,10 +65,11 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 	{
 		bool isAdmin = this.contextAccessor.IsAdmin();
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
+		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
+		var userBudgetsFavourite = await this.budgetDbContext.UserBudget.Where(x => x.UserId == userId && x.IsFavourite).Select(x => x.BudgetId).ToListAsync();
 
 		if (!isAdmin)
 		{
-			var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
 			var userBudgets = this.budgetDbContext.UserBudget.Where(x => x.UserId == userId).Select(y => y.BudgetId);
 			budgets = budgets.Where(x => userBudgets.Contains(x.Id)).AsQueryable();
 		}
@@ -77,9 +79,22 @@ public class GetBudgetsQueryHandler : IQueryHandler<GetBudgets, PagedList<Budget
 			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
-		var mappedData = await budgets.Select(BudgetAggregateBudgetInfoMapper.Map).Sort(query).Paginate(query).ToListAsync(cancellationToken: cancellationToken);
+		var sortByFavourite = new SortDescriptor
+		{
+			ColumnName = nameof(UserBudgetAggregate.IsFavourite),
+			SortAscending = false,
+		};
+
+		query.SortDescriptors.Insert(0, sortByFavourite);
+
+		var items = await budgets
+			.MapToBudgetInfo(userBudgetsFavourite)
+			.Sort(query)
+			.Paginate(query)
+			.ToListAsync(cancellationToken: cancellationToken);
+
 		int totalItemsCount = await budgets.CountAsync(cancellationToken: cancellationToken);
-		var result = new PagedList<BudgetInfo> { Items = mappedData, TotalCount = totalItemsCount };
+		var result = new PagedList<BudgetInfo> { Items = items, TotalCount = totalItemsCount };
 		return result;
 	}
 }

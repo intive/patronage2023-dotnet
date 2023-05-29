@@ -24,20 +24,33 @@ public interface IKeycloakService
 	Task<HttpResponseMessage> GetClientToken(CancellationToken cancellationToken);
 
 	/// <summary>
+	/// Extract access token.
+	/// </summary>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>Access token.</returns>
+	Task<string> ExtractAccessTokenFromClientToken(CancellationToken cancellationToken);
+
+	/// <summary>
 	/// Add new user to keycloak.
 	/// </summary>
 	/// <param name="appUser">User to add.</param>
-	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>HttpResponseMessage with JSON Web Token.</returns>
-	Task<HttpResponseMessage> AddUser(AppUser appUser, string accessToken, CancellationToken cancellationToken);
+	Task<HttpResponseMessage> AddUser(AppUser appUser, CancellationToken cancellationToken);
 
 	/// <summary>
 	/// Get users from keycloak.
 	/// </summary>
 	/// <param name="searchText">Search text(string contained in username, first or last name, or email.</param>
-	/// <param name="accessToken">Client token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>List of users corresponding to query.</returns>
-	Task<HttpResponseMessage> GetUsers(string searchText, string accessToken, CancellationToken cancellationToken);
+	Task<HttpResponseMessage> GetUsers(string searchText, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Get user from keycloak.
+	/// </summary>
+	/// <param name="id">User id.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>User corresponding to query.</returns>
+	Task<HttpResponseMessage> GetUserById(string id, CancellationToken cancellationToken);
 }

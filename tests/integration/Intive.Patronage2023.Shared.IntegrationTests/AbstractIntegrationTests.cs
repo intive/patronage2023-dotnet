@@ -1,3 +1,5 @@
+using Hangfire;
+
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 
@@ -33,6 +35,13 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDis
 	///</summary>
 	public void Dispose()
 	{
+		using (var scope = this.WebApplicationFactory.Services.CreateScope())
+		{
+			var budgetDbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
+
+			budgetDbContext.Budget.ExecuteDelete();
+			budgetDbContext.Transaction.ExecuteDelete();
+		}
 		this.WebApplicationFactory.Dispose();
 	}
 
@@ -65,6 +74,7 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IDis
 					services.AddDbContext<BudgetDbContext>((_, option) => option.UseSqlServer(this.connectionString));
 					services.Remove(services.SingleOrDefault(service => typeof(DbContextOptions<ExampleDbContext>) == service.ServiceType)!);
 					services.AddDbContext<ExampleDbContext>((_, option) => option.UseSqlServer(this.connectionString));
+					services.AddHangfire((_, option) => option.UseSqlServerStorage(this.connectionString));
 				});
 		}
 	}

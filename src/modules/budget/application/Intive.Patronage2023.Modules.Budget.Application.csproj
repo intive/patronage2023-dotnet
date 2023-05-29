@@ -8,10 +8,12 @@
   </PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="FluentDateTime" Version="2.1.0" />
 	  <PackageReference Include="FluentValidation" Version="11.5.1" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
 	  <PackageReference Include="MediatR" Version="12.0.1" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\abstractions\Intive.Patronage2023.Shared.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\user\application\Intive.Patronage2023.Modules.User.Application.csproj" />
+    <ProjectReference Include="..\..\user\infrastructure\Intive.Patronage2023.Modules.User.Infrastructure.csproj" />
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Budget.Infrastructure.csproj" />
   </ItemGroup>
