@@ -39,8 +39,8 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
 		var context = new ValidationContext<TRequest>(request);
 
 		var errorsDictionary = this.validators
-			.Select(x => x.Validate(context))
-			.SelectMany(x => x.Errors)
+			.Select(x => x.ValidateAsync(context, cancellationToken))
+			.SelectMany(x => x.Result.Errors)
 			.Where(x => x != null)
 			.GroupBy(
 				x => x.PropertyName,
