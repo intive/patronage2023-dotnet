@@ -1,4 +1,5 @@
 using FluentValidation;
+
 using MediatR;
 
 namespace Intive.Patronage2023.Shared.Abstractions.Behaviors;
@@ -8,16 +9,16 @@ namespace Intive.Patronage2023.Shared.Abstractions.Behaviors;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request to be validated.</typeparam>
 /// <typeparam name="TResponse">The type of the response returned by the request.</typeparam>
-public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public sealed class ValidationQueryBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 	where TRequest : IRequest<TResponse>
 {
 	private readonly IEnumerable<IValidator<TRequest>> validators;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ValidationBehavior{TRequest, TResponse}"/> class.
+	/// Initializes a new instance of the <see cref="ValidationQueryBehavior{TRequest, TResponse}"/> class.
 	/// </summary>
 	/// <param name="validators">The validators to be used for validating the request.</param>
-	public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+	public ValidationQueryBehavior(IEnumerable<IValidator<TRequest>> validators)
 	{
 		this.validators = validators;
 	}

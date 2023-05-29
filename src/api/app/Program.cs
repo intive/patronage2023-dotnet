@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
@@ -18,7 +19,9 @@ using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 
 using Keycloak.AuthServices.Authentication;
+
 using MediatR;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -89,7 +92,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient(
 	typeof(IPipelineBehavior<,>),
-	typeof(ValidationBehavior<,>));
+	typeof(ValidationQueryBehavior<,>));
+
+builder.Services.AddCommandBehavior(typeof(ValidationCommandBehavior<>), AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

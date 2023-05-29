@@ -1,6 +1,9 @@
 using System.Reflection;
 
 using Intive.Patronage2023.Shared.Abstractions.Attributes;
+using Intive.Patronage2023.Shared.Abstractions.Commands;
+
+using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,6 +36,33 @@ public static class ServiceProviderExtension
 			var concreteTypeLifetime = concreteType.GetCustomAttribute<LifetimeAttribute>()?.Lifetime ?? ServiceLifetime.Scoped;
 
 			var service = ServiceDescriptor.Describe(concreteTypeInterface, concreteType, concreteTypeLifetime);
+
+			services.Add(service);
+		}
+
+		return services;
+	}
+
+	/// <summary>
+	/// Adds generic command behavior.
+	/// </summary>
+	/// <param name="services">Services.</param>
+	/// <param name="type">Type of behavior.</param>
+	/// <param name="assemblies">Assemblies to scan.</param>
+	/// <returns>Service collection.</returns>
+	public static IServiceCollection AddCommandBehavior(this IServiceCollection services, Type type, params Assembly[] assemblies)
+	{
+		var commandType = typeof(ICommand);
+		var concreteTypes = assemblies
+			.SelectMany(x => x.GetTypes())
+			.Where(x => x.GetInterfaces().Any(y => commandType.IsGenericType ? (y.IsGenericType && y.GetGenericTypeDefinition() == commandType) : y == commandType) && !x.IsAbstract)
+			.ToList();
+
+		foreach (var concreteType in concreteTypes)
+		{
+			var closedGenericType = type.MakeGenericType(concreteType);
+			var closedInterface = typeof(IPipelineBehavior<,>).MakeGenericType(concreteType, typeof(Unit));
+			var service = ServiceDescriptor.Describe(closedInterface, closedGenericType, ServiceLifetime.Transient);
 
 			services.Add(service);
 		}
