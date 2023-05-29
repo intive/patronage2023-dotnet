@@ -46,10 +46,8 @@ public class BudgetController : ControllerBase
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
-	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
-
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
