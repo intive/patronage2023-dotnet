@@ -135,14 +135,14 @@ public class UserController : ControllerBase
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthenticated.</response>
 	/// <response code="403">If the access is forbidden.</response>
-	[ProducesResponseType(typeof(PagedList<UserInfo>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(PagedList<UserInfoDto>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[HttpPost("list")]
 	public async Task<IActionResult> GetUsers([FromBody] GetUsers query)
 	{
-		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfo>>(query);
+		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(query);
 		return this.Ok(result);
 	}
 }
