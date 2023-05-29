@@ -1,8 +1,7 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
-///
 /// <summary>
-/// Create Budget command.
+/// Represents detailed information about a budget transfer.
 /// </summary>
 public record GetBudgetTransferInfo()
 {
@@ -22,12 +21,12 @@ public record GetBudgetTransferInfo()
 	public string? Description { get; init; }
 
 	/// <summary>
-	/// Budget Currency.
+	/// Budget currency.
 	/// </summary>
 	public string Currency { get; init; } = null!;
 
 	/// <summary>
-	/// Budget limit.
+	/// Budget value.
 	/// </summary>
 	public string Value { get; init; } = null!;
 

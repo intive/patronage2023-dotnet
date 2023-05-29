@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;

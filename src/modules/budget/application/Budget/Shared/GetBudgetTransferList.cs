@@ -1,15 +1,12 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
-///
 /// <summary>
-/// Create Budget command.
+/// Command to retrieve a list of budget transfer information.
 /// </summary>
 public record GetBudgetTransferList()
 {
 	/// <summary>
-	/// BudgetsList object.
+	/// Contains a list of budget transfer details.
 	/// </summary>
 	public List<GetBudgetTransferInfo> BudgetsList { get; init; } = default!;
 }

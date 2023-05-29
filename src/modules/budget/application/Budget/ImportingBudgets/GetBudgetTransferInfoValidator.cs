@@ -1,6 +1,6 @@
 using System.Globalization;
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
