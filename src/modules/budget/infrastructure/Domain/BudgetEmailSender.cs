@@ -16,7 +16,7 @@ public class BudgetEmailSender
 	public void ExportAndSendBudgets(string firstName, string lastName, string emailAddress)
 	{
 		// TO Do: Connect with export budgets to a CSV file!!
-		string exportedBudgetsFilePath = this.ExportBudgets();
+		// string exportedBudgetsFilePath = this.ExportBudgets();
 		string subject = "Exported budgets";
 		string content = $"Dear {firstName} {lastName},\n\nThe attached file contains budgets as on {DateTime.Now}.\n\nBest regards,\nInbudget Team";
 
@@ -28,8 +28,7 @@ public class BudgetEmailSender
 		};
 		mailMessage.To.Add(emailAddress);
 
-		mailMessage.Attachments.Add(new Attachment(exportedBudgetsFilePath));
-
+		// mailMessage.Attachments.Add(new Attachment(exportedBudgetsFilePath));
 		var smtpClient = new SmtpClient("smtp.example.com")
 		{
 			Port = 587,
