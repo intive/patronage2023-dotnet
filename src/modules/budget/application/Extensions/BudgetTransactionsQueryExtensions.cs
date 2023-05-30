@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
@@ -62,5 +63,37 @@ internal static class BudgetTransactionsQueryExtensions
 	public static IQueryable<BudgetTransactionAggregate> WithCategoryTypes(this IQueryable<BudgetTransactionAggregate> query, CategoryType[]? categoryTypes)
 	{
 		return categoryTypes is null || !categoryTypes.Any() ? query : query.Where(x => categoryTypes.Contains(x.CategoryType));
+	}
+
+	/// <summary>
+	/// Sorting extension method.
+	/// </summary>
+	/// <param name="budgetTransactions">Query.</param>
+	/// <param name="sortDescriptors">Sort criteria.</param>
+	/// <returns>Sorted query.</returns>
+	public static IOrderedEnumerable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<TransactionSortDescriptor> sortDescriptors)
+	{
+		var budgetTransactionsOrdered = budgetTransactions.AsEnumerable().OrderBy(t => 1);
+		if (sortDescriptors == null)
+		{
+			return budgetTransactionsOrdered;
+		}
+
+		var mapping = new Dictionary<int, Func<BudgetTransactionAggregate, object>>()
+		{
+			{ (int)TransactionsSortingEnum.Name, t => t.Name },
+			{ (int)TransactionsSortingEnum.CategoryType, t => t.CategoryType },
+			{ (int)TransactionsSortingEnum.Status, t => t.Status },
+			{ (int)TransactionsSortingEnum.Value, t => t.Value },
+			{ (int)TransactionsSortingEnum.BudgetTransactionDate, t => t.BudgetTransactionDate },
+		};
+		budgetTransactionsOrdered = sortDescriptors[0].SortAscending ? budgetTransactionsOrdered.OrderBy(mapping[sortDescriptors[0].Column]) : budgetTransactionsOrdered.OrderByDescending(mapping[sortDescriptors[0].Column]);
+
+		foreach (var sortDescriptor in sortDescriptors.Skip(1))
+		{
+			budgetTransactionsOrdered = sortDescriptor.SortAscending ? budgetTransactionsOrdered.ThenBy(mapping[sortDescriptor.Column]) : budgetTransactionsOrdered.ThenByDescending(mapping[sortDescriptor.Column]);
+		}
+
+		return budgetTransactionsOrdered;
 	}
 }

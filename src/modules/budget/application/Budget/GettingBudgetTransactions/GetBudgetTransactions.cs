@@ -44,6 +44,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// Search text.
 	/// </summary>
 	public string? Search { get; set; }
+
+	/// <summary>
+	/// Sort descriptors.
+	/// </summary>
+	public List<TransactionSortDescriptor>? SortDescriptors { get; set; }
 }
 
 /// <summary>
@@ -83,11 +88,12 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 		int totalItemsCount = await budgets
 			.CountAsync(cancellationToken: cancellationToken);
 
-		var mappedData = await budgets
-			.OrderByDescending(x => x.BudgetTransactionDate)
+		var budgetsOrdered = budgets.Sort(query.SortDescriptors!);
+
+		var mappedData = budgetsOrdered
 			.Paginate(query)
 			.MapToTransactionInfo()
-			.ToListAsync(cancellationToken: cancellationToken);
+			.ToList();
 
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;

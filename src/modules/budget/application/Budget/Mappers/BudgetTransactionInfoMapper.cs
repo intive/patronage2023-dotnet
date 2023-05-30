@@ -13,7 +13,7 @@ public static class BudgetTransactionInfoMapper
 	/// </summary>
 	/// <param name="query">Query.</param>
 	/// <returns>Returns <ref name="TransactionInfo"/>BudgetInfo.</returns>
-	public static IQueryable<BudgetTransactionInfo> MapToTransactionInfo(this IQueryable<BudgetTransactionAggregate> query) =>
+	public static IEnumerable<BudgetTransactionInfo> MapToTransactionInfo(this IEnumerable<BudgetTransactionAggregate> query) =>
 		query.Select(x => new BudgetTransactionInfo
 		{
 			TransactionType = x.TransactionType,

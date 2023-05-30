@@ -427,6 +427,7 @@ public class BudgetController : ControllerBase
 			TransactionType = request.TransactionType,
 			CategoryTypes = request.CategoryTypes,
 			Search = request.Search,
+			SortDescriptors = request.SortDescriptors,
 		};
 
 		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
