@@ -492,9 +492,15 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <remarks>
+	/// Sample Id and Date Points:
+	///
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	/// .</remarks>
 	/// <returns>Returns the BudgetReport which has List of sumed Incomes, List of sumed Expenses, between two dates with day on which calculation was made.
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
-	[HttpGet("report")]
+	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
 	{
