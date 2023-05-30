@@ -49,6 +49,7 @@ public class BudgetController : ControllerBase
 	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
+	private readonly IValidator<GetBudgetsReport> getBudgetsReportValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -67,6 +68,7 @@ public class BudgetController : ControllerBase
 	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
+	/// <param name="getBudgetsReportValidator">Get budgets report validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	public BudgetController(
 		ICommandBus commandBus,
@@ -83,6 +85,7 @@ public class BudgetController : ControllerBase
 		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IValidator<AddUsersToBudget> usersIdsValidator,
 		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
+		IValidator<GetBudgetsReport> getBudgetsReportValidator,
 		IExecutionContextAccessor contextAccessor)
 	{
 		this.createBudgetValidator = createBudgetValidator;
@@ -100,6 +103,7 @@ public class BudgetController : ControllerBase
 		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
 		this.addUsersToBudgetValidator = usersIdsValidator;
+		this.getBudgetsReportValidator = getBudgetsReportValidator;
 	}
 
 	/// <summary>
@@ -504,39 +508,20 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
 	{
-		var listOfIncomes = new List<BudgetAmount>
+		var getBudgetReport = new GetBudgetsReport
 		{
-			new BudgetAmount()
-			{
-				Value = 10, DatePoint = startDate,
-			},
-			new BudgetAmount()
-			{
-				Value = 20, DatePoint = startDate.AddDays(1),
-			},
-			new BudgetAmount()
-			{
-				Value = 30, DatePoint = startDate.AddDays(2),
-			},
+			StartDate = startDate,
+			EndDate = endDate,
 		};
 
-		var listOfExpanses = new List<BudgetAmount>
+		var validationResult = await this.getBudgetsReportValidator.ValidateAsync(getBudgetReport);
+		if (!validationResult.IsValid)
 		{
-			new BudgetAmount()
-			{
-				Value = 5, DatePoint = startDate,
-			},
-			new BudgetAmount()
-			{
-				Value = 10, DatePoint = startDate.AddDays(1),
-			},
-			new BudgetAmount()
-			{
-				Value = 15, DatePoint = startDate.AddDays(2),
-			},
-		};
-		var budgetsReport = new BudgetsReport<BudgetAmount> { Incomes = listOfIncomes, Expenses = listOfExpanses, TotalBalance = 30, PeriodValue = 30, TrendValue = 0 };
-		return await Task.FromResult(this.Ok(budgetsReport));
+			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
+		}
+
+		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);
+		return this.Ok(getBudgetReport);
 	}
 
 	/// <summary>
