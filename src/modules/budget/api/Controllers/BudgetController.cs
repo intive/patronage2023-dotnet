@@ -27,6 +27,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -564,18 +565,11 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Exports all user budgets to Azure Blob Storage.
 	/// </summary>
-	/// <remarks>
-	/// This endpoint retrieves all the budgets associated with the user and exports them as a CSV file to Azure Blob Storage.
-	/// After the export process is completed, the URI of the exported file in Azure Blob Storage is returned.
-	/// It is important to note that you may need appropriate permissions to access the exported file in Azure Blob Storage.
-	///
-	/// An example response after exporting data to Azure Blob Storage.
-	///
-	///     {
-	///         "uri": "http://azurite:10000/devstoreaccount1/container-name/blob-name.csv/shared-sccess-signature
-	///     }
-	/// .</remarks>
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
+	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
@@ -589,26 +583,17 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Imports budgets from a provided .csv file.
 	/// </summary>
-	/// <remarks>
-	/// This endpoint allows for the bulk import of budgets via a CSV file.
-	/// The CSV file should be properly formatted according to the application's budget data structure.
-	/// After the file is processed, the method returns an object that contains any errors encountered during the import process,
-	/// and a string representing the URI location of the saved budgets if the operation was successful,
-	/// or an appropriate error message if it was not.
-	///
-	/// An example response after importing a file with correct date and some incorrect data entries:
-	///
-	///     {
-	///         "errors": [
-	///         "row: 1| error: Budget icon name is missing",
-	///         "row: 2| error: Budget start date cannot be later than or equal to end date"
-	///         ],
-	///         "uri": "http://azurite:10000/devstoreaccount1/container-name/blob-name.csv/shared-sccess-signature
-	///     }
-	/// .</remarks>
 	/// <param name="file">The .csv file containing the budgets to be imported.</param>
 	/// <returns>An object containing a list of any errors encountered during the import process,
 	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <response code="200">If at least one budget from the imported file passed the validation and was successfully saved.
+	/// Also contains a list of budgets that failed the validation.</response>
+	/// <response code="400">If no budgets from the imported file passed the validation.
+	/// The response will include a list of errors for each budget that failed validation, and information in uri "No budgets were saved.".</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpPost("import")]
 	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
