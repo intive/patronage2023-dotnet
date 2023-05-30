@@ -564,6 +564,17 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Exports all user budgets to Azure Blob Storage.
 	/// </summary>
+	/// <remarks>
+	/// This endpoint retrieves all the budgets associated with the user and exports them as a CSV file to Azure Blob Storage.
+	/// After the export process is completed, the URI of the exported file in Azure Blob Storage is returned.
+	/// It is important to note that you may need appropriate permissions to access the exported file in Azure Blob Storage.
+	///
+	/// An example response after exporting data to Azure Blob Storage.
+	///
+	///     {
+	///         "uri": "http://azurite:10000/devstoreaccount1/container-name/blob-name.csv/shared-sccess-signature
+	///     }
+	/// .</remarks>
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
@@ -578,11 +589,28 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Imports budgets from a provided .csv file.
 	/// </summary>
+	/// <remarks>
+	/// This endpoint allows for the bulk import of budgets via a CSV file.
+	/// The CSV file should be properly formatted according to the application's budget data structure.
+	/// After the file is processed, the method returns an object that contains any errors encountered during the import process,
+	/// and a string representing the URI location of the saved budgets if the operation was successful,
+	/// or an appropriate error message if it was not.
+	///
+	/// An example response after importing a file with correct date and some incorrect data entries:
+	///
+	///     {
+	///         "errors": [
+	///         "row: 1| error: Budget icon name is missing",
+	///         "row: 2| error: Budget start date cannot be later than or equal to end date"
+	///         ],
+	///         "uri": "http://azurite:10000/devstoreaccount1/container-name/blob-name.csv/shared-sccess-signature
+	///     }
+	/// .</remarks>
 	/// <param name="file">The .csv file containing the budgets to be imported.</param>
 	/// <returns>An object containing a list of any errors encountered during the import process,
 	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
 	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
+	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
 		var getImportResult = await this.budgetImportService.Import(file);
 		await this.commandBus.Send(getImportResult.BudgetAggregateList);
