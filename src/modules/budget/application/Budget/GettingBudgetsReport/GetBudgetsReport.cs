@@ -59,7 +59,7 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 
 		var budgetsList = budgets.Where(x => x.UserId == userId).Select(x => x.Id).ToList();
 
-		if (budgetsList.Count == 0)
+		if (!budgetsList.Any())
 		{
 			return new BudgetsReport<BudgetAmount> { };
 		}
