@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
@@ -6,11 +7,13 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -20,7 +23,12 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+
 using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -33,66 +41,42 @@ public class BudgetController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
-	private readonly IValidator<CreateBudget> createBudgetValidator;
-	private readonly IValidator<GetBudgets> getBudgetsValidator;
-	private readonly IValidator<CreateBudgetTransaction> createTransactionValidator;
-	private readonly IValidator<GetBudgetTransactions> getBudgetTransactionValidator;
-	private readonly IValidator<GetBudgetDetails> getBudgetDetailsValidator;
-	private readonly IValidator<RemoveBudget> removeBudgetValidator;
 	private readonly IAuthorizationService authorizationService;
-	private readonly IValidator<GetBudgetStatistics> getBudgetStatisticValidator;
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly IValidator<EditBudget> editBudgetValidator;
-	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
+	private readonly IBudgetExportService budgetExportService;
+	private readonly IBudgetImportService budgetImportService;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
+	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
-	/// <param name="createBudgetValidator">Create Budget validator.</param>
-	/// <param name="getBudgetsValidator">Get Budgets validator.</param>
-	/// <param name="createTransactionValidator">Create Transaction validator.</param>
-	/// <param name="getBudgetTransactionValidator">Get Budget Transaction validator.</param>
-	/// <param name="getBudgetDetailsValidator">Get budget details validator.</param>
-	/// <param name="removeBudgetValidator">Remove budget validator.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
-	/// <param name="editBudgetValidator">Edit budget validator.</param>
-	/// <param name="getBudgetStatisticValidator">Get budget statistic validator.</param>
-	/// <param name="cancelBudgetTransactionValidator">Cancel budget transaction validator.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
+	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
+	/// <param name="budgetExportService">BudgetExportService.</param>
+	/// <param name="budgetImportService">BudgetImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
-		IValidator<CreateBudget> createBudgetValidator,
-		IValidator<GetBudgets> getBudgetsValidator,
-		IValidator<CreateBudgetTransaction> createTransactionValidator,
-		IValidator<GetBudgetTransactions> getBudgetTransactionValidator,
-		IValidator<RemoveBudget> removeBudgetValidator,
-		IValidator<GetBudgetStatistics> getBudgetStatisticValidator,
-		IValidator<GetBudgetDetails> getBudgetDetailsValidator,
 		IAuthorizationService authorizationService,
-		IValidator<EditBudget> editBudgetValidator,
-		IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator,
 		IValidator<AddUsersToBudget> usersIdsValidator,
-		IExecutionContextAccessor contextAccessor)
+		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
+		IExecutionContextAccessor contextAccessor,
+		IBudgetExportService budgetExportService,
+		IBudgetImportService budgetImportService)
 	{
-		this.createBudgetValidator = createBudgetValidator;
-		this.getBudgetsValidator = getBudgetsValidator;
-		this.editBudgetValidator = editBudgetValidator;
-		this.getBudgetDetailsValidator = getBudgetDetailsValidator;
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
-		this.createTransactionValidator = createTransactionValidator;
-		this.getBudgetTransactionValidator = getBudgetTransactionValidator;
-		this.removeBudgetValidator = removeBudgetValidator;
 		this.authorizationService = authorizationService;
-		this.getBudgetStatisticValidator = getBudgetStatisticValidator;
-		this.cancelBudgetTransactionValidator = cancelBudgetTransactionValidator;
+		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
 		this.addUsersToBudgetValidator = usersIdsValidator;
+		this.budgetExportService = budgetExportService;
+		this.budgetImportService = budgetImportService;
 	}
 
 	/// <summary>
@@ -124,12 +108,6 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetBudgets([FromBody] GetBudgets request)
 	{
-		var validationResult = await this.getBudgetsValidator.ValidateAsync(request);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to get Budgets.", validationResult.Errors);
-		}
-
 		var pagedList = await this.queryBus.Query<GetBudgets, PagedList<BudgetInfo>>(request);
 		return this.Ok(pagedList);
 	}
@@ -149,12 +127,6 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetBudgetDetails([FromRoute] GetBudgetDetails request)
 	{
-		var validationResult = await this.getBudgetDetailsValidator.ValidateAsync(request);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
-		}
-
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(request.Id), Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
@@ -206,12 +178,6 @@ public class BudgetController : ControllerBase
 		var userId = request.UserId == default ? this.contextAccessor.GetUserId()!.Value : request.UserId;
 		var newBudget = new CreateBudget(budgetId, request.Name, userId, request.Limit, request.Period, request.Description, request.IconName);
 
-		var validationResult = await this.createBudgetValidator.ValidateAsync(newBudget);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to create Budget.", validationResult.Errors);
-		}
-
 		await this.commandBus.Send(newBudget);
 		return this.Created(string.Empty, budgetId);
 	}
@@ -250,12 +216,6 @@ public class BudgetController : ControllerBase
 	{
 		var editedBudget = new EditBudget(new BudgetId(id), request.Name, request.Period, request.Description, request.IconName);
 
-		var validationResult = await this.editBudgetValidator.ValidateAsync(editedBudget);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to edit Budget.", validationResult.Errors);
-		}
-
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(id), Operations.Update)).Succeeded)
 		{
 			return this.Forbid();
@@ -281,12 +241,6 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> RemoveBudget([FromRoute] Guid budgetId)
 	{
 		var removeBudget = new RemoveBudget(budgetId);
-
-		var validationResult = await this.removeBudgetValidator.ValidateAsync(removeBudget);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to delete Budget.", validationResult.Errors);
-		}
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
@@ -334,12 +288,6 @@ public class BudgetController : ControllerBase
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
 		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
 
-		var validationResult = await this.createTransactionValidator.ValidateAsync(newBudgetTransaction);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to create Budget Transaction.", validationResult.Errors);
-		}
-
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
 		{
 			return this.Forbid();
@@ -366,12 +314,6 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> CancelBudgetTransaction([FromRoute] Guid budgetId, [FromRoute] Guid transactionId)
 	{
 		var cancelBudgetTransaction = new CancelBudgetTransaction(transactionId, budgetId);
-
-		var validationResult = await this.cancelBudgetTransactionValidator.ValidateAsync(cancelBudgetTransaction);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to delete Budget Transaction.", validationResult.Errors);
-		}
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
@@ -423,12 +365,6 @@ public class BudgetController : ControllerBase
 			Search = request.Search,
 		};
 
-		var validationResult = await this.getBudgetTransactionValidator.ValidateAsync(getBudgetTransactions);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
-		}
-
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
@@ -444,7 +380,15 @@ public class BudgetController : ControllerBase
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="startDate">Start Date in which we want to get statistics.</param>
 	/// <param name="endDate">End date in which we want to get statistics.</param>
-	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	/// <remarks>
+	/// Sample Id and Date Points:
+	///
+	///         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	/// .</remarks>
+	/// <returns>Returns the BudgetStatistics which has List of calculated budget balance, between two dates with day on which calculation was made.
+	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("{budgetId:guid}/statistics")]
 	[ProducesResponseType(typeof(BudgetStatistics<BudgetAmount>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -457,12 +401,6 @@ public class BudgetController : ControllerBase
 			EndDate = endDate,
 		};
 
-		var validationResult = await this.getBudgetStatisticValidator.ValidateAsync(getBudgetStatistics);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
-		}
-
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
@@ -473,17 +411,83 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
+	/// Get calculated values for  all budgets between two dates.
+	/// </summary>
+	/// <param name="startDate">Start Date in which we want to get report.</param>
+	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <remarks>
+	/// Sample Id and Date Points:
+	///
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	/// .</remarks>
+	/// <returns>Returns the BudgetReport which has List of sumed Incomes, List of sumed Expenses, between two dates with day on which calculation was made.
+	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
+	[HttpGet("statistics")]
+	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
+	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
+	{
+		var listOfIncomes = new List<BudgetAmount>
+		{
+			new BudgetAmount()
+			{
+				Value = 10, DatePoint = startDate,
+			},
+			new BudgetAmount()
+			{
+				Value = 20, DatePoint = startDate.AddDays(1),
+			},
+			new BudgetAmount()
+			{
+				Value = 30, DatePoint = startDate.AddDays(2),
+			},
+		};
+
+		var listOfExpanses = new List<BudgetAmount>
+		{
+			new BudgetAmount()
+			{
+				Value = 5, DatePoint = startDate,
+			},
+			new BudgetAmount()
+			{
+				Value = 10, DatePoint = startDate.AddDays(1),
+			},
+			new BudgetAmount()
+			{
+				Value = 15, DatePoint = startDate.AddDays(2),
+			},
+		};
+		var budgetsReport = new BudgetsReport<BudgetAmount> { Incomes = listOfIncomes, Expenses = listOfExpanses, TotalBalance = 30, PeriodValue = 30, TrendValue = 0 };
+		return await Task.FromResult(this.Ok(budgetsReport));
+	}
+
+	/// <summary>
 	/// Update value of favourite flag.
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="isFavourite">Is favourite flag value.</param>
-	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	/// <returns>Task.</returns>
 	[HttpPut("{budgetId:guid}/favourite")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, bool isFavourite)
+	public async Task<IActionResult> UpdateBudgetFavouriteFlag([FromRoute] Guid budgetId, [Required] bool isFavourite)
 	{
-		await Task.CompletedTask;
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var updateFavourite = new UpdateUserBudgetFavourite(budgetId, isFavourite);
+
+		var validationResult = await this.updateUserBudgetFavouriteValidator.ValidateAsync(updateFavourite);
+		if (!validationResult.IsValid)
+		{
+			throw new AppException("One or more error occured when trying to update favourite flag.", validationResult.Errors);
+		}
+
+		await this.commandBus.Send(updateFavourite);
+
 		return this.Ok();
 	}
 
@@ -520,5 +524,51 @@ public class BudgetController : ControllerBase
 		await this.commandBus.Send(userBudgetList);
 
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Exports all user budgets to Azure Blob Storage.
+	/// </summary>
+	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
+	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpGet("export")]
+	public async Task<IActionResult> ExportBudgets()
+	{
+		var query = new GetBudgetsToExport();
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
+		string? result = await this.budgetExportService.Export(budgets);
+
+		return this.Ok(result);
+	}
+
+	/// <summary>
+	/// Imports budgets from a provided .csv file.
+	/// </summary>
+	/// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/// <returns>An object containing a list of any errors encountered during the import process,
+	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <response code="200">If at least one budget from the imported file passed the validation and was successfully saved.
+	/// Also contains a list of budgets that failed the validation.</response>
+	/// <response code="400">If no budgets from the imported file passed the validation.
+	/// The response will include a list of errors for each budget that failed validation, and information in uri "No budgets were saved.".</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpPost("import")]
+	public async Task<IActionResult> ImportBudgets(IFormFile file)
+	{
+		var getImportResult = await this.budgetImportService.Import(file);
+		await this.commandBus.Send(getImportResult.BudgetAggregateList);
+
+		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		{
+			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		}
+
+		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }
