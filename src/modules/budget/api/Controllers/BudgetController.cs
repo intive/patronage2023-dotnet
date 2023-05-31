@@ -56,7 +56,6 @@ public class BudgetController : ControllerBase
 	/// <param name="authorizationService">IAuthorizationService.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
-	/// <param name="getBudgetsReportValidator">Get budgets report validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
@@ -434,14 +433,8 @@ public class BudgetController : ControllerBase
 			EndDate = endDate,
 		};
 
-		var validationResult = await this.getBudgetsReportValidator.ValidateAsync(getBudgetReport);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to get Transactions.", validationResult.Errors);
-		}
-
 		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);
-		return this.Ok(getBudgetReport);
+		return this.Ok(budgetReport);
 	}
 
 	/// <summary>
