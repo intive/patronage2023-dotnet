@@ -52,7 +52,6 @@ public class CreateBudgetTransactionCommandHandlerTests
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
-
 		if (type == TransactionType.Expense)
 			value *= -1;
 

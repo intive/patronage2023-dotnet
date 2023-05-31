@@ -26,7 +26,7 @@ public abstract record UserInfoBase()
 	public string LastName { get; set; } = null!;
 
 	/// <summary>
-	/// User last name.
+	/// Username.
 	/// </summary>
 	public string UserName { get; set; } = null!;
 

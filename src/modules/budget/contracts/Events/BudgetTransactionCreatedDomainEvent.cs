@@ -48,7 +48,7 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	public string Name { get; private set; }
 
 	/// <summary>
-	/// Budget Transaction creator uesrname.
+	/// Budget Transaction creator username.
 	/// </summary>
 	public string Username { get; private set; }
 

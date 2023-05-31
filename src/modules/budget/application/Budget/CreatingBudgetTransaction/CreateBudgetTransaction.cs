@@ -54,7 +54,6 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 	{
 		var userId = this.contextAccessor.GetUserId();
 		string username = await this.keycloakService.GetUsernameById(userId.ToString()!, cancellationToken);
-
 		var id = new TransactionId(command.Id);
 		var budgetId = new BudgetId(command.BudgetId);
 		var budgetTransaction = BudgetTransactionAggregate.Create(
