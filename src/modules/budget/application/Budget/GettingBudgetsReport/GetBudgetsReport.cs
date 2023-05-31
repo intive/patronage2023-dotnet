@@ -57,7 +57,14 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 		var transactions = this.budgetDbContext.Transaction.AsQueryable();
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
 
-		var budgetsList = budgets.Where(x => x.UserId == userId).Select(x => x.Id).ToList();
+		var budgetsList = budgets.Where(x => x.UserId == userId).ToList();
+
+		var transactionsList =
+			(
+			from budget in budgetsList
+			join budgetTransaction in transactions
+						on budget.Id equals budgetTransaction.BudgetId
+			select budgetTransaction).AsQueryable();
 
 		if (!budgetsList.Any())
 		{
@@ -68,30 +75,21 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 		decimal periodValue = 0;
 		decimal budgetsStartValue = 0;
 
-		var budgetsIncomeList = new List<BudgetAmount>();
-		var budgetsExpensesList = new List<BudgetAmount>();
-
-		foreach (var budgetId in budgetsList)
-		{
-			budgetsStartValue += transactions
-				.For(budgetId)
+		budgetsStartValue = transactionsList
 				.NotCancelled()
 				.Where(x => x.BudgetTransactionDate < query.StartDate)
 				.Sum(x => x.Value);
 
-			totalBalance += transactions
-				.For(budgetId)
+		totalBalance = transactionsList
 				.NotCancelled()
 				.Sum(x => x.Value);
 
-			periodValue += transactions
-				.For(budgetId)
+		periodValue = transactionsList
 				.NotCancelled()
 				.Within(query.StartDate, query.EndDate)
 				.Sum(x => x.Value);
 
-			var tempBudgetIncomeList = await transactions
-				.For(budgetId)
+		var budgetsIncomeList = await transactionsList
 				.NotCancelled()
 				.WithType(TransactionType.Income)
 				.Within(query.StartDate, query.EndDate)
@@ -104,8 +102,7 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 					})
 					.ToListAsync(cancellationToken: cancellationToken);
 
-			var tempBudgetExpensesList = await transactions
-				.For(budgetId)
+		var budgetsExpensesList = await transactionsList
 				.NotCancelled()
 				.WithType(TransactionType.Expense)
 				.Within(query.StartDate, query.EndDate)
@@ -114,46 +111,9 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 					.Select(x => new BudgetAmount
 					{
 						DatePoint = x.Key,
-						Value = x.Sum(x => x.Value),
+						Value = (-1) * x.Sum(x => x.Value),
 					})
 					.ToListAsync(cancellationToken: cancellationToken);
-
-			foreach (var tempBudgetExpense in tempBudgetExpensesList)
-			{
-				var existingBudgetExpense = budgetsExpensesList.FirstOrDefault(x => x.DatePoint == tempBudgetExpense.DatePoint);
-				if (existingBudgetExpense != null)
-				{
-					existingBudgetExpense = existingBudgetExpense with
-					{
-						Value = (-1) * (existingBudgetExpense.Value + tempBudgetExpense.Value),
-					};
-				}
-				else
-				{
-					var positiveValueTempBudgetExpense = tempBudgetExpense with
-					{
-						Value = (-1) * tempBudgetExpense.Value,
-					};
-					budgetsExpensesList.Add(positiveValueTempBudgetExpense);
-				}
-			}
-
-			foreach (var tempBudgetIncome in tempBudgetIncomeList)
-			{
-				var existingBudgetIncome = tempBudgetIncomeList.FirstOrDefault(x => x.DatePoint == tempBudgetIncome.DatePoint);
-				if (existingBudgetIncome != null)
-				{
-					existingBudgetIncome = existingBudgetIncome with
-					{
-						Value = existingBudgetIncome.Value + existingBudgetIncome.Value,
-					};
-				}
-				else
-				{
-					budgetsIncomeList.Add(tempBudgetIncome);
-				}
-			}
-		}
 
 		decimal? trendValue = budgetsStartValue > 0 ? periodValue / budgetsStartValue * 100 : null;
 		var result = new BudgetsReport<BudgetAmount> { Incomes = budgetsIncomeList, Expenses = budgetsExpensesList, TotalBalance = totalBalance, PeriodValue = periodValue, TrendValue = trendValue };
