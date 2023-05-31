@@ -10,6 +10,7 @@
 	<ItemGroup>
 	  <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
 	  <PackageReference Include="CsvHelper" Version="30.0.1" />
+	  <PackageReference Include="FluentValidation" Version="11.5.1" />
 	  <PackageReference Include="MediatR" Version="12.0.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
@@ -22,6 +23,7 @@
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="System.ObjectModel" Version="4.3.0" />
 	</ItemGroup>
 
 </Project>

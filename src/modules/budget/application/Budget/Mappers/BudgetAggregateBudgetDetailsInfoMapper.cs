@@ -13,8 +13,9 @@ public static class BudgetAggregateBudgetDetailsInfoMapper
 	/// </summary>
 	/// <param name="entity">Entity to be mapped.</param>
 	/// <param name="budgetUsers">Budget users.</param>
+	/// <param name="isFavourite">Is favourite flag.</param>
 	/// <returns>Returns <ref name="BudgetDetailsInfo"/>Budget details information.</returns>
-	public static BudgetDetailsInfo MapToDetailsInfo(this BudgetAggregate entity,  BudgetUser[]? budgetUsers) =>
+	public static BudgetDetailsInfo MapToDetailsInfo(this BudgetAggregate entity, BudgetUser[]? budgetUsers, bool isFavourite) =>
 		new BudgetDetailsInfo
 		{
 			Id = entity.Id.Value,
@@ -27,5 +28,6 @@ public static class BudgetAggregateBudgetDetailsInfoMapper
 			Icon = entity.Icon,
 			Description = entity.Description,
 			BudgetUsers = budgetUsers ?? Array.Empty<BudgetUser>(),
+			IsFavourite = isFavourite,
 		};
 }

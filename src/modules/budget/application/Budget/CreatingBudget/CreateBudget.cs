@@ -1,3 +1,4 @@
+using FluentDateTime;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -40,14 +41,19 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	{
 		var id = new BudgetId(command.Id);
 		var userId = new UserId(command.UserId);
+
+		var startDate = command.Period.StartDate.BeginningOfDay();
+		var endDate = command.Period.EndDate.EndOfDay();
+
 		var budget = BudgetAggregate.Create(
-			id,
-			command.Name,
-			userId,
-			command.Limit,
-			command.Period,
-			command.Description,
-			command.IconName);
+				id,
+				command.Name,
+				userId,
+				command.Limit,
+				new Period(startDate, endDate),
+				command.Description,
+				command.IconName);
+
 		await this.budgetRepository.Persist(budget);
 	}
 }
