@@ -45,7 +45,7 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 
 		if (!response.IsSuccessStatusCode)
 		{
-			throw new AppException(response.ToString());
+			throw new AppException();
 		}
 
 		return true;
