@@ -1,5 +1,4 @@
 using System.Net;
-using FluentValidation;
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Application.SignIn;
@@ -23,30 +22,18 @@ public class UserController : ControllerBase
 {
 	private readonly IQueryBus queryBus;
 	private readonly ICommandBus commandBus;
-	private readonly IValidator<SignInUser> signInUserValidator;
-	private readonly IValidator<CreateUser> createUserValidator;
-	private readonly IValidator<GetUsers> getUsersValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserController"/> class.
 	/// </summary>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="commandBus">Command bus.</param>
-	/// <param name="signInUserValidator">SignIn User validator.</param>
-	/// <param name="createUserValidator">Create User validator.</param>
-	/// <param name="getUsersValidator">Get Users validator.</param>
 	public UserController(
 		IQueryBus queryBus,
-		ICommandBus commandBus,
-		IValidator<SignInUser> signInUserValidator,
-		IValidator<CreateUser> createUserValidator,
-		IValidator<GetUsers> getUsersValidator)
+		ICommandBus commandBus)
 	{
 		this.queryBus = queryBus;
 		this.commandBus = commandBus;
-		this.signInUserValidator = signInUserValidator;
-		this.createUserValidator = createUserValidator;
-		this.getUsersValidator = getUsersValidator;
 	}
 
 	/// <summary>
@@ -78,25 +65,21 @@ public class UserController : ControllerBase
 	[HttpPost("sign-in")]
 	public async Task<IActionResult> SignInUserAsync([FromBody] SignInUser command)
 	{
-		var validationResult = await this.signInUserValidator.ValidateAsync(command);
-		if (validationResult.IsValid)
+		HttpResponseMessage response = await this.queryBus.Query<SignInUser, HttpResponseMessage>(command);
+
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
 		{
-			HttpResponseMessage response = await this.queryBus.Query<SignInUser, HttpResponseMessage>(command);
-
-			if (response.StatusCode == HttpStatusCode.Unauthorized)
-			{
-				return this.Unauthorized();
-			}
-
-			string responseContent = await response.Content.ReadAsStringAsync();
-			if (!string.IsNullOrEmpty(responseContent))
-			{
-				Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
-				return this.Ok(token);
-			}
+			return this.Unauthorized();
 		}
 
-		throw new AppException("One or more error occured when trying to get token.", validationResult.Errors);
+		string responseContent = await response.Content.ReadAsStringAsync();
+		if (!string.IsNullOrEmpty(responseContent))
+		{
+			Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
+			return this.Ok(token);
+		}
+
+		return this.Ok();
 	}
 
 	/// <summary>
@@ -123,14 +106,8 @@ public class UserController : ControllerBase
 	[HttpPost("sign-up")]
 	public async Task<IActionResult> SignUp([FromBody] CreateUser command)
 	{
-		var validationResult = await this.createUserValidator.ValidateAsync(command);
-		if (validationResult.IsValid)
-		{
-			await this.commandBus.Send(command);
-			return this.Ok();
-		}
-
-		throw new AppException("One or more error occured while trying to create user.", validationResult.Errors);
+		await this.commandBus.Send(command);
+		return this.Ok();
 	}
 
 	/// <summary>
@@ -158,20 +135,14 @@ public class UserController : ControllerBase
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthenticated.</response>
 	/// <response code="403">If the access is forbidden.</response>
-	[ProducesResponseType(typeof(PagedList<UserInfo>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(PagedList<UserInfoDto>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[HttpPost("list")]
 	public async Task<IActionResult> GetUsers([FromBody] GetUsers query)
 	{
-		var validationResult = await this.getUsersValidator.ValidateAsync(query);
-		if (validationResult.IsValid)
-		{
-			var result = await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(query);
-			return this.Ok(result);
-		}
-
-		throw new AppException("One or more error occured while trying to get users.", validationResult.Errors);
+		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(query);
+		return this.Ok(result);
 	}
 }
