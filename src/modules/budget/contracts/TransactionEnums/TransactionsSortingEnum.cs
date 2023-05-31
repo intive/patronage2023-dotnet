@@ -8,30 +8,30 @@ public enum TransactionsSortingEnum
 	/// <summary>
 	/// Transaction name.
 	/// </summary>
-	Name = 1,
+	Name = 0,
 
 	/// <summary>
 	/// Transaction category.
 	/// </summary>
-	CategoryType = 2,
+	CategoryType = 1,
 
 	/// <summary>
 	/// Transaction status.
 	/// </summary>
-	Status = 3,
+	Status = 2,
 
 	/// <summary>
 	/// Transaction value.
 	/// </summary>
-	Value = 4,
+	Value = 3,
 
 	/// <summary>
-	/// Budget transaction date.
+	/// Transaction date.
 	/// </summary>
-	BudgetTransactionDate = 5,
+	BudgetTransactionDate = 4,
 
 	/// <summary>
-	/// Budget transaction creator username.
+	/// Transaction creator username.
 	/// </summary>
-	Username = 6,
+	Username = 5,
 }
