@@ -43,8 +43,6 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IAuthorizationService authorizationService;
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly IValidator<EditBudget> editBudgetValidator;
-	private readonly IValidator<CancelBudgetTransaction> cancelBudgetTransactionValidator;
 	private readonly IBudgetExportService budgetExportService;
 	private readonly IBudgetImportService budgetImportService;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
