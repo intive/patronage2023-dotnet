@@ -28,16 +28,15 @@ public class EmailService : IEmailService
 
 		var message = new MimeMessage();
 		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
-		message.To.AddRange(emailMessage?.SendToAddresses?.Select(this.ToMailboxAddress));
-		message.Subject = emailMessage?.Subject;
-		message.Body = new TextPart("plain") { Text = emailMessage?.Body };
+		message.To.AddRange(emailMessage!.SendToAddresses!.Select(this.ToMailboxAddress));
+		message.Subject = emailMessage!.Subject;
+		message.Body = new TextPart("plain") { Text = emailMessage!.Body };
 
 		using (var client = new SmtpClient())
 		{
 			client.Connect(this.emailConfiguration.SmtpServer, this.emailConfiguration.SmtpPort, this.emailConfiguration.UseSSL);
 			client.Send(message);
 			client.Disconnect(true);
-			client.Dispose();
 		}
 	}
 
