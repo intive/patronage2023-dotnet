@@ -2,6 +2,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransa
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Extensions;
 
@@ -74,7 +75,7 @@ internal static class BudgetTransactionsQueryExtensions
 	public static IOrderedEnumerable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<TransactionSortDescriptor> sortDescriptors)
 	{
 		var budgetTransactionsOrdered = budgetTransactions.AsEnumerable().OrderBy(t => 1);
-		if (sortDescriptors == null)
+		if (sortDescriptors.IsNullOrEmpty())
 		{
 			return budgetTransactionsOrdered;
 		}
