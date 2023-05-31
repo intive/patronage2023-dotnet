@@ -3,10 +3,10 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -17,6 +17,8 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 public class CreateBudgetTransactionCommandHandlerTests
 {
 	private readonly Mock<IRepository<BudgetTransactionAggregate, TransactionId>> budgetTransactionRepositoryMock;
+	private readonly Mock<IKeycloakService> keycloakServiceMock;
+	private readonly Mock<IExecutionContextAccessor> contextAccessorMock;
 	private readonly HandleCreateBudgetTransaction instance;
 
 	/// <summary>
@@ -25,7 +27,9 @@ public class CreateBudgetTransactionCommandHandlerTests
 	public CreateBudgetTransactionCommandHandlerTests()
 	{
 		this.budgetTransactionRepositoryMock = new Mock<IRepository<BudgetTransactionAggregate, TransactionId>>();
-		this.instance = new HandleCreateBudgetTransaction(this.budgetTransactionRepositoryMock.Object);
+		this.keycloakServiceMock = new Mock<IKeycloakService>();
+		this.contextAccessorMock = new Mock<IExecutionContextAccessor>();
+		this.instance = new HandleCreateBudgetTransaction(this.budgetTransactionRepositoryMock.Object, this.keycloakServiceMock.Object, this.contextAccessorMock.Object);
 	}
 
 	/// <summary>
@@ -40,15 +44,20 @@ public class CreateBudgetTransactionCommandHandlerTests
 		// Arrange
 		var cancellationToken = CancellationToken.None;
 		var id = new TransactionId(new Faker().Random.Guid());
+		var userid = new Faker().Random.Guid();
 		var budgetId = new BudgetId(new Faker().Random.Guid());
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
+		string username = new Faker().Random.Word();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
+
 		if (type == TransactionType.Expense)
 			value *= -1;
 
+		this.contextAccessorMock.Setup(x => x.GetUserId()).Returns(userid);
+		this.keycloakServiceMock.Setup(x => x.GetUsernameById(userid.ToString(), cancellationToken)).ReturnsAsync(username);
 		// Act
 		await this.instance.Handle(new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate), cancellationToken);
 
@@ -60,6 +69,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 				e.BudgetId == budgetId &&
 				e.TransactionType == type &&
 				e.Name == name &&
+				e.Username == username &&
 				e.Value == value &&
 				e.CategoryType == category &&
 				e.BudgetTransactionDate == createdDate)),

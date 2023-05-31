@@ -143,7 +143,6 @@ public class CreateBudgetTransactionValidatorTests
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionCreatedDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
-		
 
 		//Act
 		var result = await this.instance.TestValidateAsync(createBudgetTransaction);

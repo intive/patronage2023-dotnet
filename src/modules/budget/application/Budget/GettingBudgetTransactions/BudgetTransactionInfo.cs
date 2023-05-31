@@ -42,4 +42,9 @@ public record BudgetTransactionInfo()
 	/// Transaction Category.
 	/// </summary>
 	public CategoryType CategoryType { get; init; }
+
+	/// <summary>
+	/// Transaction creator username.
+	/// </summary>
+	public string Username { get; init; } = null!;
 }

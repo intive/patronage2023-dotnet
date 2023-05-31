@@ -29,4 +29,9 @@ public enum TransactionsSortingEnum
 	/// Budget transaction date.
 	/// </summary>
 	BudgetTransactionDate = 5,
+
+	/// <summary>
+	/// Budget transaction creator username.
+	/// </summary>
+	Username = 6,
 }

@@ -26,6 +26,11 @@ public abstract record UserInfoBase()
 	public string LastName { get; set; } = null!;
 
 	/// <summary>
+	/// User last name.
+	/// </summary>
+	public string UserName { get; set; } = null!;
+
+	/// <summary>
 	/// User created timestamp.
 	/// </summary>
 	public long CreatedTimestamp { get; set; }

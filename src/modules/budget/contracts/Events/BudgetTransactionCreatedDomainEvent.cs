@@ -16,13 +16,15 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
 	/// <param name="name">Name of income or Expense.</param>
+	/// <param name="username">Transaction creator username.</param>
 	/// <param name="value">Value of income or Expense.</param>
 	/// <param name="categoryType">Enum of income/Expense Categories.</param>
 	/// <param name="transactionDate">Creation of new income or Expense date.</param>
-	public BudgetTransactionCreatedDomainEvent(TransactionId transactionId, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime transactionDate)
+	public BudgetTransactionCreatedDomainEvent(TransactionId transactionId, BudgetId budgetId, TransactionType transactionType, string name, string username, decimal value, CategoryType categoryType, DateTime transactionDate)
 	{
 		this.Id = transactionId;
 		this.Name = name;
+		this.Username = username;
 		this.Value = value;
 		this.CategoryType = categoryType;
 		this.BudgetId = budgetId;
@@ -44,6 +46,11 @@ public class BudgetTransactionCreatedDomainEvent : DomainEvent
 	/// Budget Transaction name.
 	/// </summary>
 	public string Name { get; private set; }
+
+	/// <summary>
+	/// Budget Transaction creator uesrname.
+	/// </summary>
+	public string Username { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction eg. income/Expense.

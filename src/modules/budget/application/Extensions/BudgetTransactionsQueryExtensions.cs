@@ -86,6 +86,7 @@ internal static class BudgetTransactionsQueryExtensions
 			{ (int)TransactionsSortingEnum.Status, t => t.Status },
 			{ (int)TransactionsSortingEnum.Value, t => t.Value },
 			{ (int)TransactionsSortingEnum.BudgetTransactionDate, t => t.BudgetTransactionDate },
+			{ (int)TransactionsSortingEnum.Username, t => t.Username },
 		};
 		budgetTransactionsOrdered = sortDescriptors[0].SortAscending ? budgetTransactionsOrdered.OrderBy(mapping[sortDescriptors[0].Column]) : budgetTransactionsOrdered.OrderByDescending(mapping[sortDescriptors[0].Column]);
 
