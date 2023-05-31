@@ -425,6 +425,7 @@ public class BudgetController : ControllerBase
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
 	{
 		var getBudgetReport = new GetBudgetsReport
