@@ -56,8 +56,11 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
 		var transactions = this.budgetDbContext.Transaction.AsQueryable();
 		var userId = new UserId(this.contextAccessor.GetUserId()!.Value);
-
 		var budgetsList = budgets.Where(x => x.UserId == userId).ToList();
+
+		decimal totalBalance = 0;
+		decimal periodValue = 0;
+		decimal budgetsStartValue = 0;
 
 		var transactionsList =
 			(
@@ -70,10 +73,6 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 		{
 			return new BudgetsReport<BudgetAmount> { };
 		}
-
-		decimal totalBalance = 0;
-		decimal periodValue = 0;
-		decimal budgetsStartValue = 0;
 
 		budgetsStartValue = transactionsList
 				.NotCancelled()
