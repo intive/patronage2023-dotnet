@@ -33,13 +33,13 @@ public class BudgetTransactionAggregateTests
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
+		string? categoryType = "Car";
 		var createdDate = new Faker().Date.Recent();
 		if (type == TransactionType.Expense)
 			value *= -1;
 
 		// Act
-		var budgetTransactionAggregate = BudgetTransactionAggregate.Create(id, budgetId, type, name, value, category, createdDate);
+		var budgetTransactionAggregate = BudgetTransactionAggregate.Create(id, budgetId, type, name, value, categoryType, createdDate);
 
 		// Assert
 		budgetTransactionAggregate.Should()
@@ -53,7 +53,7 @@ public class BudgetTransactionAggregateTests
 					TransactionType = type,
 					Name = name,
 					Value = value,
-					CategoryType = category,
+					CategoryType = categoryType,
 					BudgetTransactionDate = createdDate
 				});
 	}

@@ -41,5 +41,5 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction Category.
 	/// </summary>
-	public CategoryType CategoryType { get; init; }
+	public string Category { get; init; } = default!;
 }

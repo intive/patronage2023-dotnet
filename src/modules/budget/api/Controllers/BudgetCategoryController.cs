@@ -1,7 +1,7 @@
-using Intive.Patronage2023.Modules.Budget.Api.Provider;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -53,13 +53,9 @@ public class BudgetCategoryController : ControllerBase
 			return this.Forbid();
 		}
 
-		var providers = new List<ICategoryProvider>
-		{
-			new StaticCategoryProvider(),
-			new DatabaseCategoryProvider(this.queryBus, new BudgetId(budgetId)),
-		};
-
-		return this.Ok(new CompositeCategoryProvider(providers).GetAll());
+		var query = new GetTransactionCategoriesFromDatabase(new BudgetId(budgetId));
+		var categories = this.queryBus.Query<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>(query);
+		return this.Ok(categories.Result);
 	}
 
 	/// <summary>
@@ -79,7 +75,7 @@ public class BudgetCategoryController : ControllerBase
 
 		var command = new AddCategory(new BudgetId(budgetId), request.Icon!, request.Name!);
 		await this.commandBus.Send(command);
-		return this.Ok();
+		return this.Ok($"Category Named {request.Name} created.");
 	}
 
 	/// <summary>

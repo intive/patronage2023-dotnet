@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
+
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 
 /// <summary>

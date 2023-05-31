@@ -5,13 +5,17 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Shared.IntegrationTests;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -19,17 +23,24 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// <summary>
 /// Create Budget Transaction Validator tests.
 /// </summary>
-public class CreateBudgetTransactionValidatorTests
+public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 {
+	private readonly IQueryBus queryBus;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<CreateBudgetTransaction> instance;
+	private readonly BudgetDbContext dbContext;
+	
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
-	public CreateBudgetTransactionValidatorTests()
+	public CreateBudgetTransactionValidatorTests(MsSqlTests fixture)
+		: base(fixture)
 	{
+		var scope = this.WebApplicationFactory.Services.CreateScope();
+		this.queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
+		this.dbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.queryBus);
 	}
 
 	/// <summary>
@@ -52,11 +63,11 @@ public class CreateBudgetTransactionValidatorTests
 		var id = new TransactionId(new Faker().Random.Guid());
 		string transactionName= new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
-		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		string category = "Car";
 		var createdDate = new Faker().Date.Between(period.StartDate, period.EndDate);
-		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, createdDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, transactionName, transactionValue, category, createdDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
-		
+
 		//Act
 		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
 
@@ -76,7 +87,7 @@ public class CreateBudgetTransactionValidatorTests
 		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
+		string category = "Car";
 		var createdDate = new Faker().Date.Recent();
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, name, value, category, createdDate);
 		
@@ -107,9 +118,9 @@ public class CreateBudgetTransactionValidatorTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999)*-1;
-		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		string category = "Car";
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
-		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionCreatedDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		//Act
@@ -139,9 +150,9 @@ public class CreateBudgetTransactionValidatorTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
-		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		string category = "Car";
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
-		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionCreatedDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 
@@ -172,9 +183,9 @@ public class CreateBudgetTransactionValidatorTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var transactionCategory = new Faker().Random.Enum<CategoryType>();
+		string category = "Car";
 		var transactionDate = new Faker().Date.Past(new Faker().Random.Int(1,10), period.StartDate);
-		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, transactionCategory, transactionDate);
+		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 		//Act

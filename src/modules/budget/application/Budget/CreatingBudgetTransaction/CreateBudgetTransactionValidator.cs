@@ -1,8 +1,10 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
@@ -12,20 +14,23 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
+	private readonly IQueryBus queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	/// <param name="queryBus">Query bus.</param>
+	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, IQueryBus queryBus)
 	{
 		this.budgetRepository = budgetRepository;
+		this.queryBus = queryBus;
 		this.RuleFor(transaction => transaction.Id).NotNull();
 		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
 			.WithMessage("Value must be positive for income or negative for expense");
-		this.RuleFor(transaction => transaction.Category).Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction).MustAsync(this.IsCategoryDefined).NotEmpty().NotNull().WithMessage("Category is not defined.");
 		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
@@ -62,5 +67,12 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		}
 
 		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
+	}
+
+	private async Task<bool> IsCategoryDefined(CreateBudgetTransaction request, CancellationToken cancellationToken)
+	{
+		var query = new GetTransactionCategoriesFromDatabase(new BudgetId(request.BudgetId));
+		var categories = await this.queryBus.Query<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>(query);
+		return categories.BudgetCategoryList!.Select(x => x.Name).Contains(request.Category);
 	}
 }

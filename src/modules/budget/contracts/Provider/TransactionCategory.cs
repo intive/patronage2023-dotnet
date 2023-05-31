@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+namespace Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 
 /// <summary>
 /// Represents a budget category.

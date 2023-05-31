@@ -74,7 +74,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -132,7 +132,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -177,6 +177,8 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(budget);
+		var category1 = TransactionCategoryAggregate.Create(new TransactionCategoryId(new Faker().Random.Guid()), budgetId, "1", "name");
+		this.dbContext.BudgetTransactionCategory.Add(category1);
 
 		for (int i = 0; i < 10; i++)
 		{
@@ -188,7 +190,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -247,7 +249,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			var expense = BudgetTransactionAggregate.Create(
@@ -256,7 +258,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Expense,
 				new Faker().Random.Word(),
 				(-i),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			this.dbContext.Transaction.Add(income);
@@ -306,6 +308,8 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(budget);
+		var category1 = TransactionCategoryAggregate.Create(new TransactionCategoryId(new Faker().Random.Guid()), budgetId, "1", "name");
+		this.dbContext.BudgetTransactionCategory.Add(category1);
 
 		for (int i = 0; i < 10; i++)
 		{
@@ -318,7 +322,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			if(i % 2 == 0)
@@ -384,7 +388,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			var expense = BudgetTransactionAggregate.Create(
@@ -393,7 +397,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Expense,
 				new Faker().Random.Word(),
 				(-i),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			if (i % 2 == 0)
@@ -459,7 +463,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i),
-				new Faker().Random.Enum<CategoryType>(),
+				"Car",
 				transactionPeriod);
 
 			this.dbContext.Transaction.Add(income);

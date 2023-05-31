@@ -4,13 +4,17 @@ using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Shared.IntegrationTests;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -18,18 +22,25 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// <summary>
 /// Class that contains Get Budget Transaction Validator tests.
 /// </summary>
-public class GetBudgetTransactionsValidatorTests
+public class GetBudgetTransactionsValidatorTests : AbstractIntegrationTests
 {
+	private readonly IQueryBus queryBus;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> instance;
+	private readonly BudgetDbContext dbContext;
+
 
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
 	/// </summary>
-	public GetBudgetTransactionsValidatorTests()
+	public GetBudgetTransactionsValidatorTests(MsSqlTests fixture) 
+		: base(fixture)
 	{
+		var scope = this.WebApplicationFactory.Services.CreateScope();
+		this.queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
+		this.dbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.queryBus);
 	}
 
 	/// <summary>

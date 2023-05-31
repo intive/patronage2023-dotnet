@@ -1,8 +1,10 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
@@ -12,18 +14,21 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransactions>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
+	private readonly IQueryBus queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	/// <param name="queryBus">List of Budget Transaction Categories.</param>
+	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, IQueryBus queryBus)
 	{
+		this.queryBus = queryBus;
 		this.budgetRepository = budgetRepository;
 		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
 		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
 		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
-		this.RuleFor(budget => budget.CategoryTypes).Must(this.AreAllCategoriesDefined);
+		this.RuleFor(budget => budget).MustAsync(this.AreAllCategoriesDefined);
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 
@@ -33,8 +38,15 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		return budget != null;
 	}
 
-	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes)
+	private async Task<bool> AreAllCategoriesDefined(GetBudgetTransactions budgetTransactions, CancellationToken cancellationToken)
 	{
-		return categoryTypes is null || categoryTypes.All(categoryType => Enum.IsDefined(typeof(CategoryType), categoryType));
+		if (budgetTransactions.CategoryTypes is null)
+		{
+			return true;
+		}
+
+		var query = new GetTransactionCategoriesFromDatabase(budgetTransactions.BudgetId);
+		var categories = await this.queryBus.Query<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>(query);
+		return budgetTransactions.CategoryTypes.All(categoryType => categories.BudgetCategoryList!.Any(category => category.Name == categoryType));
 	}
 }

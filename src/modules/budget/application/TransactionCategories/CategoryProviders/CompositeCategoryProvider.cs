@@ -1,6 +1,6 @@
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 
-namespace Intive.Patronage2023.Modules.Budget.Api.Provider;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 
 /// <summary>
 /// Represents a category provider that combines categories from multiple sources.
@@ -22,5 +22,10 @@ public class CompositeCategoryProvider : ICategoryProvider
 	/// Gets all transaction categories from all available sources.
 	/// </summary>
 	/// <returns>A list of transaction categories.</returns>
-	public List<TransactionCategory> GetAll() => this.providers.SelectMany(provider => provider.GetAll()).ToList();
+	public List<TransactionCategory> GetAll()
+	{
+		var categories = this.providers.Select(provider => provider.GetAll());
+		var mergedCategories = categories.SelectMany(category => category).ToList();
+		return mergedCategories;
+	}
 }

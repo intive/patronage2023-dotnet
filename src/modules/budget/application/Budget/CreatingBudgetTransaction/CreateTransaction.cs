@@ -16,5 +16,5 @@ public record CreateTransaction(
 	Guid Id,
 	string Name,
 	decimal Value,
-	CategoryType Category,
+	string Category,
 	DateTime TransactionDate);

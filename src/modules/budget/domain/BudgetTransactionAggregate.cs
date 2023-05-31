@@ -16,9 +16,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string category, DateTime budgetTransactionDate)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, category, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -48,9 +48,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
+	/// Category Name.
 	/// </summary>
-	public CategoryType CategoryType { get; private set; }
+	public string CategoryType { get; private set; } = default!;
 
 	/// <summary>
 	/// Budget Transaction creation date.
@@ -75,12 +75,12 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
 	/// <param name="name">Name of income or Expense.</param>
 	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="categoryType">Enum of income/Expense Categories.</param>
+	/// <param name="category">Category.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string category, DateTime budgetTransactionDate)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, category, budgetTransactionDate);
 	}
 
 	/// <summary>

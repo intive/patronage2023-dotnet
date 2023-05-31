@@ -1,4 +1,4 @@
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.Mappers;

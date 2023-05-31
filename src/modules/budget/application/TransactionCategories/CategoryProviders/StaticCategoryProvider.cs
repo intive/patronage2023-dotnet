@@ -1,6 +1,6 @@
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 
-namespace Intive.Patronage2023.Modules.Budget.Api.Provider;
+namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 
 /// <summary>
 /// Provides a implementation returning build in transaction categories.
@@ -11,13 +11,13 @@ public class StaticCategoryProvider : ICategoryProvider
 	/// Retrieves build in transaction categories.
 	/// </summary>
 	/// <returns>A list of TransactionCategory objects representing different transaction categories.</returns>
-	public List<TransactionCategory> GetAll() => new List<TransactionCategory>
+	public List<TransactionCategory> GetAll() => new()
 	{
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
 			Icon = "1",
-			Name = "Home Spendings",
+			Name = "HomeSpendings",
 		},
 		new TransactionCategory
 		{
