@@ -20,11 +20,12 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
-		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
-		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
-		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
-		this.RuleFor(budget => budget.CategoryTypes).Must(this.AreAllCategoriesDefined);
-		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.PageIndex).GreaterThan(0);
+		this.RuleFor(transaction => transaction.PageSize).GreaterThan(0);
+		this.RuleFor(transaction => transaction.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
+		this.RuleFor(transaction => transaction.CategoryTypes).Must(this.AreAllCategoriesDefined);
+		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.SortDescriptors).Must(this.AreAllDescriptorsInEnum);
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)
@@ -36,5 +37,10 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes)
 	{
 		return categoryTypes is null || categoryTypes.All(categoryType => Enum.IsDefined(typeof(CategoryType), categoryType));
+	}
+
+	private bool AreAllDescriptorsInEnum(List<TransactionSortDescriptor>? transactionSortDescriptors)
+	{
+		return transactionSortDescriptors!.All(sortDescriptor => Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.Column));
 	}
 }
