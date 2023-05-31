@@ -6,7 +6,7 @@ namespace Intive.Patronage2023.Shared.IntegrationTests.Email;
 /// <summary>
 /// Email service integration tests.
 /// </summary>
-public class EmailServiceTests : IAsyncLifetime
+public class SmtpServerFixture : IAsyncLifetime
 {
 	/// <summary>
 	/// Default port.

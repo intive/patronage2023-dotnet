@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,7 +6,7 @@ namespace Intive.Patronage2023.Shared.IntegrationTests.Email;
 /// <summary>
 /// TESTS!
 /// </summary>
-public class EmailSendingTests : AbstractIntegrationTests
+public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpServerFixture>
 {
 	private IEmailService emailService;
 
@@ -14,7 +15,7 @@ public class EmailSendingTests : AbstractIntegrationTests
 	/// </summary>
 	/// <param name="fixture">Email fixture.</param>
 	/// <param name="dbFixture">Email fixture.</param>
-	public EmailSendingTests(EmailServiceTests fixture, MsSqlTests dbFixture) : base(dbFixture, fixture)
+	public EmailSendingTests(SmtpServerFixture fixture, MsSqlTests dbFixture) : base(dbFixture)
 	{
 		var scope = this.WebApplicationFactory.Services.CreateScope();
 		this.emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
@@ -36,8 +37,6 @@ public class EmailSendingTests : AbstractIntegrationTests
 		};
 
 		var exception = Record.Exception(() => this.emailService.SendEmail(emailMessage));
-
-		Assert.Null(exception);
+		exception.Should().BeNull();
 	}
-
 }

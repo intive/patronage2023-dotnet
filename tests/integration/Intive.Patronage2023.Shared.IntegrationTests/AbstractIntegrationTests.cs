@@ -13,23 +13,13 @@ namespace Intive.Patronage2023.Shared.IntegrationTests;
 /// Base class used for integration tests.
 /// </summary>
 [Collection("Database collection")]
-public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, IClassFixture<EmailServiceTests>, IDisposable
+public abstract class AbstractIntegrationTests : IDisposable
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AbstractIntegrationTests"/> class.
 	/// </summary>
 	/// <param name="fixture">The database fixture.</param>
 	protected AbstractIntegrationTests(MsSqlTests fixture)
-	{
-		this.WebApplicationFactory = new CustomWebApplicationFactory(fixture);
-	}
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AbstractIntegrationTests"/> class.
-	/// </summary>
-	/// <param name="fixture">The database fixture.</param>
-	/// <param name="emailFixture">The email fixture.</param>
-	protected AbstractIntegrationTests(MsSqlTests fixture, EmailServiceTests emailFixture)
 	{
 		this.WebApplicationFactory = new CustomWebApplicationFactory(fixture);
 	}
@@ -69,7 +59,7 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, ICla
 
 		protected override void ConfigureWebHost(IWebHostBuilder builder)
 		{
-			var emailConfiguration = new EmailConfiguration() { SmtpPort = EmailServiceTests.Port, SmtpServer = "localhost", UseSSL = false };
+			var emailConfiguration = new EmailConfiguration() { SmtpPort = SmtpServerFixture.Port, SmtpServer = "localhost", UseSSL = false };
 			var emailConfigDescriptor = new ServiceDescriptor(typeof(IEmailConfiguration), emailConfiguration);
 			builder.ConfigureServices(
 				services =>
@@ -83,12 +73,12 @@ public abstract class AbstractIntegrationTests : IClassFixture<MsSqlTests>, ICla
 				});
 		}
 	}
-}
 
-/// <summary>
-/// Dummy class for collection definition.
-/// </summary>
-[CollectionDefinition("Database collection")]
-public class DatabaseDefinitionTestFixtureCollection : ICollectionFixture<MsSqlTests>
-{
+	/// <summary>
+	/// Dummy class for collection definition.
+	/// </summary>
+	[CollectionDefinition("Database collection")]
+	public class DatabaseDefinitionTestFixtureCollection : ICollectionFixture<MsSqlTests>
+	{
+	}
 }
