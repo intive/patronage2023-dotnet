@@ -18,7 +18,8 @@ public class SmtpServerFixture : IAsyncLifetime
 	///</summary>
 	public readonly IContainer smtp4devcontainer = new ContainerBuilder()
 		.WithImage("rnwood/smtp4dev:latest")
-		.WithPortBinding(Port, 3000)
+		.WithPortBinding(Port, 25)
+		.WithWaitStrategy(Wait.ForUnixContainer())
 		.Build();
 
 	/// <summary>

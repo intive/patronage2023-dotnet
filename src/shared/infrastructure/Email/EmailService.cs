@@ -37,6 +37,7 @@ public class EmailService : IEmailService
 			client.Connect(this.emailConfiguration.SmtpServer, this.emailConfiguration.SmtpPort, this.emailConfiguration.UseSSL);
 			client.Send(message);
 			client.Disconnect(true);
+			client.Dispose();
 		}
 	}
 
