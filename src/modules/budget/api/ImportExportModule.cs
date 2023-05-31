@@ -20,9 +20,11 @@ public static class ImportExportModule
 	{
 		services.AddScoped<IBudgetExportService, BudgetExportService>();
 		services.AddScoped<IBudgetImportService, BudgetImportService>();
+		services.AddScoped<IBudgetTransactionExportService, BudgetTransactionExportService>();
 		services.AddScoped<IBlobStorageService, BlobStorageService>();
 		services.AddScoped<IBudgetDataService, BudgetDataService>();
 		services.AddScoped<ICsvService<GetBudgetTransferInfo>, CsvService<GetBudgetTransferInfo>>();
+		services.AddScoped<ICsvService<GetBudgetTransactionTransferInfo>, CsvService<GetBudgetTransactionTransferInfo>>();
 
 		return services;
 	}
