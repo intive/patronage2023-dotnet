@@ -72,12 +72,12 @@ internal static class BudgetTransactionsQueryExtensions
 	/// <param name="budgetTransactions">Query.</param>
 	/// <param name="sortDescriptors">Sort criteria.</param>
 	/// <returns>Sorted query.</returns>
-	public static IOrderedEnumerable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<TransactionSortDescriptor> sortDescriptors)
+	public static IQueryable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<TransactionSortDescriptor> sortDescriptors)
 	{
 		var budgetTransactionsOrdered = budgetTransactions.AsEnumerable().OrderBy(t => 1);
 		if (sortDescriptors.IsNullOrEmpty())
 		{
-			return budgetTransactionsOrdered;
+			return budgetTransactionsOrdered.AsQueryable();
 		}
 
 		var mapping = new Dictionary<int, Func<BudgetTransactionAggregate, object>>()
@@ -96,6 +96,6 @@ internal static class BudgetTransactionsQueryExtensions
 			budgetTransactionsOrdered = sortDescriptor.SortAscending ? budgetTransactionsOrdered.ThenBy(mapping[sortDescriptor.Column]) : budgetTransactionsOrdered.ThenByDescending(mapping[sortDescriptor.Column]);
 		}
 
-		return budgetTransactionsOrdered;
+		return budgetTransactionsOrdered.AsQueryable();
 	}
 }
