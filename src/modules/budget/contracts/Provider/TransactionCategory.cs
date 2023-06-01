@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 
 /// <summary>
-/// Represents a budget category.
+/// Represents a budget transaction category.
 /// </summary>
 public record TransactionCategory
 {
@@ -11,12 +11,12 @@ public record TransactionCategory
 	public Guid CategoryId { get; init; }
 
 	/// <summary>
-	/// Gets or sets the icon associated with the budget category.
+	/// Gets or sets the icon associated with the budget transaction category.
 	/// </summary>
 	public string? Icon { get; init; }
 
 	/// <summary>
-	/// Gets or sets the name associated with the budget category.
+	/// Gets or sets the name associated with the budget transaction category.
 	/// </summary>
 	public string? Name { get; init; }
 }

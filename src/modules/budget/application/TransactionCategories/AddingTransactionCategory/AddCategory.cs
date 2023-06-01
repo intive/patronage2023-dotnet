@@ -14,7 +14,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 public record AddCategory(BudgetId BudgetId, string Icon, string CategoryName) : ICommand;
 
 /// <summary>
-/// Create Budget.
+/// Handles the command for adding a transaction category to a budget.
 /// </summary>
 public class HandleAddTransactionCategoryToBudget : ICommandHandler<AddCategory>
 {

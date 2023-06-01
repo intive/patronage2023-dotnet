@@ -22,6 +22,6 @@ public static class BudgetTransactionInfoMapper
 			Name = x.Name,
 			Value = x.Value,
 			BudgetTransactionDate = x.BudgetTransactionDate,
-			Category = x.CategoryType,
+			CategoryType = x.CategoryType,
 		});
 }

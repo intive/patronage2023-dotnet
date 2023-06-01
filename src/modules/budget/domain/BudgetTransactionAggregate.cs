@@ -16,9 +16,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string category, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string categoryType, DateTime budgetTransactionDate)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, category, budgetTransactionDate);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 

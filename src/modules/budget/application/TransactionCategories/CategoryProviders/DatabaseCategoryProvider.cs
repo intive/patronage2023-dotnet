@@ -25,7 +25,7 @@ public class DatabaseCategoryProvider : ICategoryProvider
 	}
 
 	/// <summary>
-	/// Retrieves all transaction categories from the database for given id.
+	/// Retrieves all transaction categories from the database for given budget id.
 	/// </summary>
 	/// <returns>A list of <see cref="TransactionCategory"/> objects representing the transaction categories.</returns>
 	public List<TransactionCategory> GetAll()

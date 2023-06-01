@@ -20,7 +20,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	/// <param name="queryBus">Query bus.</param>
+	/// <param name="queryBus">The query bus used for getting transaction categories.</param>
 	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, IQueryBus queryBus)
 	{
 		this.budgetRepository = budgetRepository;
@@ -71,8 +71,8 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 
 	private async Task<bool> IsCategoryDefined(CreateBudgetTransaction request, CancellationToken cancellationToken)
 	{
-		var query = new GetTransactionCategoriesFromDatabase(new BudgetId(request.BudgetId));
-		var categories = await this.queryBus.Query<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>(query);
-		return categories.BudgetCategoryList!.Select(x => x.Name).Contains(request.Category);
+		var query = new GetTransactionCategories(new BudgetId(request.BudgetId));
+		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
+		return categories.Categories!.Select(x => x.Name).Contains(request.Category);
 	}
 }

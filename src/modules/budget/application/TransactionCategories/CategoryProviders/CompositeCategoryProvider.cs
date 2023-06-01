@@ -12,7 +12,7 @@ public class CompositeCategoryProvider : ICategoryProvider
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CompositeCategoryProvider"/> class.
 	/// </summary>
-	/// <param name="providers">1.</param>
+	/// <param name="providers">The list of category providers to combine.</param>
 	public CompositeCategoryProvider(List<ICategoryProvider> providers)
 	{
 		this.providers = providers;

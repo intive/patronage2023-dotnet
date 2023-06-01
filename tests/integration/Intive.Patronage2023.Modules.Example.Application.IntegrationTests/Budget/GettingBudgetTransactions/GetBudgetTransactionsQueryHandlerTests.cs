@@ -64,7 +64,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			new Faker().Random.Word(),
+			"Salary",
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -169,7 +169,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 	///Integration test that verifes if query handler returns only transactions with category 'Car' belonging to given budget.
 	///</summary>
 	[Fact]
-	public async Task Handle_WhenCalledWithCarCategortyType_ShouldReturnPagedListWithTransactionsWithCarCategory()
+	public async Task Handle_WhenCalledWithSalaryCategoryType_ShouldReturnPagedListWithTransactionsWithSalaryCategory()
 	{
 		// Arrange
 		var userId = new UserId(Guid.NewGuid());
@@ -228,7 +228,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
-		result.Items.First().Category.Should().Be("Salary");
+		result.Items.First().CategoryType.Should().Be("Salary");
 	}
 
 	///<summary>
@@ -253,9 +253,9 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
 
 		var incomeId = new TransactionId(Guid.NewGuid());
-		string category1 = "Grocery";
-		string category2 = "Home Spendings";
-		string category3 = "Car";
+		string grocery = "Grocery";
+		string homeSpendings = "HomeSpendings";
+		string car = "Car";
 		
 		var income = BudgetTransactionAggregate.Create(
 			incomeId,
@@ -263,7 +263,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			category1,
+			grocery,
 			period.StartDate.AddDays(1));
 
 		var incomeIdv2 = new TransactionId(Guid.NewGuid());
@@ -273,7 +273,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			category2,
+			homeSpendings,
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -283,7 +283,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			category3,
+			car,
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -309,7 +309,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(2);
-		result.Items.Should().OnlyContain(x => x.Category == "Car" || x.Category == "Grocery");
+		result.Items.Should().OnlyContain(x => x.CategoryType == "Car" || x.CategoryType == "Grocery");
 	}
 
 	///<summary>

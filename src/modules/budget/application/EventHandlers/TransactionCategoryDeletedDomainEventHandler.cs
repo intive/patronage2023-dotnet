@@ -7,17 +7,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Intive.Patronage2023.Modules.Budget.Application.EventHandlers;
 
 /// <summary>
-/// This class is a domain event handler that handles the "BudgetTransactionSoftDeleteDomainEvent" event.
+/// Handles the domain event when a transaction category is deleted.
 /// </summary>
 [Lifetime(Lifetime = ServiceLifetime.Singleton)]
 public class TransactionCategoryDeletedDomainEventHandler : IDomainEventHandler<TransactionCategoryDeletedDomainEvent>
 {
 	/// <summary>
-	/// This method is the entry point for handling the "TransactionCategoryDeletedDomainEventHandler" event.
+	/// Handles the notification of the transaction category being deleted.
 	/// </summary>
-	/// <param name="notification">Notification.</param>
+	/// <param name="notification">The notification of the transaction category being deleted.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
-	/// <returns>Task.</returns>
+	/// <returns>A task representing the completion of the handling process.</returns>
 	public Task Handle(TransactionCategoryDeletedDomainEvent notification, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();

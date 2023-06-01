@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.Gett
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,8 @@ public class BudgetCategoryController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget for which to retrieve the transaction categories.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
+	[ProducesResponseType(typeof(TransactionCategoriesInfo), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpGet]
 	[Route("{budgetId:guid}/categories")]
 	public async Task<IActionResult> GetBudgetCategories([FromRoute]Guid budgetId)
@@ -53,8 +56,8 @@ public class BudgetCategoryController : ControllerBase
 			return this.Forbid();
 		}
 
-		var query = new GetTransactionCategoriesFromDatabase(new BudgetId(budgetId));
-		var categories = this.queryBus.Query<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>(query);
+		var query = new GetTransactionCategories(new BudgetId(budgetId));
+		var categories = this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
 		return this.Ok(categories.Result);
 	}
 
@@ -64,18 +67,20 @@ public class BudgetCategoryController : ControllerBase
 	/// <param name="budgetId">The ID of the budget to which the category will be added.</param>
 	/// <param name="request">The transaction category name.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
+	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	[Route("{budgetId:guid}/categories")]
-	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]CategoryData request)
+	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]GetTransactionCategory request)
 	{
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
 			return this.Forbid();
 		}
 
-		var command = new AddCategory(new BudgetId(budgetId), request.Icon!, request.Name!);
+		var command = new AddCategory(new BudgetId(budgetId), request.Icon, request.Name);
 		await this.commandBus.Send(command);
-		return this.Ok($"Category Named {request.Name} created.");
+		return this.Ok(request.Name);
 	}
 
 	/// <summary>
@@ -84,6 +89,8 @@ public class BudgetCategoryController : ControllerBase
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
 	/// <param name="budgetCategoryId">The name of the category to delete.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpDelete]
 	[Route("{budgetId:guid}/categories/{budgetCategoryId:guid}")]
 	public async Task<IActionResult> DeleteTransactionCategoryFromBudget([FromRoute]Guid budgetId, [FromRoute]Guid budgetCategoryId)
@@ -95,6 +102,6 @@ public class BudgetCategoryController : ControllerBase
 
 		var command = new DeleteTransactionCategory(new TransactionCategoryId(budgetCategoryId));
 		await this.commandBus.Send(command);
-		return this.Ok();
+		return this.Ok(budgetCategoryId);
 	}
 }

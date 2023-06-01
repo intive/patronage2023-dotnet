@@ -10,12 +10,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// Represents a request to retrieve categories for a specific budget.
 /// </summary>
 /// <param name="BudgetId">The ID of the budget for which to retrieve the categories.</param>
-public record GetTransactionCategoriesFromDatabase(BudgetId BudgetId) : IQuery<TransactionCategoriesInfo>;
+public record GetTransactionCategories(BudgetId BudgetId) : IQuery<TransactionCategoriesInfo>;
 
 /// <summary>
-/// Get Budgets handler.
+/// Handles the query for retrieving transaction categories from the database.
 /// </summary>
-public class GetTransactionCategoriesFromDatabaseQueryHandler : IQueryHandler<GetTransactionCategoriesFromDatabase, TransactionCategoriesInfo>
+public class GetTransactionCategoriesFromDatabaseQueryHandler : IQueryHandler<GetTransactionCategories, TransactionCategoriesInfo>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
@@ -29,12 +29,12 @@ public class GetTransactionCategoriesFromDatabaseQueryHandler : IQueryHandler<Ge
 	}
 
 	/// <summary>
-	/// GetBudgets query handler.
+	/// Handles the GetTransactionCategories query.
 	/// </summary>
-	/// <param name="query">Query.</param>
-	/// <param name="cancellationToken">cancellation token.</param>
-	/// <returns>Paged list of Budgets.</returns>
-	public Task<TransactionCategoriesInfo> Handle(GetTransactionCategoriesFromDatabase query, CancellationToken cancellationToken)
+	/// <param name="query">The GetTransactionCategories query.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation that returns the TransactionCategoriesInfo.</returns>
+	public Task<TransactionCategoriesInfo> Handle(GetTransactionCategories query, CancellationToken cancellationToken)
 	{
 		var providers = new List<ICategoryProvider>
 		{

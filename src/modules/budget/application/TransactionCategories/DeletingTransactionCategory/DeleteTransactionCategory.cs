@@ -13,7 +13,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 public record DeleteTransactionCategory(TransactionCategoryId CategoryId) : ICommand;
 
 /// <summary>
-/// Delete transaction category from budget.
+/// Handles the command for deleting a transaction category.
 /// </summary>
 public class HandleDeleteTransactionCategory : ICommandHandler<DeleteTransactionCategory>
 {
@@ -24,7 +24,7 @@ public class HandleDeleteTransactionCategory : ICommandHandler<DeleteTransaction
 	/// Initializes a new instance of the <see cref="HandleDeleteTransactionCategory"/> class.
 	/// </summary>
 	/// <param name="transactionCategoryRepository">Repository that manages Budget aggregate root.</param>
-	/// <param name="dbContext">DbContext.</param>
+	/// <param name="dbContext">The BudgetDbContext.</param>
 	public HandleDeleteTransactionCategory(IRepository<TransactionCategoryAggregate, TransactionCategoryId> transactionCategoryRepository, BudgetDbContext dbContext)
 	{
 		this.transactionCategoryRepository = transactionCategoryRepository;

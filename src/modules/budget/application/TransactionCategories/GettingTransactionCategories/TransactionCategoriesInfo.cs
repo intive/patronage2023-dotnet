@@ -5,4 +5,4 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// <summary>
 /// Represents information about transaction categories.
 /// </summary>
-public record TransactionCategoriesInfo(List<TransactionCategory>? BudgetCategoryList);
+public record TransactionCategoriesInfo(List<TransactionCategory>? Categories);

@@ -33,9 +33,9 @@ public static class BudgetConverters
 		guid => new UserId(guid));
 
 	/// <summary>
-	/// Converter which changes UserId to Guid.
+	/// Converter which changes TransactionCategoryId to Guid.
 	/// </summary>
-	/// <returns>Returns Converted UserId to guid.</returns>
+	/// <returns>Returns Converted TransactionCategoryId to guid.</returns>
 	public static ValueConverter TransactionCategoryId() => new ValueConverter<TransactionCategoryId, Guid>(
 		id => id.Value,
 		guid => new TransactionCategoryId(guid));
