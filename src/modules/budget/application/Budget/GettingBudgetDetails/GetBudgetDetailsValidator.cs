@@ -33,10 +33,13 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
 	{
+		var budgetId = new BudgetId(id);
+		var budgetOwnerId = this.budgetDbContext.Budget.Where(x => x.Id == budgetId).Select(x => x.UserId).FirstOrDefault();
+
 		HttpResponseMessage response;
 		try
 		{
-			response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
+			response = await this.keycloakService.GetUserById(budgetOwnerId.ToString(), cancellationToken);
 		}
 		catch (Exception)
 		{
@@ -55,9 +58,8 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 
 		return true;
 	}
-}
 
-private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
+	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(budgetGuid);
 		var budget = await this.budgetDbContext.Budget
