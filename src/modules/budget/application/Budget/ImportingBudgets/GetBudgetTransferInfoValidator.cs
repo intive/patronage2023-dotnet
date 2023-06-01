@@ -1,6 +1,7 @@
 using System.Globalization;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 
@@ -16,7 +17,8 @@ public class GetBudgetTransferInfoValidator : AbstractValidator<GetBudgetTransfe
 	{
 		this.RuleFor(budget => budget.Name).NotEmpty().WithMessage("Budget name is missing");
 		this.RuleFor(budget => budget.IconName).NotEmpty().WithMessage("Budget icon name is missing");
-		this.RuleFor(budget => budget.Currency).NotEmpty().WithMessage("Budget currency is missing");
+		this.RuleFor(budget => budget.Currency)
+					.Must(this.IsCurrencyDefined).WithMessage("The selected currency is not supported.");
 		this.RuleFor(budget => budget.Value)
 			.NotEmpty().WithMessage("Budget value is missing")
 			.Must(this.BeValidDecimal).WithMessage("Budget value is not a valid decimal number");
@@ -38,5 +40,15 @@ public class GetBudgetTransferInfoValidator : AbstractValidator<GetBudgetTransfe
 	private bool BeValidDate(string value)
 	{
 		return DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+	}
+
+	private bool IsCurrencyDefined(string value)
+	{
+		if (int.TryParse(value, out int parsedValue))
+		{
+			return Enum.IsDefined(typeof(Currency), parsedValue);
+		}
+
+		return Enum.IsDefined(typeof(Currency), value);
 	}
 }
