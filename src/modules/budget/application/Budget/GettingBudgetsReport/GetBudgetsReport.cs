@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
@@ -24,6 +25,11 @@ public record GetBudgetsReport() : IQuery<BudgetsReport<BudgetAmount>>
 	/// End Date for retrieving values.
 	/// </summary>
 	public DateTime EndDate { get; set; }
+
+	/// <summary>
+	/// Currency for retriving values.
+	/// </summary>
+	public Currency Currency { get; init; }
 }
 
 /// <summary>
@@ -66,7 +72,7 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 			from budget in budgets
 			join budgetTransaction in transactions
 						on budget.Id equals budgetTransaction.BudgetId
-			where budget.UserId == userId
+			where budget.UserId == userId && budget.Limit.Currency == query.Currency
 			select budgetTransaction).AsQueryable();
 
 		if (!transactionsList.Any())
