@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Intive.Patronage2023.Shared.IntegrationTests.Email;
 /// <summary>
-/// TESTS!
+/// Class that contains email sending service integration tests.
 /// </summary>
 public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpServerFixture>
 {
