@@ -6,50 +6,33 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Xunit;
 
-namespace Intive.Patronage2023.Budget.Application.Tests.UserBudget;
+namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.UserBudget.GettingUserRole;
 
 /// <summary>
 /// Class that contains Tests for UpdateUserBudgetFavourite CommandHandler.
 /// </summary>
-public class UpdateUserBudgetFavouriteCommandHandlerTests : IDisposable
+public class UpdateUserBudgetFavouriteCommandHandlerTests : AbstractIntegrationTests
 {
 	private readonly Mock<IRepository<UserBudgetAggregate, Guid>> userBudgetRepositoryMock;
 	private readonly Mock<IExecutionContextAccessor> contextAccessorMock;
 	private readonly HandleUpdateUserBudgetFavourite instance;
-	private readonly SqliteConnection connection;
 	private readonly BudgetDbContext context;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UpdateUserBudgetFavouriteCommandHandlerTests"/> class.
 	/// </summary>
-	public UpdateUserBudgetFavouriteCommandHandlerTests()
+	public UpdateUserBudgetFavouriteCommandHandlerTests(MsSqlTests fixture)
+		: base(fixture)
 	{
-		this.connection = new SqliteConnection("Filename=:memory:");
-		this.connection.Open();
-
-		// These options will be used by the context instances in this test suite, including the connection opened above.
-		var contextOptions = new DbContextOptionsBuilder<BudgetDbContext>()
-			.UseSqlite(this.connection)
-			.Options;
-
-		this.context = new BudgetDbContext(contextOptions);
-		this.context.Database.EnsureCreated();
+		var scope = this.WebApplicationFactory.Services.CreateScope();
+		this.context = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
 
 		this.userBudgetRepositoryMock = new Mock<IRepository<UserBudgetAggregate, Guid>>();
 		this.contextAccessorMock = new Mock<IExecutionContextAccessor>();
 		this.instance = new HandleUpdateUserBudgetFavourite(this.context, this.contextAccessorMock.Object, this.userBudgetRepositoryMock.Object);
-	}
-
-	/// <inheritdoc/>
-	public void Dispose()
-	{
-		this.connection.Dispose();
-		this.context.Dispose();
 	}
 
 	/// <summary>
