@@ -64,7 +64,7 @@ public abstract class AbstractIntegrationTests : IDisposable
 		public CustomWebApplicationFactory(MsSqlTests fixture)
 		{
 			this.connectionString =
-				$"Server=localhost,{MsSqlTests.MappedPort};Database={MsSqlTests.Database};User Id={MsSqlTests.Username};Password={MsSqlTests.Password};TrustServerCertificate=True";
+				$"Server=localhost,{fixture.MappedPort};Database={MsSqlTests.Database};User Id={MsSqlTests.Username};Password={MsSqlTests.Password};TrustServerCertificate=True";
 		}
 
 		protected override void ConfigureWebHost(IWebHostBuilder builder)
