@@ -5,20 +5,15 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-using Intive.Patronage2023.Shared.IntegrationTests;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Moq;
-using Xunit;
 
-namespace Intive.Patronage2023.Budget.Application.Tests;
+namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.BudgetTransactions;
 
 /// <summary>
 /// Create Budget Transaction Validator tests.
@@ -28,8 +23,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	private readonly IQueryBus queryBus;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<CreateBudgetTransaction> instance;
-	private readonly BudgetDbContext dbContext;
-	
+
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
@@ -38,7 +32,6 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	{
 		var scope = this.WebApplicationFactory.Services.CreateScope();
 		this.queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
-		this.dbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
 		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.queryBus);
 	}
