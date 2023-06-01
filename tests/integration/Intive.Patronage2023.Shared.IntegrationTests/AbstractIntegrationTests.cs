@@ -1,8 +1,10 @@
 using Hangfire;
+
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.Example.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Intive.Patronage2023.Shared.IntegrationTests.Email;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -86,7 +88,7 @@ public abstract class AbstractIntegrationTests : IDisposable
 	/// <summary>
 	/// Dummy class for collection definition.
 	/// </summary>
-	[CollectionDefinition("Database collection")]
+	[CollectionDefinition("Database collection", DisableParallelization = false)]
 	public class DatabaseDefinitionTestFixtureCollection : ICollectionFixture<MsSqlTests>
 	{
 	}
