@@ -89,10 +89,10 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 			.CountAsync(cancellationToken: cancellationToken);
 
 		var budgetsOrdered = budgets.Sort(query.SortDescriptors!);
-		var mappedData = await budgetsOrdered
+		var mappedData = budgetsOrdered
 			.Paginate(query)
 			.MapToTransactionInfo()
-			.ToListAsync(cancellationToken);
+			.ToList();
 
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
