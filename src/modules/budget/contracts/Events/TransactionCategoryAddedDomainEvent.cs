@@ -15,7 +15,7 @@ public class TransactionCategoryAddedDomainEvent : DomainEvent
 	/// <param name="budgetId">The identifier of budget.</param>
 	/// <param name="icon">The icon associated with the transaction category.</param>
 	/// <param name="name">The name of the transaction category.</param>
-	public TransactionCategoryAddedDomainEvent(TransactionCategoryId id, BudgetId budgetId, string? icon, string? name)
+	public TransactionCategoryAddedDomainEvent(TransactionCategoryId id, BudgetId budgetId, string icon, string name)
 	{
 		this.Id = id;
 		this.BudgetId = budgetId;
@@ -36,10 +36,10 @@ public class TransactionCategoryAddedDomainEvent : DomainEvent
 	/// <summary>
 	/// Gets the icon associated with the transaction category.
 	/// </summary>
-	public string? Icon { get; private set; }
+	public string Icon { get; private set; }
 
 	/// <summary>
 	/// Gets the name of the transaction category.
 	/// </summary>
-	public string? Name { get; private set; }
+	public string Name { get; private set; }
 }

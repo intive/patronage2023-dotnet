@@ -177,8 +177,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(budget);
-		var category1 = TransactionCategoryAggregate.Create(new TransactionCategoryId(new Faker().Random.Guid()), budgetId, "1", "name");
-		this.dbContext.BudgetTransactionCategory.Add(category1);
 
 		for (int i = 0; i < 10; i++)
 		{
@@ -308,8 +306,6 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(budget);
-		var category1 = TransactionCategoryAggregate.Create(new TransactionCategoryId(new Faker().Random.Guid()), budgetId, "1", "name");
-		this.dbContext.BudgetTransactionCategory.Add(category1);
 
 		for (int i = 0; i < 10; i++)
 		{

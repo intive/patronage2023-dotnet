@@ -48,7 +48,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category Name.
+	/// Transaction Category Name.
 	/// </summary>
 	public string CategoryType { get; private set; } = default!;
 
@@ -75,12 +75,12 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
 	/// <param name="name">Name of income or Expense.</param>
 	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="category">Category.</param>
+	/// <param name="categoryType">Category.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string category, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string categoryType, DateTime budgetTransactionDate)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, category, budgetTransactionDate);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 	}
 
 	/// <summary>

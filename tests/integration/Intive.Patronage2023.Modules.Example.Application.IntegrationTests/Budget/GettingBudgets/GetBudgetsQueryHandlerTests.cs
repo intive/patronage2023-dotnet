@@ -60,8 +60,6 @@ public class GetBudgetsQueryHandlerTests : AbstractIntegrationTests
 		this.contextAccessor!.Setup(x => x.GetUserId()).Returns(userId.Value);
 		this.contextAccessor.Setup(x => x.IsAdmin()).Returns(false);
 		this.dbContext.Add(command);
-		var category1 = TransactionCategoryAggregate.Create(new TransactionCategoryId(Guid.NewGuid()), budgetId, "1", "name");
-		this.dbContext.BudgetTransactionCategory.Add(category1);
 		await this.dbContext.SaveChangesAsync();
 		var query = new GetBudgets
 		{

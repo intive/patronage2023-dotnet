@@ -74,7 +74,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			new Faker().Random.Word(),
+			"Car",
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -128,7 +128,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			new Faker().Random.Word(),
+			"Refund",
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -138,7 +138,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			new Faker().Random.Word(),
+			"Car",
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -193,7 +193,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			"Car",
+			"Salary",
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -203,7 +203,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			new Faker().Random.Word(),
+			"Car",
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -218,7 +218,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			PageSize = 10,
 			PageIndex = 1,
 			TransactionType = null,
-			CategoryTypes = new[] { "Car" },
+			CategoryTypes = new[] { "Salary" },
 			BudgetId = budgetId,
 		};
 
@@ -228,7 +228,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
-		result.Items.First().Category.Should().Be("Car");
+		result.Items.First().Category.Should().Be("Salary");
 	}
 
 	///<summary>
