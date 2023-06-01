@@ -74,7 +74,15 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
 	{
-		var response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
+		HttpResponseMessage response;
+		try
+		{
+			response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
+		}
+		catch (Exception)
+		{
+			throw new AppException("Something went wrong with keycloack");
+		}
 
 		if (response.StatusCode == HttpStatusCode.NotFound)
 		{
@@ -83,7 +91,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 		if (!response.IsSuccessStatusCode)
 		{
-			throw new AppException();
+			throw new AppException(response.ToString());
 		}
 
 		return true;

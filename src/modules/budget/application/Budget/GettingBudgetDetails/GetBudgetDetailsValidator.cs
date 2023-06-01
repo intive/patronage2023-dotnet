@@ -33,10 +33,15 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
 	{
-		var budgetId = new BudgetId(id);
-		var budgetOwnerId = this.budgetDbContext.Budget.Where(x => x.Id == budgetId).Select(x => x.UserId).FirstOrDefault();
-
-		var response = await this.keycloakService.GetUserById(budgetOwnerId.ToString(), cancellationToken);
+		HttpResponseMessage response;
+		try
+		{
+			response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
+		}
+		catch (Exception)
+		{
+			throw new AppException("Something went wrong with keycloack");
+		}
 
 		if (response.StatusCode == HttpStatusCode.NotFound)
 		{
@@ -45,13 +50,14 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 
 		if (!response.IsSuccessStatusCode)
 		{
-			throw new AppException();
+			throw new AppException(response.ToString());
 		}
 
 		return true;
 	}
+}
 
-	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
+private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(budgetGuid);
 		var budget = await this.budgetDbContext.Budget
