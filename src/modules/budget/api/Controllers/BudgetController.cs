@@ -398,6 +398,7 @@ public class BudgetController : ControllerBase
 	/// Sample request:
 	/// Types: "Income", "Expense"
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// SortDescriptors columns: 0 -  Name, 1 - CategoryType, 2 - Status, 3 - Value, 4 - BudgetTransactionDate, 5 - Username
 	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
@@ -408,7 +409,17 @@ public class BudgetController : ControllerBase
 	///           "HomeSpendings",
 	///           "Car"
 	///         ]
-	///         "search": "text"
+	///         "search": "text",
+	///         "sortDescriptors": [
+	///         {
+	///             "column": 3,
+	///             "sortAscending": false
+	///         },
+	///         {
+	///             "column": 0,
+	///             "sortAscending": true
+	///         }
+	///       ]
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
