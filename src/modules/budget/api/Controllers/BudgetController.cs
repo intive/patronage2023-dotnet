@@ -508,7 +508,7 @@ public class BudgetController : ControllerBase
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
