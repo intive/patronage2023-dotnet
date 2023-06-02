@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Events;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
@@ -14,7 +15,7 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	{
 	}
 
-	private TransactionCategoryAggregate(TransactionCategoryId id, BudgetId budgetId, string icon, string name)
+	private TransactionCategoryAggregate(TransactionCategoryId id, BudgetId budgetId, Icon icon, string name)
 	{
 		var transactionCategoryAggregate = new TransactionCategoryAddedDomainEvent(id, budgetId, icon, name);
 		this.Apply(transactionCategoryAggregate, this.Handle);
@@ -33,7 +34,7 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	/// <summary>
 	/// Gets the icon associated with the transaction category.
 	/// </summary>
-	public string Icon { get; private set; } = default!;
+	public Icon Icon { get; private set; } = default!;
 
 	/// <summary>
 	/// Gets the name of the transaction category.
@@ -48,7 +49,7 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	/// <param name="icon">The icon associated with the transaction category.</param>
 	/// <param name="name">The name of the transaction category.</param>
 	/// <returns>A new instance of the TransactionCategoryAggregate class.</returns>
-	public static TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, string icon, string name)
+	public static TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, Icon icon, string name)
 	{
 		return new TransactionCategoryAggregate(id, budgetId, icon, name);
 	}

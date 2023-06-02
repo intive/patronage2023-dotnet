@@ -16,7 +16,9 @@ public partial class AddBudgetTransactionCategoryTable : Migration
 			{
 				Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newsequentialid()"),
 				BudgetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-				Icon = table.Column<string>(type: "nvarchar(max)", nullable: false),
+				IconName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+				Foreground = table.Column<string>(type: "nvarchar(max)", nullable: false),
+				Background = table.Column<string>(type: "nvarchar(max)", nullable: false),
 				Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
 			},
 			constraints: table =>

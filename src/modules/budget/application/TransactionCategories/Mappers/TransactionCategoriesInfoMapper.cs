@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.Mappers;
@@ -17,7 +18,7 @@ public static class TransactionCategoriesInfoMapper
 		query.Select(x => new TransactionCategory
 		{
 			CategoryId = x.Id.Value,
-			Icon = x.Icon,
+			Icon = new Icon(x.Icon.IconName, x.Icon.Foreground, x.Icon.Background),
 			Name = x.Name,
 		});
 }

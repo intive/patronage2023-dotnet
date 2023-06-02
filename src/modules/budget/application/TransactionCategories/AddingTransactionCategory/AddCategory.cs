@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -11,7 +12,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// <param name="BudgetId">The ID of the budget to which the category will be added.</param>
 /// <param name="Icon">The transaction category icon.</param>
 /// <param name="CategoryName">The transaction category name.</param>
-public record AddCategory(BudgetId BudgetId, string Icon, string CategoryName) : ICommand;
+public record AddCategory(BudgetId BudgetId, Icon Icon, string CategoryName) : ICommand;
 
 /// <summary>
 /// Handles the command for adding a transaction category to a budget.

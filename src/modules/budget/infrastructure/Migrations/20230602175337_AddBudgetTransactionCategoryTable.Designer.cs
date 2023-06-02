@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230602084537_AddBudgetTransactionCategoryTable")]
+    [Migration("20230602175337_AddBudgetTransactionCategoryTable")]
     partial class AddBudgetTransactionCategoryTable
     {
         /// <inheritdoc />
@@ -129,11 +129,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.Property<Guid>("BudgetId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("BudgetId");
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Icon");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -266,6 +261,38 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums.Icon", "Icon", b1 =>
+                        {
+                            b1.Property<Guid>("TransactionCategoryAggregateId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Background")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Background");
+
+                            b1.Property<string>("Foreground")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Foreground");
+
+                            b1.Property<string>("IconName")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("IconName");
+
+                            b1.HasKey("TransactionCategoryAggregateId");
+
+                            b1.ToTable("BudgetTransactionCategory", "Budgets");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransactionCategoryAggregateId");
+                        });
+
+                    b.Navigation("Icon")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

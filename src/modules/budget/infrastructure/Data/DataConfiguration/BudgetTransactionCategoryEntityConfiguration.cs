@@ -26,7 +26,12 @@ internal class BudgetTransactionCategoryEntityConfiguration : IEntityTypeConfigu
 
 		builder.Property(x => x.Id).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
-		builder.Property(x => x.Icon).HasColumnName("Icon").IsRequired();
-		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
+		builder.OwnsOne(x => x.Icon, icon =>
+		{
+			icon.Property(p => p.IconName).HasColumnName("IconName").HasMaxLength(30);
+			icon.Property(p => p.Foreground).HasColumnName("Foreground").HasMaxLength(10);
+			icon.Property(p => p.Background).HasColumnName("Background").HasMaxLength(10);
+		});
+		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(30).IsRequired();
 	}
 }

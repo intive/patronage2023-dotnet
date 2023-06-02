@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 
@@ -16,37 +17,37 @@ public class StaticCategoryProvider : ICategoryProvider
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "1",
+			Icon = new Icon("1", "#1E4C40", "#F1FBF6"),
 			Name = "HomeSpendings",
 		},
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "2",
+			Icon = new Icon("2", "#643400", "#FFF3E5"),
 			Name = "Subscriptions",
 		},
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "3",
+			Icon = new Icon("3", "#003150", "#E0F3FF"),
 			Name = "Car",
 		},
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "4",
+			Icon = new Icon("4", "#5A092F", "#FDE7F1"),
 			Name = "Grocery",
 		},
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "5",
+			Icon = new Icon("5", "#1E4C40", "#A3EAC9"),
 			Name = "Salary",
 		},
 		new TransactionCategory
 		{
 			CategoryId = Guid.NewGuid(),
-			Icon = "6",
+			Icon = new Icon("6", "#D1A11F", "#FFF7E0"),
 			Name = "Refund",
 		},
 	};
