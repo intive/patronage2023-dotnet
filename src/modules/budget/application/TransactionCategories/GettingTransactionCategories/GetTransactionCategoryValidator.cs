@@ -6,7 +6,7 @@ using Intive.Patronage2023.Shared.Abstractions.Domain;
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 
 /// <summary>
-/// 2.
+/// Validator for the GetTransactionCategories query.
 /// </summary>
 public class GetTransactionCategoryValidator : AbstractValidator<GetTransactionCategories>
 {
@@ -15,7 +15,7 @@ public class GetTransactionCategoryValidator : AbstractValidator<GetTransactionC
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetTransactionCategoryValidator"/> class.
 	/// </summary>
-	/// <param name="budgetRepository">Repository.</param>
+	/// <param name="budgetRepository">Repository that manages BudgetAggregate.</param>
 	public GetTransactionCategoryValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;

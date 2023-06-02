@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
 
 /// <summary>
-/// 2.
+/// Validator for the DeleteTransactionCategory command.
 /// </summary>
 public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransactionCategory>
 {
@@ -20,7 +20,7 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DeleteTransactionCategoryValidator"/> class.
 	/// </summary>
-	/// <param name="transactionCategoryRepository">Repository.</param>
+	/// <param name="transactionCategoryRepository">Repository that manages TransactionCategoryAggregate.</param>
 	/// <param name="dbContext">The BudgetDbContext.</param>
 	public DeleteTransactionCategoryValidator(IRepository<TransactionCategoryAggregate, TransactionCategoryId> transactionCategoryRepository, BudgetDbContext dbContext)
 	{
