@@ -12,6 +12,10 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -23,13 +27,8 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 using Microsoft.AspNetCore.Mvc;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -47,6 +46,7 @@ public class BudgetController : ControllerBase
 	private readonly IBudgetExportService budgetExportService;
 	private readonly IBudgetImportService budgetImportService;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
+	private readonly IBudgetTransactionImportService budgetTransactionImportService;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
@@ -62,6 +62,7 @@ public class BudgetController : ControllerBase
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
 	/// <param name="budgetTransactionExportService">BudgetTransactionExportService.</param>
+	/// <param name="budgetTransactionImportService">BudgetTransactionImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -71,7 +72,8 @@ public class BudgetController : ControllerBase
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
 		IBudgetImportService budgetImportService,
-		IBudgetTransactionExportService budgetTransactionExportService)
+		IBudgetTransactionExportService budgetTransactionExportService,
+		IBudgetTransactionImportService budgetTransactionImportService)
 	{
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
@@ -82,6 +84,7 @@ public class BudgetController : ControllerBase
 		this.budgetExportService = budgetExportService;
 		this.budgetImportService = budgetImportService;
 		this.budgetTransactionExportService = budgetTransactionExportService;
+		this.budgetTransactionImportService = budgetTransactionImportService;
 	}
 
 	/// <summary>
@@ -603,6 +606,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Imports transactions to budget from a provided .csv file.
 	/// </summary>
+	/// <param name="budgetId">Import destination budget id.</param>
 	/// <param name="file">The .csv file containing the transactions to be imported.</param>
 	/// <returns>An object containing a list of any errors encountered during the import process,
 	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
@@ -615,12 +619,12 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpPost("{budgetId:guid}/transactions/import")]
-	public async Task<IActionResult> ImportBudgetTransactions(IFormFile file)
+	public async Task<IActionResult> ImportBudgetTransactions([FromRoute] Guid budgetId, IFormFile file)
 	{
-		var getImportResult = await this.budgetImportService.Import(file);
-		await this.commandBus.Send(getImportResult.BudgetAggregateList);
+		var getImportResult = await this.budgetTransactionImportService.Import(new BudgetId(budgetId), file);
+		await this.commandBus.Send(getImportResult.BudgetTransactionAggregateList);
 
-		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		if (getImportResult.ImportResult.Uri != "No budget transactions were saved.")
 		{
 			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}

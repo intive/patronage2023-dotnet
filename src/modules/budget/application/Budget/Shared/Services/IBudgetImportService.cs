@@ -13,5 +13,5 @@ public interface IBudgetImportService
 	/// </summary>
 	/// <param name="file">The file containing the budget data to import.</param>
 	/// <returns>A <see cref="Task{TResult}"/>Representing the result of the asynchronous operation.</returns>
-	Task<GetImportResult> Import(IFormFile file);
+	Task<GetImportBudgetsResult> Import(IFormFile file);
 }

@@ -38,7 +38,7 @@ public class BudgetImportService : IBudgetImportService
 	/// <returns>A tuple containing a list of any errors encountered during the import process and
 	/// the URI of the saved .csv file in the Azure Blob Storage if any budgets were successfully imported.
 	/// If no budgets were imported, the URI is replaced with a message stating "No budgets were saved.".</returns>
-	public async Task<GetImportResult> Import(IFormFile file)
+	public async Task<GetImportBudgetsResult> Import(IFormFile file)
 	{
 		var errors = new List<string>();
 
@@ -52,7 +52,7 @@ public class BudgetImportService : IBudgetImportService
 
 		if (budgetInfos.Result.BudgetsList.Count == 0)
 		{
-			return new GetImportResult(
+			return new GetImportBudgetsResult(
 				new BudgetAggregateList(new List<BudgetAggregate>()),
 				new ImportResult { ErrorsList = errors, Uri = "No budgets were saved." });
 		}
@@ -77,6 +77,6 @@ public class BudgetImportService : IBudgetImportService
 		var budgetsToImport = csvReader.GetRecords<GetBudgetTransferInfo>();
 		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsFromCsvToBudgetAggregate(budgetsToImport, csvConfig);
 
-		return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
+		return new GetImportBudgetsResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}
 }
