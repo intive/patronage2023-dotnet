@@ -73,9 +73,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="id">Transaction Id.</param>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
-	/// <param name="name">Name of income or Expense.</param>
-	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="categoryType">Category.</param>
+	/// <param name="name">Name of Income or Expense.</param>
+	/// <param name="value">Value of Income or Expense.</param>
+	/// <param name="categoryType">Category of Income or Expense.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
 	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string categoryType, DateTime budgetTransactionDate)

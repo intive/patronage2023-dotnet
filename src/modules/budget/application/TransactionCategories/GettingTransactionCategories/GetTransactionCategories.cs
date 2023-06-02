@@ -15,15 +15,15 @@ public record GetTransactionCategories(BudgetId BudgetId) : IQuery<TransactionCa
 /// <summary>
 /// Handles the query for retrieving transaction categories from the database.
 /// </summary>
-public class GetTransactionCategoriesFromDatabaseQueryHandler : IQueryHandler<GetTransactionCategories, TransactionCategoriesInfo>
+public class GetTransactionCategoriesQueryHandler : IQueryHandler<GetTransactionCategories, TransactionCategoriesInfo>
 {
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GetTransactionCategoriesFromDatabaseQueryHandler"/> class.
+	/// Initializes a new instance of the <see cref="GetTransactionCategoriesQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetTransactionCategoriesFromDatabaseQueryHandler(BudgetDbContext budgetDbContext)
+	public GetTransactionCategoriesQueryHandler(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
 	}
