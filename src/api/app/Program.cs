@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Hangfire.Dashboard;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
@@ -6,6 +7,7 @@ using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions.Behaviors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -16,6 +18,7 @@ using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
 using Keycloak.AuthServices.Authentication;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -46,6 +49,7 @@ builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddImportExportModule(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -84,6 +88,14 @@ builder.Services.AddSwagger();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddTransient(
+	typeof(IPipelineBehavior<,>),
+	typeof(ValidationQueryBehavior<,>));
+
+builder.Services.AddCommandBehavior(typeof(ValidationCommandBehavior<>), AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddHangfireService(builder.Configuration);
+
 var app = builder.Build();
 
 app.UseCors(corsPolicyName);
@@ -99,6 +111,10 @@ app.UseUserModule();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+var scope = app.Services.CreateScope();
+var authorizationFilter = scope.ServiceProvider.GetRequiredService<IDashboardAuthorizationFilter>();
+app.UseHangfireService(authorizationFilter);
 
 app.UseSwagger();
 app.UseSwaggerUI();
