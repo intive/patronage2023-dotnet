@@ -120,7 +120,7 @@ public class GetBudgetsReportQueryHandler : IQueryHandler<GetBudgetsReport, Budg
 					})
 					.ToListAsync(cancellationToken: cancellationToken);
 
-		decimal? trendValue = budgetsStartValue > 0 ? periodValue / budgetsStartValue * 100 : null;
+		decimal? trendValue = budgetsStartValue != 0 ? periodValue / Math.Abs(budgetsStartValue) * 100 : null;
 		var result = new BudgetsReport<BudgetAmount> { Incomes = budgetsIncomeList, Expenses = budgetsExpensesList, TotalBalance = totalBalance, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
 	}
