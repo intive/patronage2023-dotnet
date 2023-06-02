@@ -9,6 +9,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -44,6 +47,9 @@ public static class BudgetModule
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
 		services.AddScoped<IValidator<AddUsersToBudget>, AddUsersToBudgetValidator>();
 		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
+		services.AddScoped<IValidator<AddCategory>, AddCategoryValidator>();
+		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();
+		services.AddScoped<IValidator<DeleteTransactionCategory>, DeleteTransactionCategoryValidator>();
 
 		return services;
 	}

@@ -1,7 +1,10 @@
+using FluentValidation;
+
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -22,22 +25,33 @@ public class BudgetCategoryController : ControllerBase
 {
 	private readonly ICommandBus commandBus;
 	private readonly IQueryBus queryBus;
-	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IAuthorizationService authorizationService;
+	private readonly IValidator<AddCategory> addCategoryValidator;
+	private readonly IValidator<GetTransactionCategories> getTransactionCategoriesValidator;
+	private readonly IValidator<DeleteTransactionCategory> deleteTransactionCategoryValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetCategoryController"/> class.
 	/// </summary>
 	/// <param name="commandBus">Bus that managed persisting changes in database.</param>
 	/// <param name="queryBus">Bus that get data from database.</param>
-	/// <param name="contextAccessor">An instance of the ContextAccessor class that provides access to the current context.</param>
-	/// <param name="authorizationService">An instance of the AuthorizationService class that provides authorization functionality.</param>
-	public BudgetCategoryController(ICommandBus commandBus, IQueryBus queryBus, IExecutionContextAccessor contextAccessor, IAuthorizationService authorizationService)
+	/// <param name="authorizationService">An instance of the AuthorizationService class that provides authorization functionality.</param>    /// <param name="addCategoryValidator">Validator for the AddCategory command.</param>
+	/// <param name="getTransactionCategoriesValidator">Validator for the GetTransactionCategories query.</param>
+	/// <param name="deleteTransactionCategoryValidator">Validator for the DeleteTransactionCategory command.</param>
+	public BudgetCategoryController(
+		ICommandBus commandBus,
+		IQueryBus queryBus,
+		IAuthorizationService authorizationService,
+		IValidator<AddCategory> addCategoryValidator,
+		IValidator<GetTransactionCategories> getTransactionCategoriesValidator,
+		IValidator<DeleteTransactionCategory> deleteTransactionCategoryValidator)
 	{
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
-		this.contextAccessor = contextAccessor;
 		this.authorizationService = authorizationService;
+		this.addCategoryValidator = addCategoryValidator;
+		this.getTransactionCategoriesValidator = getTransactionCategoriesValidator;
+		this.deleteTransactionCategoryValidator = deleteTransactionCategoryValidator;
 	}
 
 	/// <summary>
@@ -100,7 +114,7 @@ public class BudgetCategoryController : ControllerBase
 			return this.Forbid();
 		}
 
-		var command = new DeleteTransactionCategory(new TransactionCategoryId(budgetCategoryId));
+		var command = new DeleteTransactionCategory(new TransactionCategoryId(budgetCategoryId), new BudgetId(budgetId));
 		await this.commandBus.Send(command);
 		return this.Ok(budgetCategoryId);
 	}

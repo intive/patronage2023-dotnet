@@ -10,7 +10,8 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// Represents a command to delete a category from a specific budget.
 /// </summary>
 /// <param name="CategoryId">The id of the category to delete.</param>
-public record DeleteTransactionCategory(TransactionCategoryId CategoryId) : ICommand;
+/// <param name="BudgetId">The id of the budget which category will be deleted for.</param>
+public record DeleteTransactionCategory(TransactionCategoryId CategoryId, BudgetId BudgetId) : ICommand;
 
 /// <summary>
 /// Handles the command for deleting a transaction category.
