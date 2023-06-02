@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230527121018_AddTransactionCategoriesTable")]
-    partial class AddTransactionCategoriesTable
+    [Migration("20230602084537_AddBudgetTransactionCategoryTable")]
+    partial class AddBudgetTransactionCategoryTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

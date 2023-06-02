@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
 
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class AddTransactionCategoriesTable : Migration
+public partial class AddBudgetTransactionCategoryTable : Migration
 {
 	/// <inheritdoc />
 	protected override void Up(MigrationBuilder migrationBuilder)

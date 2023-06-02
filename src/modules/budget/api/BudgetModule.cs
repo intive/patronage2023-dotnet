@@ -51,7 +51,6 @@ public static class BudgetModule
 		services.AddScoped<IValidator<AddCategory>, AddCategoryValidator>();
 		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();
 		services.AddScoped<IValidator<DeleteTransactionCategory>, DeleteTransactionCategoryValidator>();
-
 		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
 		return services;
 	}
