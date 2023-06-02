@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
@@ -520,7 +521,9 @@ public class BudgetController : ControllerBase
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(result);
+		string jsonResult = JsonSerializer.Serialize(result);
+
+		return this.Ok(jsonResult);
 	}
 
 	/// <summary>
