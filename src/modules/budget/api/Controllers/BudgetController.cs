@@ -29,6 +29,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Newtonsoft.Json;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -517,7 +518,9 @@ public class BudgetController : ControllerBase
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(result);
+		string jsonResult = JsonConvert.SerializeObject(result);
+
+		return this.Ok(jsonResult);
 	}
 
 	/// <summary>
