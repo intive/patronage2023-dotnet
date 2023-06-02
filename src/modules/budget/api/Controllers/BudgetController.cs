@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Newtonsoft.Json;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -416,6 +417,7 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <param name="currency">Currency which we use to fillter budgets.</param>
 	/// <remarks>
 	/// Sample Date Points:
 	///
@@ -427,12 +429,13 @@ public class BudgetController : ControllerBase
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
+	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate, Currency currency)
 	{
 		var getBudgetReport = new GetBudgetsReport
 		{
 			StartDate = startDate,
 			EndDate = endDate,
+			Currency = currency,
 		};
 
 		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);

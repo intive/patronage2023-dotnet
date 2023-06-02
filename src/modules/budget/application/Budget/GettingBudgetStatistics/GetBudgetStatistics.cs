@@ -102,7 +102,7 @@ public class GetBudgetStatisticQueryHandler : IQueryHandler<GetBudgetStatistics,
 			.Within(query.StartDate, query.EndDate)
 			.Sum(x => x.Value);
 
-		decimal? trendValue = budgetTransactionValues[0].Value > 0 ? (budgetTransactionValues.Last().Value - budgetValueAtStartDate) / budgetValueAtStartDate * 100 : null;
+		decimal? trendValue = budgetTransactionValues[0].Value != 0 ? (budgetTransactionValues.Last().Value - budgetValueAtStartDate) / Math.Abs(budgetValueAtStartDate) * 100 : null;
 
 		var result = new BudgetStatistics<BudgetAmount> { Items = budgetTransactionValues, TotalBudgetValue = totalBudgetValue, PeriodValue = periodValue, TrendValue = trendValue };
 		return result;
