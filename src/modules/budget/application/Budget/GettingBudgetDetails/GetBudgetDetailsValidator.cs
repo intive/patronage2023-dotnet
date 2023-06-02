@@ -34,7 +34,7 @@ public class GetBudgetDetailsValidator : AbstractValidator<GetBudgetDetails>
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
 	{
 		var budgetId = new BudgetId(id);
-		var budgetOwnerId = this.budgetDbContext.Budget.Where(x => x.Id == budgetId).Select(x => x.UserId).FirstOrDefault();
+		var budgetOwnerId = this.budgetDbContext.Budget.Where(x => x.Id == budgetId).Select(x => x.UserId.Value).FirstOrDefault();
 
 		HttpResponseMessage response;
 		try

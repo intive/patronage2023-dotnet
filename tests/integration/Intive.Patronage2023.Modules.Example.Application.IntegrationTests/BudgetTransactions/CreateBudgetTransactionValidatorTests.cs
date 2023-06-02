@@ -39,7 +39,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Empty Validation Errors list when all properties are valid.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with changes Jakub and Michal.")]
+	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
 	public async Task Validate_WhenAllPropertiesAreValid_ShouldNotHaveAnyValidationErrors()
 	{
 		//Arrange
@@ -71,7 +71,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when budget with given id does not exist in database.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with changes Jakub and Michal.")]
+	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
 	public async Task Validate_WhenBudgetIdDoesNotExistInDatabase_ShouldHaveValidationErrorForBudgetId()
 	{
 		//Arrange
@@ -94,7 +94,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when income type transaction have negative value.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with changes Jakub and Michal.")]
+	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
 	public async Task Validate_WhenIncomeTypeWithNegativeValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
@@ -126,7 +126,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when expense type transaction have positive value.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with changes Jakub and Michal.")]
+	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
 	public async Task Validate_WhenExpenseTypeWithPositiveValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
@@ -159,7 +159,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when transaction created date is older than month.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with changes Jakub and Michal.")]
+	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
 	public async Task Validate_WhenTransactionDataIsOlderThanMonth_ShouldHaveValidationErrorForTransactionDate()
 	{
 		//Arrange

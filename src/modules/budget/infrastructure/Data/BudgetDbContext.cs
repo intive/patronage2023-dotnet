@@ -32,7 +32,7 @@ public class BudgetDbContext : DbContext
 	/// <summary>
 	/// This DbSet represents a database table that will store instances of the UserBudgetAggregate entity.
 	/// </summary>
-	public DbSet<UserBudgetAggregate> UserBudget { get; set; }
+	public virtual DbSet<UserBudgetAggregate> UserBudget { get; set; }
 
 	/// <summary>
 	/// This DbSet represents a database table that will store instances of the TransactionCategoryAggregate entity.

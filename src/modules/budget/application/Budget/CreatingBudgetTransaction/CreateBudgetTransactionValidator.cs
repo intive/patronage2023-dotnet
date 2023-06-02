@@ -30,7 +30,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
 			.WithMessage("Value must be positive for income or negative for expense");
-		this.RuleFor(transaction => transaction).MustAsync(this.IsCategoryDefined).NotEmpty().NotNull().WithMessage("Category is not defined.");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category }).MustAsync(async (x, cancellation) => await this.IsCategoryDefined(x.BudgetId, x.Category, cancellation)).WithMessage("Category is not defined.");
 		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
@@ -69,10 +69,10 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
 
-	private async Task<bool> IsCategoryDefined(CreateBudgetTransaction request, CancellationToken cancellationToken)
+	private async Task<bool> IsCategoryDefined(Guid budgetId, string category, CancellationToken cancellationToken)
 	{
-		var query = new GetTransactionCategories(new BudgetId(request.BudgetId));
+		var query = new GetTransactionCategories(new BudgetId(budgetId));
 		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categories.Categories!.Select(x => x.Name).Contains(request.Category);
+		return categories.Categories!.Select(x => x.Name).Contains(category);
 	}
 }
