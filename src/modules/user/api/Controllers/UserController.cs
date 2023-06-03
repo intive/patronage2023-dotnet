@@ -112,7 +112,7 @@ public class UserController : ControllerBase
 	}
 
 	/// <summary>
-	/// Refreshes token.
+	/// Generates new access token with use of refresh token.
 	/// </summary>
 	/// <param name="query">The refresh token command, which includes refresh token.</param>
 	/// <returns>New access token.</returns>

@@ -31,11 +31,11 @@ public interface IKeycloakService
 	Task<string> ExtractAccessTokenFromClientToken(CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Refreshes access token with refresh token.
+	/// Generates new access token with use of refresh token.
 	/// </summary>
 	/// <param name="refreshToken">refresh Token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>Access token.</returns>
+	/// <returns>Newly generated Access token.</returns>
 	Task<string> RefreshUserToken(string refreshToken, CancellationToken cancellationToken);
 
 	/// <summary>
