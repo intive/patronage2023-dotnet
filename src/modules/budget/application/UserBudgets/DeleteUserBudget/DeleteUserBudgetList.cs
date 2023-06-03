@@ -41,8 +41,14 @@ public class HandleDeleteUserBudget : ICommandHandler<DeleteUserBudgetList>
 			.ToArrayAsync(cancellationToken: cancellationToken);
 
 		var userBudgetsList = await this.userBudgetRepository.GetByIds(userBudgetIds);
-		this.budgetDbContext.UserBudget.RemoveRange(userBudgetsList!);
 
-		await this.budgetDbContext.SaveChangesAsync();
+		foreach (var userBudget in userBudgetsList)
+		{
+			userBudget.Delete();
+
+			this.budgetDbContext.UserBudget.Remove(userBudget);
+
+			await this.userBudgetRepository.Persist(userBudget);
+		}
 	}
 }
