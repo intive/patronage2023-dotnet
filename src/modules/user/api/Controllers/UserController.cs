@@ -118,7 +118,8 @@ public class UserController : ControllerBase
 	/// <returns>New access token.</returns>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[HttpPost("refreshToken")]
+	[AllowAnonymous]
+	[HttpPost("refresh-token")]
 	public async Task<IActionResult> RefreshToken([FromBody] RefreshUserToken query)
 	{
 		var reponse = await this.queryBus.Query<RefreshUserToken, AccessUserToken>(query);
