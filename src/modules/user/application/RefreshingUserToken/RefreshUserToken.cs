@@ -8,18 +8,18 @@ namespace Intive.Patronage2023.Modules.User.Application.RefreshingUserToken;
 /// Record which holds user refresh token.
 /// </summary>
 /// <param name="RefreshToken">refresh token.</param>
-public record RefreshUserToken(string RefreshToken) : IQuery<AccesToken>;
+public record RefreshUserToken(string RefreshToken) : IQuery<AccessUserToken>;
 
 /// <summary>
 /// Record which holds newly generated access token.
 /// </summary>
 /// <param name="AccessToken"> newly generated access token.</param>
-public record AccesToken(string AccessToken);
+public record AccessUserToken(string AccessToken);
 
 /// <summary>
 /// refresh token command handler.
 /// </summary>
-public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccesToken>
+public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccessUserToken>
 {
 	private readonly IKeycloakService keycloakService;
 
@@ -30,7 +30,7 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccesToken
 	public HandleRefreshUserToken(IKeycloakService keycloakService) => this.keycloakService = keycloakService;
 
 	/// <inheritdoc/>
-	public async Task<AccesToken> Handle(RefreshUserToken command, CancellationToken cancellationToken)
+	public async Task<AccessUserToken> Handle(RefreshUserToken command, CancellationToken cancellationToken)
 	{
 		string oldAccessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
 		string response = string.Empty;
@@ -50,6 +50,6 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccesToken
 			response = await this.keycloakService.RefreshUserToken(command.RefreshToken, cancellationToken);
 		}
 
-		return new AccesToken(response);
+		return new AccessUserToken(response);
 	}
 }

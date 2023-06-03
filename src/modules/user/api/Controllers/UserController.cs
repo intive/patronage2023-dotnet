@@ -121,7 +121,7 @@ public class UserController : ControllerBase
 	[HttpPost("refreshToken")]
 	public async Task<IActionResult> RefreshToken([FromBody] RefreshUserToken query)
 	{
-		var reponse = await this.queryBus.Query<RefreshUserToken, AccesToken>(query);
+		var reponse = await this.queryBus.Query<RefreshUserToken, AccessUserToken>(query);
 		return this.Ok(reponse);
 	}
 
