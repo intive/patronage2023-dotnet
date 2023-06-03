@@ -19,7 +19,7 @@ public static class BudgetAggregateGetBudgetsToExportInfoMapper
 			Name = x.Name,
 			IconName = x.Icon,
 			Description = x.Description ?? string.Empty,
-			Currency = ((int)x.Limit.Currency).ToString(),
+			Currency = x.Limit.Currency.ToString(),
 			Value = x.Limit.Value.ToString(),
 			StartDate = x.Period.StartDate.ToString(),
 			EndDate = x.Period.EndDate.ToString(),

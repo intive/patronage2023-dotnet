@@ -511,6 +511,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
+	[Produces("application/json")]
 	public async Task<IActionResult> ExportBudgets()
 	{
 		var query = new GetBudgetsToExport();
@@ -535,6 +536,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpPost("import")]
+	[Produces("application/json")]
 	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
 		var getImportResult = await this.budgetImportService.Import(file);
