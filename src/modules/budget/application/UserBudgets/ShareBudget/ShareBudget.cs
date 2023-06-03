@@ -2,40 +2,35 @@ using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudg
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.DeleteUserBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.ShareBudget;
 
 /// <summary>
-/// Validation object add users to budget.
+/// Validation object to add and/or delete users to budget.
 /// </summary>
 /// <param name="UsersIds">Users ids.</param>
 /// <param name="BudgetId">Owner id.</param>
 public record ShareBudget(Guid[] UsersIds, Guid BudgetId) : ICommand;
 
 /// <summary>
-/// Divide User Budget.
+/// Divide users ids to add users to budget and/or delete users form budget commands.
 /// </summary>
 public class HandleShareBudget : ICommandHandler<ShareBudget>
 {
-	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly ICommandBus commandBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleShareBudget"/> class.
 	/// </summary>
-	/// <param name="budgetRepository">Repository that manages Budget aggregate root.</param>
 	/// <param name="budgetDbContext">Object representing the database context used to retrieve data.</param>
 	/// <param name="commandBus">Command bus.</param>
-	public HandleShareBudget(IRepository<BudgetAggregate, BudgetId> budgetRepository, BudgetDbContext budgetDbContext, ICommandBus commandBus)
+	public HandleShareBudget(BudgetDbContext budgetDbContext, ICommandBus commandBus)
 	{
-		this.budgetRepository = budgetRepository;
 		this.budgetDbContext = budgetDbContext;
 		this.commandBus = commandBus;
 	}
@@ -55,7 +50,7 @@ public class HandleShareBudget : ICommandHandler<ShareBudget>
 			.Select(userId => new AddUserBudget(Guid.NewGuid(), new UserId(userId), budgetId, UserRole.BudgetUser))
 			.ToList();
 
-		if (userBudgetListToAdd.Count > 0)
+		if (userBudgetListToAdd.Any())
 		{
 			var userBudgetList = new AddUserBudgetList(userBudgetListToAdd);
 
@@ -67,7 +62,7 @@ public class HandleShareBudget : ICommandHandler<ShareBudget>
 			.Select(x => new UserId(x))
 			.ToList();
 
-		if (usersIdToDelete.Count > 0)
+		if (usersIdToDelete.Any())
 		{
 			var listToDelete = new DeleteUserBudgetList(budgetId, usersIdToDelete);
 
