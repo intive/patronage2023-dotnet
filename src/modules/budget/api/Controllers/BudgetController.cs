@@ -5,22 +5,22 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransac
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
-using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.ShareBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
-using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
@@ -32,6 +32,9 @@ using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+
+using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -50,7 +53,6 @@ public class BudgetController : ControllerBase
 	private readonly IBudgetImportService budgetImportService;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
 	private readonly IBudgetTransactionImportService budgetTransactionImportService;
-	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
 	/// <summary>
@@ -70,7 +72,7 @@ public class BudgetController : ControllerBase
 		ICommandBus commandBus,
 		IQueryBus queryBus,
 		IAuthorizationService authorizationService,
-		IValidator<AddUsersToBudget> usersIdsValidator,
+		IValidator<ShareBudget> usersIdsValidator,
 		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
@@ -522,16 +524,11 @@ public class BudgetController : ControllerBase
 			return this.Forbid();
 		}
 
-		var addUsersToBudget = new AddUsersToBudget(usersIds, budgetId);
+		var shareBudget = new ShareBudget(usersIds, budgetId);
 
-		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(addUsersToBudget);
+		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(shareBudget);
 
-		var addUserToBudget = usersIds.Select(userId => new AddUserBudget(
-		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser)).ToList();
-
-		var userBudgetList = new AddUserBudgetList(addUserToBudget);
-
-		await this.commandBus.Send(userBudgetList);
+		await this.commandBus.Send(shareBudget);
 
 		return this.Ok();
 	}
