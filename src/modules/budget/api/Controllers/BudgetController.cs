@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FluentValidation;
+using System.Text.Json;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -27,6 +27,7 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
@@ -34,7 +35,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -61,8 +61,6 @@ public class BudgetController : ControllerBase
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
-	/// <param name="usersIdsValidator">User ids validator.</param>
-	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
@@ -72,8 +70,6 @@ public class BudgetController : ControllerBase
 		ICommandBus commandBus,
 		IQueryBus queryBus,
 		IAuthorizationService authorizationService,
-		IValidator<ShareBudget> usersIdsValidator,
-		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
 		IBudgetImportService budgetImportService,
@@ -83,9 +79,7 @@ public class BudgetController : ControllerBase
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 		this.authorizationService = authorizationService;
-		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
-		this.addUsersToBudgetValidator = usersIdsValidator;
 		this.budgetExportService = budgetExportService;
 		this.budgetImportService = budgetImportService;
 		this.budgetTransactionExportService = budgetTransactionExportService;
@@ -492,12 +486,6 @@ public class BudgetController : ControllerBase
 
 		var updateFavourite = new UpdateUserBudgetFavourite(budgetId, isFavourite);
 
-		var validationResult = await this.updateUserBudgetFavouriteValidator.ValidateAsync(updateFavourite);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to update favourite flag.", validationResult.Errors);
-		}
-
 		await this.commandBus.Send(updateFavourite);
 
 		return this.Ok();
@@ -525,8 +513,6 @@ public class BudgetController : ControllerBase
 		}
 
 		var shareBudget = new ShareBudget(usersIds, budgetId);
-
-		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(shareBudget);
 
 		await this.commandBus.Send(shareBudget);
 
