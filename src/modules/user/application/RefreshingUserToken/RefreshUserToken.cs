@@ -40,9 +40,9 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccesToken
 		var accessToken = jwtHandler.ReadJwtToken(oldAccessToken);
 		var refreshToken = jwtHandler.ReadJwtToken(command.RefreshToken);
 
-		if (accessToken.ValidTo < DateTime.UtcNow || refreshToken.ValidTo < DateTime.UtcNow)
+		if (refreshToken.ValidTo < DateTime.UtcNow)
 		{
-			throw new AppException("access token or refresh token are expired.");
+			throw new AppException("refresh token is expired.");
 		}
 
 		if (accessToken.ValidTo.AddMinutes(1) <= DateTime.UtcNow)
