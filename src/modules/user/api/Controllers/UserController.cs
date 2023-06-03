@@ -1,6 +1,7 @@
 using System.Net;
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
+using Intive.Patronage2023.Modules.User.Application.RefreshingUserToken;
 using Intive.Patronage2023.Modules.User.Application.SignIn;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -108,6 +109,20 @@ public class UserController : ControllerBase
 	{
 		await this.commandBus.Send(command);
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Refreshes token.
+	/// </summary>
+	/// <param name="query">The refresh token command, which includes refresh token.</param>
+	/// <returns>New access token.</returns>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[HttpPost("refreshToken")]
+	public async Task<IActionResult> RefreshToken([FromBody] RefreshUserToken query)
+	{
+		var reponse = await this.queryBus.Query<RefreshUserToken, AccesToken>(query);
+		return this.Ok(reponse);
 	}
 
 	/// <summary>
