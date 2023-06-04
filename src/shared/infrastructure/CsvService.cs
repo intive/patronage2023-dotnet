@@ -1,5 +1,8 @@
+using System.Text;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Intive.Patronage2023.Shared.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Shared.Infrastructure;
 
@@ -37,5 +40,52 @@ public class CsvService<T> : ICsvService<T>
 	public string GenerateFileNameWithCsvExtension()
 	{
 		return Guid.NewGuid() + ".csv";
+	}
+
+	/// <summary>
+	/// Reads a list of data records from a CSV file using the provided IFormFile and CsvConfiguration.
+	/// If the CSV file does not start with the expected header, the header is added.
+	/// </summary>
+	/// <typeparam name="THeader">The type used for generating the expected CSV file header.
+	/// This should have properties corresponding to headers in the CSV file.</typeparam>
+	/// <param name="file">The IFormFile containing the CSV data.</param>
+	/// <param name="csvConfig">The CsvConfiguration for parsing the CSV file.</param>
+	/// <returns>A list of data records of type T.</returns>
+	public async Task<List<T>> GetRecordsFromCsv<THeader>(IFormFile file, CsvConfiguration csvConfig)
+	{
+		using var reader = new StreamReader(file.OpenReadStream());
+		string fileContent = await reader.ReadToEndAsync();
+		////string expectedHeader = "Name,IconName,Description,Currency,Value,StartDate,EndDate";
+		string expectedHeader = this.GenerateExpectedHeader<THeader>();
+
+		if (!fileContent.StartsWith(expectedHeader))
+		{
+			fileContent = expectedHeader + "\n" + fileContent;
+		}
+
+		byte[] byteArray = Encoding.UTF8.GetBytes(fileContent);
+		var stream = new MemoryStream(byteArray);
+
+		using var streamReader = new StreamReader(stream);
+		using var csv = new CsvReader(streamReader, csvConfig);
+		await csv.ReadAsync();
+
+		var records = csv.GetRecords<T>().ToList();
+		return records;
+	}
+
+	/// <summary>
+	/// Generates the expected CSV header based on the properties of a given type.
+	/// </summary>
+	/// <typeparam name="THeader">The type of data that will be used to generate the CSV header.</typeparam>
+	/// <returns>A string representing the expected CSV header.</returns>
+	private string GenerateExpectedHeader<THeader>()
+	{
+		string[] headerFields = typeof(T)
+			.GetProperties()
+			.Select(property => property.Name)
+			.ToArray();
+
+		return string.Join(",", headerFields);
 	}
 }

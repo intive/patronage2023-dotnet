@@ -517,7 +517,7 @@ public class BudgetController : ControllerBase
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(result);
+		return this.Ok(new { uri = result });
 	}
 
 	/// <summary>

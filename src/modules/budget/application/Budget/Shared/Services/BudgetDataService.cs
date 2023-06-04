@@ -1,5 +1,4 @@
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -20,20 +19,20 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public class BudgetDataService : IBudgetDataService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly IBlobStorageService blobStorageService;
 	private readonly IQueryBus queryBus;
+	private readonly ICsvService<GetBudgetTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetDataService"/> class.
 	/// </summary>
 	/// <param name="contextAccessor">Provides access to the execution context, allowing the service to use user-specific information.</param>
-	/// <param name="blobStorageService">Provides functionality for interacting with Azure Blob Storage.</param>
 	/// <param name="queryBus">Enables the service to dispatch queries to the appropriate handlers.</param>
-	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IQueryBus queryBus)
+	/// <param name="csvService">ICsvService.</param>
+	public BudgetDataService(IExecutionContextAccessor contextAccessor, IQueryBus queryBus, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.contextAccessor = contextAccessor;
-		this.blobStorageService = blobStorageService;
 		this.queryBus = queryBus;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
@@ -115,20 +114,17 @@ public class BudgetDataService : IBudgetDataService
 		var validBudgets = new List<GetBudgetTransferInfo>();
 		var invalidBudgets = new List<GetBudgetTransferInfo>();
 		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
-		await using var stream = file.OpenReadStream();
-		using var streamReader = new StreamReader(stream);
-		using var csv = new CsvReader(streamReader, csvConfig);
-		await csv.ReadAsync();
-		var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
+
+		var budgets = await this.csvService.GetRecordsFromCsv<GetBudgetTransferInfo>(file, csvConfig);
 		int rowNumber = 1;
 
 		foreach (var budget in budgets)
 		{
 			var results = this.BudgetValidate(budget);
-			rowNumber++;
 
 			if (results.Any())
 			{
+				rowNumber++;
 				foreach (string result in results)
 				{
 					errors.Add($"row: {rowNumber}| error: {result}");
