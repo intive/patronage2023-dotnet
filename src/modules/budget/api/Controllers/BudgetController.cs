@@ -587,8 +587,10 @@ public class BudgetController : ControllerBase
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	/// <response code="200">If the export operation was successful and transactions have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to read budget.</response>
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
 	[HttpGet("{budgetId:guid}/transactions/export")]
 	public async Task<IActionResult> ExportBudgetTransactions([FromRoute] GetBudgetTransactionsToExport query)
 	{
@@ -615,12 +617,19 @@ public class BudgetController : ControllerBase
 	/// <response code="400">If no transactions from the imported file passed the validation.
 	/// The response will include a list of errors for each transaction that failed validation, and information in uri "No transactions were saved.".</response>
 	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to edit budget.</response>
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
 	[HttpPost("{budgetId:guid}/transactions/import")]
 	public async Task<IActionResult> ImportBudgetTransactions([FromRoute] Guid budgetId, IFormFile file)
 	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
 		var getImportResult = await this.budgetTransactionImportService.Import(new BudgetId(budgetId), file);
 		await this.commandBus.Send(getImportResult.BudgetTransactionAggregateList);
 

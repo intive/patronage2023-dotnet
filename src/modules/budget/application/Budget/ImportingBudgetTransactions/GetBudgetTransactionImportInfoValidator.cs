@@ -21,13 +21,23 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 	public GetBudgetTransactionImportInfoValidator(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58).WithMessage("Budget name is missing or name length not in range <3,58>");
-		this.RuleFor(transaction => transaction.TransactionType).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull().WithMessage("Transaction type must be Income or Expense");
+		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty()
+			.WithMessage("Budget with given id does not exist.");
+		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58)
+			.WithMessage("Budget name is missing or name length not in range <3,58>");
+		this.RuleFor(transaction => transaction.TransactionType)
+			.Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull()
+			.WithMessage("Transaction type must be Income or Expense");
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.BeAppropriateDecimal)
 			.WithMessage("Value must be positive for income and negative for expense");
-		this.RuleFor(transaction => transaction.CategoryType).Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull().WithMessage("Category must be defined in budget");
-		this.RuleFor(transaction => transaction.Date).Must(this.BeValidDate).WithMessage("Date must be in valid date format.");
-		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Date }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.Date, cancellation)).WithMessage("Transaction date is invalid or outside of the budget period.");
+		this.RuleFor(transaction => transaction.CategoryType)
+			.Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull()
+			.WithMessage("Category must be defined in budget");
+		this.RuleFor(transaction => transaction.Date).Must(this.BeValidDate)
+			.WithMessage("Date must be in valid date format.");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Date })
+			.MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.Date, cancellation))
+			.WithMessage("Transaction date is invalid or outside of the budget period.");
 	}
 
 	private bool BeAppropriateDecimal(GetBudgetTransactionTransferInfo budgetTransaction, string value)
@@ -69,5 +79,10 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 		}
 
 		return date >= budget!.Period.StartDate && date <= budget.Period.EndDate;
+	}
+
+	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
+	{
+		return await this.budgetDbContext.Budget.FindAsync(budgetId) != null;
 	}
 }

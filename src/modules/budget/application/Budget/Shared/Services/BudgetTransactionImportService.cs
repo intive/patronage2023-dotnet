@@ -56,7 +56,7 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 		{
 			return new GetImportBudgetTransactionsResult(
 				new BudgetTransactionAggregateList(new List<BudgetTransactionAggregate>()),
-				new ImportResult { ErrorsList = errors, Uri = "No budgets were saved." });
+				new ImportResult { ErrorsList = errors, Uri = "No budget transactions were saved." });
 		}
 
 		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
