@@ -13,9 +13,8 @@ public interface IBudgetDataService
 	/// Converts a collection of budget information from CSV format into a list of BudgetAggregate objects.
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
-	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig);
+	Task<BudgetAggregateList> ConvertBudgetsToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.

@@ -40,9 +40,8 @@ public class BudgetDataService : IBudgetDataService
 	/// Converts a collection of budget information from CSV format into a list of BudgetAggregate objects.
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
-	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig)
+	public Task<BudgetAggregateList> ConvertBudgetsToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport)
 	{
 		var newBudgets = new List<BudgetAggregate>();
 		foreach (var budget in budgetsToImport)
@@ -113,14 +112,15 @@ public class BudgetDataService : IBudgetDataService
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
 	public async Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
-		var budgetInfos = new List<GetBudgetTransferInfo>();
+		var validBudgets = new List<GetBudgetTransferInfo>();
+		var invalidBudgets = new List<GetBudgetTransferInfo>();
 		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
 		await using var stream = file.OpenReadStream();
 		using var streamReader = new StreamReader(stream);
 		using var csv = new CsvReader(streamReader, csvConfig);
 		await csv.ReadAsync();
 		var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
-		int rowNumber = 0;
+		int rowNumber = 1;
 
 		foreach (var budget in budgets)
 		{
@@ -134,13 +134,14 @@ public class BudgetDataService : IBudgetDataService
 					errors.Add($"row: {rowNumber}| error: {result}");
 				}
 
+				invalidBudgets.Add(budget);
 				continue;
 			}
 
 			var updateBudget = this.Create(budget, budgetsNames);
-			budgetInfos.Add(updateBudget);
+			validBudgets.Add(updateBudget);
 		}
 
-		return new GetBudgetTransferList { BudgetsList = budgetInfos };
+		return new GetBudgetTransferList { BudgetsList = validBudgets, BudgetsErrorsList = invalidBudgets };
 	}
 }

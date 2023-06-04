@@ -540,11 +540,16 @@ public class BudgetController : ControllerBase
 		var getImportResult = await this.budgetImportService.Import(file);
 		await this.commandBus.Send(getImportResult.BudgetAggregateList);
 
-		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		if (getImportResult.ImportResult.Uri == "No budgets were saved.")
+		{
+			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		}
+
+		if (getImportResult.ImportResult.Uri == "All budgets were saved.")
 		{
 			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
 
-		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }

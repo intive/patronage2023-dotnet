@@ -62,7 +62,7 @@ public class BudgetImportService : IBudgetImportService
 		await using (var streamWriter = new StreamWriter(memoryStream))
 		await using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
 		{
-			this.csvService.WriteRecordsToMemoryStream(budgetInfos.Result.BudgetsList, csvWriter);
+			this.csvService.WriteRecordsToMemoryStream(budgetInfos.Result.BudgetsErrorsList, csvWriter);
 			memoryStream.Position = 0;
 
 			await this.blobStorageService.UploadToBlobStorage(memoryStream, fileName);
@@ -70,12 +70,12 @@ public class BudgetImportService : IBudgetImportService
 
 		string uri = await this.blobStorageService.GenerateLinkToDownload(fileName);
 
-		var download = await this.blobStorageService.DownloadFromBlobStorage(fileName);
-		using var reader = new StreamReader(download.Content);
-		using var csvReader = new CsvReader(reader, csvConfig);
-		await csvReader.ReadAsync();
-		var budgetsToImport = csvReader.GetRecords<GetBudgetTransferInfo>();
-		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsFromCsvToBudgetAggregate(budgetsToImport, csvConfig);
+		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsToBudgetAggregate(budgetInfos.Result.BudgetsList);
+
+		if (budgetInfos.Result.BudgetsErrorsList.Count == 0)
+		{
+			return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = "All budgets were saved." });
+		}
 
 		return new GetImportResult(budgetsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}
