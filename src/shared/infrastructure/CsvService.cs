@@ -55,13 +55,14 @@ public class CsvService<T> : ICsvService<T>
 	{
 		using var reader = new StreamReader(file.OpenReadStream());
 		string fileContent = await reader.ReadToEndAsync();
-		////string expectedHeader = "Name,IconName,Description,Currency,Value,StartDate,EndDate";
 		string expectedHeader = this.GenerateExpectedHeader<THeader>();
 
 		if (!fileContent.StartsWith(expectedHeader))
 		{
 			fileContent = expectedHeader + "\n" + fileContent;
 		}
+
+		fileContent = fileContent.Replace("\"", string.Empty);
 
 		byte[] byteArray = Encoding.UTF8.GetBytes(fileContent);
 		var stream = new MemoryStream(byteArray);
