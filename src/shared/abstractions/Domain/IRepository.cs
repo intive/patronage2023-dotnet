@@ -27,4 +27,11 @@ public interface IRepository<T, TKey>
 	/// <param name="example">Aggregate.</param>
 	/// <returns>Task.</returns>
 	Task Persist(T example);
+
+	/// <summary>
+	/// Persists aggregate delete state.
+	/// </summary>
+	/// <param name="aggregate">Aggregate.</param>
+	/// <returns>Task.</returns>
+	Task RemovePersist(T aggregate);
 }
