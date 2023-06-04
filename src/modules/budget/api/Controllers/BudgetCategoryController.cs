@@ -86,7 +86,7 @@ public class BudgetCategoryController : ControllerBase
 	/// Deletes a transaction category from a budget.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
-	/// <param name="budgetCategoryId">The name of the category to delete.</param>
+	/// <param name="budgetCategoryId">The id of the category to delete.</param>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]

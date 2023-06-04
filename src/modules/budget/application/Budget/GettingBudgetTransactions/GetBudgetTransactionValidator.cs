@@ -28,25 +28,27 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
 		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
 		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
-		this.RuleFor(budget => budget).MustAsync(this.AreAllCategoriesDefined);
+		this.RuleFor(budget => new { budget.CategoryTypes, budget.BudgetId })
+			.MustAsync(async (x, cancellation) => await this.AreAllCategoriesDefined(x.CategoryTypes, x.BudgetId, cancellation))
+			.WithMessage("One or more categories are not defined.");
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+	}
+
+	private async Task<bool> AreAllCategoriesDefined(string[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
+	{
+		if (categoryTypes is null)
+		{
+			return true;
+		}
+
+		var query = new GetTransactionCategories(budgetId);
+		var categoriesInfo = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
+		return categoryTypes.All(categoryType => categoriesInfo.Categories!.Any(category => category.Name == categoryType));
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)
 	{
 		var budget = await this.budgetRepository.GetById(budgetGuid);
 		return budget != null;
-	}
-
-	private async Task<bool> AreAllCategoriesDefined(GetBudgetTransactions budgetTransactions, CancellationToken cancellationToken)
-	{
-		if (budgetTransactions.CategoryTypes is null)
-		{
-			return true;
-		}
-
-		var query = new GetTransactionCategories(budgetTransactions.BudgetId);
-		var categoriesInfo = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return budgetTransactions.CategoryTypes.All(categoryType => categoriesInfo.Categories!.Any(category => category.Name == categoryType));
 	}
 }
