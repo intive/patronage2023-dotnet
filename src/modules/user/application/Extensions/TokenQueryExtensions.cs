@@ -21,7 +21,7 @@ internal static class TokenQueryExtensions
 
 		var tokenToBeValidated = jwtHandler.ReadJwtToken(token);
 
-		if (tokenToBeValidated.ValidTo < dateTimeProvider.UtcNow)
+		if (tokenToBeValidated.ValidTo.AddMinutes(-timeSpan.TotalMinutes) < dateTimeProvider.UtcNow)
 		{
 			return true;
 		}
