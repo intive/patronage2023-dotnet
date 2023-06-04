@@ -41,7 +41,7 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccessUser
 			throw new AppException("refresh token is expired.");
 		}
 
-		if (oldAccessToken.IsExpired())
+		if (oldAccessToken.IsExpired(TimeSpan.FromMinutes(-1)))
 		{
 			response = await this.keycloakService.RefreshUserToken(command.RefreshToken, cancellationToken);
 		}
