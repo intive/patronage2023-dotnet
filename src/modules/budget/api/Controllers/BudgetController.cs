@@ -486,7 +486,7 @@ public class BudgetController : ControllerBase
 	[HttpGet("{transactionId}/transaction/getAttachment)")]
 	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
 	{
-		var attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, IFormFile>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
+		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
 
 		return this.Ok(attachment);
 	}
