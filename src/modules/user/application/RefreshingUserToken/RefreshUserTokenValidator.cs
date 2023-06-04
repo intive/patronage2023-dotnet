@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Intive.Patronage2023.Modules.User.Application.RefreshingUserToken;
-internal class RefreshUserTokenValidator
+
+/// <summary>
+/// Refresh user token validator.
+/// </summary>
+public class RefreshUserTokenValidator : AbstractValidator<RefreshUserToken>
 {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="RefreshUserTokenValidator"/> class.
+	/// </summary>
+	public RefreshUserTokenValidator()
+	{
+		this.RuleFor(x => x.RefreshToken).NotEmpty().NotNull();
+	}
 }
