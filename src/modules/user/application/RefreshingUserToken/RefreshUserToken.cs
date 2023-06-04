@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Intive.Patronage2023.Modules.User.Application.Extensions;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
