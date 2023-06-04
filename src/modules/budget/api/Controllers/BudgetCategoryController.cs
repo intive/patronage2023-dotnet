@@ -65,6 +65,15 @@ public class BudgetCategoryController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget to which the category will be added.</param>
 	/// <param name="request">The transaction category name.</param>
+	/// <remarks>
+	///     {
+	///         "icon": {
+	///             "iconName": "string",
+	///             "foreground": "#643400",
+	///         },
+	///         "name": "string"
+	///     }
+	/// .</remarks>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]

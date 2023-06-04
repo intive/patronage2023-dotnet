@@ -51,6 +51,15 @@ public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
 		await this.dbContext.SaveChangesAsync();
 	}
 
+	/// <inheritdoc />
+	public async Task PersistRemove(T aggregate)
+	{
+		await this.eventDispatcher.Publish(aggregate.UncommittedEvents);
+		this.HandleEvents(aggregate.UncommittedEvents);
+		this.dbContext.Set<T>().Remove(aggregate);
+		await this.dbContext.SaveChangesAsync();
+	}
+
 	private void HandleEvents(List<IEvent> uncommittedEvents)
 	{
 		foreach (var item in uncommittedEvents)
