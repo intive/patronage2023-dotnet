@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using Intive.Patronage2023.Modules.User.Application.Extensions;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
@@ -35,17 +36,12 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccessUser
 		string oldAccessToken = await this.keycloakService.ExtractAccessTokenFromClientToken(cancellationToken);
 		string response = string.Empty;
 
-		var jwtHandler = new JwtSecurityTokenHandler();
-
-		var accessToken = jwtHandler.ReadJwtToken(oldAccessToken);
-		var refreshToken = jwtHandler.ReadJwtToken(command.RefreshToken);
-
-		if (refreshToken.ValidTo < DateTime.UtcNow)
+		if (command.RefreshToken.IsExpired())
 		{
 			throw new AppException("refresh token is expired.");
 		}
 
-		if (accessToken.ValidTo.AddMinutes(-1) <= DateTime.UtcNow)
+		if (oldAccessToken.IsExpired())
 		{
 			response = await this.keycloakService.RefreshUserToken(command.RefreshToken, cancellationToken);
 		}
