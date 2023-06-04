@@ -1,44 +1,19 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
-using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 
 /// <summary>
-/// Represents a command to add a category to a specific budget.
+/// Represents a budget transaction category.
 /// </summary>
-/// <param name="BudgetId">The ID of the budget to which the category will be added.</param>
-/// <param name="Icon">The transaction category icon.</param>
-/// <param name="CategoryName">The transaction category name.</param>
-public record AddCategory(BudgetId BudgetId, Icon Icon, string CategoryName) : ICommand;
-
-/// <summary>
-/// Handles the command for adding a transaction category to a budget.
-/// </summary>
-public class HandleAddTransactionCategoryToBudget : ICommandHandler<AddCategory>
+public record AddCategory
 {
-	private readonly IRepository<TransactionCategoryAggregate, TransactionCategoryId> transactionCategoryRepository;
+	/// <summary>
+	/// Gets or sets the icon associated with the budget transaction category.
+	/// </summary>
+	public Icon Icon { get; init; } = default!;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HandleAddTransactionCategoryToBudget"/> class.
+	/// Gets or sets the name associated with the budget transaction category.
 	/// </summary>
-	/// <param name="transactionCategoryRepository">Repository that manages Budget aggregate root.</param>
-	public HandleAddTransactionCategoryToBudget(IRepository<TransactionCategoryAggregate, TransactionCategoryId> transactionCategoryRepository)
-	{
-		this.transactionCategoryRepository = transactionCategoryRepository;
-	}
-
-	/// <summary>
-	/// Handles the command asynchronously.
-	/// </summary>
-	/// <param name="command">The command to handle.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task Handle(AddCategory command, CancellationToken cancellationToken)
-	{
-		var category = TransactionCategoryAggregate.Create(new TransactionCategoryId(Guid.NewGuid()), command.BudgetId, command.Icon, command.CategoryName);
-		await this.transactionCategoryRepository.Persist(category);
-	}
+	public string Name { get; init; } = default!;
 }

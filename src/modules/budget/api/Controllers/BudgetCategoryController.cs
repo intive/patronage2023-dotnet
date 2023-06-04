@@ -79,16 +79,17 @@ public class BudgetCategoryController : ControllerBase
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	[Route("{budgetId:guid}/categories")]
-	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]GetTransactionCategory request)
+	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]AddCategory request)
 	{
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
 		{
 			return this.Forbid();
 		}
 
-		var command = new AddCategory(new BudgetId(budgetId), request.Icon, request.Name);
+		var categoryId = new TransactionCategoryId(Guid.NewGuid());
+		var command = new AddTransactionCategory(categoryId, new BudgetId(budgetId), request.Icon, request.Name);
 		await this.commandBus.Send(command);
-		return this.Ok(request.Name);
+		return this.Ok(categoryId.Value);
 	}
 
 	/// <summary>

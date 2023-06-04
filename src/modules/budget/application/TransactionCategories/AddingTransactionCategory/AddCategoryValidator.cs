@@ -11,7 +11,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// <summary>
 /// Validator for the AddCategory command.
 /// </summary>
-public class AddCategoryValidator : AbstractValidator<AddCategory>
+public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 {
 	private readonly IQueryBus queryBus;
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;

@@ -48,7 +48,7 @@ public static class BudgetModule
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
 		services.AddScoped<IValidator<AddUsersToBudget>, AddUsersToBudgetValidator>();
 		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
-		services.AddScoped<IValidator<AddCategory>, AddCategoryValidator>();
+		services.AddScoped<IValidator<AddTransactionCategory>, AddCategoryValidator>();
 		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();
 		services.AddScoped<IValidator<DeleteTransactionCategory>, DeleteTransactionCategoryValidator>();
 		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
