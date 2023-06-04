@@ -13,7 +13,7 @@ public class BudgetTransactionAttachmentAddedDomainEvent : DomainEvent
 	/// </summary>
 	/// <param name="transactionId">Budget transaction Id.</param>
 	/// <param name="attachmentUrl">Attachment Url.</param>
-	public BudgetTransactionAttachmentAddedDomainEvent(TransactionId transactionId, string attachmentUrl)
+	public BudgetTransactionAttachmentAddedDomainEvent(TransactionId transactionId, Uri attachmentUrl)
 	{
 		this.Id = transactionId;
 		this.AttachmentUrl = attachmentUrl;
@@ -27,5 +27,5 @@ public class BudgetTransactionAttachmentAddedDomainEvent : DomainEvent
 	/// <summary>
 	/// Attachment Url.
 	/// </summary>
-	public string AttachmentUrl { get; private set; }
+	public Uri AttachmentUrl { get; private set; }
 }

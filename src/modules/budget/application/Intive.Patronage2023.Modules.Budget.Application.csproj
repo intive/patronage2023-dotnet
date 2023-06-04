@@ -27,8 +27,4 @@
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />
     <ProjectReference Include="..\infrastructure\Intive.Patronage2023.Modules.Budget.Infrastructure.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Budget\GettingBudgetTransactionAttachment" />
-  </ItemGroup>
 </Project>

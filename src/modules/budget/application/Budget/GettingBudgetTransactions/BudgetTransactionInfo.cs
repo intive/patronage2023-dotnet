@@ -42,4 +42,9 @@ public record BudgetTransactionInfo()
 	/// Transaction Category.
 	/// </summary>
 	public CategoryType CategoryType { get; init; }
+
+	/// <summary>
+	/// Transaction attachment url.
+	/// </summary>
+	public Uri? AttachmentUrl { get; init; } = null!;
 }

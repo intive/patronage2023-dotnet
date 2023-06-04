@@ -10,6 +10,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -473,6 +474,7 @@ public class BudgetController : ControllerBase
 		}
 
 		await this.commandBus.Send(command);
+
 		return this.Ok();
 	}
 
@@ -482,8 +484,10 @@ public class BudgetController : ControllerBase
 	/// <param name="transactionId">Transaction Id.</param>
 	/// <returns>Budget transaction attachment.</returns>
 	[HttpGet("{transactionId}/transaction/getAttachment)")]
-	public Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
+	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
 	{
-		throw new NotImplementedException();
+		var attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, IFormFile>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
+
+		return this.Ok(attachment);
 	}
 }

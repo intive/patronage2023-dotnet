@@ -60,7 +60,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <summary>
 	/// Budget Transaction attachment Url.
 	/// </summary>
-	public string? AttachmentUrl { get; private set; }
+	public Uri? AttachmentUrl { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction creation date.
@@ -117,7 +117,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// Add attachment url to Attachment url property.
 	/// </summary>
 	/// <param name="attachmentUrl">Attachment Url.</param>
-	public void AddAttachment(string attachmentUrl)
+	public void AddAttachment(Uri attachmentUrl)
 	{
 		var attachmentAddedEvent = new BudgetTransactionAttachmentAddedDomainEvent(this.Id, attachmentUrl);
 		this.Apply(attachmentAddedEvent, this.Handle);

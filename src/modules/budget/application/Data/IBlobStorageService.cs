@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Intive.Patronage2023.Modules.Budget.Application.Data;
 
 /// <summary>
@@ -12,5 +14,12 @@ public interface IBlobStorageService
 	/// <param name="fileName">File name.</param>
 	/// <param name="fileData">File content data stream.</param>
 	/// <returns>String with url to Azure blob storage.</returns>
-	Task<string> UploadFileAsync(string containerName, string fileName, Stream fileData);
+	Task<Uri> UploadFileAsync(string containerName, string fileName, Stream fileData);
+
+	/// <summary>
+	/// Method asynchronously downloads file from storage using url.
+	/// </summary>
+	/// <param name="url">File url.</param>
+	/// <returns>IFromFile.</returns>
+	Task<IFormFile> GetFileFromUrlAsync(Uri url);
 }

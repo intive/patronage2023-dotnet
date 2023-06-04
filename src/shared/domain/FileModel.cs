@@ -1,9 +1,9 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Data;
+namespace Intive.Patronage2023.Shared.Domain;
 
 /// <summary>
 /// Attachment file model.
 /// </summary>
-public class BudgetTransactionAttachmentModel
+public class FileModel
 {
 	/// <summary>
 	/// File name.
