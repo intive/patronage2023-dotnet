@@ -12,7 +12,8 @@ public class SignInUserValidator : AbstractValidator<SignInUser>
 	/// </summary>
 	public SignInUserValidator()
 	{
-		this.RuleFor(signin => signin.Email).NotEmpty().NotNull();
-		this.RuleFor(signin => signin.Password).NotEmpty().NotNull();
+		this.RuleFor(signin => signin.Email)
+			.NotEmpty().WithErrorCode("3.4").NotNull();
+		this.RuleFor(signin => signin.Password).NotEmpty().WithErrorCode("3.6").NotNull();
 	}
 }

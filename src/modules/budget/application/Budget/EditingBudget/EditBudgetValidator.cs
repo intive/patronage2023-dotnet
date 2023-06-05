@@ -18,9 +18,9 @@ public class EditBudgetValidator : AbstractValidator<EditBudget>
 	public EditBudgetValidator(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
-		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync(async (x, cancellation) => await this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.");
-		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate <= x.EndDate).WithMessage("The start date must be earlier than the end date");
+		this.RuleFor(budget => budget.Id).MustAsync(this.IsBudgetExists).WithErrorCode("1.11").NotEmpty().NotNull();
+		this.RuleFor(budget => new { budget.Id, budget.Name }).MustAsync(async (x, cancellation) => await this.IsNameUniqueWithinUserBudgets(x.Id, x.Name, cancellation)).WithMessage("Name already exists in your budgets. Choose a different name.").WithErrorCode("1.4");
+		this.RuleFor(budget => new { budget.Period.StartDate, budget.Period.EndDate }).Must(x => x.StartDate <= x.EndDate).WithMessage("The start date must be earlier than the end date").WithErrorCode("1.7");
 	}
 
 	/// <summary>

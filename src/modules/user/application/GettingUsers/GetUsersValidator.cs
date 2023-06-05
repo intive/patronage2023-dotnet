@@ -12,7 +12,7 @@ public class GetUsersValidator : AbstractValidator<GetUsers>
 	/// </summary>
 	public GetUsersValidator()
 	{
-		this.RuleFor(user => user.PageIndex).GreaterThan(0);
-		this.RuleFor(user => user.PageSize).GreaterThan(0);
+		this.RuleFor(user => user.PageIndex).GreaterThan(0).WithErrorCode("10.1");
+		this.RuleFor(user => user.PageSize).GreaterThan(0).WithErrorCode("10.1");
 	}
 }

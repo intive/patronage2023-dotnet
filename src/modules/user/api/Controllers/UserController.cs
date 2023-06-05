@@ -10,6 +10,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Intive.Patronage2023.Modules.User.Api.Controllers;
 
@@ -63,6 +64,7 @@ public class UserController : ControllerBase
 	[ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
 	[AllowAnonymous]
 	[HttpPost("sign-in")]
+	[SwaggerResponse(400, "errorcode")]
 	public async Task<IActionResult> SignInUserAsync([FromBody] SignInUser command)
 	{
 		HttpResponseMessage response = await this.queryBus.Query<SignInUser, HttpResponseMessage>(command);

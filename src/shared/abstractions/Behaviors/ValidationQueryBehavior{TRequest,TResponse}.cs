@@ -52,6 +52,12 @@ public sealed class ValidationQueryBehavior<TRequest, TResponse> : IPipelineBeha
 					Values = errorMessages.Distinct().ToArray(),
 				})
 			.ToDictionary(x => x.Key, x => x.Values);
+
+		var errors = this.validators
+			.Select(x => x.ValidateAsync(context, cancellationToken))
+			.SelectMany(x => x.Result.Errors)
+			.Where(x => x != null);
+
 		if (errorsDictionary.Any())
 		{
 			var errorsDictionaryValues = new List<string>();
@@ -60,7 +66,7 @@ public sealed class ValidationQueryBehavior<TRequest, TResponse> : IPipelineBeha
 				errorsDictionaryValues.AddRange(kvp.Value);
 			}
 
-			throw new ValidationException(string.Join(" & ", errorsDictionaryValues));
+			throw new ValidationException(string.Join(" & ", errorsDictionaryValues), errors);
 		}
 
 		return await next();
