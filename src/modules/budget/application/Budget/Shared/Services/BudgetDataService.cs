@@ -27,7 +27,7 @@ public class BudgetDataService : IBudgetDataService
 	/// </summary>
 	/// <param name="contextAccessor">Provides access to the execution context, allowing the service to use user-specific information.</param>
 	/// <param name="queryBus">Enables the service to dispatch queries to the appropriate handlers.</param>
-	/// <param name="csvService">ICsvService.</param>
+	/// <param name="csvService">The service responsible for CSV file operations.</param>
 	public BudgetDataService(IExecutionContextAccessor contextAccessor, IQueryBus queryBus, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.contextAccessor = contextAccessor;
@@ -63,7 +63,7 @@ public class BudgetDataService : IBudgetDataService
 	/// If a budget with the same name already exists in the database, a random number is appended to the name.
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
-	/// <param name="budgetsNames">The existing budgets' names used for checking whether the new budget's name already exists in the database.</param>
+	/// <param name="budgetsNames">The existing budget's names used for checking whether the new budget's name already exists in the database.</param>
 	/// <returns>Creates a new budget.</returns>
 	public GetBudgetTransferInfo Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
 	{

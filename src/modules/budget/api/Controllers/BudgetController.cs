@@ -545,11 +545,6 @@ public class BudgetController : ControllerBase
 			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
 
-		if (getImportResult.ImportResult.Uri == "All budgets were saved.")
-		{
-			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
-		}
-
 		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }

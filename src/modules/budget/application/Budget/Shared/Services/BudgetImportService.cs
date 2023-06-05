@@ -19,11 +19,10 @@ public class BudgetImportService : IBudgetImportService
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetImportService"/> class.
-	/// DataService.
 	/// </summary>
-	/// <param name="blobStorageService">BlobStorageService.</param>
-	/// <param name="budgetDataService">IDataHelper.</param>
-	/// <param name="csvService">GetBudgetTransferList.</param>
+	/// <param name="blobStorageService">The service responsible for interacting with the blob storage.</param>
+	/// <param name="budgetDataService">The service responsible for accessing budget-related data.</param>
+	/// <param name="csvService">The service responsible for CSV file operations.</param>
 	public BudgetImportService(IBlobStorageService blobStorageService, IBudgetDataService budgetDataService, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.blobStorageService = blobStorageService;
