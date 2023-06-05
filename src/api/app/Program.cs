@@ -14,6 +14,7 @@ using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
+using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
@@ -47,8 +48,10 @@ builder.Services.AddHttpClient();
 builder.Services.AddUserModule();
 
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddImportExportModule(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
 {

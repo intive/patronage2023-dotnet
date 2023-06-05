@@ -27,4 +27,4 @@ jobs:
     - name: Build
       run: dotnet build "${{ env.SLN_NAME }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test
-      run: dotnet test "${{ env.SLN_NAME }}" --no-build
+      run: dotnet test "${{ env.SLN_NAME }}" --no-build -p:BuildInParallel=false

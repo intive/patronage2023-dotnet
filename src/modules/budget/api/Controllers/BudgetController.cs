@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
@@ -7,6 +8,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -22,7 +24,13 @@ using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+
 using Microsoft.AspNetCore.Mvc;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -37,6 +45,8 @@ public class BudgetController : ControllerBase
 	private readonly IQueryBus queryBus;
 	private readonly IAuthorizationService authorizationService;
 	private readonly IExecutionContextAccessor contextAccessor;
+	private readonly IBudgetExportService budgetExportService;
+	private readonly IBudgetImportService budgetImportService;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
@@ -49,13 +59,17 @@ public class BudgetController : ControllerBase
 	/// <param name="usersIdsValidator">User ids validator.</param>
 	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
+	/// <param name="budgetExportService">BudgetExportService.</param>
+	/// <param name="budgetImportService">BudgetImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
 		IAuthorizationService authorizationService,
 		IValidator<AddUsersToBudget> usersIdsValidator,
 		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
-		IExecutionContextAccessor contextAccessor)
+		IExecutionContextAccessor contextAccessor,
+		IBudgetExportService budgetExportService,
+		IBudgetImportService budgetImportService)
 	{
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
@@ -63,6 +77,8 @@ public class BudgetController : ControllerBase
 		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
 		this.addUsersToBudgetValidator = usersIdsValidator;
+		this.budgetExportService = budgetExportService;
+		this.budgetImportService = budgetImportService;
 	}
 
 	/// <summary>
@@ -393,6 +409,8 @@ public class BudgetController : ControllerBase
 	/// 1.11: Budget not exists .</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <returns>Returns the list of two calculated values, between two dates.</returns>
+	/// <returns>Returns the BudgetStatistics which has List of calculated budget balance, between two dates with day on which calculation was made.
+	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("{budgetId:guid}/statistics")]
 	[ProducesResponseType(typeof(BudgetStatistics<BudgetAmount>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -412,6 +430,36 @@ public class BudgetController : ControllerBase
 
 		var pagedList = await this.queryBus.Query<GetBudgetStatistics, BudgetStatistics<BudgetAmount>>(getBudgetStatistics);
 		return this.Ok(pagedList);
+	}
+
+	/// <summary>
+	/// Get calculated values for  all budgets between two dates.
+	/// </summary>
+	/// <param name="startDate">Start Date in which we want to get report.</param>
+	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <param name="currency">Currency which we use to fillter budgets.</param>
+	/// <remarks>
+	/// Sample Date Points:
+	///
+	///         "startDate": "2023-04-20T19:14:20.152Z",
+	///         "endDate": "2023-04-25T20:14:20.152Z"
+	/// .</remarks>
+	/// <returns>Returns the BudgetReport which has List of sumed Incomes, List of sumed Expenses, between two dates with day on which calculation was made.
+	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
+	[HttpGet("statistics")]
+	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate, Currency currency)
+	{
+		var getBudgetReport = new GetBudgetsReport
+		{
+			StartDate = startDate,
+			EndDate = endDate,
+			Currency = currency,
+		};
+
+		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);
+		return this.Ok(budgetReport);
 	}
 
 	/// <summary>
@@ -477,5 +525,53 @@ public class BudgetController : ControllerBase
 		await this.commandBus.Send(userBudgetList);
 
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Exports all user budgets to Azure Blob Storage.
+	/// </summary>
+	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
+	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpGet("export")]
+	public async Task<IActionResult> ExportBudgets()
+	{
+		var query = new GetBudgetsToExport();
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
+		string? result = await this.budgetExportService.Export(budgets);
+
+		string jsonResult = JsonSerializer.Serialize(result);
+
+		return this.Ok(jsonResult);
+	}
+
+	/// <summary>
+	/// Imports budgets from a provided .csv file.
+	/// </summary>
+	/// <param name="file">The .csv file containing the budgets to be imported.</param>
+	/// <returns>An object containing a list of any errors encountered during the import process,
+	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <response code="200">If at least one budget from the imported file passed the validation and was successfully saved.
+	/// Also contains a list of budgets that failed the validation.</response>
+	/// <response code="400">If no budgets from the imported file passed the validation.
+	/// The response will include a list of errors for each budget that failed validation, and information in uri "No budgets were saved.".</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpPost("import")]
+	public async Task<IActionResult> ImportBudgets(IFormFile file)
+	{
+		var getImportResult = await this.budgetImportService.Import(file);
+		await this.commandBus.Send(getImportResult.BudgetAggregateList);
+
+		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		{
+			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		}
+
+		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }

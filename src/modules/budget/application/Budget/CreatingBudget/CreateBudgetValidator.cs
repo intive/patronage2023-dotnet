@@ -1,6 +1,9 @@
+using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -11,19 +14,27 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetValidator"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">BudgetDbContext.</param>
 	/// <param name="executionContextAccessor">Context to get user id from token.</param>
-	public CreateBudgetValidator(BudgetDbContext budgetDbContext, IExecutionContextAccessor executionContextAccessor)
+	/// <param name="keycloakService">Keycloak service to validate users ids.</param>
+	public CreateBudgetValidator(BudgetDbContext budgetDbContext, IExecutionContextAccessor executionContextAccessor, IKeycloakService keycloakService)
 	{
 		this.budgetDbContext = budgetDbContext;
+		this.keycloakService = keycloakService;
 
 		this.RuleFor(budget => budget.Id)
 			.NotEmpty()
 			.NotNull();
+
+		this.RuleFor(budget => budget.UserId)
+			.NotEmpty()
+			.NotNull()
+			.MustAsync(this.IsUserExists).WithMessage("does not exists.");
 
 		this.RuleFor(budget => budget.Name)
 			.NotEmpty().WithErrorCode("1.2")
@@ -59,5 +70,30 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 	{
 		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Name.Equals(name) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
 		return !anyExistingBudget;
+	}
+
+	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
+	{
+		HttpResponseMessage response;
+		try
+		{
+			response = await this.keycloakService.GetUserById(id.ToString(), cancellationToken);
+		}
+		catch (Exception)
+		{
+			throw new AppException("Something went wrong with keycloack");
+		}
+
+		if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			return false;
+		}
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new AppException(response.ToString());
+		}
+
+		return true;
 	}
 }
