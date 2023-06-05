@@ -28,7 +28,8 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Infrastructure.Export;
+using Intive.Patronage2023.Shared.Infrastructure.Import;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
