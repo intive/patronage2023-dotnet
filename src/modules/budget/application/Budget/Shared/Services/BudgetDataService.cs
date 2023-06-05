@@ -40,7 +40,7 @@ public class BudgetDataService : IBudgetDataService
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	public Task<BudgetAggregateList> ConvertBudgetsToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport)
+	public Task<BudgetAggregateList> MapFrom(IEnumerable<GetBudgetTransferInfo> budgetsToImport)
 	{
 		var newBudgets = new List<BudgetAggregate>();
 		foreach (var budget in budgetsToImport)

@@ -14,7 +14,7 @@ public interface IBudgetDataService
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	Task<BudgetAggregateList> ConvertBudgetsToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport);
+	Task<BudgetAggregateList> MapFrom(IEnumerable<GetBudgetTransferInfo> budgetsToImport);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.

@@ -70,7 +70,7 @@ public class BudgetImportService : IBudgetImportService
 
 		string uri = await this.blobStorageService.GenerateLinkToDownload(fileName);
 
-		var budgetsAggregateList = await this.budgetDataService.ConvertBudgetsToBudgetAggregate(budgetInfos.Result.BudgetsList);
+		var budgetsAggregateList = await this.budgetDataService.MapFrom(budgetInfos.Result.BudgetsList);
 
 		if (budgetInfos.Result.BudgetsErrorsList.Count == 0)
 		{
