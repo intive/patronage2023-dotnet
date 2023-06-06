@@ -24,4 +24,9 @@ public class EmailMessage
 	/// Email body.
 	/// </summary>
 	public string? Body { get; set; }
+
+	/// <summary>
+	/// Email attachments.
+	/// </summary>
+	public List<EmailAttachment>? Attachments { get; set; }
 }
