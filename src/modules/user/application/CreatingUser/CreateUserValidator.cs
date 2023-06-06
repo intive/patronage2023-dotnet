@@ -12,18 +12,18 @@ public class CreateUserValidator : AbstractValidator<CreateUser>
 	/// </summary>
 	public CreateUserValidator()
 	{
-		this.RuleFor(user => user.Avatar).NotEmpty();
-		this.RuleFor(user => user.FirstName).NotEmpty();
-		this.RuleFor(user => user.LastName).NotEmpty();
-		this.RuleFor(user => user.Email).EmailAddress().NotEmpty();
+		this.RuleFor(user => user.Avatar).NotEmpty().WithErrorCode("3.1");
+		this.RuleFor(user => user.FirstName).NotEmpty().WithErrorCode("3.2");
+		this.RuleFor(user => user.LastName).NotEmpty().WithErrorCode("3.3");
+		this.RuleFor(user => user.Email).EmailAddress().WithErrorCode("3.5").NotEmpty().WithErrorCode("3.4");
 
 		this.RuleFor(user => user.Password)
-			.MinimumLength(12)
-			.Must(password => password.Any(char.IsUpper))
-			.Must(password => password.Any(char.IsLower))
-			.Must(password => password.Any(char.IsDigit))
-			.Must(password => !password.Contains(" "))
-			.Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]")
-			.NotEmpty();
+			.MinimumLength(12).WithErrorCode("3.6")
+			.Must(password => password.Any(char.IsUpper)).WithErrorCode("3.6")
+			.Must(password => password.Any(char.IsLower)).WithErrorCode("3.6")
+			.Must(password => password.Any(char.IsDigit)).WithErrorCode("3.6")
+			.Must(password => !password.Contains(" ")).WithErrorCode("3.6")
+			.Matches(@"[!\""#$%&'()+,\-./:;<=>?@\[\]*^_`{|}~\\]+").WithErrorCode("3.6")
+			.NotEmpty().WithErrorCode("3.6");
 	}
 }

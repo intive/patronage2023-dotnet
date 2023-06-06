@@ -1,10 +1,9 @@
-using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudgetRole;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 

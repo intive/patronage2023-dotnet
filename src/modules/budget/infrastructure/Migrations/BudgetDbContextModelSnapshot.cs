@@ -58,7 +58,8 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "UserId", "Name" }, "IX_Budget_UserId_Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("Status <> 2");
 
                     b.ToTable("Budget", "Budgets");
                 });
@@ -127,6 +128,9 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.Property<Guid>("BudgetId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("BudgetId");
+
+                    b.Property<bool>("IsFavourite")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier")

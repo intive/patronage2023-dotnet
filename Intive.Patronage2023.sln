@@ -82,7 +82,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.Shared.IntegrationTests", "tests\integration\Intive.Patronage2023.Shared.IntegrationTests\Intive.Patronage2023.Shared.IntegrationTests.csproj", "{EDAEB2C4-BA20-4A93-9907-233253A3AAEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intive.Patronage2023.User.Application.Tests", "tests\unit\Intive.Patronage2023.User.Application.Tests\Intive.Patronage2023.User.Application.Tests.csproj", "{99CBB1BB-FF63-4AFD-97FA-65DE2EE4CFD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intive.Patronage2023.User.Application.Tests", "tests\unit\Intive.Patronage2023.User.Application.Tests\Intive.Patronage2023.User.Application.Tests.csproj", "{99CBB1BB-FF63-4AFD-97FA-65DE2EE4CFD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,9 +175,9 @@ Global
 		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BF08A2E-B831-41E9-8B8A-6A22B586194F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA3A26AF-0BC0-4DA0-A1AB-C606CA4B378E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA3A26AF-0BC0-4DA0-A1AB-C606CA4B378E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA3A26AF-0BC0-4DA0-A1AB-C606CA4B378E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA3A26AF-0BC0-4DA0-A1AB-C606CA4B378E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA3A26AF-0BC0-4DA0-A1AB-C606CA4B378E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D1CC881-5D8B-4AE8-98E4-F6CCFEF1196F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D1CC881-5D8B-4AE8-98E4-F6CCFEF1196F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D1CC881-5D8B-4AE8-98E4-F6CCFEF1196F}.Release|Any CPU.ActiveCfg = Release|Any CPU

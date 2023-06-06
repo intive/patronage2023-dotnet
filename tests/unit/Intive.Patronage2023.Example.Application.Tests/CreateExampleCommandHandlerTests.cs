@@ -16,7 +16,7 @@ namespace Intive.Patronage2023.Example.Application.Tests;
 public class CreateExampleCommandHandlerTests
 {
 	private readonly Mock<IRepository<ExampleAggregate, ExampleId>> exampleRepositoryMock;
-	private readonly HandleCreateExample handleCreateExample;
+	private readonly HandleCreateExample instance;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateExampleCommandHandlerTests"/> class.
@@ -24,7 +24,7 @@ public class CreateExampleCommandHandlerTests
 	public CreateExampleCommandHandlerTests()
 	{
 		this.exampleRepositoryMock = new Mock<IRepository<ExampleAggregate, ExampleId>>();
-		this.handleCreateExample = new HandleCreateExample(this.exampleRepositoryMock.Object);
+		this.instance = new HandleCreateExample(this.exampleRepositoryMock.Object);
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ public class CreateExampleCommandHandlerTests
 		string name = new Faker().Name.FirstName();
 
 		// Act
-		await this.handleCreateExample.Handle(new CreateExample(id, name), cancellationToken);
+		await this.instance.Handle(new CreateExample(id, name), cancellationToken);
 
 		// Assert
 		this.exampleRepositoryMock.Verify(
