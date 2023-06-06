@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgetTransactions;
 
@@ -21,19 +22,35 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 	public GetBudgetTransactionImportInfoValidator(BudgetDbContext budgetDbContext)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty()
-			.WithMessage("Budget with given id does not exist.");
-		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58)
-			.WithMessage("Budget name is missing or name length not in range <3,58>");
+		this.RuleFor(transaction => transaction.BudgetId)
+			.MustAsync(this.IsBudgetExists)
+			.WithMessage("Budget with id = {PropertyValue} does not exist.")
+			.NotEmpty()
+			.WithMessage("Budget id is missing.");
+		this.RuleFor(transaction => transaction.Name)
+			.NotEmpty()
+			.WithMessage("Budget name is missing.")
+			.Length(3, 58)
+			.WithMessage("Budget name length not in range <3,58>.");
 		this.RuleFor(transaction => transaction.TransactionType)
-			.Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull()
+			.NotEmpty()
+			.WithMessage("Transaction type is missing")
+			.Must(x => Enum.IsDefined(typeof(TransactionType), x))
 			.WithMessage("Transaction type must be Income or Expense");
-		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.BeAppropriateDecimal)
+		this.RuleFor(transaction => transaction.Value)
+			.NotEmpty()
+			.WithMessage("Value is missing.")
+			.Must(this.BeAppropriateDecimal)
 			.WithMessage("Value must be positive for income and negative for expense");
 		this.RuleFor(transaction => transaction.CategoryType)
-			.Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull()
+			.NotEmpty()
+			.WithMessage("Category is missing.")
+			.Must(x => Enum.IsDefined(typeof(CategoryType), x))
 			.WithMessage("Category must be defined in budget");
-		this.RuleFor(transaction => transaction.Date).Must(this.BeValidDate)
+		this.RuleFor(transaction => transaction.Date)
+			.NotEmpty()
+			.WithMessage("Date is missing.")
+			.Must(this.BeValidDate)
 			.WithMessage("Date must be in valid date format.");
 		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Date })
 			.MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.Date, cancellation))
@@ -83,6 +100,6 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)
 	{
-		return await this.budgetDbContext.Budget.FindAsync(budgetId) != null;
+		return await this.budgetDbContext.Budget.AnyAsync(x => x.Id == budgetId, cancellationToken);
 	}
 }

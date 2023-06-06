@@ -6,9 +6,9 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public interface IBudgetTransactionExportService
 {
 	/// <summary>
-	/// Exports the budget transactions to a CSV file and uploads it to Azure Blob Storage.
+	/// Exports the budget transactions to a CSV file and uploads it to storage, allowing to download it.
 	/// </summary>
-	/// <param name="transactions">GetBudgetTransactionListToExport.</param>
-	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
+	/// <param name="transactions">Collection of the transactions to be exported.</param>
+	/// <returns>The URI of the uploaded file.</returns>
 	Task<string?> Export(GetBudgetTransactionTransferList? transactions);
 }
