@@ -1,10 +1,9 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
@@ -14,17 +13,17 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransactions>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
-	private readonly IQueryBus queryBus;
+	private readonly ICategoryProvider categoryProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	/// <param name="queryBus">The query bus used for getting transaction categories.</param>
-	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, IQueryBus queryBus)
+	/// <param name="categoryProvider">The provider used to get budget transaction categories.</param>
+	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, ICategoryProvider categoryProvider)
 	{
-		this.queryBus = queryBus;
 		this.budgetRepository = budgetRepository;
+		this.categoryProvider = categoryProvider;
 		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
 		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
 		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
@@ -34,16 +33,15 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 
-	private async Task<bool> AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
+	private Task<bool> AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
 	{
 		if (categoryTypes is null)
 		{
-			return true;
+			return Task.FromResult(true);
 		}
 
-		var query = new GetTransactionCategories(budgetId);
-		var categoriesInfo = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categoryTypes.All(categoryType => categoriesInfo.Categories!.Any(category => category.Name == categoryType.CategoryName));
+		var categories = this.categoryProvider.GetForBudget(budgetId);
+		return Task.FromResult(categoryTypes.All(categoryType => categories.Any(category => category.Name == categoryType.CategoryName)));
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)

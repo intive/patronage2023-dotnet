@@ -1,7 +1,5 @@
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
@@ -17,15 +15,15 @@ public record GetTransactionCategories(BudgetId BudgetId) : IQuery<TransactionCa
 /// </summary>
 public class GetTransactionCategoriesQueryHandler : IQueryHandler<GetTransactionCategories, TransactionCategoriesInfo>
 {
-	private readonly BudgetDbContext budgetDbContext;
+	private readonly ICategoryProvider categoryProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetTransactionCategoriesQueryHandler"/> class.
 	/// </summary>
-	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetTransactionCategoriesQueryHandler(BudgetDbContext budgetDbContext)
+	/// <param name="categoryProvider">Budget dbContext.</param>
+	public GetTransactionCategoriesQueryHandler(ICategoryProvider categoryProvider)
 	{
-		this.budgetDbContext = budgetDbContext;
+		this.categoryProvider = categoryProvider;
 	}
 
 	/// <summary>
@@ -36,13 +34,7 @@ public class GetTransactionCategoriesQueryHandler : IQueryHandler<GetTransaction
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation that returns the TransactionCategoriesInfo.</returns>
 	public Task<TransactionCategoriesInfo> Handle(GetTransactionCategories query, CancellationToken cancellationToken)
 	{
-		var providers = new List<ICategoryProvider>
-		{
-			new StaticCategoryProvider(),
-			new DatabaseCategoryProvider(this.budgetDbContext, new BudgetId(query.BudgetId.Value)),
-		};
-
-		var categories = new CompositeCategoryProvider(providers).GetAll();
+		var categories = this.categoryProvider.GetForBudget(query.BudgetId);
 		return Task.FromResult(new TransactionCategoriesInfo(categories));
 	}
 }

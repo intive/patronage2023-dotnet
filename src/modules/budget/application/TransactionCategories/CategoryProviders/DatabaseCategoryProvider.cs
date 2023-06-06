@@ -11,28 +11,26 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 public class DatabaseCategoryProvider : ICategoryProvider
 {
 	private readonly BudgetDbContext dbContext;
-	private readonly BudgetId budgetId;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DatabaseCategoryProvider"/> class.
 	/// </summary>
 	/// <param name="dbContext">The query bus used to query the database.</param>
-	/// <param name="budgetId">The budget ID used to retrieve categories for a specific budget.</param>
-	public DatabaseCategoryProvider(BudgetDbContext dbContext, BudgetId budgetId)
+	public DatabaseCategoryProvider(BudgetDbContext dbContext)
 	{
-		this.budgetId = budgetId;
 		this.dbContext = dbContext;
 	}
 
 	/// <summary>
 	/// Retrieves all transaction categories from the database for given budget id.
 	/// </summary>
+	/// <param name="budgetId">The budget ID used to retrieve categories for a specific budget.</param>
 	/// <returns>A list of <see cref="TransactionCategory"/> objects representing the transaction categories.</returns>
-	public List<TransactionCategory> GetAll()
+	public List<TransactionCategory> GetForBudget(BudgetId budgetId)
 	{
 		var categories = this.dbContext.BudgetTransactionCategory.AsQueryable();
 
-		var entities = categories.Where(x => x.BudgetId == this.budgetId);
+		var entities = categories.Where(x => x.BudgetId == budgetId);
 
 		var transactionCategoriesList = entities.MapToBudgetTransactionCategoriesInfo().ToList();
 

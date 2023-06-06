@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 
@@ -7,13 +8,13 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// </summary>
 public class CompositeCategoryProvider : ICategoryProvider
 {
-	private readonly List<ICategoryProvider> providers;
+	private readonly IEnumerable<ICategoryProvider> providers;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CompositeCategoryProvider"/> class.
 	/// </summary>
-	/// <param name="providers">The list of category providers to combine.</param>
-	public CompositeCategoryProvider(List<ICategoryProvider> providers)
+	/// <param name="providers">Category providers.</param>
+	public CompositeCategoryProvider(IEnumerable<ICategoryProvider> providers)
 	{
 		this.providers = providers;
 	}
@@ -21,10 +22,11 @@ public class CompositeCategoryProvider : ICategoryProvider
 	/// <summary>
 	/// Gets all transaction categories from all available sources.
 	/// </summary>
+	/// <param name="budgetId">The budget ID used to retrieve categories for a specific budget.</param>
 	/// <returns>A list of transaction categories.</returns>
-	public List<TransactionCategory> GetAll()
+	public List<TransactionCategory> GetForBudget(BudgetId budgetId)
 	{
-		var categories = this.providers.Select(provider => provider.GetAll());
+		var categories = this.providers.Select(provider => provider.GetForBudget(budgetId));
 		var mergedCategories = categories.SelectMany(category => category).ToList();
 		return mergedCategories;
 	}

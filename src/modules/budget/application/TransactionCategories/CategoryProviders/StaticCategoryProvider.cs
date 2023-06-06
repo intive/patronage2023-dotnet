@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 
@@ -11,8 +12,9 @@ public class StaticCategoryProvider : ICategoryProvider
 	/// <summary>
 	/// Retrieves build in transaction categories.
 	/// </summary>
+	/// <param name="budgetId">Budget Id.</param>
 	/// <returns>A list of TransactionCategory objects representing different transaction categories.</returns>
-	public List<TransactionCategory> GetAll() => new()
+	public List<TransactionCategory> GetForBudget(BudgetId budgetId) => new()
 	{
 		new TransactionCategory
 		{

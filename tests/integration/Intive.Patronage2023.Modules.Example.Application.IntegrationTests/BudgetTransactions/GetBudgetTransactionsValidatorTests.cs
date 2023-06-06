@@ -2,14 +2,14 @@ using Bogus;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.BudgetTransactions;
@@ -19,7 +19,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.Budge
 /// </summary>
 public class GetBudgetTransactionsValidatorTests : AbstractIntegrationTests
 {
-	private readonly IQueryBus queryBus;
+	private readonly Mock<ICategoryProvider> categoryProvider;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> instance;
 
@@ -30,10 +30,9 @@ public class GetBudgetTransactionsValidatorTests : AbstractIntegrationTests
 	public GetBudgetTransactionsValidatorTests(MsSqlTests fixture) 
 		: base(fixture)
 	{
-		var scope = this.WebApplicationFactory.Services.CreateScope();
-		this.queryBus = scope.ServiceProvider.GetRequiredService<IQueryBus>();
+		this.categoryProvider = new Mock<ICategoryProvider>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.queryBus);
+		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.categoryProvider.Object);
 	}
 
 	/// <summary>

@@ -1,10 +1,9 @@
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 
@@ -14,17 +13,17 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
-	private readonly IQueryBus queryBus;
+	private readonly ICategoryProvider categoryProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	/// <param name="queryBus">The query bus used for getting transaction categories.</param>
-	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, IQueryBus queryBus)
+	/// <param name="categoryProvider">The provider used to get budget transaction categories.</param>
+	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, ICategoryProvider categoryProvider)
 	{
 		this.budgetRepository = budgetRepository;
-		this.queryBus = queryBus;
+		this.categoryProvider = categoryProvider;
 		this.RuleFor(transaction => transaction.Id).NotNull();
 		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
@@ -69,10 +68,9 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
 
-	private async Task<bool> IsCategoryDefined(Guid budgetId, CategoryType category, CancellationToken cancellationToken)
+	private Task<bool> IsCategoryDefined(Guid budgetId, CategoryType category, CancellationToken cancellationToken)
 	{
-		var query = new GetTransactionCategories(new BudgetId(budgetId));
-		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categories.Categories!.Select(x => x.Name).Contains(category.CategoryName);
+		var categories = this.categoryProvider.GetForBudget(new BudgetId(budgetId));
+		return Task.FromResult(categories.Select(x => x.Name).Contains(category.CategoryName));
 	}
 }
