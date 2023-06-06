@@ -1,10 +1,9 @@
 using System.Drawing;
 using FluentValidation;
-using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Intive.Patronage2023.Shared.Abstractions.Queries;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
 
@@ -13,18 +12,18 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// </summary>
 public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 {
-	private readonly IQueryBus queryBus;
+	private readonly ICategoryProvider categoryProvider;
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AddCategoryValidator"/> class.
 	/// </summary>
-	/// <param name="queryBus">The QueryBus.</param>
+	/// <param name="categoryProvider">The provider used to access category information.</param>
 	/// <param name="budgetRepository">Repository that manages BudgetAggregate.</param>
-	public AddCategoryValidator(IQueryBus queryBus, IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	public AddCategoryValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, ICategoryProvider categoryProvider)
 	{
-		this.queryBus = queryBus;
 		this.budgetRepository = budgetRepository;
+		this.categoryProvider = categoryProvider;
 		this.RuleFor(command => command.BudgetId).NotNull().NotEmpty().WithMessage("Budget ID is required.");
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
 		this.RuleFor(command => command.Icon).NotNull().NotEmpty().WithMessage("Icon is required.");
@@ -43,11 +42,10 @@ public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 		return budget != null;
 	}
 
-	private async Task<bool> CategoryNameExists(BudgetId budgetId, string categoryName, CancellationToken cancellationToken)
+	private Task<bool> CategoryNameExists(BudgetId budgetId, string categoryName, CancellationToken cancellationToken)
 	{
-		var query = new GetTransactionCategories(budgetId);
-		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categories.Categories!.Any(x => x.Name == categoryName);
+		var categories = this.categoryProvider.GetForBudget(budgetId);
+		return Task.FromResult(categories.Any(x => x.Name == categoryName));
 	}
 
 	private bool ColorExists(string hexColor)
