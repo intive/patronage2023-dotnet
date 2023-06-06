@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/modules/budget/application/Budget/Shared/ImportResult.cs
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+========
+namespace Intive.Patronage2023.Shared.Infrastructure.Import;
+>>>>>>>> dev:src/shared/infrastructure/Import/ImportResult.cs
 
 /// <summary>
 /// Class ImportResult representing the result of an import operation, containing any encountered error messages and the URI used for import.

@@ -12,10 +12,10 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -25,10 +25,13 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Export;
+using Intive.Patronage2023.Shared.Infrastructure.Import;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -423,8 +426,9 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <param name="currency">Currency which we use to fillter budgets.</param>
 	/// <remarks>
-	/// Sample Id and Date Points:
+	/// Sample Date Points:
 	///
 	///         "startDate": "2023-04-20T19:14:20.152Z",
 	///         "endDate": "2023-04-25T20:14:20.152Z"
@@ -433,41 +437,18 @@ public class BudgetController : ControllerBase
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
-	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate, Currency currency)
 	{
-		var listOfIncomes = new List<BudgetAmount>
+		var getBudgetReport = new GetBudgetsReport
 		{
-			new BudgetAmount()
-			{
-				Value = 10, DatePoint = startDate,
-			},
-			new BudgetAmount()
-			{
-				Value = 20, DatePoint = startDate.AddDays(1),
-			},
-			new BudgetAmount()
-			{
-				Value = 30, DatePoint = startDate.AddDays(2),
-			},
+			StartDate = startDate,
+			EndDate = endDate,
+			Currency = currency,
 		};
 
-		var listOfExpanses = new List<BudgetAmount>
-		{
-			new BudgetAmount()
-			{
-				Value = 5, DatePoint = startDate,
-			},
-			new BudgetAmount()
-			{
-				Value = 10, DatePoint = startDate.AddDays(1),
-			},
-			new BudgetAmount()
-			{
-				Value = 15, DatePoint = startDate.AddDays(2),
-			},
-		};
-		var budgetsReport = new BudgetsReport<BudgetAmount> { Incomes = listOfIncomes, Expenses = listOfExpanses, TotalBalance = 30, PeriodValue = 30, TrendValue = 0 };
-		return await Task.FromResult(this.Ok(budgetsReport));
+		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);
+		return this.Ok(budgetReport);
 	}
 
 	/// <summary>
@@ -540,7 +521,7 @@ public class BudgetController : ControllerBase
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
@@ -549,7 +530,7 @@ public class BudgetController : ControllerBase
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(result);
+		return this.Ok(new { uri = result });
 	}
 
 	/// <summary>
@@ -572,12 +553,12 @@ public class BudgetController : ControllerBase
 		var getImportResult = await this.budgetImportService.Import(file);
 		await this.commandBus.Send(getImportResult.BudgetAggregateList);
 
-		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		if (getImportResult.ImportResult.Uri == "No budgets were saved.")
 		{
-			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
 
-		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 
 	/// <summary>

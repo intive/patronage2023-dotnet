@@ -29,22 +29,31 @@ public class MsSqlTests : IAsyncLifetime
 	public const ushort MsSqlPort = 1433;
 
 	///<summary>
-	/// The port number used for mapping to the container port.
-	///</summary>
-	public const ushort MappedPort = 5000;
-
-	///<summary>
 	/// The container used for running the MS SQL server for testing.
 	///</summary>
-	public readonly IContainer mssqlContainer = new ContainerBuilder()
+	private readonly IContainer mssqlContainer;
+
+	/// <summary>
+	/// Initialize new Instance of <see cref="MsSqlTests"/> class.
+	/// </summary>
+	public MsSqlTests()
+	{
+		this.MappedPort = Random.Shared.Next(3001, 5000);
+		this.mssqlContainer = new ContainerBuilder()
 		.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-		.WithPortBinding(MappedPort.ToString(), MsSqlPort.ToString())
+		.WithPortBinding(this.MappedPort.ToString(), MsSqlPort.ToString())
 		.WithEnvironment("ACCEPT_EULA", "Y")
 		.WithEnvironment("SQLCMDUSER", Username)
 		.WithEnvironment("SQLCMDPASSWORD", Password)
 		.WithEnvironment("MSSQL_SA_PASSWORD", Password)
 		.WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools/bin/sqlcmd", "-Q", "SELECT 1;"))
 		.Build();
+	}
+
+	///<summary>
+	/// The port number used for mapping to the container port.
+	///</summary>
+	public int MappedPort { get; init; } = 5000;
 
 	/// <summary>
 	/// Initializes the MsSql container for integration tests.
