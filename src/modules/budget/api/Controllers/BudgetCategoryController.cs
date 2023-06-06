@@ -4,9 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.Dele
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
-using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,9 +41,15 @@ public class BudgetCategoryController : ControllerBase
 	/// Retrieves the budget transaction categories list.
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget for which to retrieve the transaction categories.</param>
+	/// <response code="200">Returns List of the Budget Transaction Categories.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
 	[ProducesResponseType(typeof(TransactionCategoriesInfo), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	[HttpGet]
 	[Route("{budgetId:guid}/categories")]
 	public async Task<IActionResult> GetBudgetCategories([FromRoute]Guid budgetId)
@@ -74,9 +78,15 @@ public class BudgetCategoryController : ControllerBase
 	///         "name": "string"
 	///     }
 	/// .</remarks>
+	/// <response code="201">Returns the newly created item.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
-	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	[HttpPost]
 	[Route("{budgetId:guid}/categories")]
 	public async Task<IActionResult> AddCategoryToBudget([FromRoute]Guid budgetId, [FromBody]AddCategory request)
@@ -89,7 +99,7 @@ public class BudgetCategoryController : ControllerBase
 		var categoryId = new TransactionCategoryId(Guid.NewGuid());
 		var command = new AddTransactionCategory(categoryId, new BudgetId(budgetId), request.Icon, request.Name);
 		await this.commandBus.Send(command);
-		return this.Ok(categoryId.Value);
+		return this.Created(string.Empty, categoryId.Value);
 	}
 
 	/// <summary>
@@ -97,9 +107,15 @@ public class BudgetCategoryController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
 	/// <param name="budgetCategoryId">The id of the category to delete.</param>
+	/// <response code="204">Returns no content.</response>
+	/// <response code="400">If the body is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
-	[ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	[HttpDelete]
 	[Route("{budgetId:guid}/categories/{budgetCategoryId:guid}")]
 	public async Task<IActionResult> DeleteTransactionCategoryFromBudget([FromRoute]Guid budgetId, [FromRoute]Guid budgetCategoryId)
@@ -111,6 +127,6 @@ public class BudgetCategoryController : ControllerBase
 
 		var command = new DeleteTransactionCategory(new TransactionCategoryId(budgetCategoryId), new BudgetId(budgetId));
 		await this.commandBus.Send(command);
-		return this.Ok(budgetCategoryId);
+		return this.NoContent();
 	}
 }
