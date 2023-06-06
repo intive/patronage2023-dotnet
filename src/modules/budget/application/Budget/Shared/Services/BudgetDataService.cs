@@ -129,7 +129,7 @@ public class BudgetDataService : IBudgetDataService
 				rowNumber++;
 				foreach (string result in results)
 				{
-					errors.Add($"row: {rowNumber} | {result}");
+					errors.Add($"row: {rowNumber} | error: {result}");
 				}
 
 				invalidBudgets.Add(budget);

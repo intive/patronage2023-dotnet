@@ -99,7 +99,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 				rowNumber++;
 				foreach (string result in results)
 				{
-					errors.Add($"row: {rowNumber} | {result}");
+					errors.Add($"row: {rowNumber} | error: {result}");
 				}
 
 				invalidBudgetTransactions.Add(budget);

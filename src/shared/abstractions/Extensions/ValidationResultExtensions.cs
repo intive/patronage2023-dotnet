@@ -15,6 +15,6 @@ public static class ValidationResultExtensions
 	public static void AddErrors(this List<string> errors, ValidationResult validationResult)
 	{
 		errors.AddRange(validationResult.Errors
-			.Select(result => $" error code: {result.ErrorCode} | error: {result.ErrorMessage}"));
+			.Select(result => $"{result.ErrorMessage}"));
 	}
 }
