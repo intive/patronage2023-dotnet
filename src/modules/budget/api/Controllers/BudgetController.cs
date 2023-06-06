@@ -522,7 +522,7 @@ public class BudgetController : ControllerBase
 	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
@@ -545,7 +545,7 @@ public class BudgetController : ControllerBase
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[HttpPost("import")]
 	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
@@ -569,8 +569,8 @@ public class BudgetController : ControllerBase
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is not allowed to read budget.</response>
 	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	[HttpGet("{budgetId:guid}/transactions/export")]
 	public async Task<IActionResult> ExportBudgetTransactions([FromRoute] Guid budgetId)
 	{
@@ -601,8 +601,8 @@ public class BudgetController : ControllerBase
 	/// <response code="403">If the user is not allowed to edit budget.</response>
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	[HttpPost("{budgetId:guid}/transactions/import")]
 	public async Task<IActionResult> ImportBudgetTransactions([FromRoute] Guid budgetId, IFormFile file)
 	{

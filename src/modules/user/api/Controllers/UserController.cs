@@ -112,7 +112,6 @@ public class UserController : ControllerBase
 
 	/// <summary>
 	/// Retrieves list of users filtered and sorted by query.
-	/// TODO: ADD AUTHORIZATION.
 	/// </summary>
 	/// <param name="query">Query.</param>
 	/// <returns>List of users.</returns>
