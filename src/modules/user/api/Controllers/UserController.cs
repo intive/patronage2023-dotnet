@@ -22,18 +22,22 @@ public class UserController : ControllerBase
 {
 	private readonly IQueryBus queryBus;
 	private readonly ICommandBus commandBus;
+	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserController"/> class.
 	/// </summary>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="commandBus">Command bus.</param>
+	/// <param name="contextAccessor">Context accessor to retrieve user information.</param>
 	public UserController(
 		IQueryBus queryBus,
-		ICommandBus commandBus)
+		ICommandBus commandBus,
+		IExecutionContextAccessor contextAccessor)
 	{
 		this.queryBus = queryBus;
 		this.commandBus = commandBus;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -116,7 +120,6 @@ public class UserController : ControllerBase
 
 	/// <summary>
 	/// Retrieves list of users filtered and sorted by query.
-	/// TODO: ADD AUTHORIZATION.
 	/// </summary>
 	/// <param name="query">Query.</param>
 	/// <returns>List of users.</returns>
@@ -146,6 +149,11 @@ public class UserController : ControllerBase
 	[HttpPost("list")]
 	public async Task<IActionResult> GetUsers([FromBody] GetUsers query)
 	{
+		if (!this.contextAccessor.IsAdmin())
+		{
+			return this.Forbid();
+		}
+
 		var result = await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(query);
 		return this.Ok(result);
 	}
