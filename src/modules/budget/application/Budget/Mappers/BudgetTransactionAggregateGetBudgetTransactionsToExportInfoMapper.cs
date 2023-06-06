@@ -21,5 +21,6 @@ public static class BudgetTransactionAggregateGetBudgetTransactionsToExportInfoM
 			Date = x.BudgetTransactionDate.ToString(),
 			TransactionType = x.TransactionType.ToString(),
 			Value = x.Value.ToString(),
+			Status = x.Status.ToString(),
 		});
 }

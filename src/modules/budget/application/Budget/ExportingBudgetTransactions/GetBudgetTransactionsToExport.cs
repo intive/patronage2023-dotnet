@@ -1,6 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
+using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -18,7 +19,7 @@ public record GetBudgetTransactionsToExport() : IQuery<GetTransferList<GetBudget
 	/// <summary>
 	/// Budget id to export transactions from.
 	/// </summary>
-	public Guid BudgetId { get; set; }
+	public BudgetId BudgetId { get; set; }
 }
 
 /// <summary>
@@ -27,7 +28,6 @@ public record GetBudgetTransactionsToExport() : IQuery<GetTransferList<GetBudget
 public class GetBudgetTransactionsToExportQueryHandler : IQueryHandler<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>
 {
 	private readonly BudgetDbContext budgetDbContext;
-	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetTransactionsToExportQueryHandler"/> class.
@@ -37,7 +37,6 @@ public class GetBudgetTransactionsToExportQueryHandler : IQueryHandler<GetBudget
 	public GetBudgetTransactionsToExportQueryHandler(BudgetDbContext budgetDbContext, IExecutionContextAccessor contextAccessor)
 	{
 		this.budgetDbContext = budgetDbContext;
-		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -48,8 +47,8 @@ public class GetBudgetTransactionsToExportQueryHandler : IQueryHandler<GetBudget
 	/// <returns>A GetBudgetTransferList containing the budgets to be exported, or null if no budgets are found.</returns>
 	public async Task<GetTransferList<GetBudgetTransactionTransferInfo>?> Handle(GetBudgetTransactionsToExport query, CancellationToken cancellationToken)
 	{
-		var transactions = this.budgetDbContext.Transaction.For(new BudgetId(query.BudgetId))
-			.Where(x => x.Status == Contracts.TransactionEnums.Status.Active);
+		var transactions = this.budgetDbContext.Transaction.For(query.BudgetId)
+			.Where(x => x.Status == Status.Active || x.Status == Status.Cancelled);
 
 		var transactionsInfos = await transactions.MapToGetBudgetTransactionTransferInfo().ToListAsync(cancellationToken: cancellationToken);
 

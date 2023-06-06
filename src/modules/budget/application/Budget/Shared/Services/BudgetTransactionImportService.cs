@@ -17,7 +17,7 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 {
 	private readonly IBlobStorageService blobStorageService;
 	private readonly IBudgetTransactionDataService budgetTransactionDataService;
-	private readonly ICsvService<GetBudgetTransactionImportInfo> csvService;
+	private readonly ICsvService<GetBudgetTransactionTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetTransactionImportService"/> class.
@@ -26,7 +26,7 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 	/// <param name="blobStorageService">BlobStorageService.</param>
 	/// <param name="budgetTransactionDataService">IDataHelper.</param>
 	/// <param name="csvService">GetBudgetTransferList.</param>
-	public BudgetTransactionImportService(IBlobStorageService blobStorageService, IBudgetTransactionDataService budgetTransactionDataService, ICsvService<GetBudgetTransactionImportInfo> csvService)
+	public BudgetTransactionImportService(IBlobStorageService blobStorageService, IBudgetTransactionDataService budgetTransactionDataService, ICsvService<GetBudgetTransactionTransferInfo> csvService)
 	{
 		this.blobStorageService = blobStorageService;
 		this.budgetTransactionDataService = budgetTransactionDataService;
@@ -65,7 +65,8 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 		await using (var streamWriter = new StreamWriter(memoryStream))
 		await using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
 		{
-			this.csvService.WriteRecordsToMemoryStream(budgetTransactionInfos.ErrorsList, csvWriter);
+			var errorBudgetTransactions = budgetTransactionInfos.ErrorsList.Select(x => (GetBudgetTransactionTransferInfo)x);
+			this.csvService.WriteRecordsToMemoryStream(errorBudgetTransactions, csvWriter);
 			memoryStream.Position = 0;
 
 			await this.blobStorageService.UploadToBlobStorage(memoryStream, fileName);

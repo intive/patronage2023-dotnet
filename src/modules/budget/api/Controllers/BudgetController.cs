@@ -537,8 +537,7 @@ public class BudgetController : ControllerBase
 	/// Imports budgets from a provided .csv file.
 	/// </summary>
 	/// <param name="file">The .csv file containing the budgets to be imported.</param>
-	/// <returns>An object containing a list of any errors encountered during the import process,
-	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <returns>An object containing a list of errors, and URI to file with budgets that didn't pass validation. Rows in error list apply to the rows in newly genereted file. URI is replaced with propep message in case of all budgets valid or invalid.</returns>
 	/// <response code="200">If at least one budget from the imported file passed the validation and was successfully saved.
 	/// Also contains a list of budgets that failed the validation.</response>
 	/// <response code="400">If no budgets from the imported file passed the validation.
@@ -564,7 +563,7 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// Exports all budget incomes and expenses to Azure Blob Storage.
 	/// </summary>
-	/// <param name="query">Query with budgetId.</param>
+	/// <param name="budgetId">Id of the budget from which transactions will be exported.</param>
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	/// <response code="200">If the export operation was successful and transactions have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
@@ -573,9 +572,11 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
 	[HttpGet("{budgetId:guid}/transactions/export")]
-	public async Task<IActionResult> ExportBudgetTransactions([FromRoute] GetBudgetTransactionsToExport query)
+	public async Task<IActionResult> ExportBudgetTransactions([FromRoute] Guid budgetId)
 	{
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(query.BudgetId), Operations.Read)).Succeeded)
+		var query = new GetBudgetTransactionsToExport { BudgetId = new BudgetId(budgetId) };
+
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, query.BudgetId, Operations.Read)).Succeeded)
 		{
 			return this.Forbid();
 		}
@@ -591,8 +592,7 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">Import destination budget id.</param>
 	/// <param name="file">The .csv file containing the transactions to be imported.</param>
-	/// <returns>An object containing a list of any errors encountered during the import process,
-	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <returns>An object containing a list of errors, and URI to file with budget transaction that didn't pass validation. Rows in error list apply to the rows in newly genereted file. URI is replaced with propep message in case of all budget transactions valid or invalid.</returns>
 	/// <response code="200">If at least one transaction from the imported file passed the validation and was successfully saved.
 	/// Also contains a list of transactions that failed the validation.</response>
 	/// <response code="400">If no transactions from the imported file passed the validation.

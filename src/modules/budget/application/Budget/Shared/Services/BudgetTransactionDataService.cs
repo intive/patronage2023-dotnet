@@ -49,7 +49,8 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 			var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType);
 			var categoryType = (CategoryType)Enum.Parse(typeof(CategoryType), transaction.CategoryType);
 			var budgetTransactionDate = DateTime.Parse(transaction.Date);
-			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, value, categoryType, budgetTransactionDate);
+			var status = (Status)Enum.Parse(typeof(Status), transaction.Status);
+			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, value, categoryType, budgetTransactionDate, status);
 			newBudgetTransactions.Add(newBudgetTransaction);
 		}
 
@@ -98,7 +99,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 				rowNumber++;
 				foreach (string result in results)
 				{
-					errors.Add($"row: {rowNumber}| error: {result}");
+					errors.Add($"row: {rowNumber} | {result}");
 				}
 
 				invalidBudgetTransactions.Add(budget);

@@ -23,5 +23,6 @@ public static class BudgetTransactionTransferInfoBudgetTransactionImportInfoMapp
 			Date = x.Date,
 			TransactionType = x.TransactionType,
 			Value = x.Value,
+			Status = x.Status,
 		});
 }

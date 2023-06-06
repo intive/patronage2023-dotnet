@@ -14,6 +14,7 @@ public static class ValidationResultExtensions
 	/// <param name="validationResult">The validation result to extract errors from.</param>
 	public static void AddErrors(this List<string> errors, ValidationResult validationResult)
 	{
-		errors.AddRange(validationResult.Errors.Select(result => $"{result.ErrorMessage}"));
+		errors.AddRange(validationResult.Errors
+			.Select(result => $" error code: {result.ErrorCode} | error: {result.ErrorMessage}"));
 	}
 }

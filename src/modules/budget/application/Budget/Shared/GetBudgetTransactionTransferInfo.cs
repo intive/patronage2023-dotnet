@@ -30,5 +30,8 @@ public record GetBudgetTransactionTransferInfo()
 	/// </summary>
 	public string Date { get; init; } = null!;
 
-	// TODO: Ask for status.
+	/// <summary>
+	/// Transaction status.
+	/// </summary>
+	public string Status { get; init; } = null!;
 }
