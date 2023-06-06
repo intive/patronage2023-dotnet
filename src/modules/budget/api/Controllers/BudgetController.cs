@@ -15,6 +15,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -24,11 +25,11 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure.Export;
-using Intive.Patronage2023.Shared.Infrastructure.Import;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -47,6 +48,8 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBudgetExportService budgetExportService;
 	private readonly IBudgetImportService budgetImportService;
+	private readonly IBudgetTransactionExportService budgetTransactionExportService;
+	private readonly IBudgetTransactionImportService budgetTransactionImportService;
 	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
 	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
@@ -61,6 +64,8 @@ public class BudgetController : ControllerBase
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
+	/// <param name="budgetTransactionExportService">BudgetTransactionExportService.</param>
+	/// <param name="budgetTransactionImportService">BudgetTransactionImportService.</param>
 	public BudgetController(
 		ICommandBus commandBus,
 		IQueryBus queryBus,
@@ -69,7 +74,9 @@ public class BudgetController : ControllerBase
 		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
-		IBudgetImportService budgetImportService)
+		IBudgetImportService budgetImportService,
+		IBudgetTransactionExportService budgetTransactionExportService,
+		IBudgetTransactionImportService budgetTransactionImportService)
 	{
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
@@ -79,6 +86,8 @@ public class BudgetController : ControllerBase
 		this.addUsersToBudgetValidator = usersIdsValidator;
 		this.budgetExportService = budgetExportService;
 		this.budgetImportService = budgetImportService;
+		this.budgetTransactionExportService = budgetTransactionExportService;
+		this.budgetTransactionImportService = budgetTransactionImportService;
 	}
 
 	/// <summary>
@@ -534,23 +543,22 @@ public class BudgetController : ControllerBase
 	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
 	{
 		var query = new GetBudgetsToExport();
-		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
-		string? result = await this.budgetExportService.Export(budgets);
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>(query);
+		var result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(new { uri = result });
+		return this.Ok(result);
 	}
 
 	/// <summary>
 	/// Imports budgets from a provided .csv file.
 	/// </summary>
 	/// <param name="file">The .csv file containing the budgets to be imported.</param>
-	/// <returns>An object containing a list of any errors encountered during the import process,
-	/// and a string that contains either the URI of the saved budgets if the operation was successful, or an appropriate error message.</returns>
+	/// <returns>An object containing a list of errors, and URI to file with budgets that didn't pass validation. Rows in error list apply to the rows in newly genereted file. URI is replaced with propep message in case of all budgets valid or invalid.</returns>
 	/// <response code="200">If at least one budget from the imported file passed the validation and was successfully saved.
 	/// Also contains a list of budgets that failed the validation.</response>
 	/// <response code="400">If no budgets from the imported file passed the validation.
@@ -558,14 +566,76 @@ public class BudgetController : ControllerBase
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[HttpPost("import")]
 	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
 		var getImportResult = await this.budgetImportService.Import(file);
-		await this.commandBus.Send(getImportResult.BudgetAggregateList);
+		await this.commandBus.Send(getImportResult.AggregateList);
 
 		if (getImportResult.ImportResult.Uri == "No budgets were saved.")
+		{
+			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		}
+
+		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+	}
+
+	/// <summary>
+	/// Exports all budget incomes and expenses to Azure Blob Storage.
+	/// </summary>
+	/// <param name="budgetId">Id of the budget from which transactions will be exported.</param>
+	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
+	/// <response code="200">If the export operation was successful and transactions have been stored in Azure Blob Storage.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to read budget.</response>
+	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+	[HttpGet("{budgetId:guid}/transactions/export")]
+	public async Task<IActionResult> ExportBudgetTransactions([FromRoute] Guid budgetId)
+	{
+		var query = new GetBudgetTransactionsToExport { BudgetId = new BudgetId(budgetId) };
+
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, query.BudgetId, Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
+		var result = await this.budgetTransactionExportService.Export(transactions);
+
+		return this.Ok(result);
+	}
+
+	/// <summary>
+	/// Imports transactions to budget from a provided .csv file.
+	/// </summary>
+	/// <param name="budgetId">Import destination budget id.</param>
+	/// <param name="file">The .csv file containing the transactions to be imported.</param>
+	/// <returns>An object containing a list of errors, and URI to file with budget transaction that didn't pass validation. Rows in error list apply to the rows in newly genereted file. URI is replaced with propep message in case of all budget transactions valid or invalid.</returns>
+	/// <response code="200">If at least one transaction from the imported file passed the validation and was successfully saved.
+	/// Also contains a list of transactions that failed the validation.</response>
+	/// <response code="400">If no transactions from the imported file passed the validation.
+	/// The response will include a list of errors for each transaction that failed validation, and information in uri "No transactions were saved.".</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to edit budget.</response>
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+	[HttpPost("{budgetId:guid}/transactions/import")]
+	public async Task<IActionResult> ImportBudgetTransactions([FromRoute] Guid budgetId, IFormFile file)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var getImportResult = await this.budgetTransactionImportService.Import(new BudgetId(budgetId), file);
+		await this.commandBus.Send(getImportResult.AggregateList);
+
+		if (getImportResult.ImportResult.Uri == "No budget transactions were saved.")
 		{
 			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
