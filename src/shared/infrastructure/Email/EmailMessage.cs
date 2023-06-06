@@ -1,7 +1,7 @@
 namespace Intive.Patronage2023.Shared.Infrastructure.Email;
 
 /// <summary>
-/// Email message class.
+/// Email  message class.
 /// </summary>
 public class EmailMessage
 {

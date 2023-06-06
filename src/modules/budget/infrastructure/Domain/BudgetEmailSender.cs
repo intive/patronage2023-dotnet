@@ -3,7 +3,7 @@ using System.Net.Mail;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 
 /// <summary>
-/// Class responsible for exporting budgets and sending them via email.
+/// Class  responsible for exporting budgets and sending them via email.
 /// </summary>
 public class BudgetEmailSender
 {
