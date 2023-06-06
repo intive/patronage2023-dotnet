@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
@@ -13,6 +12,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -22,15 +24,13 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.Export;
+using Intive.Patronage2023.Shared.Infrastructure.Import;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-using Microsoft.AspNetCore.Authorization;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 
 using Microsoft.AspNetCore.Mvc;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -512,7 +512,7 @@ public class BudgetController : ControllerBase
 	/// <returns>A string containing the URI to Azure Blob Storage of the exported file.</returns>
 	/// <response code="200">If the export operation was successful and budgets have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("export")]
 	public async Task<IActionResult> ExportBudgets()
@@ -521,9 +521,7 @@ public class BudgetController : ControllerBase
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
-		string jsonResult = JsonSerializer.Serialize(result);
-
-		return this.Ok(jsonResult);
+		return this.Ok(new { uri = result });
 	}
 
 	/// <summary>
@@ -546,11 +544,11 @@ public class BudgetController : ControllerBase
 		var getImportResult = await this.budgetImportService.Import(file);
 		await this.commandBus.Send(getImportResult.BudgetAggregateList);
 
-		if (getImportResult.ImportResult.Uri != "No budgets were saved.")
+		if (getImportResult.ImportResult.Uri == "No budgets were saved.")
 		{
-			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
 
-		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }

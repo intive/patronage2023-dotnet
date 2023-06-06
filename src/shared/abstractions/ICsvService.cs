@@ -1,4 +1,6 @@
 using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Shared.Abstractions;
 
@@ -21,4 +23,15 @@ public interface ICsvService<T>
 	/// </summary>
 	/// <returns>A string representing the local path to a newly generated CSV file.</returns>
 	public string GenerateFileNameWithCsvExtension();
+
+	/// <summary>
+	/// Reads a list of data records from a CSV file using the provided IFormFile and CsvConfiguration.
+	/// If the CSV file does not start with the expected header, the header is added.
+	/// </summary>
+	/// <typeparam name="THeader">The type used for generating the expected CSV file header.
+	/// This should have properties corresponding to headers in the CSV file.</typeparam>
+	/// <param name="file">The IFormFile containing the CSV data.</param>
+	/// <param name="csvConfig">The CsvConfiguration for parsing the CSV file.</param>
+	/// <returns>A list of data records of type T.</returns>
+	public Task<List<T>> GetRecordsFromCsv<THeader>(IFormFile file, CsvConfiguration csvConfig);
 }

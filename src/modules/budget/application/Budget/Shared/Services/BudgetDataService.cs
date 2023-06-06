@@ -1,5 +1,4 @@
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -20,29 +19,28 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public class BudgetDataService : IBudgetDataService
 {
 	private readonly IExecutionContextAccessor contextAccessor;
-	private readonly IBlobStorageService blobStorageService;
 	private readonly IQueryBus queryBus;
+	private readonly ICsvService<GetBudgetTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetDataService"/> class.
 	/// </summary>
 	/// <param name="contextAccessor">Provides access to the execution context, allowing the service to use user-specific information.</param>
-	/// <param name="blobStorageService">Provides functionality for interacting with Azure Blob Storage.</param>
 	/// <param name="queryBus">Enables the service to dispatch queries to the appropriate handlers.</param>
-	public BudgetDataService(IExecutionContextAccessor contextAccessor, IBlobStorageService blobStorageService, IQueryBus queryBus)
+	/// <param name="csvService">The service responsible for CSV file operations.</param>
+	public BudgetDataService(IExecutionContextAccessor contextAccessor, IQueryBus queryBus, ICsvService<GetBudgetTransferInfo> csvService)
 	{
 		this.contextAccessor = contextAccessor;
-		this.blobStorageService = blobStorageService;
 		this.queryBus = queryBus;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
 	/// Converts a collection of budget information from CSV format into a list of BudgetAggregate objects.
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
-	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	public Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig)
+	public Task<BudgetAggregateList> MapFrom(IEnumerable<GetBudgetTransferInfo> budgetsToImport)
 	{
 		var newBudgets = new List<BudgetAggregate>();
 		foreach (var budget in budgetsToImport)
@@ -65,7 +63,7 @@ public class BudgetDataService : IBudgetDataService
 	/// If a budget with the same name already exists in the database, a random number is appended to the name.
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
-	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
+	/// <param name="budgetsNames">The existing budget's names used for checking whether the new budget's name already exists in the database.</param>
 	/// <returns>Creates a new budget.</returns>
 	public GetBudgetTransferInfo Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames)
 	{
@@ -113,34 +111,33 @@ public class BudgetDataService : IBudgetDataService
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
 	public async Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
-		var budgetInfos = new List<GetBudgetTransferInfo>();
+		var validBudgets = new List<GetBudgetTransferInfo>();
+		var invalidBudgets = new List<GetBudgetTransferInfo>();
 		var budgetsNames = await this.queryBus.Query<GetBudgetsName, GetBudgetsNameInfo?>(new GetBudgetsName());
-		await using var stream = file.OpenReadStream();
-		using var streamReader = new StreamReader(stream);
-		using var csv = new CsvReader(streamReader, csvConfig);
-		await csv.ReadAsync();
-		var budgets = csv.GetRecords<GetBudgetTransferInfo>().ToList();
-		int rowNumber = 0;
+
+		var budgets = await this.csvService.GetRecordsFromCsv<GetBudgetTransferInfo>(file, csvConfig);
+		int rowNumber = 1;
 
 		foreach (var budget in budgets)
 		{
 			var results = this.BudgetValidate(budget);
-			rowNumber++;
 
 			if (results.Any())
 			{
+				rowNumber++;
 				foreach (string result in results)
 				{
 					errors.Add($"row: {rowNumber}| error: {result}");
 				}
 
+				invalidBudgets.Add(budget);
 				continue;
 			}
 
 			var updateBudget = this.Create(budget, budgetsNames);
-			budgetInfos.Add(updateBudget);
+			validBudgets.Add(updateBudget);
 		}
 
-		return new GetBudgetTransferList { BudgetsList = budgetInfos };
+		return new GetBudgetTransferList { BudgetsList = validBudgets, BudgetsErrorsList = invalidBudgets };
 	}
 }
