@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
@@ -14,5 +15,5 @@ public record GetBudgetTransactionsQueryInfo(
 	int PageSize,
 	int PageIndex,
 	TransactionType? TransactionType,
-	string[]? CategoryTypes,
+	CategoryType[]? CategoryTypes,
 	string Search);

@@ -74,6 +74,7 @@ public class BudgetCategoryController : ControllerBase
 	///         "icon": {
 	///             "iconName": "string",
 	///             "foreground": "#643400",
+	///             "background": "#643400",
 	///         },
 	///         "name": "string"
 	///     }
@@ -97,7 +98,7 @@ public class BudgetCategoryController : ControllerBase
 		}
 
 		var categoryId = new TransactionCategoryId(Guid.NewGuid());
-		var command = new AddTransactionCategory(categoryId, new BudgetId(budgetId), request.Icon, request.Name);
+		var command = new AddTransactionCategory(categoryId, new BudgetId(budgetId), request.Icon, new CategoryType(request.Name));
 		await this.commandBus.Send(command);
 		return this.Created(string.Empty, categoryId.Value);
 	}
@@ -107,7 +108,7 @@ public class BudgetCategoryController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
 	/// <param name="budgetCategoryId">The id of the category to delete.</param>
-	/// <response code="204">Returns no content.</response>
+	/// <response code="204">Returns no content if category is deleted correctly.</response>
 	/// <response code="400">If the body is not valid.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is forbidden to do this action.</response>

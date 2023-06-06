@@ -38,7 +38,7 @@ public class GetTransactionsQueryHandlerTests
 			string? name = new Faker().Random.Word();
 			decimal value = new Faker().Random.Decimal(min: .1M);
 			var transactionDate = new Faker().Date.Recent();
-			string category = "Car";
+			var category = new CategoryType("Car");
 			var transaction = BudgetTransactionAggregate.Create(id, budgetId, transactionType, name, value, category, transactionDate);
 			transactionList.Add(transaction);
 			// this.budgetDbContext.Transaction.Add(transaction);

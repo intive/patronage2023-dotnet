@@ -11,9 +11,9 @@ namespace Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.
 /// </summary>
 /// <param name="BudgetId">The ID of the budget to which the category will be added.</param>
 /// <param name="Icon">The transaction category icon.</param>
-/// <param name="CategoryName">The transaction category name.</param>
+/// <param name="CategoryType">The transaction category name.</param>
 /// <param name="TransactionCategoryId">The transaction category id.</param>
-public record AddTransactionCategory(TransactionCategoryId TransactionCategoryId, BudgetId BudgetId, Icon Icon, string CategoryName) : ICommand;
+public record AddTransactionCategory(TransactionCategoryId TransactionCategoryId, BudgetId BudgetId, Icon Icon, CategoryType CategoryType) : ICommand;
 
 /// <summary>
 /// Handles the command for adding a transaction category to a budget.
@@ -39,7 +39,7 @@ public class HandleAddTransactionCategoryToBudget : ICommandHandler<AddTransacti
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task Handle(AddTransactionCategory command, CancellationToken cancellationToken)
 	{
-		var category = TransactionCategoryAggregate.Create(command.TransactionCategoryId, command.BudgetId, command.Icon, command.CategoryName);
+		var category = TransactionCategoryAggregate.Create(command.TransactionCategoryId, command.BudgetId, command.Icon, command.CategoryType);
 		await this.transactionCategoryRepository.Persist(category);
 	}
 }

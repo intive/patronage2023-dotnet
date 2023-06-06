@@ -59,7 +59,7 @@ internal static class BudgetTransactionsQueryExtensions
 	/// <param name="query">Query to filter.</param>
 	/// <param name="categoryTypes">Category types to filter.</param>
 	/// <returns>Transactions which have one of given types.</returns>
-	public static IQueryable<BudgetTransactionAggregate> WithCategoryTypes(this IQueryable<BudgetTransactionAggregate> query, string[]? categoryTypes)
+	public static IQueryable<BudgetTransactionAggregate> WithCategoryTypes(this IQueryable<BudgetTransactionAggregate> query, CategoryType[]? categoryTypes)
 	{
 		return categoryTypes is null || !categoryTypes.Any() ? query : query.Where(x => categoryTypes.Contains(x.CategoryType));
 	}

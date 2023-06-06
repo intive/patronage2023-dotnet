@@ -27,12 +27,15 @@ internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfig
 		builder.Property(e => e.BudgetId)
 			.HasConversion(BudgetConverters.BudgetIdConverter());
 
+		builder.Property(e => e.CategoryType)
+			.HasConversion(BudgetConverters.CategoryTypeConverter());
+
 		builder.Property(x => x.Id).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
 		builder.Property(x => x.TransactionType).HasColumnName("TransactionType").HasConversion<string>().IsRequired();
 		builder.Property(x => x.Name).HasColumnName("Name").IsRequired();
 		builder.Property(x => x.Value).HasColumnName("Value").HasColumnType("decimal(19,4)").IsRequired();
-		builder.Property(x => x.CategoryType).HasColumnName("CategoryType").HasConversion<string>().IsRequired();
+		builder.Property(x => x.CategoryType).HasColumnName("CategoryType").IsRequired();
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 		builder.Property(x => x.Status).HasColumnName("Status").HasConversion<byte>().HasColumnType("tinyint").HasDefaultValue(Status.Active);
 

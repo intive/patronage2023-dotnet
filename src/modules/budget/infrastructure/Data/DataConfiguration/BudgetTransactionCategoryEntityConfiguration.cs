@@ -23,6 +23,8 @@ internal class BudgetTransactionCategoryEntityConfiguration : IEntityTypeConfigu
 			.HasConversion(BudgetConverters.TransactionCategoryId());
 		builder.Property(e => e.BudgetId)
 			.HasConversion(BudgetConverters.BudgetIdConverter());
+		builder.Property(e => e.CategoryType)
+			.HasConversion(BudgetConverters.CategoryTypeConverter());
 
 		builder.Property(x => x.Id).HasColumnName("Id").HasDefaultValueSql("newsequentialid()").IsRequired();
 		builder.Property(x => x.BudgetId).HasColumnName("BudgetId").IsRequired();
@@ -32,6 +34,6 @@ internal class BudgetTransactionCategoryEntityConfiguration : IEntityTypeConfigu
 			icon.Property(p => p.Foreground).HasColumnName("Foreground").HasMaxLength(10);
 			icon.Property(p => p.Background).HasColumnName("Background").HasMaxLength(10);
 		});
-		builder.Property(x => x.Name).HasColumnName("Name").HasMaxLength(30).IsRequired();
+		builder.Property(x => x.CategoryType).HasColumnName("Name").HasMaxLength(30).IsRequired();
 	}
 }

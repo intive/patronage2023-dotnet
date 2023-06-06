@@ -15,13 +15,13 @@ public class TransactionCategoryAddedDomainEvent : DomainEvent
 	/// <param name="id">The identifier of the transaction category.</param>
 	/// <param name="budgetId">The identifier of budget.</param>
 	/// <param name="icon">The icon associated with the transaction category.</param>
-	/// <param name="name">The name of the transaction category.</param>
-	public TransactionCategoryAddedDomainEvent(TransactionCategoryId id, BudgetId budgetId, Icon icon, string name)
+	/// <param name="categoryType">The name of the transaction category.</param>
+	public TransactionCategoryAddedDomainEvent(TransactionCategoryId id, BudgetId budgetId, Icon icon, CategoryType categoryType)
 	{
 		this.Id = id;
 		this.BudgetId = budgetId;
 		this.Icon = icon;
-		this.Name = name;
+		this.CategoryType = categoryType;
 	}
 
 	/// <summary>
@@ -42,5 +42,5 @@ public class TransactionCategoryAddedDomainEvent : DomainEvent
 	/// <summary>
 	/// Gets the name of the transaction category.
 	/// </summary>
-	public string Name { get; private set; }
+	public CategoryType CategoryType { get; private set; }
 }

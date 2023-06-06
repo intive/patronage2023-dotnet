@@ -69,10 +69,10 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
 
-	private async Task<bool> IsCategoryDefined(Guid budgetId, string category, CancellationToken cancellationToken)
+	private async Task<bool> IsCategoryDefined(Guid budgetId, CategoryType category, CancellationToken cancellationToken)
 	{
 		var query = new GetTransactionCategories(new BudgetId(budgetId));
 		var categories = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categories.Categories!.Select(x => x.Name).Contains(category);
+		return categories.Categories!.Select(x => x.Name).Contains(category.CategoryName);
 	}
 }

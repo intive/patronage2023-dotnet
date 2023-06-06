@@ -74,7 +74,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -132,7 +132,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -188,7 +188,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				i,
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 			this.dbContext.Transaction.Add(income);
 		}
@@ -247,7 +247,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			var expense = BudgetTransactionAggregate.Create(
@@ -256,7 +256,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Expense,
 				new Faker().Random.Word(),
 				(-i),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			this.dbContext.Transaction.Add(income);
@@ -318,7 +318,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			if(i % 2 == 0)
@@ -384,7 +384,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i + 10),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			var expense = BudgetTransactionAggregate.Create(
@@ -393,7 +393,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Expense,
 				new Faker().Random.Word(),
 				(-i),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			if (i % 2 == 0)
@@ -459,7 +459,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				TransactionType.Income,
 				new Faker().Random.Word(),
 				(i),
-				"Car",
+				new CategoryType("Car"),
 				transactionPeriod);
 
 			this.dbContext.Transaction.Add(income);

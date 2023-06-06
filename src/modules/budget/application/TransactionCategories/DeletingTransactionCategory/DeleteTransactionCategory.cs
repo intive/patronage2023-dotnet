@@ -37,6 +37,6 @@ public class HandleDeleteTransactionCategory : ICommandHandler<DeleteTransaction
 	{
 		var category = await this.transactionCategoryRepository.GetById(command.CategoryId);
 		category!.DeleteCategory();
-		await this.transactionCategoryRepository.PersistRemove(category);
+		await this.transactionCategoryRepository.Remove(category);
 	}
 }

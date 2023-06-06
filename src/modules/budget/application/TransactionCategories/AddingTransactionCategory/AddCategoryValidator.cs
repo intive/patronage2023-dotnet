@@ -31,9 +31,9 @@ public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 		this.RuleFor(command => command.Icon.IconName).NotNull().NotEmpty().WithMessage("Icon name is required.");
 		this.RuleFor(command => command.Icon.Foreground).NotNull().NotEmpty().Must(this.ColorExists).WithMessage("Foreground should be hex code.");
 		this.RuleFor(command => command.Icon.Background).NotNull().NotEmpty().Must(this.ColorExists).WithMessage("Background should be hex code.");
-		this.RuleFor(command => command.CategoryName).NotNull().NotEmpty().WithMessage("Category name is required.");
-		this.RuleFor(command => new { command.BudgetId, command.CategoryName })
-			.MustAsync(async (x, cancellation) => !await this.CategoryNameExists(x.BudgetId, x.CategoryName, cancellation))
+		this.RuleFor(command => command.CategoryType).NotNull().NotEmpty().WithMessage("Category name is required.");
+		this.RuleFor(command => new { command.BudgetId, command.CategoryType })
+			.MustAsync(async (x, cancellation) => !await this.CategoryNameExists(x.BudgetId, x.CategoryType.CategoryName, cancellation))
 			.WithMessage("Category Name must be unique.");
 	}
 

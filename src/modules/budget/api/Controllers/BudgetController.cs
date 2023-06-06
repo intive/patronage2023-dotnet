@@ -287,7 +287,7 @@ public class BudgetController : ControllerBase
 	{
 		var transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
-		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
+		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, new CategoryType(command.Category), transactionDate);
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
 		{

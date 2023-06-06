@@ -127,9 +127,10 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("BudgetId");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CategoryType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("Name");
 
                     b.HasKey("Id");
@@ -268,17 +269,20 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 
                             b1.Property<string>("Background")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)")
                                 .HasColumnName("Background");
 
                             b1.Property<string>("Foreground")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
+                                .HasMaxLength(10)
+                                .HasColumnType("nvarchar(10)")
                                 .HasColumnName("Foreground");
 
                             b1.Property<string>("IconName")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
+                                .HasMaxLength(30)
+                                .HasColumnType("nvarchar(30)")
                                 .HasColumnName("IconName");
 
                             b1.HasKey("TransactionCategoryAggregateId");

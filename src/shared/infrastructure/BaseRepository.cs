@@ -52,7 +52,7 @@ public abstract class BaseRepository<T, TKey> : IRepository<T, TKey>
 	}
 
 	/// <inheritdoc />
-	public async Task PersistRemove(T aggregate)
+	public async Task Remove(T aggregate)
 	{
 		await this.eventDispatcher.Publish(aggregate.UncommittedEvents);
 		this.HandleEvents(aggregate.UncommittedEvents);

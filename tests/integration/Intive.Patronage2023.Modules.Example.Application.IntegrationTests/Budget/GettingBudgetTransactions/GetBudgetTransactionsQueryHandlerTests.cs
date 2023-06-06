@@ -64,7 +64,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			"Salary",
+			new CategoryType("Salary"),
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -74,7 +74,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -128,7 +128,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			"Refund",
+			new CategoryType("Refund"),
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -138,7 +138,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -193,7 +193,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			"Salary",
+			new CategoryType("Salary"),
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -203,7 +203,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -218,7 +218,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			PageSize = 10,
 			PageIndex = 1,
 			TransactionType = null,
-			CategoryTypes = new[] { "Salary" },
+			CategoryTypes = new [] { new CategoryType("Salary" ) },
 			BudgetId = budgetId,
 		};
 
@@ -253,9 +253,9 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		var userBudget = UserBudgetAggregate.Create(Guid.NewGuid(), userId, budgetId, UserRole.BudgetOwner);
 
 		var incomeId = new TransactionId(Guid.NewGuid());
-		string grocery = "Grocery";
-		string homeSpendings = "HomeSpendings";
-		string car = "Car";
+		var grocery = new CategoryType("Grocery");
+		var homeSpendings = new CategoryType("HomeSpendings");
+		var car = new CategoryType("Car");
 		
 		var income = BudgetTransactionAggregate.Create(
 			incomeId,
@@ -299,7 +299,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			PageSize = 10,
 			PageIndex = 1,
 			TransactionType = null,
-			CategoryTypes = new[] { "Car", "Grocery"},
+			CategoryTypes = new[] { new CategoryType("Car"), new CategoryType("Grocery")},
 			BudgetId = budgetId,
 		};
 
@@ -309,7 +309,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(2);
-		result.Items.Should().OnlyContain(x => x.CategoryType == "Car" || x.CategoryType == "Grocery");
+		result.Items.Should().OnlyContain(x => x.CategoryType.CategoryName == "Car" || x.CategoryType.CategoryName == "Grocery");
 	}
 
 	///<summary>
@@ -340,7 +340,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M),
-			"Grocery",
+			new CategoryType("Grocery"),
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -350,7 +350,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			new Faker().Random.Word(),
 			new Faker().Random.Decimal(0.1M) * -1,
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);
@@ -405,7 +405,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Income,
 			"Food",
 			new Faker().Random.Decimal(0.1M),
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		var expenseId = new TransactionId(Guid.NewGuid());
@@ -415,7 +415,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			TransactionType.Expense,
 			"Foo",
 			new Faker().Random.Decimal(0.1M) * -1,
-			"Car",
+			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
 
 		this.dbContext.UserBudget.Add(userBudget);

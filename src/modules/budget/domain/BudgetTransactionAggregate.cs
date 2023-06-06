@@ -16,7 +16,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
 		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 		this.Apply(budgetTransactionCreated, this.Handle);
@@ -50,7 +50,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <summary>
 	/// Transaction Category Name.
 	/// </summary>
-	public string CategoryType { get; private set; } = default!;
+	public CategoryType CategoryType { get; private set; }
 
 	/// <summary>
 	/// Budget Transaction creation date.
@@ -78,7 +78,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="categoryType">Category of Income or Expense.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, string categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
 	{
 		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
 	}

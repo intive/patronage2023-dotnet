@@ -15,9 +15,9 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	{
 	}
 
-	private TransactionCategoryAggregate(TransactionCategoryId id, BudgetId budgetId, Icon icon, string name)
+	private TransactionCategoryAggregate(TransactionCategoryId id, BudgetId budgetId, Icon icon, CategoryType categoryType)
 	{
-		var transactionCategoryAggregate = new TransactionCategoryAddedDomainEvent(id, budgetId, icon, name);
+		var transactionCategoryAggregate = new TransactionCategoryAddedDomainEvent(id, budgetId, icon, categoryType);
 		this.Apply(transactionCategoryAggregate, this.Handle);
 	}
 
@@ -39,7 +39,7 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	/// <summary>
 	/// Gets the name of the transaction category.
 	/// </summary>
-	public string Name { get; private set; } = default!;
+	public CategoryType CategoryType { get; private set; } = default!;
 
 	/// <summary>
 	/// Creates a new instance of the TransactionCategoryAggregate class.
@@ -47,11 +47,11 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 	/// <param name="id">The identifier of the transaction category.</param>
 	/// <param name="budgetId">The Budget identifier to which we add a transaction category.</param>
 	/// <param name="icon">The icon associated with the transaction category.</param>
-	/// <param name="name">The name of the transaction category.</param>
+	/// <param name="categoryType">The name of the transaction category.</param>
 	/// <returns>A new instance of the TransactionCategoryAggregate class.</returns>
-	public static TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, Icon icon, string name)
+	public static TransactionCategoryAggregate Create(TransactionCategoryId id, BudgetId budgetId, Icon icon, CategoryType categoryType)
 	{
-		return new TransactionCategoryAggregate(id, budgetId, icon, name);
+		return new TransactionCategoryAggregate(id, budgetId, icon, categoryType);
 	}
 
 	/// <summary>
@@ -68,7 +68,7 @@ public class TransactionCategoryAggregate : Aggregate, IEntity<TransactionCatego
 		this.Id = @event.Id;
 		this.BudgetId = @event.BudgetId;
 		this.Icon = @event.Icon;
-		this.Name = @event.Name;
+		this.CategoryType = @event.CategoryType;
 	}
 
 	private void Handle(TransactionCategoryDeletedDomainEvent @event)

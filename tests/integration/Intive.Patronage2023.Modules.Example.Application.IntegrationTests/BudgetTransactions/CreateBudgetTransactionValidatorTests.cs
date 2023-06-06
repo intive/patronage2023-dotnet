@@ -56,7 +56,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var id = new TransactionId(new Faker().Random.Guid());
 		string transactionName= new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
-		string category = "Car";
+		var category = new CategoryType("Car");
 		var createdDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, transactionName, transactionValue, category, createdDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
@@ -80,7 +80,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var type = TransactionType.Income;
 		string name = new Faker().Name.FirstName();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		string category = "Car";
+		var category = new CategoryType("Car");
 		var createdDate = new Faker().Date.Recent();
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, name, value, category, createdDate);
 		
@@ -111,7 +111,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999)*-1;
-		string category = "Car";
+		var category = new CategoryType("Car");
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
@@ -143,7 +143,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, limitValue);
-		string category = "Car";
+		var category = new CategoryType("Car");
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
@@ -176,7 +176,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var transactionId = new TransactionId(new Faker().Random.Guid());
 		string transactionName = new Faker().Random.Word();
 		decimal transactionValue = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		string category = "Car";
+		var category = new CategoryType("Car");
 		var transactionDate = new Faker().Date.Past(new Faker().Random.Int(1,10), period.StartDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionDate);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);

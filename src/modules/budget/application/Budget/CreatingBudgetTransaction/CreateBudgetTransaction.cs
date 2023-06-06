@@ -22,7 +22,7 @@ public record CreateBudgetTransaction(
 	Guid BudgetId,
 	string Name,
 	decimal Value,
-	string Category,
+	CategoryType Category,
 	DateTime TransactionDate) : ICommand;
 
 /// <summary>

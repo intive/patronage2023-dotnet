@@ -34,7 +34,7 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 
-	private async Task<bool> AreAllCategoriesDefined(string[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
+	private async Task<bool> AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
 	{
 		if (categoryTypes is null)
 		{
@@ -43,7 +43,7 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 
 		var query = new GetTransactionCategories(budgetId);
 		var categoriesInfo = await this.queryBus.Query<GetTransactionCategories, TransactionCategoriesInfo>(query);
-		return categoryTypes.All(categoryType => categoriesInfo.Categories!.Any(category => category.Name == categoryType));
+		return categoryTypes.All(categoryType => categoriesInfo.Categories!.Any(category => category.Name == categoryType.CategoryName));
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)

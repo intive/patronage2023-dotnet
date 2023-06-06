@@ -19,6 +19,6 @@ public static class TransactionCategoriesInfoMapper
 		{
 			CategoryId = x.Id.Value,
 			Icon = new Icon(x.Icon.IconName, x.Icon.Foreground, x.Icon.Background),
-			Name = x.Name,
+			Name = x.CategoryType.CategoryName,
 		});
 }
