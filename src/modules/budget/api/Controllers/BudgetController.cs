@@ -12,6 +12,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatis
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -21,15 +24,13 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-using Microsoft.AspNetCore.Authorization;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
-
-using Microsoft.AspNetCore.Mvc;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Shared.Infrastructure.Export;
 using Intive.Patronage2023.Shared.Infrastructure.Import;
+using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -416,6 +417,7 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
+	/// <param name="currency">Currency which we use to fillter budgets.</param>
 	/// <remarks>
 	/// Sample Date Points:
 	///
@@ -427,12 +429,13 @@ public class BudgetController : ControllerBase
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate)
+	public async Task<IActionResult> GetBudgetsReport(DateTime startDate, DateTime endDate, Currency currency)
 	{
 		var getBudgetReport = new GetBudgetsReport
 		{
 			StartDate = startDate,
 			EndDate = endDate,
+			Currency = currency,
 		};
 
 		var budgetReport = await this.queryBus.Query<GetBudgetsReport, BudgetsReport<BudgetAmount>>(getBudgetReport);
