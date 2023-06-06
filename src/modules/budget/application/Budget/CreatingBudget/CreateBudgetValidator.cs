@@ -14,6 +14,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly IExecutionContextAccessor executionContextAccessor;
 	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
@@ -26,6 +27,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.keycloakService = keycloakService;
+		this.executionContextAccessor = executionContextAccessor;
 
 		this.RuleFor(budget => budget.Id)
 			.NotEmpty()
@@ -43,7 +45,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 		this.RuleFor(budget => new { budget.Name, budget.UserId })
 			.MustAsync((x, cancellation) => this.NoExistingBudget(x.Name, executionContextAccessor, cancellation))
-			.WithMessage("{PropertyName} already exists. Choose a different name");
+			.WithMessage("Name already exists. Choose a different name");
 
 		this.RuleFor(budget => budget.Period.StartDate)
 			.NotEmpty();
@@ -68,8 +70,8 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Name.Equals(name) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
-		return !anyExistingBudget;
+		var budgets = await this.budgetDbContext.Budget.Where(x => x.Name.Equals(name)).ToListAsync();
+		return !budgets.Any(x => x.UserId.Value.Equals(executionContextAccessor.GetUserId()));
 	}
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
