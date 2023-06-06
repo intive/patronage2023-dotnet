@@ -32,7 +32,7 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 			.NotEmpty()
 			.NotNull()
 			.MustAsync(this.IsBudgetExists)
-			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.");
+			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.").WithErrorCode("1.11");
 
 		this.RuleFor(x => x.UsersIds)
 			.NotEmpty()

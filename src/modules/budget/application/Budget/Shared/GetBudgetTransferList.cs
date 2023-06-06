@@ -9,4 +9,9 @@ public record GetBudgetTransferList()
 	/// Contains a list of budget transfer details.
 	/// </summary>
 	public List<GetBudgetTransferInfo> BudgetsList { get; init; } = default!;
+
+	/// <summary>
+	/// Contains a list of error budget transfer details.
+	/// </summary>
+	public List<GetBudgetTransferInfo> BudgetsErrorsList { get; init; } = default!;
 }

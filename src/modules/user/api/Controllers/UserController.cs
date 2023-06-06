@@ -1,6 +1,7 @@
 using System.Net;
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
+using Intive.Patronage2023.Modules.User.Application.RefreshingUserToken;
 using Intive.Patronage2023.Modules.User.Application.SignIn;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
@@ -56,9 +57,11 @@ public class UserController : ControllerBase
 	/// Thrown if one or more errors occur while trying to authenticate the user.
 	/// </exception>
 	/// <response code="200">Return Token class object.</response>
+	/// <response code="400">Error codes: 3.4: Email cannot be empty 3.6: Password does not meet criteria... .</response>
 	/// <response code="401">Email or password is not valid.</response>
 	/// <response code="500">Internal server error.</response>
 	[ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
 	[AllowAnonymous]
@@ -99,7 +102,9 @@ public class UserController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="200">Indicates if the request to create user was done correctly.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400">Error codes: 3.1: Avatar cannot be empty; 3.2: First name cannot be empty
+	/// 3.3: Last name cannot be empty 3.4: Email cannot be empty
+	/// 3.5: Email is invalid 3.6 Password does not meet criteria... .</response>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[AllowAnonymous]
@@ -108,6 +113,21 @@ public class UserController : ControllerBase
 	{
 		await this.commandBus.Send(command);
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Generates new access token with use of refresh token.
+	/// </summary>
+	/// <param name="query">The refresh token command, which includes refresh token.</param>
+	/// <returns>New access token.</returns>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[AllowAnonymous]
+	[HttpPost("refresh-token")]
+	public async Task<IActionResult> RefreshToken([FromBody] RefreshUserToken query)
+	{
+		var reponse = await this.queryBus.Query<RefreshUserToken, AccessUserToken>(query);
+		return this.Ok(reponse);
 	}
 
 	/// <summary>
@@ -132,7 +152,7 @@ public class UserController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns requested list of users.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400">Error codes: 10.1: Invalid page.</response>
 	/// <response code="401">If the user is unauthenticated.</response>
 	/// <response code="403">If the access is forbidden.</response>
 	[ProducesResponseType(typeof(PagedList<UserInfoDto>), StatusCodes.Status200OK)]

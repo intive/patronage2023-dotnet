@@ -24,7 +24,7 @@ public class UpdateUserBudgetFavouriteValidator : AbstractValidator<UpdateUserBu
 			.NotEmpty()
 			.NotNull()
 			.MustAsync(this.IsBudgetExists)
-			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.");
+			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.").WithErrorCode("1.11");
 	}
 
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
