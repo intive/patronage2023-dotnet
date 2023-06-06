@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
@@ -12,5 +13,5 @@ public interface IBudgetExportService
 	/// </summary>
 	/// <param name="budgets">List of budgets to be exported.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	Task<string?> Export(GetTransferList<GetBudgetTransferInfo>? budgets);
+	Task<ExportResult> Export(GetTransferList<GetBudgetTransferInfo>? budgets);
 }

@@ -14,10 +14,10 @@ public interface IBudgetTransactionDataService
 	/// <summary>
 	/// Converts a collection of budget transaction information from CSV format into a list of BudgetTransactionAggregate objects.
 	/// </summary>
-	/// <param name="budgetTransactionsToImport">Collection of budget transaction information to be converted, represented as GetBudgetTransactionTInfo objects.</param>
+	/// <param name="budgetTransactionsToImport">Collection of budget transaction information to be converted, represented as GetBudgetTransactionImportInfo objects.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetTransacitonAggregateList, representing the converted budget information.</returns>
-	Task<BudgetTransactionAggregateList> ConvertBudgetTransactionsFromCsvToBudgetTransactionAggregate(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig);
+	Task<BudgetTransactionAggregateList> MapFrom(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig);
 
 	/// <summary>
 	/// Validates the properties of a budget transaction object.

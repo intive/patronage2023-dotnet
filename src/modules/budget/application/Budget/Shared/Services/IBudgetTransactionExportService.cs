@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
@@ -12,5 +13,5 @@ public interface IBudgetTransactionExportService
 	/// </summary>
 	/// <param name="transactions">Collection of the transactions to be exported.</param>
 	/// <returns>The URI of the uploaded file.</returns>
-	Task<string?> Export(GetTransferList<GetBudgetTransactionTransferInfo>? transactions);
+	Task<ExportResult> Export(GetTransferList<GetBudgetTransactionTransferInfo>? transactions);
 }

@@ -528,9 +528,9 @@ public class BudgetController : ControllerBase
 	{
 		var query = new GetBudgetsToExport();
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>(query);
-		string? result = await this.budgetExportService.Export(budgets);
+		var result = await this.budgetExportService.Export(budgets);
 
-		return this.Ok(new { uri = result });
+		return this.Ok(result);
 	}
 
 	/// <summary>
@@ -569,7 +569,7 @@ public class BudgetController : ControllerBase
 	/// <response code="200">If the export operation was successful and transactions have been stored in Azure Blob Storage.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is not allowed to read budget.</response>
-	[ProducesResponseType(typeof(ImportResult), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ExportResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status403Forbidden)]
 	[HttpGet("{budgetId:guid}/transactions/export")]
@@ -581,7 +581,7 @@ public class BudgetController : ControllerBase
 		}
 
 		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
-		string? result = await this.budgetTransactionExportService.Export(transactions);
+		var result = await this.budgetTransactionExportService.Export(transactions);
 
 		return this.Ok(result);
 	}
@@ -614,11 +614,11 @@ public class BudgetController : ControllerBase
 		var getImportResult = await this.budgetTransactionImportService.Import(new BudgetId(budgetId), file);
 		await this.commandBus.Send(getImportResult.AggregateList);
 
-		if (getImportResult.ImportResult.Uri != "No budget transactions were saved.")
+		if (getImportResult.ImportResult.Uri == "No budget transactions were saved.")
 		{
-			return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+			return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 		}
 
-		return this.BadRequest(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
 	}
 }

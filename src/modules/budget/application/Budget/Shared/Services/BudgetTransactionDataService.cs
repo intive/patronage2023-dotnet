@@ -1,5 +1,4 @@
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgetTransactions;
@@ -7,6 +6,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.AspNetCore.Http;
@@ -20,14 +20,17 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services
 public class BudgetTransactionDataService : IBudgetTransactionDataService
 {
 	private readonly IValidator<GetBudgetTransactionImportInfo> validator;
+	private readonly ICsvService<GetBudgetTransactionTransferInfo> csvService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetTransactionDataService"/> class.
 	/// </summary>
 	/// <param name="validator">Import info validator.</param>
-	public BudgetTransactionDataService(IValidator<GetBudgetTransactionImportInfo> validator)
+	/// <param name="csvService">Service to handle csv files.</param>
+	public BudgetTransactionDataService(IValidator<GetBudgetTransactionImportInfo> validator, ICsvService<GetBudgetTransactionTransferInfo> csvService)
 	{
 		this.validator = validator;
+		this.csvService = csvService;
 	}
 
 	/// <summary>
@@ -36,7 +39,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 	/// <param name="budgetTransactionsToImport">Collection of budget transactions information to be converted, represented as GetBudgetTransactionTransferInfo objects.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	public Task<BudgetTransactionAggregateList> ConvertBudgetTransactionsFromCsvToBudgetTransactionAggregate(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig)
+	public Task<BudgetTransactionAggregateList> MapFrom(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig)
 	{
 		var newBudgetTransactions = new List<BudgetTransactionAggregate>();
 		foreach (var transaction in budgetTransactionsToImport)
@@ -79,32 +82,32 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
 	public async Task<GetTransferList<GetBudgetTransactionImportInfo>> CreateValidBudgetTransactionsList(BudgetId budgetId, IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
-		var budgetTransactionsInfos = new List<GetBudgetTransactionImportInfo>();
-		await using var stream = file.OpenReadStream();
-		using var streamReader = new StreamReader(stream);
-		using var csv = new CsvReader(streamReader, csvConfig);
-		await csv.ReadAsync();
-		var budgetTransactions = csv.GetRecords<GetBudgetTransactionTransferInfo>().MapToBudgetTransactionImportInfo(budgetId);
-		int rowNumber = 0;
+		var validBudgetTransactions = new List<GetBudgetTransactionImportInfo>();
+		var invalidBudgetTransactions = new List<GetBudgetTransactionImportInfo>();
+
+		var budgetTransactionsTransfer = await this.csvService.GetRecordsFromCsv<GetBudgetTransactionTransferInfo>(file, csvConfig);
+		var budgetTransactions = budgetTransactionsTransfer.MapToBudgetTransactionImportInfo(budgetId);
+		int rowNumber = 1;
 
 		foreach (var budget in budgetTransactions)
 		{
 			var results = await this.BudgetTransactionValidate(budget);
-			rowNumber++;
 
 			if (results.Any())
 			{
+				rowNumber++;
 				foreach (string result in results)
 				{
 					errors.Add($"row: {rowNumber}| error: {result}");
 				}
 
+				invalidBudgetTransactions.Add(budget);
 				continue;
 			}
 
-			budgetTransactionsInfos.Add(budget);
+			validBudgetTransactions.Add(budget);
 		}
 
-		return new GetTransferList<GetBudgetTransactionImportInfo> { CorrectList = budgetTransactionsInfos };
+		return new GetTransferList<GetBudgetTransactionImportInfo> { CorrectList = validBudgetTransactions, ErrorsList = invalidBudgetTransactions };
 	}
 }

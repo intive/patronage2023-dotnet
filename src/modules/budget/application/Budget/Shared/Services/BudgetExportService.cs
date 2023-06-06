@@ -4,6 +4,7 @@ using CsvHelper;
 
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
@@ -35,7 +36,7 @@ public class BudgetExportService : IBudgetExportService
 	/// <param name="budgets">A GetTransferList object which encapsulates a list of budgets to be exported.
 	/// Each budget contains details like name, value, start date, end date, and other attributes.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	public async Task<string?> Export(GetTransferList<GetBudgetTransferInfo>? budgets)
+	public async Task<ExportResult> Export(GetTransferList<GetBudgetTransferInfo>? budgets)
 	{
 		string filename = this.csvService.GenerateFileNameWithCsvExtension();
 		using (var memoryStream = new MemoryStream())
@@ -48,6 +49,8 @@ public class BudgetExportService : IBudgetExportService
 			await this.blobStorageService.UploadToBlobStorage(memoryStream, filename);
 		}
 
-		return await this.blobStorageService.GenerateLinkToDownload(filename);
+		string uri = await this.blobStorageService.GenerateLinkToDownload(filename);
+
+		return new ExportResult { Uri = uri };
 	}
 }
