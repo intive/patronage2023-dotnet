@@ -103,7 +103,7 @@ public class BudgetController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of budgets corresponding to the query.</response>
-	/// <response code="400">If the query is not valid.</response>
+	/// <response code="400">Error codes: 10.1: Invalid page.</response>
 	[HttpPost]
 	[Route("list")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -169,7 +169,11 @@ public class BudgetController : ControllerBase
 	///
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400">Error codes: 1.2: Name cannot be empty 1.3: Name is too long
+	/// 1.4: Budget with  given name already exists 1.5: Start date can not be empty
+	/// 1.6: End date can not be empty 1.7: Start date must be earlier than end date
+	/// 1.8: Limit cannot be empty 1.9: Limit must be greater than 0
+	/// 1.10: Currency is not supported.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -209,7 +213,8 @@ public class BudgetController : ControllerBase
 	///
 	/// .</remarks>
 	/// <response code="201">Returns the edited item.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400">Error codes: 1.4: Budget with  given name already exists
+	/// 1.7: Start date must be earlier than end date 1.11: Budget not exists.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -236,6 +241,7 @@ public class BudgetController : ControllerBase
 	/// Throws an AppException if there are validation errors.
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -279,7 +285,12 @@ public class BudgetController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400" > Error codes: 2.2: Invalid budget transaction type
+	/// 2.3: Transaction name cannot be empty 2.4: Transaction name is too long
+	/// 2.5: Value cannot be empty 2.6: Value must be positive for income or negative for expense
+	/// 2.7: Category cannot be empty 2.8: Category is invalid
+	/// 2.9: Transaction date is outside the budget period. 1.11: Budget not exists
+	/// 1.2: Name cannot be empty.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -309,6 +320,9 @@ public class BudgetController : ControllerBase
 	/// Throws an AppException if there are validation errors.
 	/// </returns>
 	/// <response code="200">Returns Id of removed budget.</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists
+	/// 2.10: Transaction does not belong to the specified budget
+	/// 2.11: Budget transaction not exists.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status400BadRequest)]
@@ -350,7 +364,8 @@ public class BudgetController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
-	/// <response code="400">If the query is not valid.</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists
+	/// 2.2: Invalid budget transaction type 2.8: Category is invalid 10.1: Invalid page.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpPost("{budgetId:guid}/transactions")]
 	[ProducesResponseType(typeof(PagedList<BudgetInfo>), StatusCodes.Status200OK)]
@@ -389,6 +404,11 @@ public class BudgetController : ControllerBase
 	///         "startDate": "2023-04-20T19:14:20.152Z",
 	///         "endDate": "2023-04-25T20:14:20.152Z"
 	/// .</remarks>
+	/// <response code="400" > Error codes: 1.5: Start date can not be empty
+	/// 1.6: End date can not be empty 1.7: Start date must be earlier than end date
+	/// 1.11: Budget not exists .</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <returns>Returns the list of two calculated values, between two dates.</returns>
 	/// <returns>Returns the BudgetStatistics which has List of calculated budget balance, between two dates with day on which calculation was made.
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("{budgetId:guid}/statistics")]
@@ -447,6 +467,7 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="isFavourite">Is favourite flag value.</param>
+	/// <response code="400" > Error codes: 1.11: Budget not exists .</response>
 	/// <returns>Task.</returns>
 	[HttpPut("{budgetId:guid}/favourite")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -478,7 +499,7 @@ public class BudgetController : ControllerBase
 	/// <param name="usersIds">List of users ids to add to budget.</param>
 	/// <returns>User of the budget.</returns>
 	/// <response code="200">If users are added.</response>
-	/// <response code="400">If the query is not valid.</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists .</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpPost("{budgetId:guid}/users")]
 	[ProducesResponseType(StatusCodes.Status200OK)]

@@ -43,7 +43,13 @@ public sealed class ValidationCommandBehavior<TRequest> : IPipelineBehavior<TReq
 			var result = await validator.ValidateAsync(context);
 			if (!result.IsValid)
 			{
-				throw new ValidationException(result.Errors);
+				var messageList = new List<string>();
+				foreach (var error in result.Errors)
+				{
+					messageList.Add(error.ErrorMessage);
+				}
+
+				throw new ValidationException(string.Join(" & ", messageList), result.Errors);
 			}
 		}
 

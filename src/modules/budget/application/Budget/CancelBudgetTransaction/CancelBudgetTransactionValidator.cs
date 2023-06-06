@@ -33,15 +33,15 @@ public class CancelBudgetTransactionValidator : AbstractValidator<CancelBudgetTr
 
 		this.RuleFor(transaction => transaction.TransactionId)
 			.MustAsync(async (x, cancellation) => await this.TransactionExists(x))
-			.WithMessage("Transaction doesn't exist.");
+			.WithMessage("Transaction doesn't exist.").WithErrorCode("2.11");
 
 		this.RuleFor(transaction => transaction.BudgetId)
 			.MustAsync(async (x, cancellation) => await this.BudgetExists(x))
-			.WithMessage("Budget doesn't exist.");
+			.WithMessage("Budget doesn't exist.").WithErrorCode("1.11");
 
 		this.RuleFor(transaction => transaction)
 			.MustAsync(async (x, cancellation) => await this.BelongsToBudget(x.BudgetId, x.TransactionId))
-			.WithMessage("This transaction does not belong to the specified budget.");
+			.WithMessage("This transaction does not belong to the specified budget.").WithErrorCode("2.10");
 	}
 
 	private async Task<bool> TransactionExists(Guid transactionId)
