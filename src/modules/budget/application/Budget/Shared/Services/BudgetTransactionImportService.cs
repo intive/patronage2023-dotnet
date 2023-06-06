@@ -5,6 +5,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgetTran
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -40,7 +41,7 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 	/// <returns>A tuple containing a list of any errors encountered during the import process and
 	/// the URI of the saved .csv file in the Azure Blob Storage if any budget transactions were successfully imported.
 	/// If no budget transactions were imported, the URI is replaced with a message stating "No budget transactions were saved.".</returns>
-	public async Task<GetImportBudgetTransactionsResult> Import(BudgetId budgetId, IFormFile file)
+	public async Task<GetImportResult<BudgetTransactionAggregateList>> Import(BudgetId budgetId, IFormFile file)
 	{
 		var errors = new List<string>();
 
@@ -50,11 +51,11 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 			Delimiter = ",",
 		};
 
-		var budgetTransactionInfos = this.budgetTransactionDataService.CreateValidBudgetTransactionsList(budgetId, file, csvConfig, errors);
+		var budgetTransactionInfos = await this.budgetTransactionDataService.CreateValidBudgetTransactionsList(budgetId, file, csvConfig, errors);
 
-		if (budgetTransactionInfos.Result.BudgetTransactionsList.Count == 0)
+		if (budgetTransactionInfos.CorrectList.Count == 0)
 		{
-			return new GetImportBudgetTransactionsResult(
+			return new GetImportResult<BudgetTransactionAggregateList>(
 				new BudgetTransactionAggregateList(new List<BudgetTransactionAggregate>()),
 				new ImportResult { ErrorsList = errors, Uri = "No budget transactions were saved." });
 		}
@@ -64,7 +65,7 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 		await using (var streamWriter = new StreamWriter(memoryStream))
 		await using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
 		{
-			this.csvService.WriteRecordsToMemoryStream(budgetTransactionInfos.Result.BudgetTransactionsList, csvWriter);
+			this.csvService.WriteRecordsToMemoryStream(budgetTransactionInfos.CorrectList, csvWriter);
 			memoryStream.Position = 0;
 
 			await this.blobStorageService.UploadToBlobStorage(memoryStream, fileName);
@@ -79,6 +80,6 @@ public class BudgetTransactionImportService : IBudgetTransactionImportService
 		var budgetTransactionsToImport = csvReader.GetRecords<GetBudgetTransactionImportInfo>();
 		var budgetTransactionsAggregateList = await this.budgetTransactionDataService.ConvertBudgetTransactionsFromCsvToBudgetTransactionAggregate(budgetTransactionsToImport, csvConfig);
 
-		return new GetImportBudgetTransactionsResult(budgetTransactionsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
+		return new GetImportResult<BudgetTransactionAggregateList>(budgetTransactionsAggregateList, new ImportResult { ErrorsList = errors, Uri = uri });
 	}
 }

@@ -3,6 +3,7 @@ using System.Globalization;
 using CsvHelper;
 
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
@@ -31,14 +32,14 @@ public class BudgetTransactionExportService : IBudgetTransactionExportService
 	/// </summary>
 	/// <param name="transactions">GetBudgetTransactionList To Export.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	public async Task<string?> Export(GetBudgetTransactionTransferList? transactions)
+	public async Task<string?> Export(GetTransferList<GetBudgetTransactionTransferInfo>? transactions)
 	{
 		string filename = this.csvService.GenerateFileNameWithCsvExtension();
 		using (var memoryStream = new MemoryStream())
 		await using (var streamWriter = new StreamWriter(memoryStream))
 		await using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
 		{
-			this.csvService.WriteRecordsToMemoryStream(transactions!.BudgetTransactionsList, csv);
+			this.csvService.WriteRecordsToMemoryStream(transactions!.CorrectList, csv);
 			memoryStream.Position = 0;
 
 			await this.blobStorageService.UploadToBlobStorage(memoryStream, filename);

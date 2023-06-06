@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -13,5 +14,5 @@ public interface IBudgetImportService
 	/// </summary>
 	/// <param name="file">The file containing the budget data to import.</param>
 	/// <returns>A <see cref="Task{TResult}"/>Representing the result of the asynchronous operation.</returns>
-	Task<GetImportBudgetsResult> Import(IFormFile file);
+	Task<GetImportResult<BudgetAggregateList>> Import(IFormFile file);
 }

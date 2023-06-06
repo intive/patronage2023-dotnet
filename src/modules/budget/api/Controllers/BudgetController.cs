@@ -25,11 +25,11 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
-using Intive.Patronage2023.Shared.Infrastructure.Export;
-using Intive.Patronage2023.Shared.Infrastructure.Import;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -527,7 +527,7 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> ExportBudgets()
 	{
 		var query = new GetBudgetsToExport();
-		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetBudgetTransferList?>(query);
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>(query);
 		string? result = await this.budgetExportService.Export(budgets);
 
 		return this.Ok(new { uri = result });
@@ -551,7 +551,7 @@ public class BudgetController : ControllerBase
 	public async Task<IActionResult> ImportBudgets(IFormFile file)
 	{
 		var getImportResult = await this.budgetImportService.Import(file);
-		await this.commandBus.Send(getImportResult.BudgetAggregateList);
+		await this.commandBus.Send(getImportResult.AggregateList);
 
 		if (getImportResult.ImportResult.Uri == "No budgets were saved.")
 		{
@@ -580,7 +580,7 @@ public class BudgetController : ControllerBase
 			return this.Forbid();
 		}
 
-		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetBudgetTransactionTransferList?>(query);
+		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
 		string? result = await this.budgetTransactionExportService.Export(transactions);
 
 		return this.Ok(result);
@@ -612,7 +612,7 @@ public class BudgetController : ControllerBase
 		}
 
 		var getImportResult = await this.budgetTransactionImportService.Import(new BudgetId(budgetId), file);
-		await this.commandBus.Send(getImportResult.BudgetTransactionAggregateList);
+		await this.commandBus.Send(getImportResult.AggregateList);
 
 		if (getImportResult.ImportResult.Uri != "No budget transactions were saved.")
 		{

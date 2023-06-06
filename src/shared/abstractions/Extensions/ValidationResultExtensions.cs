@@ -1,6 +1,6 @@
 using FluentValidation.Results;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Provides extension methods for working with validation results.

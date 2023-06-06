@@ -7,6 +7,8 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -75,7 +77,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public async Task<GetBudgetTransactionImportList> CreateValidBudgetTransactionsList(BudgetId budgetId, IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	public async Task<GetTransferList<GetBudgetTransactionImportInfo>> CreateValidBudgetTransactionsList(BudgetId budgetId, IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
 		var budgetTransactionsInfos = new List<GetBudgetTransactionImportInfo>();
 		await using var stream = file.OpenReadStream();
@@ -103,6 +105,6 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 			budgetTransactionsInfos.Add(budget);
 		}
 
-		return new GetBudgetTransactionImportList() { BudgetTransactionsList = budgetTransactionsInfos };
+		return new GetTransferList<GetBudgetTransactionImportInfo> { CorrectList = budgetTransactionsInfos };
 	}
 }
