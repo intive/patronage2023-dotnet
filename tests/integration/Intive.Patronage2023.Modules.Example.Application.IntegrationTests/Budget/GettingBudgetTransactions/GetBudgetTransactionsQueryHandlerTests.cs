@@ -228,7 +228,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		// Assert
 		result.Should().NotBeNull();
 		result.Items.Should().HaveCount(1);
-		result.Items.First().CategoryType.Should().Be("Salary");
+		result.Items.First().CategoryType.CategoryName.Should().Be("Salary");
 	}
 
 	///<summary>
