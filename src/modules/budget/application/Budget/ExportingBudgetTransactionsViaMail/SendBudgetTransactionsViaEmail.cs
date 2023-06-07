@@ -1,8 +1,12 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 
@@ -22,16 +26,19 @@ public record SendBudgetTransactionsViaEmail() : ICommand
 /// </summary>
 public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTransactionsViaEmail>
 {
+	private readonly IQueryBus queryBus;
 	private readonly ICsvService<BudgetTransactionAggregate> csvService;
 	private readonly IEmailService emailService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleSendBudgetTransactionsViaEmail"/> class.
 	/// </summary>
+	/// <param name="queryBus">Bus that sends the query.</param>
 	/// <param name="csvService">The CSV service.</param>
 	/// <param name="emailService">The email service.</param>
-	public HandleSendBudgetTransactionsViaEmail(ICsvService<BudgetTransactionAggregate> csvService, IEmailService emailService)
+	public HandleSendBudgetTransactionsViaEmail(IQueryBus queryBus, ICsvService<BudgetTransactionAggregate> csvService, IEmailService emailService)
 	{
+		this.queryBus = queryBus;
 		this.csvService = csvService;
 		this.emailService = emailService;
 	}
@@ -41,6 +48,8 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 	{
 		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
 		string emailAttachmentContent = " ";
+		var query = new GetBudgetTransactionsToExport { BudgetId = command.BudgetId };
+		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
 
 		var emailMessage = new EmailMessage
 		{
