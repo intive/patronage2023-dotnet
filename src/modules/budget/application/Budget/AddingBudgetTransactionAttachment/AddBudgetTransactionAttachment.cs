@@ -1,9 +1,9 @@
-using Intive.Patronage2023.Modules.Budget.Application.Data;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -22,20 +22,20 @@ public record AddBudgetTransactionAttachment(IFormFile File, TransactionId Trans
 /// </summary>
 public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTransactionAttachment>
 {
-	private readonly IBlobStorageService blobStorageService;
-	private readonly BudgetTransactionRepository budgetTransactionRepository;
+	private readonly IAddTransactionAttachmentService addTransactionAttachmentService;
+	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleAddBudgetTransactionAttachment"/> class.
 	/// Constructor.
 	/// </summary>
-	/// <param name="blobStorageService">Blob storage service.</param>
+	/// <param name="addTransactionAttachmentService">Blob storage service.</param>
 	/// <param name="budgetTransactionRepository">Budget transaction repository.</param>
 	/// <param name="budgetDbContext">Budget Db Context.</param>
-	public HandleAddBudgetTransactionAttachment(IBlobStorageService blobStorageService, BudgetTransactionRepository budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public HandleAddBudgetTransactionAttachment(IAddTransactionAttachmentService addTransactionAttachmentService, IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
-		this.blobStorageService = blobStorageService;
+		this.addTransactionAttachmentService = addTransactionAttachmentService;
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;
 	}
@@ -51,15 +51,20 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 			Content = file.OpenReadStream(),
 		};
 
-		var budgetTransaction = this.budgetDbContext.Transaction.FirstOrDefaultAsync(t => t.Id == command.TransactionId);
+		var transaction = await this.budgetTransactionRepository.GetById(command.TransactionId);
 
-		var userBudget = await this.budgetDbContext.UserBudget.FirstOrDefaultAsync(b => budgetTransaction.Result != null && b.BudgetId == budgetTransaction.Result.BudgetId);
+		if (transaction == null)
+		{
+			throw new InvalidOperationException("Transaction not found.");
+		}
+
+		var userBudget = await this.budgetDbContext.UserBudget.FirstOrDefaultAsync(b => b.BudgetId == transaction.BudgetId);
 
 		string userId = userBudget!.UserId.Value.ToString();
-		Uri fileUrl = await this.blobStorageService.UploadFileAsync(userId, attachmentFile.FileName, attachmentFile.Content);
+		Uri fileUrl = await this.addTransactionAttachmentService.UploadFileAsync(userId, attachmentFile.FileName, attachmentFile.Content);
 
-		BudgetTransactionAggregate? transaction = await this.budgetTransactionRepository.GetById(command.TransactionId);
-		transaction?.AddAttachment(fileUrl);
+		transaction.AddAttachment(fileUrl);
+
 		await this.budgetTransactionRepository.Persist(transaction ?? throw new InvalidOperationException());
 	}
 }
