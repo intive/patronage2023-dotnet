@@ -1,21 +1,21 @@
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Data;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// Azure Blob Storage Service class.
 /// </summary>
-public class BlobStorageService : IBlobStorageService
+public class AddTransactionAttachmentService : IAddTransactionAttachmentService
 {
 	private readonly BlobServiceClient blobServiceClient;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="BlobStorageService"/> class.
+	/// Initializes a new instance of the <see cref="AddTransactionAttachmentService"/> class.
 	/// Blob storage service.
 	/// </summary>
 	/// <param name="configuration">IConfiguration.</param>
-	public BlobStorageService(IConfiguration configuration)
+	public AddTransactionAttachmentService(IConfiguration configuration)
 	{
 		this.blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobStorage"));
 	}

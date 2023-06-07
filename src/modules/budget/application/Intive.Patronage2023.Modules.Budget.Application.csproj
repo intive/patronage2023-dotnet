@@ -8,18 +8,9 @@
   </PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Azure.Storage.Files.DataLake" Version="12.14.0" />
-	  <PackageReference Include="CsvHelper" Version="30.0.1" />
 	  <PackageReference Include="FluentDateTime" Version="2.1.0" />
-<<<<<<< HEAD
-	  <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
 	  <PackageReference Include="Azure.Storage.Files.DataLake" Version="12.14.0" />
 	  <PackageReference Include="CsvHelper" Version="30.0.1" />
-=======
-	  <PackageReference Include="Azure.Storage.Files.DataLake" Version="12.14.0" />
-	  <PackageReference Include="CsvHelper" Version="30.0.1" />
-	  <PackageReference Include="FluentDateTime" Version="2.1.0" />
->>>>>>> origin/dev
 	  <PackageReference Include="FluentValidation" Version="11.5.1" />
 	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.1" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
@@ -36,7 +27,6 @@
     <ProjectReference Include="..\..\..\shared\infrastructure\Intive.Patronage2023.Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\..\user\application\Intive.Patronage2023.Modules.User.Application.csproj" />
     <ProjectReference Include="..\..\user\infrastructure\Intive.Patronage2023.Modules.User.Infrastructure.csproj" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <ProjectReference Include="..\..\user\application\Intive.Patronage2023.Modules.User.Application.csproj" />
     <ProjectReference Include="..\..\user\infrastructure\Intive.Patronage2023.Modules.User.Infrastructure.csproj" />
     <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />

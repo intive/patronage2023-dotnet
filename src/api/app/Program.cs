@@ -3,7 +3,6 @@ using Hangfire.Dashboard;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
-using Intive.Patronage2023.Modules.Budget.Infrastructure.Domain;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
@@ -78,7 +77,6 @@ builder.Services.AddFromAssemblies(typeof(IQueryHandler<,>), AppDomain.CurrentDo
 builder.Services.AddScoped<ICommandBus, CommandBus>();
 builder.Services.AddScoped<IQueryBus, QueryBus>();
 builder.Services.AddFromAssemblies(typeof(IRepository<,>), AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<BudgetTransactionRepository>();
 
 builder.Services.AddKeycloakAuthentication(builder.Configuration, configureOptions =>
 {

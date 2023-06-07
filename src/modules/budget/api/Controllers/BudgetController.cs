@@ -1,25 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactionAttachment;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -63,7 +60,7 @@ public class BudgetController : ControllerBase
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
 	/// <param name="usersIdsValidator">User ids validator.</param>
-	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
+	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favourite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
@@ -446,14 +443,14 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
-	/// <param name="currency">Currency which we use to fillter budgets.</param>
+	/// <param name="currency">Currency which we use to filter budgets.</param>
 	/// <remarks>
 	/// Sample Date Points:
 	///
 	///         "startDate": "2023-04-20T19:14:20.152Z",
 	///         "endDate": "2023-04-25T20:14:20.152Z"
 	/// .</remarks>
-	/// <returns>Returns the BudgetReport which has List of sumed Incomes, List of sumed Expenses, between two dates with day on which calculation was made.
+	/// <returns>Returns the BudgetReport which has List of summed Incomes, List of summed Expenses, between two dates with day on which calculation was made.
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]

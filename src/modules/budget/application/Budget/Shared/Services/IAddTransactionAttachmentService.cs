@@ -1,9 +1,9 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Data;
+namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 
 /// <summary>
 /// Interface for Azure Blob storage service.
 /// </summary>
-public interface IBlobStorageService
+public interface IAddTransactionAttachmentService
 {
 	/// <summary>
 	/// Method asynchronously uploads file to storage.
