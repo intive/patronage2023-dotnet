@@ -1,8 +1,7 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.Budget.Domain;
-using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
@@ -28,29 +27,28 @@ public record SendBudgetTransactionsViaEmail() : ICommand
 public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTransactionsViaEmail>
 {
 	private readonly IQueryBus queryBus;
-	private readonly ICsvService<BudgetTransactionAggregate> csvService;
 	private readonly IEmailService emailService;
+	private readonly IBudgetTransactionExportService budgetTransactionExportService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleSendBudgetTransactionsViaEmail"/> class.
 	/// </summary>
 	/// <param name="queryBus">Bus that sends the query.</param>
-	/// <param name="csvService">The CSV service.</param>
 	/// <param name="emailService">The email service.</param>
-	public HandleSendBudgetTransactionsViaEmail(IQueryBus queryBus, ICsvService<BudgetTransactionAggregate> csvService, IEmailService emailService)
+	/// <param name="budgetTransactionExportService">budget transaction export service which holds method to export data to file.</param>
+	public HandleSendBudgetTransactionsViaEmail(IQueryBus queryBus, IEmailService emailService, IBudgetTransactionExportService budgetTransactionExportService)
 	{
 		this.queryBus = queryBus;
-		this.csvService = csvService;
 		this.emailService = emailService;
+		this.budgetTransactionExportService = budgetTransactionExportService;
 	}
 
 	/// <inheritdoc/>
 	public async Task Handle(SendBudgetTransactionsViaEmail command, CancellationToken cancellationToken)
 	{
-		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
-		byte[] emailAttachmentContent = Array.Empty<byte>();
 		var query = new GetBudgetTransactionsToExport { BudgetId = command.BudgetId };
 		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
+		var attachment = await this.budgetTransactionExportService.Export(transactions);
 
 		var emailMessage = new EmailMessage
 		{
@@ -58,7 +56,9 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 			Body = "Test body",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
 			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
-			EmailAttachments = new List<FileDescriptor> { new FileDescriptor(fileName, emailAttachmentContent) },
+			EmailAttachments = new List<FileDescriptor> { attachment },
 		};
+
+		this.emailService.SendEmail(emailMessage);
 	}
 }
