@@ -1,23 +1,20 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.DeleteUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
@@ -28,14 +25,10 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
@@ -55,7 +48,6 @@ public class BudgetController : ControllerBase
 	private readonly IBudgetImportService budgetImportService;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
 	private readonly IBudgetTransactionImportService budgetTransactionImportService;
-	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
