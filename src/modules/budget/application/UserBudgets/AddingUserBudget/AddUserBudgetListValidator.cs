@@ -8,22 +8,22 @@ using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.ShareBudget;
+namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 
 /// <summary>
-/// Budget Users validator class.
+/// AddUserBudgetList validator.
 /// </summary>
-public class ShareBudgetValidator : AbstractValidator<ShareBudget>
+public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 {
 	private readonly IKeycloakService keycloakService;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ShareBudgetValidator"/> class.
+	/// Initializes a new instance of the <see cref="AddUserBudgetListValidator"/> class.
 	/// </summary>
 	/// <param name="keycloakService">Keycloak service to validate users ids.</param>
 	/// <param name="budgetDbContext">Budget repository to validate budget ids.</param>
-	public ShareBudgetValidator(IKeycloakService keycloakService, BudgetDbContext budgetDbContext)
+	public AddUserBudgetListValidator(IKeycloakService keycloakService, BudgetDbContext budgetDbContext)
 	{
 		this.keycloakService = keycloakService;
 		this.budgetDbContext = budgetDbContext;
@@ -71,7 +71,7 @@ public class ShareBudgetValidator : AbstractValidator<ShareBudget>
 		return deserializedUsers;
 	}
 
-	private void IsUserIdDupliacted(Guid[] usersIds, ValidationContext<ShareBudget> validationContext)
+	private void IsUserIdDupliacted(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext)
 	{
 		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
 
@@ -82,7 +82,7 @@ public class ShareBudgetValidator : AbstractValidator<ShareBudget>
 		.ForEach(validationContext.AddFailure);
 	}
 
-	private async Task AreExistingUsersIds(Guid[] usersIds, ValidationContext<ShareBudget> validationContext, CancellationToken cancellationToken)
+	private async Task AreExistingUsersIds(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext, CancellationToken cancellationToken)
 	{
 		foreach (Guid userId in usersIds)
 		{
@@ -96,7 +96,7 @@ public class ShareBudgetValidator : AbstractValidator<ShareBudget>
 		}
 	}
 
-	private async Task IsOwnerInList(Guid[] usersIds, ValidationContext<ShareBudget> validationContext, CancellationToken cancellationToken)
+	private async Task IsOwnerInList(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext, CancellationToken cancellationToken)
 	{
 		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
 		var budgetId = new BudgetId(budgetGuid);

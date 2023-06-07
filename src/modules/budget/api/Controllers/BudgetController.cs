@@ -18,7 +18,9 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
-using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.ShareBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.DeleteUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -512,9 +514,33 @@ public class BudgetController : ControllerBase
 			return this.Forbid();
 		}
 
-		var shareBudget = new ShareBudget(usersIds, budgetId);
+		var getBudgetUsers = new GetUserBudgetList(new BudgetId(budgetId));
 
-		await this.commandBus.Send(shareBudget);
+		var userBudgetList = await this.queryBus.Query<GetUserBudgetList, List<UserBudget>>(getBudgetUsers);
+
+		var currentBudgetUsersIds = userBudgetList.Select(x => x.UserId.Value).ToList();
+
+		var usersIdsToAdd = usersIds.Where(x => !currentBudgetUsersIds.Contains(x))
+			.ToArray();
+
+		if (usersIdsToAdd.Length > 0)
+		{
+			var addUserBudgetList = new AddUserBudgetList(budgetId, usersIdsToAdd);
+
+			await this.commandBus.Send(addUserBudgetList);
+		}
+
+		var userBudgetIdToDelete = userBudgetList
+			.Where(x => !usersIds.Contains(x.UserId.Value))
+			.Select(x => x.Id)
+			.ToArray();
+
+		if (userBudgetIdToDelete.Length > 0)
+		{
+			var listToDelete = new DeleteUserBudgetList(userBudgetIdToDelete);
+
+			await this.commandBus.Send(listToDelete);
+		}
 
 		return this.Ok();
 	}

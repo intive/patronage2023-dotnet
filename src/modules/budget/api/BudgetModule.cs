@@ -10,7 +10,8 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsRepor
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.ShareBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
@@ -43,7 +44,8 @@ public static class BudgetModule
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
-		services.AddScoped<IValidator<ShareBudget>, ShareBudgetValidator>();
+		services.AddScoped<IValidator<AddUserBudgetList>, AddUserBudgetListValidator>();
+		services.AddScoped<IValidator<GetUserBudgetList>, GetUserBudgetListValidator>();
 		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
 		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
 		return services;
