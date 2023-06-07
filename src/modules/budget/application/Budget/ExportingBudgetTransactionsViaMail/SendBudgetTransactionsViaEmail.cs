@@ -7,6 +7,7 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 
@@ -47,7 +48,7 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 	public async Task Handle(SendBudgetTransactionsViaEmail command, CancellationToken cancellationToken)
 	{
 		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
-		string emailAttachmentContent = " ";
+		byte[] emailAttachmentContent = Array.Empty<byte>();
 		var query = new GetBudgetTransactionsToExport { BudgetId = command.BudgetId };
 		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
 
@@ -57,7 +58,7 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 			Body = "Test body",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
 			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
-			EmailAttachments = new EmailAttachment(fileName, emailAttachmentContent),
+			EmailAttachments = new List<FileDescriptor> { new FileDescriptor(fileName, emailAttachmentContent) },
 		};
 	}
 }
