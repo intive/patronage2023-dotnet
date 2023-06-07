@@ -32,6 +32,7 @@ using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 
 namespace Intive.Patronage2023.Modules.Budget.Api.Controllers;
 
@@ -641,5 +642,28 @@ public class BudgetController : ControllerBase
 		}
 
 		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+	}
+
+	/// <summary>
+	/// .
+	/// </summary>
+	/// <param name="budgetId">budget id from which we transfer transactions.</param>
+	/// <returns>Returns Ok if email was sent.</returns>
+	[HttpPost("{budgetId:guid}/transactions/mail")]
+	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> ExportBudgetTransactionViaEmail([FromRoute] Guid budgetId)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var command = new SendBudgetTransactionsViaEmail { BudgetId = new BudgetId(budgetId) };
+		await this.commandBus.Send(command);
+
+		return this.Ok();
 	}
 }
