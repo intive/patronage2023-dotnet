@@ -30,7 +30,18 @@ public class EmailService : IEmailService
 		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
 		message.To.AddRange(emailMessage!.SendToAddresses!.Select(this.ToMailboxAddress));
 		message.Subject = emailMessage!.Subject;
-		message.Body = new TextPart("plain") { Text = emailMessage!.Body };
+
+		var bodyBuilder = new BodyBuilder
+		{
+			TextBody = emailMessage.Body,
+		};
+		foreach (var (attachment, attachmentStream) in
+		from attachment in emailMessage.Attachments
+		let attachmentStream = new MemoryStream(Convert.FromBase64String(attachment.Content))
+		select (attachment, attachmentStream))
+		{
+			bodyBuilder.Attachments.Add(attachment.FileName, attachmentStream);
+		}
 
 		using (var client = new SmtpClient())
 		{
