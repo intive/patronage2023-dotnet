@@ -24,13 +24,13 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	{
 		this.budgetRepository = budgetRepository;
 		this.categoryProvider = categoryProvider;
-		this.RuleFor(budget => budget.PageIndex).GreaterThan(0);
-		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
-		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
+		this.RuleFor(budget => budget.PageIndex).GreaterThan(0).WithErrorCode("10.1");
+		this.RuleFor(budget => budget.PageSize).GreaterThan(0).WithErrorCode("10.1");
+		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x)).WithErrorCode("2.2");
 		this.RuleFor(budget => new { budget.CategoryTypes, budget.BudgetId })
 			.Must(x => this.AreAllCategoriesDefined(x.CategoryTypes, x.BudgetId))
-			.WithMessage("One or more categories are not defined.");
-		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+			.WithMessage("One or more categories are not defined.").WithErrorCode("2.8");
+		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).WithErrorCode("1.11").NotEmpty().NotNull();
 	}
 
 	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId)

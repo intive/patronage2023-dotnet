@@ -15,6 +15,7 @@ using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.Cate
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -48,7 +49,8 @@ public static class BudgetModule
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
-		services.AddScoped<IValidator<AddUsersToBudget>, AddUsersToBudgetValidator>();
+		services.AddScoped<IValidator<AddUserBudgetList>, AddUserBudgetListValidator>();
+		services.AddScoped<IValidator<GetUserBudgetList>, GetUserBudgetListValidator>();
 		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
 		services.AddScoped<IValidator<AddTransactionCategory>, AddCategoryValidator>();
 		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();

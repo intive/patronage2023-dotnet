@@ -47,7 +47,16 @@ public class ErrorHandlerMiddleware
 		}
 		catch (FluentValidation.ValidationException ex)
 		{
-			await HandleErrorAsync(context, HttpStatusCode.BadRequest, ex.Message);
+			string msg = ex.Message;
+			string errorCode = ex.Errors.ElementAt(0).ErrorCode;
+
+			var validationResponse = new CustomValidationResponse
+			{
+				Message = msg,
+				ErrorCode = errorCode,
+			};
+
+			await HandleErrorAsync(context, HttpStatusCode.BadRequest, validationResponse);
 		}
 		catch (BusinessRuleValidationException ex)
 		{
@@ -74,5 +83,47 @@ public class ErrorHandlerMiddleware
 
 		string result = JsonSerializer.Serialize(new { message });
 		await response.WriteAsync(result);
+	}
+
+	/// <summary>
+	/// Handles an error by setting the response status code, serializes error message and writes it to response body.
+	/// </summary>
+	/// <param name="context">The HTTP context.</param>
+	/// <param name="statusCode">The HTTP status code.</param>
+	/// <param name="responseObj">The error message.</param>
+	/// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+	private static async Task HandleErrorAsync(HttpContext context, HttpStatusCode statusCode, CustomValidationResponse responseObj)
+	{
+		var response = context.Response;
+		response.ContentType = "application/json";
+		response.StatusCode = (int)statusCode;
+
+		string result = JsonSerializer.Serialize(responseObj);
+		await response.WriteAsync(result);
+	}
+
+	/// <summary>
+	/// Represents a custom validation response containing the error message and error code.
+	/// </summary>
+	public class CustomValidationResponse
+	{
+		/// <summary>
+		/// Gets or sets the error message.
+		/// </summary>
+		public string? Message { get; set; }
+
+		/// <summary>
+		/// Gets or sets the error code.
+		/// </summary>
+		public string? ErrorCode { get; set; }
+
+		/// <summary>
+		/// Override ToString.
+		/// </summary>
+		/// <returns> Returns string.</returns>
+		public override string ToString()
+		{
+			return $"Message: {this.Message}, ErrorCode: {this.ErrorCode}";
+		}
 	}
 }

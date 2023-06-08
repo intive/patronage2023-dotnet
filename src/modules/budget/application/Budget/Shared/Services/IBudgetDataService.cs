@@ -1,5 +1,6 @@
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -13,16 +14,15 @@ public interface IBudgetDataService
 	/// Converts a collection of budget information from CSV format into a list of BudgetAggregate objects.
 	/// </summary>
 	/// <param name="budgetsToImport">Collection of budget information to be converted, represented as GetBudgetTransferInfo objects.</param>
-	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	Task<BudgetAggregateList> ConvertBudgetsFromCsvToBudgetAggregate(IEnumerable<GetBudgetTransferInfo> budgetsToImport, CsvConfiguration csvConfig);
+	Task<BudgetAggregateList> MapFrom(IEnumerable<GetBudgetTransferInfo> budgetsToImport);
 
 	/// <summary>
 	/// Creates a new budget based on the provided budget information.
 	/// If a budget with the same name already exists in the database, a random number is appended to the name.
 	/// </summary>
 	/// <param name="budget">The budget information used to create the new budget.</param>
-	/// <param name="budgetsNames">The budget information used to create the new budget2.</param>
+	/// <param name="budgetsNames">The existing budget's names used for checking whether the new budget's name already exists in the database.</param>
 	/// <returns>Creates a new budget.</returns>
 	public GetBudgetTransferInfo? Create(GetBudgetTransferInfo budget, GetBudgetsNameInfo? budgetsNames);
 
@@ -41,5 +41,5 @@ public interface IBudgetDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
+	public Task<GetTransferList<GetBudgetTransferInfo>> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
 }

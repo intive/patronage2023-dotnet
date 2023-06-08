@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
@@ -11,12 +12,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// <summary>
 /// Record GetBudgetsToExport representing a query to retrieve budgets ready for export.
 /// </summary>
-public record GetBudgetsToExport : IQuery<GetBudgetTransferList?>;
+public record GetBudgetsToExport : IQuery<GetTransferList<GetBudgetTransferInfo>?>;
 
 /// <summary>
 /// Handles the GetBudgetsToExport query by fetching the required budgets from the BudgetDbContext.
 /// </summary>
-public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, GetBudgetTransferList?>
+public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>
 {
 	private readonly BudgetDbContext budgetDbContext;
 	private readonly IExecutionContextAccessor contextAccessor;
@@ -38,7 +39,7 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 	/// <param name="query">The GetBudgetsToExport query to be handled.</param>
 	/// <param name="cancellationToken">A token that may be used to cancel the handle operation.</param>
 	/// <returns>A GetBudgetTransferList containing the budgets to be exported, or null if no budgets are found.</returns>
-	public async Task<GetBudgetTransferList?> Handle(GetBudgetsToExport query, CancellationToken cancellationToken)
+	public async Task<GetTransferList<GetBudgetTransferInfo>?> Handle(GetBudgetsToExport query, CancellationToken cancellationToken)
 	{
 		bool isAdmin = this.contextAccessor.IsAdmin();
 		var budgets = this.budgetDbContext.Budget.AsQueryable();
@@ -52,6 +53,6 @@ public class GetBudgetsToExportQueryHandler : IQueryHandler<GetBudgetsToExport, 
 
 		var budgetInfos = await budgets.MapToGetBudgetTransferInfo().ToListAsync(cancellationToken: cancellationToken);
 
-		return new GetBudgetTransferList { BudgetsList = budgetInfos };
+		return new GetTransferList<GetBudgetTransferInfo> { CorrectList = budgetInfos };
 	}
 }

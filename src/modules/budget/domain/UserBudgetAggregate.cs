@@ -82,6 +82,16 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Delete UserBudget.
+	/// </summary>
+	public void Delete()
+	{
+		var evt = new UserBudgetDeletedDomainEvent(this.Id);
+
+		this.Apply(evt, this.Handle);
+	}
+
 	private void Handle(UserBudgetAddedDomainEvent @event)
 	{
 		this.Id = @event.Id;
@@ -93,5 +103,10 @@ public class UserBudgetAggregate : Aggregate, IEntity<Guid>
 	private void Handle(UserBudgetFavouriteUpdatedDomainEvent @event)
 	{
 		this.IsFavourite = @event.IsFavourite;
+	}
+
+	private void Handle(UserBudgetDeletedDomainEvent @event)
+	{
+		this.Id = @event.Id;
 	}
 }

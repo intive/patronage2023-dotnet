@@ -7,4 +7,5 @@ public record BudgetUser(
 	Guid Id,
 	string? Avatar,
 	string FirstName,
-	string LastName);
+	string LastName,
+	string UserEmail);

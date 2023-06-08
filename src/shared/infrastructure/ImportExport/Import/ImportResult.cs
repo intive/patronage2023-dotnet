@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+namespace Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
 
 /// <summary>
 /// Class ImportResult representing the result of an import operation, containing any encountered error messages and the URI used for import.
@@ -11,7 +11,7 @@ public record ImportResult
 	public List<string>? ErrorsList { get; init; }
 
 	/// <summary>
-	/// URI that was used for the import operation. This could represent a file location in Azure Blob Storage.
+	/// URI that was used for the import operation. This could represent a file location in storage.
 	/// </summary>
 	public string? Uri { get; init; }
 }

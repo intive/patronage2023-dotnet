@@ -9,16 +9,21 @@ namespace Intive.Patronage2023.Shared.IntegrationTests.Email;
 public class SmtpServerFixture : IAsyncLifetime
 {
 	/// <summary>
-	/// Default port.
+	/// Mapped default port.
 	/// </summary>
-	public const int Port = 25;
+	public const int Port = 465;
+
+	/// <summary>
+	/// Default port of smtp server.
+	/// </summary>
+	private const int Smtp4devPort = 25;
 
 	///<summary>
 	/// The container used for running the smtp4dev for testing.
 	///</summary>
 	public readonly IContainer smtp4devcontainer = new ContainerBuilder()
 		.WithImage("rnwood/smtp4dev:latest")
-		.WithPortBinding(Port, Port)
+		.WithPortBinding(Port, Smtp4devPort)
 		.WithWaitStrategy(Wait.ForUnixContainer())
 		.Build();
 
