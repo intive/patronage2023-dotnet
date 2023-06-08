@@ -1,4 +1,5 @@
 using Bogus;
+
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -9,15 +10,15 @@ using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Moq;
+using Xunit;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.BudgetTransactions;
+namespace Intive.Patronage2023.Budget.Application.Tests;
 
 /// <summary>
 /// Class that contains Get Budget Transaction Validator tests.
 /// </summary>
-public class GetBudgetTransactionsValidatorTests : AbstractIntegrationTests
+public class GetBudgetTransactionsValidatorTests
 {
 	private readonly Mock<ICategoryProvider> categoryProvider;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
@@ -27,8 +28,7 @@ public class GetBudgetTransactionsValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
 	/// </summary>
-	public GetBudgetTransactionsValidatorTests(MsSqlTests fixture) 
-		: base(fixture)
+	public GetBudgetTransactionsValidatorTests()
 	{
 		this.categoryProvider = new Mock<ICategoryProvider>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();

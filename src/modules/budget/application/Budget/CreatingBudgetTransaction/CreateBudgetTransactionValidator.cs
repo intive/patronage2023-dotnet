@@ -1,4 +1,5 @@
 using FluentValidation;
+
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -29,7 +30,7 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
 		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
 			.WithMessage("Value must be positive for income or negative for expense");
-		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category }).MustAsync(async (x, cancellation) => await this.IsCategoryDefined(x.BudgetId, x.Category, cancellation)).WithMessage("Category is not defined.");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category }).Must(x => this.IsCategoryDefined(x.BudgetId, x.Category)).WithMessage("Category is not defined.");
 		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
@@ -65,12 +66,12 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 			return false;
 		}
 
-		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
+		return transactionDate >= budget.Period.StartDate && transactionDate <= budget.Period.EndDate;
 	}
 
-	private Task<bool> IsCategoryDefined(Guid budgetId, CategoryType category, CancellationToken cancellationToken)
+	private bool IsCategoryDefined(Guid budgetId, CategoryType category)
 	{
 		var categories = this.categoryProvider.GetForBudget(new BudgetId(budgetId));
-		return Task.FromResult(categories.Select(x => x.Name).Contains(category.CategoryName));
+		return categories.Select(x => x.Name).Contains(category.CategoryName);
 	}
 }

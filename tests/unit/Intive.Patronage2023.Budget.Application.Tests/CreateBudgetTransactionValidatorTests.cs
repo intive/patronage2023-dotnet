@@ -2,6 +2,7 @@ using Bogus;
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
 using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
@@ -10,35 +11,34 @@ using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Moq;
+using Xunit;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.BudgetTransactions;
+namespace Intive.Patronage2023.Budget.Application.Tests;
 
 /// <summary>
 /// Create Budget Transaction Validator tests.
 /// </summary>
-public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
+public class CreateBudgetTransactionValidatorTests
 {
-	private readonly Mock<ICategoryProvider> categoryProvider;
+	private readonly Mock<ICategoryProvider> categoryProviderMock;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<CreateBudgetTransaction> instance;
 
 	/// <summary>
 	/// Constructor of CreateBudgetTransactionValidator.
 	/// </summary>
-	public CreateBudgetTransactionValidatorTests(MsSqlTests fixture)
-		: base(fixture)
+	public CreateBudgetTransactionValidatorTests()
 	{
-		this.categoryProvider = new Mock<ICategoryProvider>();
+		this.categoryProviderMock = new Mock<ICategoryProvider>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.categoryProvider.Object);
+		this.instance = new CreateBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.categoryProviderMock.Object);
 	}
 
 	/// <summary>
 	/// Validation should return Empty Validation Errors list when all properties are valid.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
+	[Fact]
 	public async Task Validate_WhenAllPropertiesAreValid_ShouldNotHaveAnyValidationErrors()
 	{
 		//Arrange
@@ -58,6 +58,8 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var category = new CategoryType("Car");
 		var createdDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, id.Value, budgetId.Value, transactionName, transactionValue, category, createdDate);
+		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
+		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		//Act
@@ -70,7 +72,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when budget with given id does not exist in database.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
+	[Fact]
 	public async Task Validate_WhenBudgetIdDoesNotExistInDatabase_ShouldHaveValidationErrorForBudgetId()
 	{
 		//Arrange
@@ -82,6 +84,8 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var category = new CategoryType("Car");
 		var createdDate = new Faker().Date.Recent();
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, name, value, category, createdDate);
+		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
+		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		
 		//Act
 		var result = await this.instance.TestValidateAsync(createBudgetTransaction);
@@ -93,7 +97,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when income type transaction have negative value.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
+	[Fact]
 	public async Task Validate_WhenIncomeTypeWithNegativeValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
@@ -113,6 +117,8 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var category = new CategoryType("Car");
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
+		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
+		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 
 		//Act
@@ -125,7 +131,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when expense type transaction have positive value.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
+	[Fact]
 	public async Task Validate_WhenExpenseTypeWithPositiveValue_ShouldHaveValidationErrorForValue()
 	{
 		//Arrange
@@ -145,6 +151,8 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var category = new CategoryType("Car");
 		var transactionCreatedDate = new Faker().Date.Between(period.StartDate, period.EndDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionCreatedDate);
+		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
+		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 
@@ -158,7 +166,7 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 	/// <summary>
 	/// Validation should return Validation Error List when transaction created date is older than month.
 	/// </summary>
-	[Fact(Skip = "Something went wrong when merged with dev with new validation way.")]
+	[Fact]
 	public async Task Validate_WhenTransactionDataIsOlderThanMonth_ShouldHaveValidationErrorForTransactionDate()
 	{
 		//Arrange
@@ -178,6 +186,8 @@ public class CreateBudgetTransactionValidatorTests : AbstractIntegrationTests
 		var category = new CategoryType("Car");
 		var transactionDate = new Faker().Date.Past(new Faker().Random.Int(1,10), period.StartDate);
 		var createBudgetTransaction = new CreateBudgetTransaction(type, transactionId.Value, budgetId.Value, transactionName, transactionValue, category, transactionDate);
+		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
+		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
 		
 		//Act
