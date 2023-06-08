@@ -2,6 +2,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Domain;
@@ -22,19 +23,19 @@ public record AddBudgetTransactionAttachment(IFormFile File, TransactionId Trans
 /// </summary>
 public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTransactionAttachment>
 {
-	private readonly IAddTransactionAttachmentService addTransactionAttachmentService;
+	private readonly IBlobStorageService blobStorageService;
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleAddBudgetTransactionAttachment"/> class.
 	/// </summary>
-	/// <param name="addTransactionAttachmentService">Blob storage service.</param>
+	/// <param name="blobStorageService">Blob storage service.</param>
 	/// <param name="budgetTransactionRepository">Budget transaction repository.</param>
 	/// <param name="budgetDbContext">Budget Db Context.</param>
-	public HandleAddBudgetTransactionAttachment(IAddTransactionAttachmentService addTransactionAttachmentService, IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
+	public HandleAddBudgetTransactionAttachment(IBlobStorageService blobStorageService, IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, BudgetDbContext budgetDbContext)
 	{
-		this.addTransactionAttachmentService = addTransactionAttachmentService;
+		this.blobStorageService = blobStorageService;
 		this.budgetTransactionRepository = budgetTransactionRepository;
 		this.budgetDbContext = budgetDbContext;
 	}
@@ -57,10 +58,10 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 			throw new InvalidOperationException("Transaction not found.");
 		}
 
-		var userBudget = await this.budgetDbContext.UserBudget.FirstOrDefaultAsync(b => b.BudgetId == transaction.BudgetId);
+		await this.blobStorageService.UploadToBlobStorage(attachmentFile.Content, attachmentFile.FileName);
 
-		string userId = userBudget!.UserId.Value.ToString();
-		Uri fileUrl = await this.addTransactionAttachmentService.UploadFileAsync(userId, attachmentFile.FileName, attachmentFile.Content);
+		string fileUrlString = await this.blobStorageService.GenerateLinkToDownload(attachmentFile.FileName);
+		var fileUrl = new Uri(fileUrlString);
 
 		transaction.AddAttachment(fileUrl);
 
