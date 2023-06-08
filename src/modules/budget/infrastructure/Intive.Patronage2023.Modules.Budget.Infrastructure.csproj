@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\user\domain\Intive.Patronage2023.Modules.User.Domain.csproj" />
       <ProjectReference Include="..\domain\Intive.Patronage2023.Modules.Budget.Domain.csproj" />
     </ItemGroup>
 
