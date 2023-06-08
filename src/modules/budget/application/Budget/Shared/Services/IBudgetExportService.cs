@@ -20,5 +20,5 @@ public interface IBudgetExportService
 	/// </summary>
 	/// <param name="budgets">List of budgets to be exported.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	Task<ExportResult> Export(GetTransferList<GetBudgetTransferInfo>? budgets);
+	Task<FileDescriptor> Export(GetTransferList<GetBudgetTransferInfo>? budgets);
 }

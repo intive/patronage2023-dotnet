@@ -54,6 +54,7 @@ public class BudgetExportService : IBudgetExportService
 		return new ExportResult { Uri = uri };
 	}
 
+	/// <inheritdoc/>
 	public async Task<FileDescriptor> Export(GetTransferList<GetBudgetTransferInfo>? budgets)
 	{
 		byte[] content = Array.Empty<byte>();
