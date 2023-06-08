@@ -11,33 +11,33 @@ using Newtonsoft.Json;
 namespace Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
 
 /// <summary>
-/// Budget Users validator class.
+/// AddUserBudgetList validator.
 /// </summary>
-public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
+public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 {
 	private readonly IKeycloakService keycloakService;
 	private readonly BudgetDbContext budgetDbContext;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AddUsersToBudgetValidator"/> class.
+	/// Initializes a new instance of the <see cref="AddUserBudgetListValidator"/> class.
 	/// </summary>
 	/// <param name="keycloakService">Keycloak service to validate users ids.</param>
 	/// <param name="budgetDbContext">Budget repository to validate budget ids.</param>
-	public AddUsersToBudgetValidator(IKeycloakService keycloakService, BudgetDbContext budgetDbContext)
+	public AddUserBudgetListValidator(IKeycloakService keycloakService, BudgetDbContext budgetDbContext)
 	{
 		this.keycloakService = keycloakService;
 		this.budgetDbContext = budgetDbContext;
 
 		this.RuleFor(x => x.BudgetId)
 			.NotEmpty()
-			.NotNull()
 			.MustAsync(this.IsBudgetExists)
 			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.").WithErrorCode("1.11");
 
 		this.RuleFor(x => x.UsersIds)
-			.NotEmpty()
 			.NotNull()
-			.CustomAsync(this.AreExistingUsersIds);
+			.Custom(this.IsUserIdDupliacted)
+			.CustomAsync(this.AreExistingUsersIds)
+			.CustomAsync(this.IsOwnerInList);
 	}
 
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
@@ -70,43 +70,53 @@ public class AddUsersToBudgetValidator : AbstractValidator<AddUsersToBudget>
 		return deserializedUsers;
 	}
 
-	private async Task<List<Guid>> GetAllBudgetUsers(Guid budgetGuid, CancellationToken cancellationToken)
+	private void IsUserIdDupliacted(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext)
 	{
-		var budgetId = new BudgetId(budgetGuid);
-
-		var budgetUsersIds = await this.budgetDbContext.UserBudget
-			.Where(x => x.BudgetId == budgetId)
-		.Select(x => x.UserId.Value)
-		.ToListAsync(cancellationToken: cancellationToken);
-		return budgetUsersIds;
-	}
-
-	private async Task AreExistingUsersIds(Guid[] usersIds, ValidationContext<AddUsersToBudget> validationContext, CancellationToken cancellationToken)
-	{
-		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
-
 		usersIds.GroupBy(x => x)
 		.Where(x => x.Count() > 1)
-		.Select(x => $"User id {x} duplicated.")
+		.Select(x => new FluentValidation.Results.ValidationFailure("UsersIds", $"User id {x.Key} duplicated.")
+		{
+			ErrorCode = "3.7",
+		})
 		.ToList()
-		.ForEach(x => validationContext.AddFailure(x));
+		.ForEach(validationContext.AddFailure);
+	}
 
-		var budgetUsersRoles = await this.GetAllBudgetUsers(budgetGuid, cancellationToken);
-
+	private async Task AreExistingUsersIds(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext, CancellationToken cancellationToken)
+	{
 		foreach (Guid userId in usersIds)
 		{
 			var user = await this.IsUserExists(userId, cancellationToken);
 
 			if (user == null)
 			{
-				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist."));
+				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist.")
+				{
+					ErrorCode = "3.7",
+				});
 				break;
 			}
+		}
+	}
 
-			if (budgetUsersRoles.Contains(userId))
+	private async Task IsOwnerInList(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext, CancellationToken cancellationToken)
+	{
+		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
+		var budgetId = new BudgetId(budgetGuid);
+
+		var budgetOwnerId = await this.budgetDbContext.Budget
+			.Where(x => x.Id.Equals(budgetId))
+			.Select(x => x.UserId.Value)
+			.SingleOrDefaultAsync(cancellationToken: cancellationToken);
+
+		bool isOwnerInList = Array.Exists(usersIds, userId => userId.Equals(budgetOwnerId));
+
+		if (isOwnerInList)
+		{
+			validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"Budget owner with id {budgetOwnerId} can not be added to list.")
 			{
-				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} has already been added earlier."));
-			}
+				ErrorCode = "3.7",
+			});
 		}
 	}
 }

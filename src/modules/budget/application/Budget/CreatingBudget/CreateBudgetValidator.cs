@@ -1,6 +1,7 @@
 using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
@@ -14,6 +15,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly IExecutionContextAccessor executionContextAccessor;
 	private readonly IKeycloakService keycloakService;
 
 	/// <summary>
@@ -26,6 +28,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 	{
 		this.budgetDbContext = budgetDbContext;
 		this.keycloakService = keycloakService;
+		this.executionContextAccessor = executionContextAccessor;
 
 		this.RuleFor(budget => budget.Id)
 			.NotEmpty()
@@ -43,7 +46,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 		this.RuleFor(budget => new { budget.Name, budget.UserId })
 			.MustAsync((x, cancellation) => this.NoExistingBudget(x.Name, executionContextAccessor, cancellation))
-			.WithMessage("{PropertyName} already exists. Choose a different name").WithErrorCode("1.4");
+			.WithMessage("Name already exists. Choose a different name").WithErrorCode("1.4");
 
 		this.RuleFor(budget => budget.Period.StartDate)
 			.NotEmpty().WithErrorCode("1.5");
@@ -68,8 +71,9 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		bool anyExistingBudget = await this.budgetDbContext.Budget.AnyAsync(b => b.Name.Equals(name) && b.UserId.Equals(executionContextAccessor.GetUserId()), cancellation);
-		return !anyExistingBudget;
+		var userId = new UserId(executionContextAccessor.GetUserId()!.Value);
+		bool budgets = await this.budgetDbContext.Budget.AnyAsync(x => x.Name.Equals(name) && x.UserId.Equals(userId), cancellation);
+		return !budgets;
 	}
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
