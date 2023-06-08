@@ -35,43 +35,30 @@ public class BudgetSenderEmail
 	/// <param name="budgets">The list of budgets to export.</param>
 	/// <param name="user">The user to send the email to.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	public async Task ExportAndSendBudgets(List<BudgetAggregate> budgets, AppUser user)
+	public Task ExportAndSendBudgets(List<BudgetAggregate> budgets, AppUser user)
 	{
-		// Generate a unique file name for the CSV file
 		string fileName = this.csvService.GenerateFileNameWithCsvExtension();
+		var stream = new MemoryStream();
 
-		// Create a memory stream to write the CSV data
-		using (var stream = new MemoryStream())
+		using (var writer = new StreamWriter(stream, leaveOpen: true))
+		using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
 		{
-			// Create a CsvWriter
-			using (var writer = new StreamWriter(stream, leaveOpen: true))
-			using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+			this.csvService.WriteRecordsToMemoryStream(budgets, csvWriter);
+			csvWriter.Flush();
+			writer.Flush();
+			stream.Position = 0;
+
+			// Generate the email message
+			var emailMessage = new EmailMessage
 			{
-				// Write the budgets records to the memory stream
-				this.csvService.WriteRecordsToMemoryStream(budgets, csvWriter);
-
-				// Flush the writer to ensure all data is written to the stream
-				csvWriter.Flush();
-				writer.Flush();
-
-				// Reset the stream position to the beginning
-				stream.Position = 0;
-
-				// Upload the CSV file to blob storage
-				await this.blobStorageService.UploadToBlobStorage(stream, fileName);
-			}
+				Subject = "Exported budgets",
+				Body = $"Dear {user.FirstName} {user.LastName},\n\nThe attached file contains budgets as on {DateTime.UtcNow.ToShortDateString()}.\n\nBest regards,\nInbudget Team",
+				SendToAddresses = new List<EmailAddress> { new EmailAddress(user.FirstName, user.Email) },
+				Attachments = new List<EmailAttachment> { new EmailAttachment(fileName, Convert.ToBase64String(stream.ToArray())) },
+			};
+			this.emailService.SendEmail(emailMessage);
 		}
 
-		// Generate the email message
-		var emailMessage = new EmailMessage
-		{
-			Subject = "Exported budgets",
-			Body = $"Dear {user.FirstName} {user.LastName},\n\nThe attached file contains budgets as on {DateTime.UtcNow.ToShortDateString()}.\n\nBest regards,\nInbudget Team",
-			SendToAddresses = new List<EmailAddress> { new EmailAddress(user.FirstName, user.Email) },
-			Attachments = new List<EmailAttachment> { new EmailAttachment(fileName, Convert.ToBase64String(File.ReadAllBytes(fileName))) },
-		};
-
-		// Send the email
-		this.emailService.SendEmail(emailMessage);
+		return Task.CompletedTask;
 	}
 }
