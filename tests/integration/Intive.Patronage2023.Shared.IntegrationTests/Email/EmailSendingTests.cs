@@ -45,7 +45,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
                 }
 		};
 
-		var exception = Record.Exception(() => this.emailService.SendEmail(emailMessage));
-		exception.Should().BeNull();
+		this.emailService.Invoking(service => service.SendEmail(emailMessage))
+				.Should().NotThrow();
 	}
 }
