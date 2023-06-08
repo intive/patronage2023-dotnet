@@ -50,7 +50,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 			var categoryType = (CategoryType)Enum.Parse(typeof(CategoryType), transaction.CategoryType);
 			var budgetTransactionDate = DateTime.Parse(transaction.Date);
 			var status = (Status)Enum.Parse(typeof(Status), transaction.Status);
-			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, value, categoryType, budgetTransactionDate, status);
+			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, transaction.Email, value, categoryType, budgetTransactionDate, status);
 			newBudgetTransactions.Add(newBudgetTransaction);
 		}
 

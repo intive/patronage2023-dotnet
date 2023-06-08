@@ -11,6 +11,11 @@ public record GetBudgetTransactionTransferInfo()
 	public string Name { get; init; } = null!;
 
 	/// <summary>
+	/// Transaction creator email.
+	/// </summary>
+	public string Email { get; init; } = null!;
+
+	/// <summary>
 	/// Transaction value.
 	/// </summary>
 	public string Value { get; init; } = null!;
