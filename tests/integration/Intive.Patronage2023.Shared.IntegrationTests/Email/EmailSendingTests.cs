@@ -1,5 +1,6 @@
 using System.Text;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 
 using Intive.Patronage2023.Shared.Infrastructure.Email;
 
@@ -14,6 +15,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 {
 	private readonly SmtpServerFixture fixture;
 	private IEmailService emailService;
+	private IEmailConfiguration emailConfiguration;
 
 	/// <summary>
 	/// Initializes email tests.
@@ -24,6 +26,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 	{
 		this.fixture = fixture;
 		var scope = this.WebApplicationFactory.Services.CreateScope();
+		this.emailConfiguration = scope.ServiceProvider.GetRequiredService<IOptions<IEmailConfiguration>>().Value;
 		this.emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 	}
 
