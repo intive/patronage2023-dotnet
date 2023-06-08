@@ -583,6 +583,7 @@ public class BudgetController : ControllerBase
 	/// Add budget transaction attachment.
 	/// </summary>
 	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="file">Attachment file.</param>
 	/// <returns>Appropriate status code.</returns>
 	/// <response code="200"> If successfully added attachment.</response>
@@ -593,7 +594,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpPost("{budgetId:guid}/{transactionId:guid}/attachment")]
 	public async Task<IActionResult> AddBudgetTransactionAttachment(
-		[FromRoute] Guid transactionId, IFormFile file)
+		[FromRoute] Guid transactionId, [FromRoute] Guid budgetId, IFormFile file)
 	{
 		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId));
 
@@ -601,6 +602,11 @@ public class BudgetController : ControllerBase
 		if (!validationResult.IsValid)
 		{
 			throw new AppException("One or more error occured when trying to upload attachment.", validationResult.Errors);
+		}
+
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
 		}
 
 		await this.commandBus.Send(command);
@@ -612,6 +618,7 @@ public class BudgetController : ControllerBase
 	/// Get budget transaction attachment.
 	/// </summary>
 	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
 	/// <returns>Budget transaction attachment url.</returns>
 	/// <response code="200"> If successfully returned attachment.</response>
 	/// <response code="400">If passed transaction Id is not valid.</response>
@@ -620,8 +627,13 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
 	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment)")]
-	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
+	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId, [FromRoute] Guid budgetId)
 	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
 		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
 
 		return this.Ok(attachment);

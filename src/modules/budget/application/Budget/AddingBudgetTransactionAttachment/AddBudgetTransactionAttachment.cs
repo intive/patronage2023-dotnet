@@ -52,6 +52,11 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 			throw new InvalidOperationException("Transaction not found.");
 		}
 
+		if (transaction.AttachmentUrl != null)
+		{
+			throw new InvalidOperationException("This transaction already has attachment.");
+		}
+
 		await this.blobStorageService.UploadToBlobStorage(attachmentFile.Content, attachmentFile.FileName);
 
 		string fileUrlString = await this.blobStorageService.GenerateLinkToDownload(attachmentFile.FileName);
