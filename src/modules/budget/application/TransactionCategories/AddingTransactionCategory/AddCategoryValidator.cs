@@ -24,15 +24,15 @@ public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 	{
 		this.budgetRepository = budgetRepository;
 		this.categoryProvider = categoryProvider;
-		this.RuleFor(command => command.BudgetId).NotNull().NotEmpty().WithMessage("Budget ID is required.");
-		this.RuleFor(budget => budget.BudgetId).MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
-		this.RuleFor(command => command.Icon).NotNull().NotEmpty().WithMessage("Icon is required.");
-		this.RuleFor(command => command.Icon.IconName).NotNull().NotEmpty().WithMessage("Icon name is required.");
-		this.RuleFor(command => command.Icon.Foreground).NotNull().NotEmpty().Must(this.ColorExists).WithMessage("Foreground should be hex code.");
-		this.RuleFor(command => command.Icon.Background).NotNull().NotEmpty().Must(this.ColorExists).WithMessage("Background should be hex code.");
-		this.RuleFor(command => command.CategoryType).NotNull().NotEmpty().WithMessage("Category name is required.");
+		this.RuleFor(command => command.BudgetId).NotEmpty().WithMessage("Budget ID is required.");
+		this.RuleFor(command => command.BudgetId).MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
+		this.RuleFor(command => command.Icon).NotEmpty().WithMessage("Icon is required.");
+		this.RuleFor(command => command.Icon.IconName).NotEmpty().WithMessage("Icon name is required.");
+		this.RuleFor(command => command.Icon.Foreground).NotEmpty().Must(this.ColorExists).WithMessage("Foreground should be hex code.");
+		this.RuleFor(command => command.Icon.Background).NotEmpty().Must(this.ColorExists).WithMessage("Background should be hex code.");
+		this.RuleFor(command => command.CategoryType).NotEmpty().WithMessage("Category name is required.");
 		this.RuleFor(command => new { command.BudgetId, command.CategoryType })
-			.MustAsync(async (x, cancellation) => !await this.CategoryNameExists(x.BudgetId, x.CategoryType.CategoryName, cancellation))
+			.Must((x) => !this.CategoryNameExists(x.BudgetId, x.CategoryType.CategoryName))
 			.WithMessage("Category Name must be unique.");
 	}
 
@@ -42,10 +42,9 @@ public class AddCategoryValidator : AbstractValidator<AddTransactionCategory>
 		return budget != null;
 	}
 
-	private Task<bool> CategoryNameExists(BudgetId budgetId, string categoryName, CancellationToken cancellationToken)
+	private bool CategoryNameExists(BudgetId budgetId, string categoryName)
 	{
-		var categories = this.categoryProvider.GetForBudget(budgetId);
-		return Task.FromResult(categories.Any(x => x.Name == categoryName));
+		return this.categoryProvider.GetForBudget(budgetId).Any(x => x.Name == categoryName);
 	}
 
 	private bool ColorExists(string hexColor)

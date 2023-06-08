@@ -67,10 +67,6 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 	{
 		var category = await this.transactionCategoryRepository.GetById(categoryData.CategoryId);
 
-		var transactions = await this.dbContext.Transaction.Where(x => x.BudgetId == categoryData.BudgetId).ToListAsync(cancellationToken: cancellationToken);
-
-		var categories = transactions.Where(x => x.CategoryType == category!.CategoryType);
-
 		return !await this.dbContext.Transaction
 			.AnyAsync(transaction => transaction.BudgetId == categoryData.BudgetId && transaction.CategoryType == category!.CategoryType, cancellationToken);
 	}

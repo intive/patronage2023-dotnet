@@ -28,20 +28,20 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => budget.PageSize).GreaterThan(0);
 		this.RuleFor(budget => budget.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
 		this.RuleFor(budget => new { budget.CategoryTypes, budget.BudgetId })
-			.MustAsync(async (x, cancellation) => await this.AreAllCategoriesDefined(x.CategoryTypes, x.BudgetId, cancellation))
+			.Must(x => this.AreAllCategoriesDefined(x.CategoryTypes, x.BudgetId))
 			.WithMessage("One or more categories are not defined.");
 		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 
-	private Task<bool> AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId, CancellationToken cancellation)
+	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId)
 	{
 		if (categoryTypes is null)
 		{
-			return Task.FromResult(true);
+			return true;
 		}
 
 		var categories = this.categoryProvider.GetForBudget(budgetId);
-		return Task.FromResult(categoryTypes.All(categoryType => categories.Any(category => category.Name == categoryType.CategoryName)));
+		return categoryTypes.All(categoryType => categories.Any(category => category.Name == categoryType.CategoryName));
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)
