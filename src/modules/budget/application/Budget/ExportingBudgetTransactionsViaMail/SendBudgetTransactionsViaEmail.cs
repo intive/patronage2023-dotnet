@@ -13,7 +13,7 @@ using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 
 /// <summary>
-/// .
+/// SendBudgetTransactionsViaEmail command.
 /// </summary>
 public record SendBudgetTransactionsViaEmail() : ICommand
 {
