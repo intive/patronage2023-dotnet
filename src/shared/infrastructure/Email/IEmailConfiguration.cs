@@ -6,6 +6,16 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Email;
 public interface IEmailConfiguration
 {
 	/// <summary>
+	/// Name of the user to authenticate to smtp server.
+	/// </summary>
+	string? UserName { get; }
+
+	/// <summary>
+	/// Password of the user to authenitcate to smtp server.
+	/// </summary>
+	string? Password { get; }
+
+	/// <summary>
 	/// Smtp server name.
 	/// </summary>
 	string SmtpServer { get; }
