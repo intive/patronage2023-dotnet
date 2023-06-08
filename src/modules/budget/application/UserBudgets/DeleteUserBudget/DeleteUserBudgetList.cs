@@ -38,7 +38,7 @@ public class HandleDeleteUserBudget : ICommandHandler<DeleteUserBudgetList>
 		{
 			userBudget.Delete();
 
-			await this.userBudgetRepository.RemovePersist(userBudget);
+			await this.userBudgetRepository.Remove(userBudget);
 		}
 	}
 }

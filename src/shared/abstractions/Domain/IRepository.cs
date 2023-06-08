@@ -33,5 +33,5 @@ public interface IRepository<T, TKey>
 	/// </summary>
 	/// <param name="aggregate">Aggregate.</param>
 	/// <returns>Task.</returns>
-	Task RemovePersist(T aggregate);
+	Task Remove(T aggregate);
 }

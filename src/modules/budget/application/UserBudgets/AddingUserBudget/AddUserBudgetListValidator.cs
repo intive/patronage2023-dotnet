@@ -30,7 +30,6 @@ public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 
 		this.RuleFor(x => x.BudgetId)
 			.NotEmpty()
-			.NotNull()
 			.MustAsync(this.IsBudgetExists)
 			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.").WithErrorCode("1.11");
 
@@ -73,11 +72,12 @@ public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 
 	private void IsUserIdDupliacted(Guid[] usersIds, ValidationContext<AddUserBudgetList> validationContext)
 	{
-		var budgetGuid = validationContext.InstanceToValidate.BudgetId;
-
 		usersIds.GroupBy(x => x)
 		.Where(x => x.Count() > 1)
-		.Select(x => $"User id {x.Key} duplicated.")
+		.Select(x => new FluentValidation.Results.ValidationFailure("UsersIds", $"User id {x.Key} duplicated.")
+		{
+			ErrorCode = "3.7",
+		})
 		.ToList()
 		.ForEach(validationContext.AddFailure);
 	}
@@ -90,7 +90,10 @@ public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 
 			if (user == null)
 			{
-				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist."));
+				validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"User with id {userId} does not exist.")
+				{
+					ErrorCode = "3.7",
+				});
 				break;
 			}
 		}
@@ -110,7 +113,10 @@ public class AddUserBudgetListValidator : AbstractValidator<AddUserBudgetList>
 
 		if (isOwnerInList)
 		{
-			validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"Budget owner with id {budgetOwnerId} can not be added to list."));
+			validationContext.AddFailure(new FluentValidation.Results.ValidationFailure("UsersIds", $"Budget owner with id {budgetOwnerId} can not be added to list.")
+			{
+				ErrorCode = "3.7",
+			});
 		}
 	}
 }

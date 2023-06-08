@@ -22,9 +22,9 @@ public class GetUserBudgetListValidator : AbstractValidator<GetUserBudgetList>
 
 		this.RuleFor(x => x.BudgetId)
 			.NotEmpty()
-			.NotNull()
 			.MustAsync(this.IsBudgetExists)
-			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.");
+			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.")
+			.WithErrorCode("1.11");
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetId, CancellationToken cancellationToken)

@@ -492,7 +492,8 @@ public class BudgetController : ControllerBase
 	/// <param name="usersIds">List of users ids to add to budget.</param>
 	/// <returns>User of the budget.</returns>
 	/// <response code="200">If users are added.</response>
-	/// <response code="400" > Error codes: 1.11: Budget not exists .</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists.
+	/// 3.7: Users ids cannot be duplicated, cannot have budget owner id and users should exist.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpPost("{budgetId:guid}/users")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
