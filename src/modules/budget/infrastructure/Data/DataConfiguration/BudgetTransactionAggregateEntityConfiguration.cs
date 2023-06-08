@@ -38,6 +38,7 @@ internal class BudgetTransactionAggregateEntityConfiguration : IEntityTypeConfig
 		builder.Property(x => x.CategoryType).HasColumnName("CategoryType").IsRequired();
 		builder.Property(x => x.CreatedOn).HasColumnName("CreatedOn");
 		builder.Property(x => x.Status).HasColumnName("Status").HasConversion<byte>().HasColumnType("tinyint").HasDefaultValue(Status.Active);
+		builder.Property(x => x.Email).HasColumnName("Email").IsRequired();
 
 		builder.HasQueryFilter(b => b.Status != Status.Deleted);
 	}

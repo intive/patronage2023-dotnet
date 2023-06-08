@@ -154,7 +154,6 @@ public class CreateBudgetTransactionValidatorTests
 		var staticCategories = new StaticCategoryProvider().GetForBudget(budgetId);
 		this.categoryProviderMock.Setup(x => x.GetForBudget(It.IsAny<BudgetId>())).Returns(staticCategories);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
-		
 
 		//Act
 		var result = await this.instance.TestValidateAsync(createBudgetTransaction);

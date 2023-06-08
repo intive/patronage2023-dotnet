@@ -349,6 +349,7 @@ public class BudgetController : ControllerBase
 	/// Sample request:
 	/// Types: "Income", "Expense"
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// SortDescriptors columns: "Name", "CategoryType", "Status", "Value", "BudgetTransactionDate", "Email"
 	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
@@ -358,8 +359,18 @@ public class BudgetController : ControllerBase
 	///         "categoryTypes": [
 	///           "HomeSpendings",
 	///           "Car"
-	///         ]
-	///         "search": "text"
+	///         ],
+	///         "search": "text",
+	///         "sortDescriptors": [
+	///         {
+	///             "columnName": "Value",
+	///             "sortAscending": false
+	///         },
+	///         {
+	///             "columnName": "Name",
+	///             "sortAscending": true
+	///         }
+	///       ]
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -379,6 +390,7 @@ public class BudgetController : ControllerBase
 			TransactionType = request.TransactionType,
 			CategoryTypes = request.CategoryTypes!.Select(categoryTypeString => new CategoryType(categoryTypeString)).ToArray(),
 			Search = request.Search,
+			SortDescriptors = request.SortDescriptors,
 		};
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)

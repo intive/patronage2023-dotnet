@@ -41,5 +41,10 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction Category.
 	/// </summary>
-	public CategoryType CategoryType { get; init; } = default!;
+	public CategoryType CategoryType { get; init; }
+
+	/// <summary>
+	/// Transaction creator email.
+	/// </summary>
+	public string Email { get; init; } = null!;
 }

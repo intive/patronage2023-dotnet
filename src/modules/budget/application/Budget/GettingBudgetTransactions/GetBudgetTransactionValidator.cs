@@ -3,6 +3,7 @@ using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -33,6 +34,7 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => budget.BudgetId).NotEmpty().MustAsync(this.IsBudgetExists)
 			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.")
 			.WithErrorCode("1.11");
+		this.RuleFor(transaction => transaction.SortDescriptors).Must(this.AreSortDescriptorsColumnExist);
 	}
 
 	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId)
@@ -50,5 +52,23 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	{
 		var budget = await this.budgetRepository.GetById(budgetGuid);
 		return budget != null;
+	}
+
+	private bool AreSortDescriptorsColumnExist(List<SortDescriptor>? sortDescriptors)
+	{
+		if (sortDescriptors == null)
+		{
+			return true;
+		}
+
+		foreach (var sortDescriptor in sortDescriptors)
+		{
+			if (!Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.ColumnName))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

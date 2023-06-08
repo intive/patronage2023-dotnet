@@ -63,6 +63,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			new CategoryType("Salary"),
 			period.StartDate.AddDays(1));
@@ -73,6 +74,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
@@ -127,6 +129,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			new CategoryType("Refund"),
 			period.StartDate.AddDays(1));
@@ -137,6 +140,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
@@ -192,6 +196,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			new CategoryType("Salary"),
 			period.StartDate.AddDays(1));
@@ -202,6 +207,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
@@ -262,6 +268,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			grocery,
 			period.StartDate.AddDays(1));
@@ -272,6 +279,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			homeSpendings,
 			period.StartDate.AddDays(1));
@@ -282,6 +290,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			car,
 			period.StartDate.AddDays(1));
@@ -339,6 +348,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			new CategoryType("Grocery"),
 			period.StartDate.AddDays(1));
@@ -349,6 +359,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			new Faker().Random.Word(),
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
@@ -404,6 +415,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Income,
 			"Food",
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M),
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));
@@ -414,6 +426,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			budgetId,
 			TransactionType.Expense,
 			"Foo",
+			new Faker().Internet.Email(),
 			new Faker().Random.Decimal(0.1M) * -1,
 			new CategoryType("Car"),
 			period.StartDate.AddDays(1));

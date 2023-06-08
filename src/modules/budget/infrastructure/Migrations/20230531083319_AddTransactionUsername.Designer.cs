@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230531083319_AddTransactionUsername")]
+    partial class AddTransactionUsername
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,11 +91,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedOn");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Email");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -109,6 +107,10 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("TransactionType");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("Value");
@@ -118,33 +120,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.HasIndex("BudgetId");
 
                     b.ToTable("BudgetTransaction", "Budgets");
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionCategoryAggregate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id")
-                        .HasDefaultValueSql("newsequentialid()");
-
-                    b.Property<Guid>("BudgetId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("BudgetId");
-
-                    b.Property<string>("CategoryType")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
-                        .HasColumnName("Name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BudgetId");
-
-                    b.HasIndex("Id");
-
-                    b.ToTable("BudgetTransactionCategory", "Budgets");
                 });
 
             modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.UserBudgetAggregate", b =>
@@ -255,50 +230,6 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Intive.Patronage2023.Modules.Budget.Domain.TransactionCategoryAggregate", b =>
-                {
-                    b.HasOne("Intive.Patronage2023.Modules.Budget.Domain.BudgetAggregate", null)
-                        .WithMany()
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums.Icon", "Icon", b1 =>
-                        {
-                            b1.Property<Guid>("TransactionCategoryAggregateId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Background")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)")
-                                .HasColumnName("Background");
-
-                            b1.Property<string>("Foreground")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)")
-                                .HasColumnName("Foreground");
-
-                            b1.Property<string>("IconName")
-                                .IsRequired()
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)")
-                                .HasColumnName("IconName");
-
-                            b1.HasKey("TransactionCategoryAggregateId");
-
-                            b1.ToTable("BudgetTransactionCategory", "Budgets");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TransactionCategoryAggregateId");
-                        });
-
-                    b.Navigation("Icon")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

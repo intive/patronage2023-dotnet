@@ -73,6 +73,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -131,6 +132,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -187,6 +189,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -246,6 +249,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -254,6 +258,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				expenseId,
 				budgetId,
 				TransactionType.Expense,
+				new Faker().Random.Word(),
 				new Faker().Random.Word(),
 				(-i),
 				new CategoryType("Car"),
@@ -317,6 +322,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -383,6 +389,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -392,6 +399,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Expense,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(-i),
 				new CategoryType("Car"),
 				transactionPeriod);
@@ -458,6 +466,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i),
 				new CategoryType("Car"),
 				transactionPeriod);
