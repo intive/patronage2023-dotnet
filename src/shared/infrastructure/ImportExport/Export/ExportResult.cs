@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Shared.Infrastructure.Export;
+namespace Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 /// <summary>
 /// Class ExportResult representing the result of an export operation, containing the URI used for export.
 /// </summary>

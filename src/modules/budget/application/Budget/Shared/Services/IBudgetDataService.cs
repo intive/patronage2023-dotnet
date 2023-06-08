@@ -1,5 +1,6 @@
 using CsvHelper.Configuration;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -40,5 +41,5 @@ public interface IBudgetDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
+	public Task<GetTransferList<GetBudgetTransferInfo>> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors);
 }

@@ -1,6 +1,6 @@
 using FluentValidation.Results;
 
-namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudgets;
+namespace Intive.Patronage2023.Shared.Abstractions.Extensions;
 
 /// <summary>
 /// Provides extension methods for working with validation results.
@@ -14,6 +14,7 @@ public static class ValidationResultExtensions
 	/// <param name="validationResult">The validation result to extract errors from.</param>
 	public static void AddErrors(this List<string> errors, ValidationResult validationResult)
 	{
-		errors.AddRange(validationResult.Errors.Select(result => $"{result.ErrorMessage}"));
+		errors.AddRange(validationResult.Errors
+			.Select(result => $"{result.ErrorMessage}"));
 	}
 }
