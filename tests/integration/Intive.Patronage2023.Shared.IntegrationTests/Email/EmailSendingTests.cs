@@ -38,7 +38,11 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 			Subject = "Test subject",
 			Body = "Test body",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
-			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") }
+			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
+			Attachments = new List<EmailAttachment>
+				{
+					new EmailAttachment("attachment.csv", "test") 
+                }
 		};
 
 		var exception = Record.Exception(() => this.emailService.SendEmail(emailMessage));
