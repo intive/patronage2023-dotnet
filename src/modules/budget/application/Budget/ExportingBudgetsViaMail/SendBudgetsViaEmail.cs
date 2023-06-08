@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Shared.Abstractions;
@@ -13,11 +14,6 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// SendBudgetTransactionsViaEmail command.
 /// </summary>
 public record SendBudgetsViaEmail : ICommand;
-
-/// <summary>
-/// .
-/// </summary>
-public record GetBudgetsForExporting : IQuery<GetTransferList<GetBudgetTransferInfo>?>;
 
 /// <summary>
 /// Class responsible for exporting budget's transactions and sending them via email.
@@ -51,8 +47,8 @@ public class HandleSendBudgetViaEmail : ICommandHandler<SendBudgetsViaEmail>
 	/// <inheritdoc/>
 	public async Task Handle(SendBudgetsViaEmail command, CancellationToken cancellationToken)
 	{
-		var query = new GetBudgetsForExporting();
-		var budgets = await this.queryBus.Query<GetBudgetsForExporting, GetTransferList<GetBudgetTransferInfo>?>(query);
+		var query = new GetBudgetsToExport();
+		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>(query);
 		var attachment = await this.budgetExportService.Export(budgets);
 
 		var userData = this.executionContextAccessor.GetUserDataFromToken();
