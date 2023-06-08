@@ -15,21 +15,47 @@ public class GetBudgetTransferInfoValidator : AbstractValidator<GetBudgetTransfe
 	/// </summary>
 	public GetBudgetTransferInfoValidator()
 	{
-		this.RuleFor(budget => budget.Name).NotEmpty().WithMessage("Budget name is missing");
-		this.RuleFor(budget => budget.IconName).NotEmpty().WithMessage("Budget icon name is missing");
+		this.RuleFor(budget => budget.Name)
+			.NotEmpty()
+			.WithMessage("Budget name is missing")
+			.WithErrorCode("1.2");
+
+		this.RuleFor(budget => budget.IconName)
+			.NotEmpty()
+			.WithMessage("Budget icon name is missing")
+			.WithErrorCode("1.13");
+
 		this.RuleFor(budget => budget.Currency)
-					.Must(this.IsCurrencyDefined).WithMessage("The selected currency is not supported.");
+			.Must(this.IsCurrencyDefined)
+			.WithMessage("The selected currency is not supported.")
+			.WithErrorCode("1.10");
+
 		this.RuleFor(budget => budget.Value)
-			.NotEmpty().WithMessage("Budget value is missing")
-			.Must(this.BeValidDecimal).WithMessage("Budget value is not a valid decimal number");
+			.NotEmpty()
+			.WithMessage("Budget value is missing")
+			.WithErrorCode("1.8")
+			.Must(this.BeValidDecimal)
+			.WithMessage("Budget value is not a valid decimal number")
+			.WithErrorCode("1.14");
+
 		this.RuleFor(budget => budget.StartDate)
-			.NotEmpty().WithMessage("Budget start date is missing")
-			.Must(this.BeValidDate).WithMessage("Budget start date is not a valid date");
+			.NotEmpty()
+			.WithMessage("Budget start date is missing")
+			.WithErrorCode("1.5")
+			.Must(this.BeValidDate)
+			.WithMessage("Budget start date is not a valid date")
+			.WithErrorCode("1.15");
+
 		this.RuleFor(budget => budget.EndDate)
-			.NotEmpty().WithMessage("Budget end date is missing")
-			.Must(this.BeValidDate).WithMessage("Budget end date is not a valid date")
+			.NotEmpty()
+			.WithMessage("Budget end date is missing")
+			.WithErrorCode("1.6")
+			.Must(this.BeValidDate)
+			.WithMessage("Budget end date is not a valid date")
+			.WithErrorCode("1.16")
 			.GreaterThan(budget => budget.StartDate)
-			.WithMessage("Budget start date cannot be later than or equal to end date");
+			.WithMessage("Budget start date cannot be later than or equal to end date")
+			.WithErrorCode("1.7");
 	}
 
 	private bool BeValidDecimal(string value)

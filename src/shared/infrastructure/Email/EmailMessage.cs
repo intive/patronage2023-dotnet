@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
+
 namespace Intive.Patronage2023.Shared.Infrastructure.Email;
 
 /// <summary>
@@ -28,5 +30,5 @@ public class EmailMessage
 	/// <summary>
 	/// Email attachments.
 	/// </summary>
-	public List<EmailAttachment>? Attachments { get; set; }
+	public List<FileDescriptor>? EmailAttachments { get; set; }
 }

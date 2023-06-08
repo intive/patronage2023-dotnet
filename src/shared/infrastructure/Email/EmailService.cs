@@ -1,4 +1,5 @@
 using MailKit.Net.Smtp;
+
 using MimeKit;
 
 namespace Intive.Patronage2023.Shared.Infrastructure.Email;
@@ -30,18 +31,19 @@ public class EmailService : IEmailService
 		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
 		message.To.AddRange(emailMessage!.SendToAddresses!.Select(this.ToMailboxAddress));
 		message.Subject = emailMessage!.Subject;
-
-		var bodyBuilder = new BodyBuilder
+		var builder = new BodyBuilder
 		{
-			TextBody = emailMessage.Body,
+			TextBody = emailMessage!.Body ?? string.Empty,
 		};
-		foreach (var (attachment, attachmentStream) in
-		from attachment in emailMessage.Attachments
-		let attachmentStream = new MemoryStream(Convert.FromBase64String(attachment.Content))
-		select (attachment, attachmentStream))
+		if (emailMessage.EmailAttachments is not null)
 		{
-			bodyBuilder.Attachments.Add(attachment.FileName, attachmentStream);
+			foreach (var item in emailMessage!.EmailAttachments)
+			{
+				builder.Attachments.Add(item.Name, item.Content);
+			}
 		}
+
+		message.Body = builder.ToMessageBody();
 
 		using (var client = new SmtpClient())
 		{

@@ -97,7 +97,7 @@ public class GetBudgetDetailsQueryHandler : IQueryHandler<GetBudgetDetails, Budg
 			throw new AppException("One or more error occured when trying to get user info.");
 		}
 
-		var budgetUser = new BudgetUser(userInfo.Id, userInfo.Attributes?.Avatar[0] ?? string.Empty, userInfo.FirstName, userInfo.LastName);
+		var budgetUser = new BudgetUser(userInfo.Id, userInfo.Attributes?.Avatar[0] ?? string.Empty, userInfo.FirstName, userInfo.LastName, userInfo.Email);
 
 		return budgetUser;
 	}

@@ -5,9 +5,11 @@ using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
@@ -109,7 +111,7 @@ public class BudgetDataService : IBudgetDataService
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <param name="errors">A list to which any validation errors will be added.</param>
 	/// <returns>A list of valid budgets read from the CSV file.</returns>
-	public async Task<GetBudgetTransferList> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
+	public async Task<GetTransferList<GetBudgetTransferInfo>> CreateValidBudgetsList(IFormFile file, CsvConfiguration csvConfig, List<string> errors)
 	{
 		var validBudgets = new List<GetBudgetTransferInfo>();
 		var invalidBudgets = new List<GetBudgetTransferInfo>();
@@ -127,7 +129,7 @@ public class BudgetDataService : IBudgetDataService
 				rowNumber++;
 				foreach (string result in results)
 				{
-					errors.Add($"row: {rowNumber}| error: {result}");
+					errors.Add($"row: {rowNumber} | error: {result}");
 				}
 
 				invalidBudgets.Add(budget);
@@ -138,6 +140,6 @@ public class BudgetDataService : IBudgetDataService
 			validBudgets.Add(updateBudget);
 		}
 
-		return new GetBudgetTransferList { BudgetsList = validBudgets, BudgetsErrorsList = invalidBudgets };
+		return new GetTransferList<GetBudgetTransferInfo> { CorrectList = validBudgets, ErrorsList = invalidBudgets };
 	}
 }

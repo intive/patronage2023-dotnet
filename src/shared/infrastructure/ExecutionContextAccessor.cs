@@ -63,4 +63,25 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 
 		return isAdmin;
 	}
+
+	/// <inheritdoc/>
+	public Dictionary<string, string>? GetUserDataFromToken()
+	{
+		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+		var tokenHandler = new JwtSecurityTokenHandler();
+
+		var token = tokenHandler.ReadJwtToken(jwtToken);
+
+		if (token == null || token.Claims.All(c => c.Type != "sub"))
+		{
+			// JWT token is invalid
+			return null;
+		}
+
+		var claims = token.Claims;
+		var claimsDictionary = claims
+			.ToDictionary(c => c.Type, c => c.Value);
+
+		return claimsDictionary;
+	}
 }
