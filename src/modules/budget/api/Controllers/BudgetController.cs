@@ -369,7 +369,7 @@ public class BudgetController : ControllerBase
 	///         "categoryTypes": [
 	///           "HomeSpendings",
 	///           "Car"
-	///         ]
+	///         ],
 	///         "search": "text",
 	///         "sortDescriptors": [
 	///         {
