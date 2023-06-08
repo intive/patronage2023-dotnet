@@ -151,7 +151,7 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
-	public async Task<string> GetUsernameById(string id, CancellationToken cancellationToken)
+	public async Task<string> GetEmailById(string id, CancellationToken cancellationToken)
 	{
 		var response = await this.GetUserById(id.ToString()!, cancellationToken);
 		string responseContent = string.Empty;
@@ -161,6 +161,6 @@ public class KeycloakService : IKeycloakService
 		}
 
 		var deserializedUsers = JsonConvert.DeserializeObject<UserInfo>(responseContent);
-		return deserializedUsers!.UserName;
+		return deserializedUsers!.Email;
 	}
 }

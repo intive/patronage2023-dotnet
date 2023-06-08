@@ -53,7 +53,7 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 	public async Task Handle(CreateBudgetTransaction command, CancellationToken cancellationToken)
 	{
 		var userId = this.contextAccessor.GetUserId();
-		string username = await this.keycloakService.GetUsernameById(userId.ToString()!, cancellationToken);
+		string email = await this.keycloakService.GetEmailById(userId.ToString()!, cancellationToken);
 		var id = new TransactionId(command.Id);
 		var budgetId = new BudgetId(command.BudgetId);
 		var budgetTransaction = BudgetTransactionAggregate.Create(
@@ -61,7 +61,7 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 			budgetId,
 			command.Type,
 			command.Name,
-			username,
+			email,
 			command.Value,
 			command.Category,
 			command.TransactionDate);

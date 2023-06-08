@@ -31,7 +31,7 @@ public enum TransactionsSortingEnum
 	BudgetTransactionDate = 4,
 
 	/// <summary>
-	/// Transaction creator username.
+	/// Transaction creator email.
 	/// </summary>
-	Username = 5,
+	Email = 5,
 }

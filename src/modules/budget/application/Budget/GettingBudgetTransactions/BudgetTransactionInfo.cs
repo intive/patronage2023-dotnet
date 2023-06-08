@@ -44,7 +44,7 @@ public record BudgetTransactionInfo()
 	public CategoryType CategoryType { get; init; }
 
 	/// <summary>
-	/// Transaction creator username.
+	/// Transaction creator email.
 	/// </summary>
-	public string Username { get; init; } = null!;
+	public string Email { get; init; } = null!;
 }

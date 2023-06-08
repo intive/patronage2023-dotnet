@@ -48,7 +48,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 		var budgetId = new BudgetId(new Faker().Random.Guid());
 		var type = new Faker().Random.Enum<TransactionType>();
 		string name = new Faker().Name.FirstName();
-		string username = new Faker().Random.Word();
+		string email = new Faker().Internet.Email();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
 		var category = new Faker().Random.Enum<CategoryType>();
 		var createdDate = new Faker().Date.Recent();
@@ -56,7 +56,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 			value *= -1;
 
 		this.contextAccessorMock.Setup(x => x.GetUserId()).Returns(userid);
-		this.keycloakServiceMock.Setup(x => x.GetUsernameById(userid.ToString(), cancellationToken)).ReturnsAsync(username);
+		this.keycloakServiceMock.Setup(x => x.GetEmailById(userid.ToString(), cancellationToken)).ReturnsAsync(email);
 		// Act
 		await this.instance.Handle(new CreateBudgetTransaction(type, id.Value, budgetId.Value, name, value, category, createdDate), cancellationToken);
 
@@ -68,7 +68,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 				e.BudgetId == budgetId &&
 				e.TransactionType == type &&
 				e.Name == name &&
-				e.Username == username &&
+				e.Email == email &&
 				e.Value == value &&
 				e.CategoryType == category &&
 				e.BudgetTransactionDate == createdDate)),
