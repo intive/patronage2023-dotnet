@@ -11,12 +11,12 @@ using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetsViaMail;
 
 /// <summary>
-/// SendBudgetTransactionsViaEmail command.
+/// SendBudgetViaEmail command.
 /// </summary>
 public record SendBudgetsViaEmail : ICommand;
 
 /// <summary>
-/// Class responsible for exporting budget's transactions and sending them via email.
+/// Class responsible for exporting budget and sending them via email.
 /// </summary>
 public class HandleSendBudgetViaEmail : ICommandHandler<SendBudgetsViaEmail>
 {
