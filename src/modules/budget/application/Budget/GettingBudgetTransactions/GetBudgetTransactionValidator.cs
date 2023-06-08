@@ -21,11 +21,11 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 	public GetBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
 		this.budgetRepository = budgetRepository;
-		this.RuleFor(transaction => transaction.PageIndex).GreaterThan(0);
-		this.RuleFor(transaction => transaction.PageSize).GreaterThan(0);
-		this.RuleFor(transaction => transaction.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
-		this.RuleFor(transaction => transaction.CategoryTypes).Must(this.AreAllCategoriesDefined);
-		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.PageIndex).GreaterThan(0).WithErrorCode("10.1");
+		this.RuleFor(transaction => transaction.PageSize).GreaterThan(0).WithErrorCode("10.1");
+		this.RuleFor(transaction => transaction.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x)).WithErrorCode("2.2");
+		this.RuleFor(transaction => transaction.CategoryTypes).Must(this.AreAllCategoriesDefined).WithErrorCode("2.8");
+		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).WithErrorCode("1.11").NotEmpty().NotNull();
 		this.RuleFor(transaction => transaction.SortDescriptors).Must(this.AreSortDescriptorsColumnExist);
 	}
 

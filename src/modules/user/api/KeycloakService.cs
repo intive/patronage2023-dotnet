@@ -151,6 +151,47 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
+	public async Task<string> RefreshUserToken(string refreshToken, CancellationToken cancellationToken)
+	{
+		string resource = this.apiKeycloakSettings.Resource;
+		string realm = this.apiKeycloakSettings.Realm;
+		string secret = this.apiKeycloakSettings.Credentials.Secret;
+
+		string url = $"/realms/{realm}/protocol/openid-connect/token";
+
+		var content = new FormUrlEncodedContent(new[]
+		{
+				new KeyValuePair<string, string>("client_id", resource),
+				new KeyValuePair<string, string>("client_secret", secret),
+				new KeyValuePair<string, string>("refresh_token", refreshToken),
+				new KeyValuePair<string, string>("grant_type", "refresh_token"),
+		});
+
+		var response = await this.httpClient.PostAsync(url, content, cancellationToken);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			throw new AppException("refresh token is invalid or keycloack doesn't work");
+		}
+
+		string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+		if (string.IsNullOrEmpty(responseContent))
+		{
+			throw new AppException();
+		}
+
+		Token? token = JsonConvert.DeserializeObject<Token>(responseContent);
+
+		if (token == null || token?.AccessToken == null)
+		{
+			throw new AppException();
+		}
+
+		return token.AccessToken;
+	}
+
+	/// <inheritdoc/>
 	public async Task<string> GetEmailById(string id, CancellationToken cancellationToken)
 	{
 		var response = await this.GetUserById(id.ToString()!, cancellationToken);

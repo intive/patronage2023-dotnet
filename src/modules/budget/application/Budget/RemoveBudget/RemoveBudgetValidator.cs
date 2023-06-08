@@ -28,7 +28,7 @@ public class RemoveBudgetValidator : AbstractValidator<RemoveBudget>
 
 		this.RuleFor(budget => new { budget.Id })
 			.MustAsync(async (x, cancellation) => await this.IsExistingBudget(x.Id, executionContextAccessor, cancellation))
-			.WithMessage("{BudgetId} don't exists. Choose a different number id");
+			.WithMessage("{BudgetId} don't exists. Choose a different number id").WithErrorCode("1.11");
 	}
 
 	private async Task<bool> IsExistingBudget(Guid id, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
