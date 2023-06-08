@@ -1,3 +1,4 @@
+using System.Text;
 using FluentAssertions;
 
 using Intive.Patronage2023.Shared.Infrastructure.Email;
@@ -33,19 +34,24 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 	[Fact]
 	public void SendEmail_WhenCalledProperly_ShouldNotThrowExceptions()
 	{
+		string attachmentContent = "test";
+		byte[] attachmentContentBytes = Encoding.UTF8.GetBytes(attachmentContent);
+		string attachmentContentBase64 = Convert.ToBase64String(attachmentContentBytes);
+
 		var emailMessage = new EmailMessage
 		{
 			Subject = "Test subject",
 			Body = "Test body",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
-			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
+			SendToAddresses = new List<EmailAddress> { new EmailAddress("testTo", "testTo@invite.pl") },
 			Attachments = new List<EmailAttachment>
-				{
-					new EmailAttachment("attachment.csv", "test") 
-                }
+		{
+			new EmailAttachment("attachment.csv", attachmentContentBase64)
+		}
 		};
 
 		this.emailService.Invoking(service => service.SendEmail(emailMessage))
-				.Should().NotThrow();
+			.Should().NotThrow();
 	}
+
 }
