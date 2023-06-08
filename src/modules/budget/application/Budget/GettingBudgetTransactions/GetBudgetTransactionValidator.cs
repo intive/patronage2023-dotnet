@@ -2,6 +2,7 @@ using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -25,7 +26,7 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(transaction => transaction.TransactionType).Must(x => x is null || Enum.IsDefined(typeof(TransactionType), x));
 		this.RuleFor(transaction => transaction.CategoryTypes).Must(this.AreAllCategoriesDefined);
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.SortDescriptors).Must(this.AreAllDescriptorsInEnum);
+		this.RuleFor(transaction => transaction.SortDescriptors).Must(this.AreSortDescriptorsColumnExist);
 	}
 
 	private async Task<bool> IsBudgetExists(BudgetId budgetGuid, CancellationToken cancellationToken)
@@ -39,8 +40,19 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		return categoryTypes is null || categoryTypes.All(categoryType => Enum.IsDefined(typeof(CategoryType), categoryType));
 	}
 
-	private bool AreAllDescriptorsInEnum(List<TransactionSortDescriptor>? transactionSortDescriptors)
+	private bool AreSortDescriptorsColumnExist(List<SortDescriptor>? sortDescriptors)
 	{
-		return transactionSortDescriptors!.All(sortDescriptor => Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.Column));
+		if (sortDescriptors != null)
+		{
+			foreach (var sortDescriptor in sortDescriptors)
+			{
+				if (!Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.ColumnName))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }

@@ -1,3 +1,4 @@
+using System.Linq.Dynamic.Core;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -48,7 +49,7 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// <summary>
 	/// Sort descriptors.
 	/// </summary>
-	public List<TransactionSortDescriptor>? SortDescriptors { get; set; }
+	public List<SortDescriptor>? SortDescriptors { get; set; }
 }
 
 /// <summary>

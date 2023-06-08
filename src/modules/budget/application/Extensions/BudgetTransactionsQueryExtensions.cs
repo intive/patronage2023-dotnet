@@ -1,7 +1,8 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using System.Linq.Dynamic.Core;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Extensions;
@@ -72,30 +73,20 @@ internal static class BudgetTransactionsQueryExtensions
 	/// <param name="budgetTransactions">Query.</param>
 	/// <param name="sortDescriptors">Sort criteria.</param>
 	/// <returns>Sorted query.</returns>
-	public static IQueryable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<TransactionSortDescriptor> sortDescriptors)
+	public static IQueryable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<SortDescriptor> sortDescriptors)
 	{
-		var budgetTransactionsOrdered = budgetTransactions.AsEnumerable().OrderBy(t => 1);
 		if (sortDescriptors.IsNullOrEmpty())
 		{
-			return budgetTransactionsOrdered.AsQueryable();
+			return budgetTransactions;
 		}
 
-		var mapping = new Dictionary<int, Func<BudgetTransactionAggregate, object>>()
-		{
-			{ (int)TransactionsSortingEnum.Name, t => t.Name },
-			{ (int)TransactionsSortingEnum.CategoryType, t => t.CategoryType },
-			{ (int)TransactionsSortingEnum.Status, t => t.Status },
-			{ (int)TransactionsSortingEnum.Value, t => t.Value },
-			{ (int)TransactionsSortingEnum.BudgetTransactionDate, t => t.BudgetTransactionDate },
-			{ (int)TransactionsSortingEnum.Username, t => t.Username },
-		};
-		budgetTransactionsOrdered = sortDescriptors[0].SortAscending ? budgetTransactionsOrdered.OrderBy(mapping[sortDescriptors[0].Column]) : budgetTransactionsOrdered.OrderByDescending(mapping[sortDescriptors[0].Column]);
+		var budgetTransactionsOrdered = sortDescriptors[0].SortAscending ? budgetTransactions.OrderBy(sortDescriptors[0].ColumnName) : budgetTransactions.OrderBy(sortDescriptors[0].ColumnName + " desc");
 
 		foreach (var sortDescriptor in sortDescriptors.Skip(1))
 		{
-			budgetTransactionsOrdered = sortDescriptor.SortAscending ? budgetTransactionsOrdered.ThenBy(mapping[sortDescriptor.Column]) : budgetTransactionsOrdered.ThenByDescending(mapping[sortDescriptor.Column]);
+			budgetTransactionsOrdered = sortDescriptor.SortAscending ? budgetTransactionsOrdered.ThenBy(sortDescriptor.ColumnName) : budgetTransactionsOrdered.ThenBy(sortDescriptor.ColumnName + " desc");
 		}
 
-		return budgetTransactionsOrdered.AsQueryable();
+		return budgetTransactionsOrdered;
 	}
 }
