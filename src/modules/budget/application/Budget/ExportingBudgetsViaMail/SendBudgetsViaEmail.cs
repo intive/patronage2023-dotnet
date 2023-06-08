@@ -1,8 +1,10 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
+using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetsViaMail;
@@ -10,7 +12,12 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudget
 /// <summary>
 /// SendBudgetTransactionsViaEmail command.
 /// </summary>
-public record SendBudgetsViaEmail() : ICommand;
+public record SendBudgetsViaEmail : ICommand;
+
+/// <summary>
+/// .
+/// </summary>
+public record GetBudgetsForExporting : IQuery<GetTransferList<GetBudgetTransferInfo>?>;
 
 /// <summary>
 /// Class responsible for exporting budget's transactions and sending them via email.
@@ -44,7 +51,9 @@ public class HandleSendBudgetViaEmail : ICommandHandler<SendBudgetsViaEmail>
 	/// <inheritdoc/>
 	public async Task Handle(SendBudgetsViaEmail command, CancellationToken cancellationToken)
 	{
-		var attachment = await this.budgetExportService.Export(transactions);
+		var query = new GetBudgetsForExporting();
+		var budgets = await this.queryBus.Query<GetBudgetsForExporting, GetTransferList<GetBudgetTransferInfo>?>(query);
+		var attachment = await this.budgetExportService.Export(budgets);
 
 		var userData = this.executionContextAccessor.GetUserDataFromToken();
 		string email = userData?["email"] ?? string.Empty;
@@ -53,7 +62,7 @@ public class HandleSendBudgetViaEmail : ICommandHandler<SendBudgetsViaEmail>
 		var emailMessage = new EmailMessage
 		{
 			Subject = "Exported budgets",
-			Body = $"Dear {name},\r\nThe attached file contains transactions from budget {budgetDetails?.Name} as on date {DateTime.Now}\n" +
+			Body = $"Dear {name},\r\nThe attached file contains budgets as on date {DateTime.Now}\n" +
 				"Best regards,\r\nInbudget Team",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
 			SendToAddresses = new List<EmailAddress> { new(name, email) },

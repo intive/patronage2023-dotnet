@@ -8,6 +8,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetsViaMail;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
@@ -673,16 +674,15 @@ public class BudgetController : ControllerBase
 	/// <summary>
 	/// .
 	/// </summary>
-	/// <param name="budgetId">budget id from which we transfer transactions.</param>
 	/// <returns>Returns Ok if email was sent.</returns>
-	[HttpPost("{budgetId:guid}/transactions/export/mail")]
-	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status400BadRequest)]
+	[HttpPost("budgets/export/mail")]
+	[ProducesResponseType(typeof(SendBudgetsViaEmail), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(SendBudgetsViaEmail), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> ExportBudgetsViaEmail()
 	{
-		var command = new SendBudgetTransactionsViaEmail { BudgetId = new BudgetId(budgetId) };
+		var command = new SendBudgetsViaEmail();
 		await this.commandBus.Send(command);
 
 		return this.Ok();
