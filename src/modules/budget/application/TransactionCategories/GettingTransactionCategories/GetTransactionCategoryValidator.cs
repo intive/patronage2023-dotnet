@@ -20,8 +20,8 @@ public class GetTransactionCategoryValidator : AbstractValidator<GetTransactionC
 	{
 		this.budgetRepository = budgetRepository;
 		this.RuleFor(category => category.BudgetId)
-			.NotEmpty().NotNull()
-			.MustAsync(this.BudgetExists).WithMessage("Budget does not exist.");
+			.NotEmpty()
+			.MustAsync(this.BudgetExists).WithMessage("Budget does not exist.").WithErrorCode("1.11");
 	}
 
 	private async Task<bool> BudgetExists(BudgetId budgetId, CancellationToken cancellationToken)

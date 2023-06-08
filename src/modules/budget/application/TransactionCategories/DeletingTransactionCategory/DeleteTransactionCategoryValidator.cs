@@ -28,7 +28,7 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 		this.dbContext = dbContext;
 		this.budgetRepository = budgetRepository;
 
-		this.RuleFor(budget => budget.BudgetId).NotEmpty().MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
+		this.RuleFor(budget => budget.BudgetId).NotEmpty().MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.").WithErrorCode("1.11");
 		this.RuleFor(category => category.CategoryId)
 			.NotEmpty()
 			.DependentRules(() =>
@@ -39,11 +39,11 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 					{
 						this.RuleFor(category => category)
 							.MustAsync(this.TransactionExistsForCategory)
-							.WithMessage("Cannot delete the category because it is used in one or more transactions.");
+							.WithMessage("Cannot delete the category because it is used in one or more transactions.").WithErrorCode("1.24");
 					})
-					.WithMessage("Category does not belong to the budget.");
+					.WithMessage("Category does not belong to the budget.").WithErrorCode("1.23");
 			})
-			.WithMessage("Built-in category cannot be deleted.");
+			.WithMessage("Built-in category cannot be deleted.").WithErrorCode("1.22");
 	}
 
 	private async Task<bool> BudgetExists(BudgetId budgetId, CancellationToken cancellationToken)

@@ -30,7 +30,9 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 		this.RuleFor(budget => new { budget.CategoryTypes, budget.BudgetId })
 			.Must(x => this.AreAllCategoriesDefined(x.CategoryTypes, x.BudgetId))
 			.WithMessage("One or more categories are not defined.").WithErrorCode("2.8");
-		this.RuleFor(budget => budget.BudgetId).MustAsync(this.IsBudgetExists).WithErrorCode("1.11").NotEmpty().NotNull();
+		this.RuleFor(budget => budget.BudgetId).NotEmpty().MustAsync(this.IsBudgetExists)
+			.WithMessage("{PropertyName}: Budget with id {PropertyValue} does not exist.")
+			.WithErrorCode("1.11");
 	}
 
 	private bool AreAllCategoriesDefined(CategoryType[]? categoryTypes, BudgetId budgetId)
