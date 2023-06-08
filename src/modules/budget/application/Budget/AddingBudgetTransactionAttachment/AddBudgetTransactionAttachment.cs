@@ -28,7 +28,6 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleAddBudgetTransactionAttachment"/> class.
-	/// Constructor.
 	/// </summary>
 	/// <param name="addTransactionAttachmentService">Blob storage service.</param>
 	/// <param name="budgetTransactionRepository">Budget transaction repository.</param>

@@ -584,18 +584,17 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="transactionId">Transaction Id.</param>
 	/// <param name="file">Attachment file.</param>
-	/// <returns>
-	/// Returns an HTTP 200 OK status code when successful.
-	/// Throws an AppException if there are validation errors.</returns>
-	[HttpPost("{transactionId:guid}/transaction/attachment")]
+	/// <returns>Appropriate status code.</returns>
+	/// <response code="200"> If successfully added attachment.</response>
+	/// <response code="400">If passed transaction Id or file did not pass validation.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpPost("{budgetId:guid}/{transactionId:guid}/attachment")]
 	public async Task<IActionResult> AddBudgetTransactionAttachment(
 		[FromRoute] Guid transactionId, IFormFile file)
 	{
-		if (transactionId == Guid.Empty)
-		{
-			throw new ArgumentException("Provided Transaction Id is not valid.");
-		}
-
 		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId));
 
 		var validationResult = this.attachmentValidator.Validate(command);
@@ -613,8 +612,14 @@ public class BudgetController : ControllerBase
 	/// Get budget transaction attachment.
 	/// </summary>
 	/// <param name="transactionId">Transaction Id.</param>
-	/// <returns>Budget transaction attachment.</returns>
-	[HttpGet("{transactionId}/transaction/getAttachment)")]
+	/// <returns>Budget transaction attachment url.</returns>
+	/// <response code="200"> If successfully returned attachment.</response>
+	/// <response code="400">If passed transaction Id is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment)")]
 	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId)
 	{
 		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));

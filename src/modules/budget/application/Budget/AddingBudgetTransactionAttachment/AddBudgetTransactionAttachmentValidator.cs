@@ -17,6 +17,9 @@ public class AddBudgetTransactionAttachmentValidator : AbstractValidator<AddBudg
 	/// </summary>
 	public AddBudgetTransactionAttachmentValidator()
 	{
+		this.RuleFor(command => command.TransactionId)
+			.NotEmpty()
+			.WithMessage("Transaction Id cannot be null.");
 		this.RuleFor(command => command.File)
 			.NotNull().WithMessage("File cannot be null.")
 			.Must(this.HaveValidExtension).WithMessage($"File extension must be one of the following: {string.Join(", ", this.allowedFileExtensions)}.")
