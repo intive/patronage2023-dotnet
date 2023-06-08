@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20230606174046_AddBudgetTransactionCategoryTable")]
+    [Migration("20230608164341_AddBudgetTransactionCategoryTable")]
     partial class AddBudgetTransactionCategoryTable
     {
         /// <inheritdoc />
@@ -90,6 +90,11 @@ namespace Intive.Patronage2023.Modules.Budget.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedOn");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Email");
 
                     b.Property<string>("Name")
                         .IsRequired()
