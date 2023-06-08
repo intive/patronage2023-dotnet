@@ -28,9 +28,9 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 		this.dbContext = dbContext;
 		this.budgetRepository = budgetRepository;
 
-		this.RuleFor(budget => budget.BudgetId).NotEmpty().NotNull().MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
+		this.RuleFor(budget => budget.BudgetId).NotEmpty().MustAsync(this.BudgetExists).WithMessage("Budget doesn't exist.");
 		this.RuleFor(category => category.CategoryId)
-			.Must(this.IsCategoryBuildIn)
+			.NotEmpty()
 			.DependentRules(() =>
 			{
 				this.RuleFor(category => category.CategoryId)
@@ -50,11 +50,6 @@ public class DeleteTransactionCategoryValidator : AbstractValidator<DeleteTransa
 	{
 		var budget = await this.budgetRepository.GetById(budgetId);
 		return budget != null;
-	}
-
-	private bool IsCategoryBuildIn(TransactionCategoryId categoryId)
-	{
-		return categoryId.Value != Guid.Empty;
 	}
 
 	private async Task<bool> CategoryExists(TransactionCategoryId categoryId, CancellationToken cancellationToken)

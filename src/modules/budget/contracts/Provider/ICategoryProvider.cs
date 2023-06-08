@@ -10,7 +10,7 @@ public interface ICategoryProvider
 	/// <summary>
 	/// Retrieves all transaction categories.
 	/// </summary>
-	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="budgetId">The identifier of the budget for which transaction categories are retrieved.</param>
 	/// <returns>A list of transaction categories.</returns>
 	List<TransactionCategory> GetForBudget(BudgetId budgetId);
 }

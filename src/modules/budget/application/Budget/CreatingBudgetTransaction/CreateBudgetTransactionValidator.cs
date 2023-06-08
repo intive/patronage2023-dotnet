@@ -25,13 +25,17 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 	{
 		this.budgetRepository = budgetRepository;
 		this.categoryProvider = categoryProvider;
-		this.RuleFor(transaction => transaction.Id).NotNull();
-		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
-		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
+		this.RuleFor(transaction => transaction.Id).NotEmpty();
+		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty();
+		this.RuleFor(transaction => transaction.Name).NotEmpty().Length(3, 58);
+		this.RuleFor(transaction => transaction.Value).NotEmpty().Must(this.IsValueAppropriateToType)
 			.WithMessage("Value must be positive for income or negative for expense");
-		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category }).Must(x => this.IsCategoryDefined(x.BudgetId, x.Category)).WithMessage("Category is not defined.");
-		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category })
+			.Must(x => this.IsCategoryDefined(x.BudgetId, x.Category))
+			.WithMessage("Category is not defined.");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate })
+			.MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation))
+			.WithMessage("Transaction date is outside the budget period.");
 		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
 	}
 

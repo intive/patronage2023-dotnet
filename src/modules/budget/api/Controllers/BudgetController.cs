@@ -265,7 +265,7 @@ public class BudgetController : ControllerBase
 	///
 	/// Value must be positive for income or negative for expense.
 	///
-	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund"
+	/// Built in Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund".
 	///
 	///     POST
 	///     {
@@ -362,7 +362,7 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
-			CategoryTypes = request.CategoryTypes,
+			CategoryTypes = request.CategoryTypes!.Select(categoryTypeString => new CategoryType(categoryTypeString)).ToArray(),
 			Search = request.Search,
 		};
 

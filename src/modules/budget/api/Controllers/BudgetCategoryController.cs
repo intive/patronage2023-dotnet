@@ -74,7 +74,7 @@ public class BudgetCategoryController : ControllerBase
 	///         "icon": {
 	///             "iconName": "string",
 	///             "foreground": "#643400",
-	///             "background": "#643400",
+	///             "background": "#643400"
 	///         },
 	///         "name": "string"
 	///     }

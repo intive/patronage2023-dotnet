@@ -48,7 +48,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Transaction Category Name.
+	/// Transaction Category name.
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 

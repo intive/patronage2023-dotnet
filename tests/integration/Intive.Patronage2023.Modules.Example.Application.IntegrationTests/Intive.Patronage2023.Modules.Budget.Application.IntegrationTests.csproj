@@ -31,9 +31,5 @@
       <ProjectReference Include="..\..\..\src\modules\example\infrastructure\Intive.Patronage2023.Modules.Example.Infrastructure.csproj" />
       <ProjectReference Include="..\Intive.Patronage2023.Shared.IntegrationTests\Intive.Patronage2023.Shared.IntegrationTests.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="BudgetTransactions\" />
-    </ItemGroup>
 
 </Project>
