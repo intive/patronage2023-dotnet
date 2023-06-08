@@ -1,6 +1,7 @@
 using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
@@ -70,8 +71,9 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
-		var budgets = await this.budgetDbContext.Budget.Where(x => x.Name.Equals(name)).ToListAsync();
-		return !budgets.Any(x => x.UserId.Value.Equals(executionContextAccessor.GetUserId()));
+		var userId = new UserId(executionContextAccessor.GetUserId()!.Value);
+		bool budgets = await this.budgetDbContext.Budget.AnyAsync(x => x.Name.Equals(name) && x.UserId.Equals(userId));
+		return !budgets;
 	}
 
 	private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
