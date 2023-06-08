@@ -46,7 +46,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 	/// <param name="budgetTransactionsToImport">Collection of budget transactions information to be converted, represented as GetBudgetTransactionTransferInfo objects.</param>
 	/// <param name="csvConfig">Configuration for reading the CSV file.</param>
 	/// <returns>A Task containing a BudgetAggregateList, representing the converted budget information.</returns>
-	public Task<BudgetTransactionAggregateList> MapFrom(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig)
+	public async Task<BudgetTransactionAggregateList> MapFrom(IEnumerable<GetBudgetTransactionImportInfo> budgetTransactionsToImport, CsvConfiguration csvConfig)
 	{
 		var newBudgetTransactions = new List<BudgetTransactionAggregate>();
 		foreach (var transaction in budgetTransactionsToImport)
@@ -54,16 +54,16 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 			var transactionId = new TransactionId(Guid.NewGuid());
 			decimal value = decimal.Parse(transaction.Value, CultureInfo.InvariantCulture);
 			var userid = this.contextAccessor.GetUserId();
-			string email = this.keycloak.GetEmailById(userid);
+			string email = await this.keycloak.GetEmailById(userid.ToString()!, CancellationToken.None);
 			var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType);
 			var categoryType = (CategoryType)Enum.Parse(typeof(CategoryType), transaction.CategoryType);
 			var budgetTransactionDate = DateTime.Parse(transaction.Date);
 			var status = (Status)Enum.Parse(typeof(Status), transaction.Status);
-			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, transaction.Email, value, categoryType, budgetTransactionDate, status);
+			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, email, value, categoryType, budgetTransactionDate, status);
 			newBudgetTransactions.Add(newBudgetTransaction);
 		}
 
-		return Task.FromResult(new BudgetTransactionAggregateList(newBudgetTransactions));
+		return await Task.FromResult(new BudgetTransactionAggregateList(newBudgetTransactions));
 	}
 
 	/// <summary>
