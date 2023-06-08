@@ -1,7 +1,9 @@
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Email;
@@ -29,6 +31,7 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 	private readonly IQueryBus queryBus;
 	private readonly IEmailService emailService;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
+	private readonly IExecutionContextAccessor executionContextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleSendBudgetTransactionsViaEmail"/> class.
@@ -36,26 +39,40 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 	/// <param name="queryBus">Bus that sends the query.</param>
 	/// <param name="emailService">The email service.</param>
 	/// <param name="budgetTransactionExportService">budget transaction export service which holds method to export data to file.</param>
-	public HandleSendBudgetTransactionsViaEmail(IQueryBus queryBus, IEmailService emailService, IBudgetTransactionExportService budgetTransactionExportService)
+	/// <param name="executionContextAccessor">execution context accessor.</param>
+	public HandleSendBudgetTransactionsViaEmail(
+		IQueryBus queryBus,
+		IEmailService emailService,
+		IBudgetTransactionExportService budgetTransactionExportService,
+		IExecutionContextAccessor executionContextAccessor)
 	{
 		this.queryBus = queryBus;
 		this.emailService = emailService;
 		this.budgetTransactionExportService = budgetTransactionExportService;
+		this.executionContextAccessor = executionContextAccessor;
 	}
 
 	/// <inheritdoc/>
 	public async Task Handle(SendBudgetTransactionsViaEmail command, CancellationToken cancellationToken)
 	{
 		var query = new GetBudgetTransactionsToExport { BudgetId = command.BudgetId };
+		var getBudgetDetails = new GetBudgetDetails { Id = command.BudgetId.Value };
+
 		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
+		var budgetDetails = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(getBudgetDetails);
 		var attachment = await this.budgetTransactionExportService.Export(transactions);
+
+		var userData = this.executionContextAccessor.GetUserDataFromToken();
+		string email = userData?["email"] ?? string.Empty;
+		string name = userData?["name"] ?? string.Empty;
 
 		var emailMessage = new EmailMessage
 		{
-			Subject = "Test subject",
-			Body = "Test body",
+			Subject = "Exported budgets",
+			Body = $"Dear {name},\r\nThe attached file contains transactions from budget {budgetDetails?.Name} as on date {DateTime.Now}\n" +
+				"Best regards,\r\nInbudget Team",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
-			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
+			SendToAddresses = new List<EmailAddress> { new(name, email) },
 			EmailAttachments = new List<FileDescriptor> { attachment },
 		};
 
