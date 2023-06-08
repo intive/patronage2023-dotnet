@@ -42,7 +42,9 @@ public class BudgetCategoryController : ControllerBase
 	/// </summary>
 	/// <param name="budgetId">The ID of the budget for which to retrieve the transaction categories.</param>
 	/// <response code="200">Returns List of the Budget Transaction Categories.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400"> Error codes:
+	/// 1.11: Budget does not exist.
+	/// </response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
@@ -80,7 +82,15 @@ public class BudgetCategoryController : ControllerBase
 	///     }
 	/// .</remarks>
 	/// <response code="201">Returns the newly created item.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400"> Error Codes:
+	/// 1.11: Budget doesn't exist.
+	/// 1.13: Icon is required.
+	/// 1.17: Icon name is required.
+	/// 1.18: Foreground should be hex code.
+	/// 1.19: Background should be hex code.
+	/// 1.20: Category name is required.
+	/// 1.21: Category Name must be unique.
+	/// </response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
@@ -109,7 +119,12 @@ public class BudgetCategoryController : ControllerBase
 	/// <param name="budgetId">The ID of the budget from which to delete the transaction category.</param>
 	/// <param name="budgetCategoryId">The id of the category to delete.</param>
 	/// <response code="204">Returns no content if category is deleted correctly.</response>
-	/// <response code="400">If the body is not valid.</response>
+	/// <response code="400">Error codes:
+	/// 1.11: Budget doesn't exist.
+	/// 1.22: Built-in category cannot be deleted.
+	/// 1.23: Category does not belong to the budget.
+	/// 1.24: Cannot delete the category because it is used in one or more transactions.
+	/// </response>
 	/// <response code="401">If the user is unauthorized.</response>
 	/// <response code="403">If the user is forbidden to do this action.</response>
 	/// <returns>A Task representing the asynchronous operation that returns an IActionResult.</returns>
