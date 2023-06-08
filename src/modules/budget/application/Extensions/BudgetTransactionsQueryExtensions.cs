@@ -70,23 +70,34 @@ internal static class BudgetTransactionsQueryExtensions
 	/// <summary>
 	/// Sorting extension method.
 	/// </summary>
-	/// <param name="budgetTransactions">Query.</param>
+	/// <typeparam name="T">Type of queryable.</typeparam>
+	/// <param name="source">Query.</param>
 	/// <param name="sortDescriptors">Sort criteria.</param>
 	/// <returns>Sorted query.</returns>
-	public static IQueryable<BudgetTransactionAggregate> Sort(this IQueryable<BudgetTransactionAggregate> budgetTransactions, List<SortDescriptor> sortDescriptors)
+	public static IQueryable<T> Sort<T>(this IQueryable<T> source, List<SortDescriptor> sortDescriptors)
 	{
 		if (sortDescriptors.IsNullOrEmpty())
 		{
-			return budgetTransactions;
+			return source;
 		}
 
-		var budgetTransactionsOrdered = sortDescriptors[0].SortAscending ? budgetTransactions.OrderBy(sortDescriptors[0].ColumnName) : budgetTransactions.OrderBy(sortDescriptors[0].ColumnName + " desc");
+		if (!typeof(T).GetProperties().Any(x => x.Name == sortDescriptors[0].ColumnName))
+		{
+			throw new InvalidOperationException($"Sorting on column {sortDescriptors[0].ColumnName} is not allowed.");
+		}
+
+		var query = sortDescriptors[0].SortAscending ? source.OrderBy(sortDescriptors[0].ColumnName) : source.OrderBy(sortDescriptors[0].ColumnName + " desc");
 
 		foreach (var sortDescriptor in sortDescriptors.Skip(1))
 		{
-			budgetTransactionsOrdered = sortDescriptor.SortAscending ? budgetTransactionsOrdered.ThenBy(sortDescriptor.ColumnName) : budgetTransactionsOrdered.ThenBy(sortDescriptor.ColumnName + " desc");
+			if (!typeof(T).GetProperties().Any(x => x.Name == sortDescriptor.ColumnName))
+			{
+				throw new InvalidOperationException($"Sorting on column {sortDescriptor.ColumnName} is not allowed.");
+			}
+
+			query = sortDescriptor.SortAscending ? query.ThenBy(sortDescriptor.ColumnName) : query.ThenBy(sortDescriptor.ColumnName + " desc");
 		}
 
-		return budgetTransactionsOrdered;
+		return query;
 	}
 }
