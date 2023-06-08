@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure;
@@ -188,5 +189,19 @@ public class KeycloakService : IKeycloakService
 		}
 
 		return token.AccessToken;
+	}
+
+	/// <inheritdoc/>
+	public async Task<string> GetEmailById(string id, CancellationToken cancellationToken)
+	{
+		var response = await this.GetUserById(id.ToString()!, cancellationToken);
+		string responseContent = string.Empty;
+		if (response.IsSuccessStatusCode)
+		{
+			responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+		}
+
+		var deserializedUsers = JsonConvert.DeserializeObject<UserInfo>(responseContent);
+		return deserializedUsers!.Email;
 	}
 }

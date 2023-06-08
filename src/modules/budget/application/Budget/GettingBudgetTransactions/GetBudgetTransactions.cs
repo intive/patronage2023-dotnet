@@ -1,3 +1,4 @@
+using System.Linq.Dynamic.Core;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
@@ -44,6 +45,11 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// Search text.
 	/// </summary>
 	public string? Search { get; set; }
+
+	/// <summary>
+	/// Sort descriptors.
+	/// </summary>
+	public List<SortDescriptor>? SortDescriptors { get; set; }
 }
 
 /// <summary>
@@ -83,11 +89,11 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 		int totalItemsCount = await budgets
 			.CountAsync(cancellationToken: cancellationToken);
 
-		var mappedData = await budgets
-			.OrderByDescending(x => x.BudgetTransactionDate)
+		var budgetsOrdered = budgets.Sort(query.SortDescriptors!);
+		var mappedData = await budgetsOrdered
 			.Paginate(query)
 			.MapToTransactionInfo()
-			.ToListAsync(cancellationToken: cancellationToken);
+			.ToListAsync();
 
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;

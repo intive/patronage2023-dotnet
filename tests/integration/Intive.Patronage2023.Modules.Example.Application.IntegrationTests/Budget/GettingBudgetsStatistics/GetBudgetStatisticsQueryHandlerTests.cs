@@ -73,6 +73,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -131,6 +132,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -187,6 +189,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				i,
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -246,6 +249,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -254,6 +258,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				expenseId,
 				budgetId,
 				TransactionType.Expense,
+				new Faker().Random.Word(),
 				new Faker().Random.Word(),
 				(-i),
 				new Faker().Random.Enum<CategoryType>(),
@@ -317,6 +322,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -383,6 +389,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i + 10),
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -392,6 +399,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Expense,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(-i),
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
@@ -458,6 +466,7 @@ public class GetBudgetStatisticsQueryHandlerTests : AbstractIntegrationTests
 				budgetId,
 				TransactionType.Income,
 				new Faker().Random.Word(),
+				new Faker().Internet.Email(),
 				(i),
 				new Faker().Random.Enum<CategoryType>(),
 				transactionPeriod);
