@@ -36,7 +36,7 @@ public class BudgetExportService : IBudgetExportService
 	/// <param name="budgets">A GetTransferList object which encapsulates a list of budgets to be exported.
 	/// Each budget contains details like name, value, start date, end date, and other attributes.</param>
 	/// <returns>The URI of the uploaded file in the Azure Blob Storage.</returns>
-	public async Task<ExportResult> Export(GetTransferList<GetBudgetTransferInfo>? budgets)
+	public async Task<ExportResult> ExportToStorage(GetTransferList<GetBudgetTransferInfo>? budgets)
 	{
 		string filename = this.csvService.GenerateFileNameWithCsvExtension();
 		using (var memoryStream = new MemoryStream())
@@ -52,5 +52,21 @@ public class BudgetExportService : IBudgetExportService
 		string uri = await this.blobStorageService.GenerateLinkToDownload(filename);
 
 		return new ExportResult { Uri = uri };
+	}
+
+	public async Task<FileDescriptor> Export(GetTransferList<GetBudgetTransferInfo>? budgets)
+	{
+		byte[] content = Array.Empty<byte>();
+		using (var memoryStream = new MemoryStream())
+		await using (var streamWriter = new StreamWriter(memoryStream))
+		await using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+		{
+			this.csvService.WriteRecordsToMemoryStream(budgets!.CorrectList, csv);
+			memoryStream.Position = 0;
+			content = new byte[memoryStream.Length];
+			memoryStream.Read(content, 0, content.Length);
+		}
+
+		return new FileDescriptor("Budget transactions.csv", content);
 	}
 }
