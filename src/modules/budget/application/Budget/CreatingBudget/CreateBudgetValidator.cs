@@ -72,7 +72,7 @@ public class CreateBudgetValidator : AbstractValidator<CreateBudget>
 	private async Task<bool> NoExistingBudget(string name, IExecutionContextAccessor executionContextAccessor, CancellationToken cancellation)
 	{
 		var userId = new UserId(executionContextAccessor.GetUserId()!.Value);
-		bool budgets = await this.budgetDbContext.Budget.AnyAsync(x => x.Name.Equals(name) && x.UserId.Equals(userId));
+		bool budgets = await this.budgetDbContext.Budget.AnyAsync(x => x.Name.Equals(name) && x.UserId.Equals(userId), cancellation);
 		return !budgets;
 	}
 
