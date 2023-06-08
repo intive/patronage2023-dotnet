@@ -42,14 +42,16 @@ public class GetBudgetTransactionValidator : AbstractValidator<GetBudgetTransact
 
 	private bool AreSortDescriptorsColumnExist(List<SortDescriptor>? sortDescriptors)
 	{
-		if (sortDescriptors != null)
+		if (sortDescriptors == null)
 		{
-			foreach (var sortDescriptor in sortDescriptors)
+			return true;
+		}
+
+		foreach (var sortDescriptor in sortDescriptors)
+		{
+			if (!Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.ColumnName))
 			{
-				if (!Enum.IsDefined(typeof(TransactionsSortingEnum), sortDescriptor.ColumnName))
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 

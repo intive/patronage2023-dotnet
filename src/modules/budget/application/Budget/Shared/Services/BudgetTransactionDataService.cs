@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
@@ -21,16 +22,22 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 {
 	private readonly IValidator<GetBudgetTransactionImportInfo> validator;
 	private readonly ICsvService<GetBudgetTransactionTransferInfo> csvService;
+	private readonly IKeycloakService keycloak;
+	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetTransactionDataService"/> class.
 	/// </summary>
 	/// <param name="validator">Import info validator.</param>
 	/// <param name="csvService">Service to handle csv files.</param>
-	public BudgetTransactionDataService(IValidator<GetBudgetTransactionImportInfo> validator, ICsvService<GetBudgetTransactionTransferInfo> csvService)
+	/// <param name="keycloak">Keycloak.</param>
+	/// <param name="contextAccessor">Context accessor.</param>
+	public BudgetTransactionDataService(IValidator<GetBudgetTransactionImportInfo> validator, ICsvService<GetBudgetTransactionTransferInfo> csvService, IKeycloakService keycloak, IExecutionContextAccessor contextAccessor)
 	{
 		this.validator = validator;
 		this.csvService = csvService;
+		this.keycloak = keycloak;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <summary>
@@ -46,6 +53,8 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 		{
 			var transactionId = new TransactionId(Guid.NewGuid());
 			decimal value = decimal.Parse(transaction.Value, CultureInfo.InvariantCulture);
+			var userid = this.contextAccessor.GetUserId();
+			string email = this.keycloak.GetEmailById(userid);
 			var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType);
 			var categoryType = (CategoryType)Enum.Parse(typeof(CategoryType), transaction.CategoryType);
 			var budgetTransactionDate = DateTime.Parse(transaction.Date);
