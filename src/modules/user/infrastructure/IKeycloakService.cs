@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.User.Domain;
+using Intive.Patronage2023.Shared.Infrastructure;
 
 namespace Intive.Patronage2023.Modules.User.Infrastructure;
 
@@ -31,12 +32,12 @@ public interface IKeycloakService
 	Task<string> ExtractAccessTokenFromClientToken(CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Generates new access token with use of refresh token.
+	/// Generates new token with use of refresh token.
 	/// </summary>
 	/// <param name="refreshToken">refresh Token.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
-	/// <returns>Newly generated Access token.</returns>
-	Task<string> RefreshUserToken(string refreshToken, CancellationToken cancellationToken);
+	/// <returns>Newly generated token.</returns>
+	Task<Token> RefreshUserToken(string refreshToken, CancellationToken cancellationToken);
 
 	/// <summary>
 	/// Add new user to keycloak.

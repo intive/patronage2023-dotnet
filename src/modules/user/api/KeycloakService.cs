@@ -151,7 +151,7 @@ public class KeycloakService : IKeycloakService
 	}
 
 	/// <inheritdoc/>
-	public async Task<string> RefreshUserToken(string refreshToken, CancellationToken cancellationToken)
+	public async Task<Token> RefreshUserToken(string refreshToken, CancellationToken cancellationToken)
 	{
 		string resource = this.apiKeycloakSettings.Resource;
 		string realm = this.apiKeycloakSettings.Realm;
@@ -188,7 +188,7 @@ public class KeycloakService : IKeycloakService
 			throw new AppException();
 		}
 
-		return token.AccessToken;
+		return token;
 	}
 
 	/// <inheritdoc/>
