@@ -68,6 +68,6 @@ public class BudgetExportService : IBudgetExportService
 			memoryStream.Read(content, 0, content.Length);
 		}
 
-		return new FileDescriptor("Budget transactions.csv", content);
+		return new FileDescriptor("Budgets.csv", content);
 	}
 }
