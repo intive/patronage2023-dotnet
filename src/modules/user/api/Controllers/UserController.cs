@@ -1,4 +1,5 @@
 using System.Net;
+
 using Intive.Patronage2023.Modules.User.Application.CreatingUser;
 using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Application.RefreshingUserToken;
@@ -6,11 +7,13 @@ using Intive.Patronage2023.Modules.User.Application.SignIn;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
-using Intive.Patronage2023.Shared.Abstractions.UserContext;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 
 namespace Intive.Patronage2023.Modules.User.Api.Controllers;
@@ -127,7 +130,7 @@ public class UserController : ControllerBase
 	[HttpPost("refresh-token")]
 	public async Task<IActionResult> RefreshToken([FromBody] RefreshUserToken query)
 	{
-		var reponse = await this.queryBus.Query<RefreshUserToken, AccessUserToken>(query);
+		var reponse = await this.queryBus.Query<RefreshUserToken, Token>(query);
 		return this.Ok(reponse);
 	}
 
