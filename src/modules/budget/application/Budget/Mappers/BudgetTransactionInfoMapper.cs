@@ -23,6 +23,7 @@ public static class BudgetTransactionInfoMapper
 			Value = x.Value,
 			BudgetTransactionDate = x.BudgetTransactionDate,
 			CategoryType = x.CategoryType,
+			AttachmentUrl = x.AttachmentUrl,
 			Email = x.Email,
 		});
 }

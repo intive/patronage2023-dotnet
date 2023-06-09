@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
@@ -16,6 +17,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
@@ -454,14 +456,14 @@ public class BudgetController : ControllerBase
 	/// </summary>
 	/// <param name="startDate">Start Date in which we want to get report.</param>
 	/// <param name="endDate">End Date in which we want to get report.</param>
-	/// <param name="currency">Currency which we use to fillter budgets.</param>
+	/// <param name="currency">Currency which we use to filter budgets.</param>
 	/// <remarks>
 	/// Sample Date Points:
 	///
 	///         "startDate": "2023-04-20T19:14:20.152Z",
 	///         "endDate": "2023-04-25T20:14:20.152Z"
 	/// .</remarks>
-	/// <returns>Returns the BudgetReport which has List of sumed Incomes, List of sumed Expenses, between two dates with day on which calculation was made.
+	/// <returns>Returns the BudgetReport which has List of summed Incomes, List of summed Expenses, between two dates with day on which calculation was made.
 	/// It also contains TrendValue, PeriodValue and TotalBudgetValue. </returns>
 	[HttpGet("statistics")]
 	[ProducesResponseType(typeof(BudgetsReport<BudgetAmount>), StatusCodes.Status200OK)]
@@ -706,5 +708,61 @@ public class BudgetController : ControllerBase
 		await this.commandBus.Send(command);
 
 		return this.Ok();
+	}
+
+	/// <summary>
+	/// Add budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="file">Attachment file.</param>
+	/// <returns>Appropriate status code.</returns>
+	/// <response code="200"> If successfully added attachment.</response>
+	/// <response code="400">If passed transaction Id or file did not pass validation.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[HttpPost("{budgetId:guid}/{transactionId:guid}/attachment")]
+	public async Task<IActionResult> AddBudgetTransactionAttachment(
+		[FromRoute] Guid transactionId, [FromRoute] Guid budgetId, IFormFile file)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId), new BudgetId(budgetId));
+
+		await this.commandBus.Send(command);
+
+		return this.Ok();
+	}
+
+	/// <summary>
+	/// Get budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <returns>Budget transaction attachment url.</returns>
+	/// <response code="200"> If successfully returned attachment.</response>
+	/// <response code="400">If passed transaction Id is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment")]
+	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId, [FromRoute] Guid budgetId)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var query = new GetBudgetTransactionAttachment(new TransactionId(transactionId), new BudgetId(budgetId));
+
+		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(query);
+
+		return this.Ok(attachment);
 	}
 }

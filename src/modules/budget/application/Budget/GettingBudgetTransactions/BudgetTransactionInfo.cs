@@ -44,6 +44,11 @@ public record BudgetTransactionInfo()
 	public CategoryType CategoryType { get; init; }
 
 	/// <summary>
+	/// Transaction attachment url.
+	/// </summary>
+	public string? AttachmentUrl { get; init; } = null!;
+
+	/// <summary>
 	/// Transaction creator email.
 	/// </summary>
 	public string Email { get; init; } = null!;
