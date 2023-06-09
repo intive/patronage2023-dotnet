@@ -68,10 +68,10 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 
 		var emailMessage = new EmailMessage
 		{
-			Subject = "Exported budgets",
+			Subject = "Exported budget transactions",
 			Body = $"Dear {name},\r\nThe attached file contains transactions from budget {budgetDetails?.Name} as on date {DateTime.Now}\n" +
 				"Best regards,\r\nInbudget Team",
-			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
+			SendFromAddress = new EmailAddress("InBudget", "system@inbudget.com"),
 			SendToAddresses = new List<EmailAddress> { new(name, email) },
 			EmailAttachments = new List<FileDescriptor> { attachment },
 		};

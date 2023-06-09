@@ -657,7 +657,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> ExportBudgetTransactionViaEmail([FromRoute] Guid budgetId)
+	public async Task<IActionResult> ExportBudgetTransactionsViaEmail([FromRoute] Guid budgetId)
 	{
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
 		{
