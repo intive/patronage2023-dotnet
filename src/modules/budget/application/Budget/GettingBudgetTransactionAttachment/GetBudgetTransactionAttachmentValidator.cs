@@ -1,4 +1,5 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,34 +41,23 @@ public class GetBudgetTransactionAttachmentValidator : AbstractValidator<GetBudg
 			.MustAsync(async (x, cancellation) => await this.BelongsToBudget(x.BudgetId.Value, x.TransactionId.Value))
 			.WithMessage("This transaction does not belong to the specified budget.")
 			.WithErrorCode("2.10");
-
-		this.RuleFor(command => command.TransactionId)
-			.MustAsync(async (x, cancellation) => await this.DoesTransactionHaveAttachment(x.Value))
-			.WithMessage("Transaction already has an attachment.")
-			.WithErrorCode("2.20");
 	}
 
 	private async Task<bool> TransactionExists(Guid transactionId)
 	{
-		var transaction = await this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id.Value.Equals(transactionId));
+		var transaction = await this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id.Equals(new TransactionId(transactionId)));
 		return transaction != null;
 	}
 
 	private async Task<bool> BudgetExists(Guid budgetId)
 	{
-		var budget = await this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id.Value.Equals(budgetId));
+		var budget = await this.budgetDbContext.Budget.FirstOrDefaultAsync(x => x.Id.Equals(new BudgetId(budgetId)));
 		return budget != null;
 	}
 
 	private async Task<bool> BelongsToBudget(Guid budgetId, Guid transactionId)
 	{
-		var transaction = await this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id.Value.Equals(transactionId));
-		return budgetId == transaction!.BudgetId.Value;
-	}
-
-	private async Task<bool> DoesTransactionHaveAttachment(Guid transactionId)
-	{
-		var transaction = await this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id.Value.Equals(transactionId));
-		return transaction!.AttachmentUrl == null;
+		var transaction = await this.budgetDbContext.Transaction.FirstOrDefaultAsync(x => x.Id.Equals(new TransactionId(transactionId)));
+		return transaction == null || budgetId == transaction!.BudgetId.Value;
 	}
 }

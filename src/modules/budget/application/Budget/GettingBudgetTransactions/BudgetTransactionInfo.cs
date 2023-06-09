@@ -46,7 +46,7 @@ public record BudgetTransactionInfo()
 	/// <summary>
 	/// Transaction attachment url.
 	/// </summary>
-	public Uri? AttachmentUrl { get; init; } = null!;
+	public string? AttachmentUrl { get; init; } = null!;
 
 	/// <summary>
 	/// Transaction creator email.

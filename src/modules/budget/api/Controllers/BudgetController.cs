@@ -27,7 +27,6 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
@@ -701,7 +700,7 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment)")]
+	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment")]
 	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId, [FromRoute] Guid budgetId)
 	{
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
@@ -709,7 +708,9 @@ public class BudgetController : ControllerBase
 			return this.Forbid();
 		}
 
-		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
+		var query = new GetBudgetTransactionAttachment(new TransactionId(transactionId), new BudgetId(budgetId));
+
+		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(query);
 
 		return this.Ok(attachment);
 	}

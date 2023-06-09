@@ -38,12 +38,10 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 	/// <inheritdoc/>
 	public async Task Handle(AddBudgetTransactionAttachment command, CancellationToken cancellationToken)
 	{
-		var file = command.File;
-
 		var attachmentFile = new FileModel()
 		{
-			FileName = command.TransactionId.Value.ToString(),
-			Content = file.OpenReadStream(),
+			FileName = command.TransactionId.Value + Path.GetExtension(command.File.FileName),
+			Content = command.File.OpenReadStream(),
 		};
 
 		var transaction = await this.budgetTransactionRepository.GetById(command.TransactionId);
