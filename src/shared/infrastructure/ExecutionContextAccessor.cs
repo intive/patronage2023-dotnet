@@ -83,13 +83,22 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 		var claimsDictionary = claims
 			.ToDictionary(c => c.Type, c => c.Value);
 		var userId = Guid.Parse(token.Claims.First(c => c.Type == "sub").Value);
+		string userAvatar = string.Empty;
+		if (claimsDictionary.ContainsKey("avatar"))
+		{
+			userAvatar = claimsDictionary["avatar"];
+		}
 
 		return new UserInfo
 		{
 			Id = userId,
-			FirstName = claimsDictionary["given_name"],
-			LastName = claimsDictionary["family_name"],
-			Email = claimsDictionary["email"],
+			FirstName = claimsDictionary?["given_name"] ?? string.Empty,
+			LastName = claimsDictionary?["family_name"] ?? string.Empty,
+			Email = claimsDictionary?["email"] ?? string.Empty,
+			Attributes = new UserAttributes
+			{
+				Avatar = new string[] { userAvatar },
+			},
 		};
 	}
 }

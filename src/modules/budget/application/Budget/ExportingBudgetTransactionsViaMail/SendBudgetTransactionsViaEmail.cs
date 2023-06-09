@@ -63,8 +63,14 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 		var attachment = await this.budgetTransactionExportService.Export(transactions);
 
 		var userData = this.executionContextAccessor.GetUserContext();
-		string email = userData?.Email ?? string.Empty;
-		string name = userData?.FirstName + " " + userData?.LastName ?? string.Empty;
+		string email = string.Empty;
+		string name = string.Empty;
+
+		if (userData != null)
+		{
+			 email = userData.Email;
+			 name = userData.FirstName + " " + userData.LastName;
+		}
 
 		var emailMessage = new EmailMessage
 		{
