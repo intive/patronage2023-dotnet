@@ -3,7 +3,6 @@ using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
-using Intive.Patronage2023.Shared.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
@@ -38,15 +37,12 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 	/// <inheritdoc/>
 	public async Task Handle(AddBudgetTransactionAttachment command, CancellationToken cancellationToken)
 	{
-		var attachmentFile = new FileModel()
-		{
-			FileName = command.TransactionId.Value + Path.GetExtension(command.File.FileName),
-			Content = command.File.OpenReadStream(),
-		};
+		string fileName = command.TransactionId.Value + Path.GetExtension(command.File.FileName);
+		var fileContent = command.File.OpenReadStream();
 
 		var transaction = await this.budgetTransactionRepository.GetById(command.TransactionId);
 
-		string blobName = await this.blobStorageService.UploadToBlobStorage(attachmentFile.Content, attachmentFile.FileName);
+		string blobName = await this.blobStorageService.UploadToBlobStorage(fileContent, fileName);
 
 		transaction!.AddAttachment(blobName);
 
