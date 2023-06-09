@@ -6,6 +6,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
@@ -26,6 +27,7 @@ using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
@@ -47,9 +49,6 @@ public class BudgetController : ControllerBase
 	private readonly IExecutionContextAccessor contextAccessor;
 	private readonly IBudgetExportService budgetExportService;
 	private readonly IBudgetImportService budgetImportService;
-	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
-	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
-	private readonly IValidator<AddBudgetTransactionAttachment> attachmentValidator;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
 	private readonly IBudgetTransactionImportService budgetTransactionImportService;
 
@@ -59,12 +58,6 @@ public class BudgetController : ControllerBase
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
-	/// <param name="usersIdsValidator">User ids validator.</param>
-	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favourite flag validator.</param>
-	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
-	/// <param name="budgetExportService">BudgetExportService.</param>
-	/// <param name="budgetImportService">BudgetImportService.</param>
-	/// <param name="attachmentValidator">Transaction attachment validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
@@ -77,7 +70,6 @@ public class BudgetController : ControllerBase
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
 		IBudgetImportService budgetImportService,
-		IValidator<AddBudgetTransactionAttachment> attachmentValidator)
 		IBudgetTransactionExportService budgetTransactionExportService,
 		IBudgetTransactionImportService budgetTransactionImportService)
 	{
@@ -87,7 +79,6 @@ public class BudgetController : ControllerBase
 		this.contextAccessor = contextAccessor;
 		this.budgetExportService = budgetExportService;
 		this.budgetImportService = budgetImportService;
-		this.attachmentValidator = attachmentValidator;
 		this.budgetTransactionExportService = budgetTransactionExportService;
 		this.budgetTransactionImportService = budgetTransactionImportService;
 	}
@@ -608,63 +599,6 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// Add budget transaction attachment.
-	/// </summary>
-	/// <param name="transactionId">Transaction Id.</param>
-	/// <param name="budgetId">Budget Id.</param>
-	/// <param name="file">Attachment file.</param>
-	/// <returns>Appropriate status code.</returns>
-	/// <response code="200"> If successfully added attachment.</response>
-	/// <response code="400">If passed transaction Id or file did not pass validation.</response>
-	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
-	[HttpPost("{budgetId:guid}/{transactionId:guid}/attachment")]
-	public async Task<IActionResult> AddBudgetTransactionAttachment(
-		[FromRoute] Guid transactionId, [FromRoute] Guid budgetId, IFormFile file)
-	{
-		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId));
-
-		var validationResult = this.attachmentValidator.Validate(command);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to upload attachment.", validationResult.Errors);
-		}
-
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
-		{
-			return this.Forbid();
-		}
-
-		await this.commandBus.Send(command);
-
-		return this.Ok();
-	}
-
-	/// <summary>
-	/// Get budget transaction attachment.
-	/// </summary>
-	/// <param name="transactionId">Transaction Id.</param>
-	/// <param name="budgetId">Budget Id.</param>
-	/// <returns>Budget transaction attachment url.</returns>
-	/// <response code="200"> If successfully returned attachment.</response>
-	/// <response code="400">If passed transaction Id is not valid.</response>
-	/// <response code="401">If the user is unauthorized.</response>
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
-	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment)")]
-	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId, [FromRoute] Guid budgetId)
-	{
-		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
-		{
-			return this.Forbid();
-		}
-
-		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
-
-		return this.Ok(attachment);
 	/// Exports all budget incomes and expenses to Azure Blob Storage.
 	/// </summary>
 	/// <param name="budgetId">Id of the budget from which transactions will be exported.</param>
@@ -724,5 +658,65 @@ public class BudgetController : ControllerBase
 		}
 
 		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+	}
+
+	/// <summary>
+	/// Add budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <param name="file">Attachment file.</param>
+	/// <returns>Appropriate status code.</returns>
+	/// <response code="200"> If successfully added attachment.</response>
+	/// <response code="400">If passed transaction Id or file did not pass validation.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpPost("{budgetId:guid}/{transactionId:guid}/attachment")]
+	public async Task<IActionResult> AddBudgetTransactionAttachment(
+		[FromRoute] Guid transactionId, [FromRoute] Guid budgetId, IFormFile file)
+	{
+		var command = new AddBudgetTransactionAttachment(file, new TransactionId(transactionId));
+
+		var validationResult = new AddBudgetTransactionAttachmentValidator().Validate(command);
+		if (!validationResult.IsValid)
+		{
+			throw new AppException("One or more error occured when trying to upload attachment.", validationResult.Errors);
+		}
+
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		await this.commandBus.Send(command);
+
+		return this.Ok();
+	}
+
+	/// <summary>
+	/// Get budget transaction attachment.
+	/// </summary>
+	/// <param name="transactionId">Transaction Id.</param>
+	/// <param name="budgetId">Budget Id.</param>
+	/// <returns>Budget transaction attachment url.</returns>
+	/// <response code="200"> If successfully returned attachment.</response>
+	/// <response code="400">If passed transaction Id is not valid.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(ErrorExample), StatusCodes.Status401Unauthorized)]
+	[HttpGet("{budgetId:guid}/{transactionId}/getAttachment)")]
+	public async Task<IActionResult> GetBudgetTransactionAttachment([FromRoute] Guid transactionId, [FromRoute] Guid budgetId)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Update)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		Uri attachment = await this.queryBus.Query<GetBudgetTransactionAttachment, Uri>(new GetBudgetTransactionAttachment(new TransactionId(transactionId)));
+
+		return this.Ok(attachment);
 	}
 }

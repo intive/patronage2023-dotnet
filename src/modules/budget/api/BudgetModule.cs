@@ -45,12 +45,11 @@ public static class BudgetModule
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
-		services.AddScoped<IValidator<AddBudgetTransactionAttachment>, AddBudgetTransactionAttachmentValidator>();
-		services.AddScoped<IValidator<AddUsersToBudget>, AddUsersToBudgetValidator>();
 		services.AddScoped<IValidator<AddUserBudgetList>, AddUserBudgetListValidator>();
 		services.AddScoped<IValidator<GetUserBudgetList>, GetUserBudgetListValidator>();
 		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
 		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
+		services.AddScoped<IValidator<AddBudgetTransactionAttachment>, AddBudgetTransactionAttachmentValidator>();
 		return services;
 	}
 
