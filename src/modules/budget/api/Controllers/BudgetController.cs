@@ -33,6 +33,7 @@ using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -568,7 +569,7 @@ public class BudgetController : ControllerBase
 	{
 		var query = new GetBudgetsToExport();
 		var budgets = await this.queryBus.Query<GetBudgetsToExport, GetTransferList<GetBudgetTransferInfo>?>(query);
-		var result = await this.budgetExportService.Export(budgets);
+		var result = await this.budgetExportService.ExportToStorage(budgets);
 
 		return this.Ok(result);
 	}
