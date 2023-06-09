@@ -1,6 +1,8 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 
@@ -31,19 +33,27 @@ public record CreateBudgetTransaction(
 public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransaction>
 {
 	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
+	private readonly IKeycloakService keycloakService;
+	private readonly IExecutionContextAccessor contextAccessor;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleCreateBudgetTransaction"/> class.
 	/// </summary>
 	/// <param name="budgetTransactionRepository">Repository that manages Budget Transaction aggregate root.</param>
-	public HandleCreateBudgetTransaction(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository)
+	/// <param name="keycloakService">Keycloak service.</param>
+	/// <param name="contextAccessor">Context accessor.</param>
+	public HandleCreateBudgetTransaction(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, IKeycloakService keycloakService, IExecutionContextAccessor contextAccessor)
 	{
 		this.budgetTransactionRepository = budgetTransactionRepository;
+		this.keycloakService = keycloakService;
+		this.contextAccessor = contextAccessor;
 	}
 
 	/// <inheritdoc/>
 	public async Task Handle(CreateBudgetTransaction command, CancellationToken cancellationToken)
 	{
+		var userId = this.contextAccessor.GetUserId();
+		string email = await this.keycloakService.GetEmailById(userId.ToString()!, cancellationToken);
 		var id = new TransactionId(command.Id);
 		var budgetId = new BudgetId(command.BudgetId);
 		var budgetTransaction = BudgetTransactionAggregate.Create(
@@ -51,6 +61,7 @@ public class HandleCreateBudgetTransaction : ICommandHandler<CreateBudgetTransac
 			budgetId,
 			command.Type,
 			command.Name,
+			email,
 			command.Value,
 			command.Category,
 			command.TransactionDate);

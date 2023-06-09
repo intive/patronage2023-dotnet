@@ -40,7 +40,7 @@ public sealed class ValidationCommandBehavior<TRequest> : IPipelineBehavior<TReq
 
 		foreach (var validator in this.validators)
 		{
-			var result = await validator.ValidateAsync(context);
+			var result = await validator.ValidateAsync(context, cancellationToken);
 			if (!result.IsValid)
 			{
 				var messageList = new List<string>();

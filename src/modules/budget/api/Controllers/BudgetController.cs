@@ -1,7 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-
-using FluentValidation;
-
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -21,16 +18,15 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared.Services;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.DeleteUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
 using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
-using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
-using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Errors;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
-using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Export;
 using Intive.Patronage2023.Shared.Infrastructure.ImportExport.Import;
@@ -55,8 +51,6 @@ public class BudgetController : ControllerBase
 	private readonly IBudgetImportService budgetImportService;
 	private readonly IBudgetTransactionExportService budgetTransactionExportService;
 	private readonly IBudgetTransactionImportService budgetTransactionImportService;
-	private readonly IValidator<AddUsersToBudget> addUsersToBudgetValidator;
-	private readonly IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BudgetController"/> class.
@@ -64,8 +58,6 @@ public class BudgetController : ControllerBase
 	/// <param name="commandBus">Command bus.</param>
 	/// <param name="queryBus">Query bus.</param>
 	/// <param name="authorizationService">IAuthorizationService.</param>
-	/// <param name="usersIdsValidator">User ids validator.</param>
-	/// <param name="updateUserBudgetFavouriteValidator">Update UserBudget favuorite flag validator.</param>
 	/// <param name="contextAccessor">IExecutionContextAccessor.</param>
 	/// <param name="budgetExportService">BudgetExportService.</param>
 	/// <param name="budgetImportService">BudgetImportService.</param>
@@ -75,8 +67,6 @@ public class BudgetController : ControllerBase
 		ICommandBus commandBus,
 		IQueryBus queryBus,
 		IAuthorizationService authorizationService,
-		IValidator<AddUsersToBudget> usersIdsValidator,
-		IValidator<UpdateUserBudgetFavourite> updateUserBudgetFavouriteValidator,
 		IExecutionContextAccessor contextAccessor,
 		IBudgetExportService budgetExportService,
 		IBudgetImportService budgetImportService,
@@ -86,9 +76,7 @@ public class BudgetController : ControllerBase
 		this.commandBus = commandBus;
 		this.queryBus = queryBus;
 		this.authorizationService = authorizationService;
-		this.updateUserBudgetFavouriteValidator = updateUserBudgetFavouriteValidator;
 		this.contextAccessor = contextAccessor;
-		this.addUsersToBudgetValidator = usersIdsValidator;
 		this.budgetExportService = budgetExportService;
 		this.budgetImportService = budgetImportService;
 		this.budgetTransactionExportService = budgetTransactionExportService;
@@ -286,7 +274,7 @@ public class BudgetController : ControllerBase
 	///
 	/// Value must be positive for income or negative for expense.
 	///
-	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund"
+	/// Built in Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund".
 	///
 	///     POST
 	///     {
@@ -313,7 +301,7 @@ public class BudgetController : ControllerBase
 	{
 		var transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
-		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
+		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, new CategoryType(command.Category), transactionDate);
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
 		{
@@ -364,6 +352,7 @@ public class BudgetController : ControllerBase
 	/// Sample request:
 	/// Types: "Income", "Expense"
 	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" ,
+	/// SortDescriptors columns: "Name", "CategoryType", "Status", "Value", "BudgetTransactionDate", "Email"
 	/// Set transactionType to null or don't include at all to get both types. Same with categoryTypes.
 	///
 	///     {
@@ -373,8 +362,18 @@ public class BudgetController : ControllerBase
 	///         "categoryTypes": [
 	///           "HomeSpendings",
 	///           "Car"
-	///         ]
-	///         "search": "text"
+	///         ],
+	///         "search": "text",
+	///         "sortDescriptors": [
+	///         {
+	///             "columnName": "Value",
+	///             "sortAscending": false
+	///         },
+	///         {
+	///             "columnName": "Name",
+	///             "sortAscending": true
+	///         }
+	///       ]
 	///     }
 	/// .</remarks>
 	/// <response code="200">Returns the list of Budget details, list of incomes and Expenses corresponding to the query.</response>
@@ -392,8 +391,9 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
-			CategoryTypes = request.CategoryTypes,
+			CategoryTypes = request.CategoryTypes!.Select(categoryTypeString => new CategoryType(categoryTypeString)).ToArray(),
 			Search = request.Search,
+			SortDescriptors = request.SortDescriptors,
 		};
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
@@ -495,12 +495,6 @@ public class BudgetController : ControllerBase
 
 		var updateFavourite = new UpdateUserBudgetFavourite(budgetId, isFavourite);
 
-		var validationResult = await this.updateUserBudgetFavouriteValidator.ValidateAsync(updateFavourite);
-		if (!validationResult.IsValid)
-		{
-			throw new AppException("One or more error occured when trying to update favourite flag.", validationResult.Errors);
-		}
-
 		await this.commandBus.Send(updateFavourite);
 
 		return this.Ok();
@@ -513,7 +507,8 @@ public class BudgetController : ControllerBase
 	/// <param name="usersIds">List of users ids to add to budget.</param>
 	/// <returns>User of the budget.</returns>
 	/// <response code="200">If users are added.</response>
-	/// <response code="400" > Error codes: 1.11: Budget not exists .</response>
+	/// <response code="400" > Error codes: 1.11: Budget not exists.
+	/// 3.7: Users ids cannot be duplicated, cannot have budget owner id and users should exist.</response>
 	/// <response code="401">If the user is unauthorized.</response>
 	[HttpPost("{budgetId:guid}/users")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -527,16 +522,33 @@ public class BudgetController : ControllerBase
 			return this.Forbid();
 		}
 
-		var addUsersToBudget = new AddUsersToBudget(usersIds, budgetId);
+		var getBudgetUsers = new GetUserBudgetList(new BudgetId(budgetId));
 
-		await this.addUsersToBudgetValidator.ValidateAndThrowAsync(addUsersToBudget);
+		var userBudgetList = await this.queryBus.Query<GetUserBudgetList, List<UserBudget>>(getBudgetUsers);
 
-		var addUserToBudget = usersIds.Select(userId => new AddUserBudget(
-		Guid.NewGuid(), new UserId(userId), new BudgetId(budgetId), UserRole.BudgetUser)).ToList();
+		var currentBudgetUsersIds = userBudgetList.Select(x => x.UserId.Value).ToList();
 
-		var userBudgetList = new AddUserBudgetList(addUserToBudget);
+		var usersIdsToAdd = usersIds.Where(x => !currentBudgetUsersIds.Contains(x))
+			.ToArray();
 
-		await this.commandBus.Send(userBudgetList);
+		if (usersIdsToAdd.Length > 0)
+		{
+			var addUserBudgetList = new AddUserBudgetList(budgetId, usersIdsToAdd);
+
+			await this.commandBus.Send(addUserBudgetList);
+		}
+
+		var userBudgetIdToDelete = userBudgetList
+			.Where(x => !usersIds.Contains(x.UserId.Value))
+			.Select(x => x.Id)
+			.ToArray();
+
+		if (userBudgetIdToDelete.Length > 0)
+		{
+			var listToDelete = new DeleteUserBudgetList(userBudgetIdToDelete);
+
+			await this.commandBus.Send(listToDelete);
+		}
 
 		return this.Ok();
 	}

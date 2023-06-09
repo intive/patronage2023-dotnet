@@ -16,9 +16,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, string email, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, status);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, email, value, categoryType, budgetTransactionDate, status);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -43,12 +43,17 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public string Name { get; private set; } = default!;
 
 	/// <summary>
+	/// Budget Transaction creator email.
+	/// </summary>
+	public string Email { get; private set; } = default!;
+
+	/// <summary>
 	/// Value of new created income/Expense.
 	/// </summary>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
+	/// Transaction Category name.
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 
@@ -74,14 +79,15 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
 	/// <param name="name">Name of income or Expense.</param>
+	/// <param name="email">Transaction creator email.</param>
 	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="categoryType">Enum of income/Expense Categories.</param>
+	/// <param name="categoryType">Category of Income or Expense.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <param name="status">Transaction status, default Active (optional).</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status = default)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, string email, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status = default)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate, status);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, email, value, categoryType, budgetTransactionDate, status);
 	}
 
 	/// <summary>
@@ -125,6 +131,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 		this.BudgetId = @event.BudgetId;
 		this.TransactionType = @event.TransactionType;
 		this.Name = @event.Name;
+		this.Email = @event.Email;
 		this.Value = @event.Value;
 		this.CategoryType = @event.CategoryType;
 		this.BudgetTransactionDate = @event.BudgetTransactionDate;

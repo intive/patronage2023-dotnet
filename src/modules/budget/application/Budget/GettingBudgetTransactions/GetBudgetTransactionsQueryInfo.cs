@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
+using Intive.Patronage2023.Shared.Abstractions;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 
@@ -10,9 +11,11 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <param name="TransactionType">Filter transactions type. Income, Expense or null for all.</param>
 /// <param name="CategoryTypes">Filter categories type. Empty or null for all.</param>
 /// <param name="Search">Search text.</param>
+/// <param name="SortDescriptors">Sort descriptor.</param>
 public record GetBudgetTransactionsQueryInfo(
 	int PageSize,
 	int PageIndex,
 	TransactionType? TransactionType,
-	CategoryType[]? CategoryTypes,
-	string Search);
+	string[]? CategoryTypes,
+	string Search,
+	List<SortDescriptor> SortDescriptors);

@@ -1,16 +1,17 @@
 using Bogus;
+
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
+using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -20,16 +21,19 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetTransactionsValidatorTests
 {
+	private readonly Mock<ICategoryProvider> categoryProvider;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> instance;
+
 
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
 	/// </summary>
 	public GetBudgetTransactionsValidatorTests()
 	{
+		this.categoryProvider = new Mock<ICategoryProvider>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.categoryProvider.Object);
 	}
 
 	/// <summary>
@@ -42,12 +46,17 @@ public class GetBudgetTransactionsValidatorTests
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must not be existing BudgetId in database.
 		int pageIndex = 1;
 		int pageSize = new Faker().Random.Number(1, 10);
+		var sortDescriptors = new List<SortDescriptor>() { new SortDescriptor { ColumnName = "Name", SortAscending = true }, new SortDescriptor { ColumnName = "Status", SortAscending = false } };
 
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			PageSize = pageSize,
 			PageIndex = pageIndex,
+			TransactionType = null,
+			CategoryTypes = null,
+			Search = string.Empty,
 			BudgetId = budgetId,
+			SortDescriptors = sortDescriptors,
 		};
 
 		//Act
@@ -67,12 +76,17 @@ public class GetBudgetTransactionsValidatorTests
 		var budgetId = new BudgetId(new Faker().Random.Guid()); //TODO: It must be existing BudgetId in database.
 		int pageIndex = 0;
 		int pageSize = 0;
+		var sortDescriptors = new List<SortDescriptor>() { new SortDescriptor { ColumnName = "Name", SortAscending = true }, new SortDescriptor { ColumnName = "Status", SortAscending = false } };
 
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			PageSize = pageSize,
 			PageIndex = pageIndex,
+			TransactionType = null,
+			CategoryTypes = null,
+			Search = string.Empty,
 			BudgetId = budgetId,
+			SortDescriptors = sortDescriptors,
 		};
 
 		//Act
@@ -102,12 +116,17 @@ public class GetBudgetTransactionsValidatorTests
 		string? description = new Faker().Random.String(1, 10);
 		var budget = BudgetAggregate.Create(budgetId, name, userId, limit, period, icon, description);
 		this.budgetRepositoryMock.Setup(x => x.GetById(It.IsAny<BudgetId>())).ReturnsAsync(budget);
+		var sortDescriptors = new List<SortDescriptor>() { new SortDescriptor { ColumnName = "Name", SortAscending = true }, new SortDescriptor { ColumnName = "Status", SortAscending = false } };
 
 		var getBudgetTransactions = new GetBudgetTransactions
 		{
 			PageSize = pageSize,
 			PageIndex = pageIndex,
+			TransactionType = null,
+			CategoryTypes = null,
+			Search = string.Empty,
 			BudgetId = budgetId,
+			SortDescriptors = sortDescriptors,
 		};
 
 		//Act
