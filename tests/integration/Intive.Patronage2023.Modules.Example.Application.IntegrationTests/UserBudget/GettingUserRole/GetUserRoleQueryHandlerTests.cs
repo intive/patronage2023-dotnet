@@ -20,7 +20,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.UserB
 /// </summary>
 public class GetUserRoleQueryHandlerTests : AbstractIntegrationTests
 {
-	private Mock<IExecutionContextAccessor> contextAccessor;
+	private readonly Mock<IExecutionContextAccessor> contextAccessor;
 	private readonly GetUserBudgetRoleQueryHandler instance;
 	private readonly BudgetDbContext dbContext;
 	

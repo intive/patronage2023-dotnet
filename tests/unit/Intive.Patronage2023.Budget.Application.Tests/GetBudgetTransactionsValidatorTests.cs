@@ -1,7 +1,9 @@
 using Bogus;
+
 using FluentValidation;
 using FluentValidation.TestHelper;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
@@ -9,9 +11,7 @@ using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
-
 using Moq;
-
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -21,16 +21,19 @@ namespace Intive.Patronage2023.Budget.Application.Tests;
 /// </summary>
 public class GetBudgetTransactionsValidatorTests
 {
+	private readonly Mock<ICategoryProvider> categoryProvider;
 	private readonly Mock<IRepository<BudgetAggregate, BudgetId>> budgetRepositoryMock;
 	private readonly IValidator<GetBudgetTransactions> instance;
+
 
 	/// <summary>
 	/// Constructor of GetBudgetTransactionsValidatorTests
 	/// </summary>
 	public GetBudgetTransactionsValidatorTests()
 	{
+		this.categoryProvider = new Mock<ICategoryProvider>();
 		this.budgetRepositoryMock = new Mock<IRepository<BudgetAggregate, BudgetId>>();
-		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object);
+		this.instance = new GetBudgetTransactionValidator(this.budgetRepositoryMock.Object, this.categoryProvider.Object);
 	}
 
 	/// <summary>

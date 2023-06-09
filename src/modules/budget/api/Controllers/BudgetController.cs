@@ -271,7 +271,7 @@ public class BudgetController : ControllerBase
 	///
 	/// Value must be positive for income or negative for expense.
 	///
-	/// Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund"
+	/// Built in Categories: "HomeSpendings" ,  "Subscriptions" , "Car" , "Grocery" , "Salary" , "Refund".
 	///
 	///     POST
 	///     {
@@ -298,7 +298,7 @@ public class BudgetController : ControllerBase
 	{
 		var transactionId = command.Id == default ? Guid.NewGuid() : command.Id;
 		var transactionDate = command.TransactionDate == DateTime.MinValue ? DateTime.UtcNow : command.TransactionDate;
-		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, command.Category, transactionDate);
+		var newBudgetTransaction = new CreateBudgetTransaction(command.Type, transactionId, budgetId, command.Name, command.Value, new CategoryType(command.Category), transactionDate);
 
 		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Create)).Succeeded)
 		{
@@ -388,7 +388,7 @@ public class BudgetController : ControllerBase
 			PageSize = request.PageSize,
 			PageIndex = request.PageIndex,
 			TransactionType = request.TransactionType,
-			CategoryTypes = request.CategoryTypes,
+			CategoryTypes = request.CategoryTypes!.Select(categoryTypeString => new CategoryType(categoryTypeString)).ToArray(),
 			Search = request.Search,
 			SortDescriptors = request.SortDescriptors,
 		};

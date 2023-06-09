@@ -53,7 +53,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
+	/// Transaction Category name.
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 
@@ -81,7 +81,7 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="name">Name of income or Expense.</param>
 	/// <param name="email">Transaction creator email.</param>
 	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="categoryType">Enum of income/Expense Categories.</param>
+	/// <param name="categoryType">Category of Income or Expense.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
 	/// <param name="status">Transaction status, default Active (optional).</param>
 	/// <returns>New aggregate.</returns>
