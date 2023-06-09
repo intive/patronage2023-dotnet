@@ -1,15 +1,22 @@
 using Bogus;
+
 using FluentAssertions;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Contracts.ValueObjects;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 using Intive.Patronage2023.Shared.Infrastructure.Domain;
 using Intive.Patronage2023.Shared.Infrastructure.Domain.ValueObjects;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.IntegrationTests.Budget.GettingBudgetTransactions;
@@ -22,6 +29,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 	private readonly Mock<IExecutionContextAccessor>? contextAccessor;
 	private readonly GetTransactionsQueryHandler instance;
 	private readonly BudgetDbContext dbContext;
+	private readonly Mock<IQueryBus> queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetTransactionsQueryHandlerTests"/> class.
@@ -30,10 +38,17 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 	public GetTransactionsQueryHandlerTests(MsSqlTests fixture)
 		: base(fixture)
 	{
+		this.queryBus = new Mock<IQueryBus>();
+		this.queryBus.Setup(x => x.Query<GetUsers, PagedList<UserInfoDto>>(It.IsAny<GetUsers>()))
+			.ReturnsAsync(new PagedList<UserInfoDto>()
+			{
+				TotalCount = 0,
+				Items = new List<UserInfoDto>()
+			});
 		var scope = this.WebApplicationFactory.Services.CreateScope();
 		this.dbContext = scope.ServiceProvider.GetRequiredService<BudgetDbContext>();
 		this.contextAccessor = new Mock<IExecutionContextAccessor>();
-		this.instance = new GetTransactionsQueryHandler(this.dbContext);
+		this.instance = new GetTransactionsQueryHandler(this.dbContext, this.queryBus.Object);
 	}
 
 	///<summary>
@@ -224,7 +239,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			PageSize = 10,
 			PageIndex = 1,
 			TransactionType = null,
-			CategoryTypes = new [] { new CategoryType("Salary" ) },
+			CategoryTypes = new[] { new CategoryType("Salary") },
 			BudgetId = budgetId,
 		};
 
@@ -262,7 +277,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 		var grocery = new CategoryType("Grocery");
 		var homeSpendings = new CategoryType("HomeSpendings");
 		var car = new CategoryType("Car");
-		
+
 		var income = BudgetTransactionAggregate.Create(
 			incomeId,
 			budgetId,
@@ -308,7 +323,7 @@ public class GetTransactionsQueryHandlerTests : AbstractIntegrationTests
 			PageSize = 10,
 			PageIndex = 1,
 			TransactionType = null,
-			CategoryTypes = new[] { new CategoryType("Car"), new CategoryType("Grocery")},
+			CategoryTypes = new[] { new CategoryType("Car"), new CategoryType("Grocery") },
 			BudgetId = budgetId,
 		};
 

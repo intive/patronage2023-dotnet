@@ -1,12 +1,16 @@
 using System.Linq.Dynamic.Core;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
 using Intive.Patronage2023.Modules.Budget.Application.Extensions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
+using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
@@ -58,14 +62,17 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, PagedList<BudgetTransactionInfo>>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly IQueryBus queryBus;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetTransactionsQueryHandler"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">Budget dbContext.</param>
-	public GetTransactionsQueryHandler(BudgetDbContext budgetDbContext)
+	/// <param name="queryBus">Bus that executes query.</param>
+	public GetTransactionsQueryHandler(BudgetDbContext budgetDbContext, IQueryBus queryBus)
 	{
 		this.budgetDbContext = budgetDbContext;
+		this.queryBus = queryBus;
 	}
 
 	/// <summary>
@@ -86,14 +93,30 @@ public class GetTransactionsQueryHandler : IQueryHandler<GetBudgetTransactions, 
 			budgets = budgets.Where(x => x.Name.Contains(query.Search));
 		}
 
+		var users = (await this.queryBus.Query<GetUsers, PagedList<UserInfoDto>>(new GetUsers()
+		{
+			PageIndex = 1,
+			PageSize = int.MaxValue,
+			Search = string.Empty,
+			SortDescriptors = new List<SortDescriptor>()
+			{
+				new SortDescriptor()
+				{
+					ColumnName = nameof(UserInfoDto.Email),
+					SortAscending = true,
+				},
+			},
+		})).Items.ToDictionary(x => x.Email, x => x);
+
 		int totalItemsCount = await budgets
 			.CountAsync(cancellationToken: cancellationToken);
 
 		var budgetsOrdered = budgets.Sort(query.SortDescriptors!);
-		var mappedData = await budgetsOrdered
+		var items = await budgetsOrdered
 			.Paginate(query)
-			.MapToTransactionInfo()
+			.MapToTransactionInfoDto()
 			.ToListAsync();
+		var mappedData = items.MapToTransactionInfo(users).ToList();
 
 		var result = new PagedList<BudgetTransactionInfo> { Items = mappedData, TotalCount = totalItemsCount };
 		return result;
