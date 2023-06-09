@@ -28,8 +28,8 @@ public class HandleRefreshUserToken : IQueryHandler<RefreshUserToken, AccessUser
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HandleRefreshUserToken"/> class.
 	/// </summary>
-	/// <param name="keycloakService">.</param>
-	/// <param name="httpContextAccessor">KeycloakService.</param>
+	/// <param name="keycloakService">KeycloakService.</param>
+	/// <param name="httpContextAccessor">httpContextAccessor.</param>
 	public HandleRefreshUserToken(IKeycloakService keycloakService, IHttpContextAccessor httpContextAccessor)
 	{
 		this.keycloakService = keycloakService;
