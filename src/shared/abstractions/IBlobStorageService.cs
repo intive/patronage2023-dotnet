@@ -12,8 +12,8 @@ public interface IBlobStorageService
 	/// </summary>
 	/// <param name="stream">A list of records to be written to the CSV file and uploaded.</param>
 	/// <param name="filename">Client for interacting with a specific blob container in Azure Blob Storage.</param>
-	/// <returns>The absolute URI of the uploaded blob in Azure Blob Storage.</returns>
-	Task UploadToBlobStorage(Stream stream, string filename);
+	/// <returns>The bloblClient name of the uploaded blob in Azure Blob Storage.</returns>
+	Task<string> UploadToBlobStorage(Stream stream, string filename);
 
 	/// <summary>
 	/// Downloads a specified file from Azure Blob Storage.

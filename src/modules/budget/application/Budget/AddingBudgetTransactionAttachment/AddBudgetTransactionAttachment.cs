@@ -13,7 +13,8 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTra
 /// </summary>
 /// <param name="File">File.</param>
 /// <param name="TransactionId">Budget transaction Id.</param>
-public record AddBudgetTransactionAttachment(IFormFile File, TransactionId TransactionId) : ICommand;
+/// <param name="BudgetId">Budget Id.</param>
+public record AddBudgetTransactionAttachment(IFormFile File, TransactionId TransactionId, BudgetId BudgetId) : ICommand;
 
 /// <summary>
 /// Method that handles adding attachment to budget transaction.
@@ -47,23 +48,10 @@ public class HandleAddBudgetTransactionAttachment : ICommandHandler<AddBudgetTra
 
 		var transaction = await this.budgetTransactionRepository.GetById(command.TransactionId);
 
-		if (transaction == null)
-		{
-			throw new InvalidOperationException("Transaction not found.");
-		}
+		string blobName = await this.blobStorageService.UploadToBlobStorage(attachmentFile.Content, attachmentFile.FileName);
 
-		if (transaction.AttachmentUrl != null)
-		{
-			throw new InvalidOperationException("This transaction already has attachment.");
-		}
+		transaction!.AddAttachment(blobName);
 
-		await this.blobStorageService.UploadToBlobStorage(attachmentFile.Content, attachmentFile.FileName);
-
-		string fileUrlString = await this.blobStorageService.GenerateLinkToDownload(attachmentFile.FileName);
-		var fileUrl = new Uri(fileUrlString);
-
-		transaction.AddAttachment(fileUrl);
-
-		await this.budgetTransactionRepository.Persist(transaction ?? throw new InvalidOperationException());
+		await this.budgetTransactionRepository.Persist(transaction);
 	}
 }

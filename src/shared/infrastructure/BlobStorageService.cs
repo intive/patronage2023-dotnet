@@ -51,12 +51,13 @@ public class BlobStorageService : IBlobStorageService
 	/// </summary>
 	/// <param name="stream">The stream containing the data to upload.</param>
 	/// <param name="filename">The name of the file in the blob storage.</param>
-	/// <returns><see cref="Task"/>Representing the asynchronous operation of the file upload.</returns>
-	public async Task UploadToBlobStorage(Stream stream, string filename)
+	/// <returns>The bloblClient name of the uploaded blob in Azure Blob Storage.</returns>
+	public async Task<string> UploadToBlobStorage(Stream stream, string filename)
 	{
 		BlobContainerClient containerClient = await this.CreateBlobContainerIfNotExists();
 		BlobClient blobClient = containerClient.GetBlobClient(filename);
 		await blobClient.UploadAsync(stream, true);
+		return blobClient.Name;
 	}
 
 	/// <summary>
