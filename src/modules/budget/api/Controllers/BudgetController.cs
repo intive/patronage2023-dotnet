@@ -649,10 +649,32 @@ public class BudgetController : ControllerBase
 	}
 
 	/// <summary>
-	/// .
+	/// Exports all user budgets to user via email.
 	/// </summary>
-	/// <param name="budgetId">budget id from which we transfer transactions.</param>
-	/// <returns>Returns Ok if email was sent.</returns>
+	/// <returns>Ok if email was sent.</returns>
+	/// <response code="200">If the export operation was successful and budgets have been sent to user via email.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to read budget.</response>
+	[HttpPost("budgets/export/mail")]
+	[ProducesResponseType(typeof(SendBudgetsViaEmail), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> ExportBudgetsViaEmail()
+	{
+		var command = new SendBudgetsViaEmail();
+		await this.commandBus.Send(command);
+
+		return this.Ok();
+	}
+
+	/// <summary>
+	/// Exports all budget incomes and expenses to user via email.
+	/// </summary>
+	/// <param name="budgetId">Id of the budget from which transactions will be exported.</param>
+	/// <returns>Ok if email was sent.</returns>
+	/// <response code="200">If the export operation was successful and transactions have been sent to user via email.</response>
+	/// <response code="401">If the user is unauthorized.</response>
+	/// <response code="403">If the user is not allowed to read budget.</response>
 	[HttpPost("{budgetId:guid}/transactions/export/mail")]
 	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status400BadRequest)]
@@ -666,23 +688,6 @@ public class BudgetController : ControllerBase
 		}
 
 		var command = new SendBudgetTransactionsViaEmail { BudgetId = new BudgetId(budgetId) };
-		await this.commandBus.Send(command);
-
-		return this.Ok();
-	}
-
-	/// <summary>
-	/// .
-	/// </summary>
-	/// <returns>Returns Ok if email was sent.</returns>
-	[HttpPost("budgets/export/mail")]
-	[ProducesResponseType(typeof(SendBudgetsViaEmail), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(SendBudgetsViaEmail), StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> ExportBudgetsViaEmail()
-	{
-		var command = new SendBudgetsViaEmail();
 		await this.commandBus.Send(command);
 
 		return this.Ok();
