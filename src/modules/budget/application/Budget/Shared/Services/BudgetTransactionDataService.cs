@@ -56,7 +56,7 @@ public class BudgetTransactionDataService : IBudgetTransactionDataService
 			var userid = this.contextAccessor.GetUserId();
 			string email = await this.keycloak.GetEmailById(userid.ToString()!, CancellationToken.None);
 			var transactionType = (TransactionType)Enum.Parse(typeof(TransactionType), transaction.TransactionType);
-			var categoryType = (CategoryType)Enum.Parse(typeof(CategoryType), transaction.CategoryType);
+			var categoryType = new CategoryType(transaction.CategoryType);
 			var budgetTransactionDate = DateTime.Parse(transaction.Date);
 			var status = (Status)Enum.Parse(typeof(Status), transaction.Status);
 			var newBudgetTransaction = BudgetTransactionAggregate.Create(transactionId, transaction.BudgetId, transactionType, transaction.Name, email, value, categoryType, budgetTransactionDate, status);

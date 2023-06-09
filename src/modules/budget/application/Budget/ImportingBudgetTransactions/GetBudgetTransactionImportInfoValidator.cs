@@ -1,6 +1,7 @@
 using System.Globalization;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.Shared;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
@@ -14,14 +15,18 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.ImportingBudget
 public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudgetTransactionImportInfo>
 {
 	private readonly BudgetDbContext budgetDbContext;
+	private readonly ICategoryProvider categoryProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GetBudgetTransactionImportInfoValidator"/> class.
 	/// </summary>
 	/// <param name="budgetDbContext">BudgetDbContext.</param>
-	public GetBudgetTransactionImportInfoValidator(BudgetDbContext budgetDbContext)
+	/// <param name="categoryProvider">The provider used to get budget transaction categories.</param>
+	public GetBudgetTransactionImportInfoValidator(BudgetDbContext budgetDbContext, ICategoryProvider categoryProvider)
 	{
 		this.budgetDbContext = budgetDbContext;
+		this.categoryProvider = categoryProvider;
+
 		this.RuleFor(transaction => transaction.BudgetId)
 			.NotEmpty()
 			.WithMessage("Budget id is missing")
@@ -57,12 +62,16 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 			.WithMessage("Value must be positive for income and negative for expense")
 			.WithErrorCode("2.6");
 
-		this.RuleFor(transaction => transaction.CategoryType)
+		this.RuleFor(transaction => new
+			{
+				transaction.BudgetId,
+				transaction.CategoryType,
+			})
 			.NotEmpty()
-			.WithMessage("Category is missing")
+			.WithMessage("Category cannot be empty.")
 			.WithErrorCode("2.7")
-			.Must(x => Enum.IsDefined(typeof(CategoryType), x))
-			.WithMessage("Category must be defined in budget")
+			.Must(x => this.IsCategoryDefined(x.BudgetId.Value, x.CategoryType))
+			.WithMessage("Category is not defined.")
 			.WithErrorCode("2.8");
 
 		this.RuleFor(transaction => transaction.Date)
@@ -149,5 +158,12 @@ public class GetBudgetTransactionImportInfoValidator : AbstractValidator<GetBudg
 		}
 
 		return status is Status.Active or Status.Cancelled;
+	}
+
+	private bool IsCategoryDefined(Guid budgetId, string categoryString)
+	{
+		var category = new CategoryType(categoryString);
+		var categories = this.categoryProvider.GetForBudget(new BudgetId(budgetId));
+		return categories.Select(x => x.Name).Contains(category.CategoryName);
 	}
 }
