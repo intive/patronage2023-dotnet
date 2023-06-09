@@ -1,8 +1,9 @@
-using FluentAssertions;
+using Microsoft.Extensions.Options;
 
 using Intive.Patronage2023.Shared.Infrastructure.Email;
 
 using Microsoft.Extensions.DependencyInjection;
+using FluentAssertions;
 
 namespace Intive.Patronage2023.Shared.IntegrationTests.Email;
 
@@ -13,6 +14,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 {
 	private readonly SmtpServerFixture fixture;
 	private IEmailService emailService;
+	private IEmailConfiguration emailConfiguration;
 
 	/// <summary>
 	/// Initializes email tests.
@@ -23,6 +25,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 	{
 		this.fixture = fixture;
 		var scope = this.WebApplicationFactory.Services.CreateScope();
+		this.emailConfiguration = scope.ServiceProvider.GetRequiredService<IOptions<EmailConfiguration>>().Value;
 		this.emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 	}
 
@@ -38,10 +41,10 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 			Subject = "Test subject",
 			Body = "Test body",
 			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
-			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") }
+			SendToAddresses = new List<EmailAddress> { new("testTo", "testTo@invite.pl") },
 		};
 
-		var exception = Record.Exception(() => this.emailService.SendEmail(emailMessage));
-		exception.Should().BeNull();
+		this.emailService.Invoking(service => service.SendEmail(emailMessage))
+				.Should().NotThrow();
 	}
 }

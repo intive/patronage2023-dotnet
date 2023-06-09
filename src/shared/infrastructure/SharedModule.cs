@@ -26,7 +26,6 @@ public static class SharedModule
 		services.AddTransient(typeof(IRequestHandler<>), typeof(MediatRCommandHandlerAdapter<>));
 		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-		services.AddSingleton<IEmailConfiguration, EmailConfiguration>();
 		services.AddTransient<IEmailService, EmailService>();
 
 		return services;
