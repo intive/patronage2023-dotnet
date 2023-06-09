@@ -31,7 +31,19 @@ public class EmailService : IEmailService
 		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
 		message.To.AddRange(emailMessage!.SendToAddresses!.Select(this.ToMailboxAddress));
 		message.Subject = emailMessage!.Subject;
-		message.Body = new TextPart("plain") { Text = emailMessage!.Body };
+		var builder = new BodyBuilder
+		{
+			TextBody = emailMessage!.Body ?? string.Empty,
+		};
+		if (emailMessage.EmailAttachments is not null)
+		{
+			foreach (var item in emailMessage!.EmailAttachments)
+			{
+				builder.Attachments.Add(item.Name, item.Content);
+			}
+		}
+
+		message.Body = builder.ToMessageBody();
 
 		using (var client = new SmtpClient())
 		{
