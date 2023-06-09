@@ -25,7 +25,7 @@ public class EmailSendingTests : AbstractIntegrationTests, IClassFixture<SmtpSer
 	{
 		this.fixture = fixture;
 		var scope = this.WebApplicationFactory.Services.CreateScope();
-		this.emailConfiguration = scope.ServiceProvider.GetRequiredService<IOptions<IEmailConfiguration>>().Value;
+		this.emailConfiguration = scope.ServiceProvider.GetRequiredService<IOptions<EmailConfiguration>>().Value;
 		this.emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 	}
 
