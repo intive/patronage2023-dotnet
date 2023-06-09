@@ -17,7 +17,7 @@ public static class BudgetTransactionAggregateGetBudgetTransactionsToExportInfoM
 		query.Select(x => new GetBudgetTransactionTransferInfo
 		{
 			Name = x.Name,
-			CategoryType = x.CategoryType.ToString(),
+			CategoryType = x.CategoryType.CategoryName,
 			Date = x.BudgetTransactionDate.ToString(),
 			TransactionType = x.TransactionType.ToString(),
 			Value = x.Value.ToString(),
