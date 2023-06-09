@@ -1,4 +1,3 @@
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
@@ -7,7 +6,7 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTr
 /// <summary>
 /// Model of Income and Expense.
 /// </summary>
-public record BudgetTransactionInfo()
+public record BudgetTransactionInfoDto()
 {
 	/// <summary>
 	/// Transaction Type.
@@ -50,7 +49,7 @@ public record BudgetTransactionInfo()
 	public string? AttachmentUrl { get; init; } = null!;
 
 	/// <summary>
-	/// Creator of the budget transaction.
+	/// Email of creator of the budget transaction.
 	/// </summary>
-	public BudgetUser? BudgetUser { get; init; } = null!;
+	public string Email { get; init; } = null!;
 }

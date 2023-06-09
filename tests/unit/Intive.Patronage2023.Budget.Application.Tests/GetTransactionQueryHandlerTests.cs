@@ -1,9 +1,12 @@
 using Bogus;
+
 using FluentAssertions;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -19,6 +22,7 @@ public class GetTransactionsQueryHandlerTests
 	public GetTransactionsQueryHandlerTests()
 	{
 	}
+
 	/// <summary>
 	/// Test that check if the query returns expected values from database.
 	/// </summary>
@@ -48,7 +52,7 @@ public class GetTransactionsQueryHandlerTests
 		// this.budgetDbContext.SaveChanges();
 		var query = new GetBudgetTransactions() { PageSize = pageSize, PageIndex = pageIndex, BudgetId = budgetId };
 		var cancellationToken = CancellationToken.None;
-		var instance = new GetTransactionsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetTransactionsQueryHandler(null!, null!); // TODO: Use integration tests db context.
 
 		// Act
 		var result = await instance.Handle(query, cancellationToken);
