@@ -1,4 +1,4 @@
-namespace Intive.Patronage2023.Modules.User.Contracts;
+namespace Intive.Patronage2023.Shared.Abstractions.UserContext;
 
 /// <summary>
 /// Additional informations about user.

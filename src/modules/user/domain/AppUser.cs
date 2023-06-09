@@ -1,4 +1,5 @@
 using Intive.Patronage2023.Modules.User.Contracts;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 
 namespace Intive.Patronage2023.Modules.User.Domain;
 
