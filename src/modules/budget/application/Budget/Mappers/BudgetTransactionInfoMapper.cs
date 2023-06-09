@@ -26,6 +26,7 @@ public static class BudgetTransactionInfoMapper
 			Value = x.Value,
 			BudgetTransactionDate = x.BudgetTransactionDate,
 			CategoryType = x.CategoryType,
+			AttachmentUrl = x.AttachmentUrl,
 			BudgetUser = users.ContainsKey(x.Email) ? users[x.Email].ToBudgetUser() : null,
 		});
 
