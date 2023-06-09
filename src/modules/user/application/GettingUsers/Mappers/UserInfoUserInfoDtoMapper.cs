@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
+
 namespace Intive.Patronage2023.Modules.User.Application.GettingUsers.Mappers;
 
 /// <summary>

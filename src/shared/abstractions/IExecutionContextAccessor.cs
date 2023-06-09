@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
+
 namespace Intive.Patronage2023.Shared.Abstractions;
 
 /// <summary>
@@ -21,5 +23,5 @@ public interface IExecutionContextAccessor
 	/// Holds information from token claims.
 	/// </summary>
 	/// <returns>Dictionary with mapped values from token.</returns>
-	public Dictionary<string, string>? GetUserDataFromToken();
+	public UserInfo? GetUserContext();
 }

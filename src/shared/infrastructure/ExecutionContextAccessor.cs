@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using Intive.Patronage2023.Shared.Abstractions;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 using Microsoft.AspNetCore.Http;
 
 namespace Intive.Patronage2023.Shared.Infrastructure;
@@ -65,7 +66,7 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 	}
 
 	/// <inheritdoc/>
-	public Dictionary<string, string>? GetUserDataFromToken()
+	public UserInfo? GetUserContext()
 	{
 		string? jwtToken = this.httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 		var tokenHandler = new JwtSecurityTokenHandler();
@@ -81,7 +82,23 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
 		var claims = token.Claims;
 		var claimsDictionary = claims
 			.ToDictionary(c => c.Type, c => c.Value);
+		var userId = Guid.Parse(token.Claims.First(c => c.Type == "sub").Value);
+		string userAvatar = string.Empty;
+		if (claimsDictionary.ContainsKey("avatar"))
+		{
+			userAvatar = claimsDictionary["avatar"];
+		}
 
-		return claimsDictionary;
+		return new UserInfo
+		{
+			Id = userId,
+			FirstName = claimsDictionary?["given_name"] ?? string.Empty,
+			LastName = claimsDictionary?["family_name"] ?? string.Empty,
+			Email = claimsDictionary?["email"] ?? string.Empty,
+			Attributes = new UserAttributes
+			{
+				Avatar = new string[] { userAvatar },
+			},
+		};
 	}
 }

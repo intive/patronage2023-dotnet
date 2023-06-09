@@ -3,6 +3,7 @@ using Intive.Patronage2023.Modules.User.Domain;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 
 namespace Intive.Patronage2023.Modules.User.Application.CreatingUser;
 

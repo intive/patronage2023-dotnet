@@ -62,16 +62,22 @@ public class HandleSendBudgetTransactionsViaEmail : ICommandHandler<SendBudgetTr
 		var budgetDetails = await this.queryBus.Query<GetBudgetDetails, BudgetDetailsInfo?>(getBudgetDetails);
 		var attachment = await this.budgetTransactionExportService.Export(transactions);
 
-		var userData = this.executionContextAccessor.GetUserDataFromToken();
-		string email = userData?["email"] ?? string.Empty;
-		string name = userData?["name"] ?? string.Empty;
+		var userData = this.executionContextAccessor.GetUserContext();
+		string email = string.Empty;
+		string name = string.Empty;
+
+		if (userData != null)
+		{
+			 email = userData.Email;
+			 name = userData.FirstName + " " + userData.LastName;
+		}
 
 		var emailMessage = new EmailMessage
 		{
-			Subject = "Exported budgets",
+			Subject = "Exported budget transactions",
 			Body = $"Dear {name},\r\nThe attached file contains transactions from budget {budgetDetails?.Name} as on date {DateTime.Now}\n" +
 				"Best regards,\r\nInbudget Team",
-			SendFromAddress = new EmailAddress("testFrom", "testFrom@intive.pl"),
+			SendFromAddress = new EmailAddress("InBudget", "system@inbudget.com"),
 			SendToAddresses = new List<EmailAddress> { new(name, email) },
 			EmailAttachments = new List<FileDescriptor> { attachment },
 		};
