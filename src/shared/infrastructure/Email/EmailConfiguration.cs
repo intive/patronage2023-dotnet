@@ -8,14 +8,22 @@ namespace Intive.Patronage2023.Shared.Infrastructure.Email;
 public class EmailConfiguration : IEmailConfiguration
 {
 	/// <inheritdoc/>
-	[ConfigurationKeyName("SmtpServer")]
+	[ConfigurationKeyName(nameof(SmtpServer))]
 	public string SmtpServer { get; set; } = null!;
 
 	/// <inheritdoc/>
-	[ConfigurationKeyName("SmtpPort")]
+	[ConfigurationKeyName(nameof(SmtpPort))]
 	public int SmtpPort { get; set; }
 
 	/// <inheritdoc/>
-	[ConfigurationKeyName("UseSSL")]
+	[ConfigurationKeyName(nameof(UseSSL))]
 	public bool UseSSL { get; set; }
+
+	/// <inheritdoc/>
+	[ConfigurationKeyName(nameof(UserName))]
+	public string? UserName { get; set; }
+
+	/// <inheritdoc/>
+	[ConfigurationKeyName(nameof(Password))]
+	public string? Password { get; set; }
 }

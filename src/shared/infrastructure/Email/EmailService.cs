@@ -1,4 +1,7 @@
+using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+
 using MailKit.Net.Smtp;
+using MailKit.Security;
 
 using MimeKit;
 
@@ -26,9 +29,40 @@ public class EmailService : IEmailService
 		ArgumentNullException.ThrowIfNull(emailMessage);
 		ArgumentNullException.ThrowIfNull(emailMessage.SendFromAddress);
 		ArgumentNullException.ThrowIfNull(emailMessage.SendToAddresses);
+		MimeMessage message = this.CreateMessage(emailMessage);
+		this.Send(message);
+	}
 
+	private void Send(MimeMessage message)
+	{
+		using (var client = new SmtpClient())
+		{
+			try
+			{
+				client.Connect(this.emailConfiguration.SmtpServer, this.emailConfiguration.SmtpPort, this.emailConfiguration.UseSSL);
+				if (this.emailConfiguration.HasUserCredentials())
+				{
+					client.Authenticate(new SaslMechanismLogin(this.emailConfiguration.UserName, this.emailConfiguration.Password));
+				}
+
+				client.Send(message);
+				client.Disconnect(true);
+			}
+			catch (AuthenticationException)
+			{
+				throw new AppException("Username or password are incorrect.");
+			}
+			catch
+			{
+				throw new AppException("Email not sent properly.");
+			}
+		}
+	}
+
+	private MimeMessage CreateMessage(EmailMessage emailMessage)
+	{
 		var message = new MimeMessage();
-		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress));
+		message.From.Add(this.ToMailboxAddress(emailMessage.SendFromAddress!));
 		message.To.AddRange(emailMessage!.SendToAddresses!.Select(this.ToMailboxAddress));
 		message.Subject = emailMessage!.Subject;
 		var builder = new BodyBuilder
@@ -44,13 +78,7 @@ public class EmailService : IEmailService
 		}
 
 		message.Body = builder.ToMessageBody();
-
-		using (var client = new SmtpClient())
-		{
-			client.Connect(this.emailConfiguration.SmtpServer, this.emailConfiguration.SmtpPort, this.emailConfiguration.UseSSL);
-			client.Send(message);
-			client.Disconnect(true);
-		}
+		return message;
 	}
 
 	private MailboxAddress ToMailboxAddress(EmailAddress address) => new MailboxAddress(address.Name, address.Address);
