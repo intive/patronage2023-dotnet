@@ -2,9 +2,9 @@ using System.Net;
 using FluentValidation;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
-using Intive.Patronage2023.Modules.User.Application.GettingUsers;
 using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 

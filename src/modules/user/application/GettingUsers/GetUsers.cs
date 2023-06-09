@@ -4,6 +4,7 @@ using Intive.Patronage2023.Modules.User.Infrastructure;
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure.Exceptions;
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
 using Newtonsoft.Json;
 
 namespace Intive.Patronage2023.Modules.User.Application.GettingUsers;

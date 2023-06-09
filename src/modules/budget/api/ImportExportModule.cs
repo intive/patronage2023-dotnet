@@ -31,7 +31,6 @@ public static class ImportExportModule
 		services.AddScoped<ICsvService<GetBudgetTransactionTransferInfo>, CsvService<GetBudgetTransactionTransferInfo>>();
 		services.AddScoped<ICsvService<GetBudgetTransactionImportInfo>, CsvService<GetBudgetTransactionImportInfo>>();
 		services.AddScoped<IValidator<GetBudgetTransactionImportInfo>, GetBudgetTransactionImportInfoValidator>();
-
 		return services;
 	}
 }

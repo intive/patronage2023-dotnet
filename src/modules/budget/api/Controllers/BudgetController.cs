@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+
+using FluentValidation;
+
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
@@ -6,6 +9,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTrans
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.ExportingBudgetTransactionViaMail;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
@@ -617,7 +621,7 @@ public class BudgetController : ControllerBase
 		}
 
 		var transactions = await this.queryBus.Query<GetBudgetTransactionsToExport, GetTransferList<GetBudgetTransactionTransferInfo>?>(query);
-		var result = await this.budgetTransactionExportService.Export(transactions);
+		var result = await this.budgetTransactionExportService.ExportToStorage(transactions);
 
 		return this.Ok(result);
 	}
@@ -655,5 +659,28 @@ public class BudgetController : ControllerBase
 		}
 
 		return this.Ok(new { Errors = getImportResult.ImportResult.ErrorsList, getImportResult.ImportResult.Uri });
+	}
+
+	/// <summary>
+	/// .
+	/// </summary>
+	/// <param name="budgetId">budget id from which we transfer transactions.</param>
+	/// <returns>Returns Ok if email was sent.</returns>
+	[HttpPost("{budgetId:guid}/transactions/export/mail")]
+	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(SendBudgetTransactionsViaEmail), StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> ExportBudgetTransactionsViaEmail([FromRoute] Guid budgetId)
+	{
+		if (!(await this.authorizationService.AuthorizeAsync(this.User, new BudgetId(budgetId), Operations.Read)).Succeeded)
+		{
+			return this.Forbid();
+		}
+
+		var command = new SendBudgetTransactionsViaEmail { BudgetId = new BudgetId(budgetId) };
+		await this.commandBus.Send(command);
+
+		return this.Ok();
 	}
 }
