@@ -29,12 +29,12 @@ public record GetBudgetTransactions : IQuery<PagedList<BudgetTransactionInfo>>, 
 	/// <summary>
 	/// Transaction type to filter. Null for all.
 	/// </summary>
-	public TransactionType? TransactionType { get; set; }
+	public TransactionType? TransactionType { get; init; }
 
 	/// <summary>
 	/// Categories type to filter. Empty array or null for all.
 	/// </summary>
-	public CategoryType[]? CategoryTypes { get; set; }
+	public CategoryType[]? CategoryTypes { get; init; }
 
 	/// <summary>
 	/// Budget Id.

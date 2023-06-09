@@ -16,6 +16,6 @@ public record GetBudgetTransactionsQueryInfo(
 	int PageSize,
 	int PageIndex,
 	TransactionType? TransactionType,
-	CategoryType[]? CategoryTypes,
+	string[]? CategoryTypes,
 	string Search,
 	List<SortDescriptor> SortDescriptors);

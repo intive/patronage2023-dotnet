@@ -50,7 +50,7 @@ public class CreateBudgetTransactionCommandHandlerTests
 		string name = new Faker().Name.FirstName();
 		string email = new Faker().Internet.Email();
 		decimal value = new Faker().Random.Decimal((decimal)0.0001, (decimal)9999999999999.9999);
-		var category = new Faker().Random.Enum<CategoryType>();
+		var category = new CategoryType("Car");
 		var createdDate = new Faker().Date.Recent();
 		if (type == TransactionType.Expense)
 			value *= -1;
