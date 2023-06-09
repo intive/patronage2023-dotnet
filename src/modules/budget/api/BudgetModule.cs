@@ -9,6 +9,7 @@ using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetail
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
 using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
@@ -57,8 +58,9 @@ public static class BudgetModule
 		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();
 		services.AddScoped<IValidator<DeleteTransactionCategory>, DeleteTransactionCategoryValidator>();
 		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
-        services.AddScoped<IValidator<AddBudgetTransactionAttachment>, AddBudgetTransactionAttachmentValidator>();
-        services.AddScoped<ICategoryProvider, StaticCategoryProvider>();
+		services.AddScoped<IValidator<AddBudgetTransactionAttachment>, AddBudgetTransactionAttachmentValidator>();
+		services.AddScoped<IValidator<GetBudgetTransactionAttachment>, GetBudgetTransactionAttachmentValidator>();
+		services.AddScoped<ICategoryProvider, StaticCategoryProvider>();
 		services.AddScoped<ICategoryProvider, DatabaseCategoryProvider>();
 
 		return services;

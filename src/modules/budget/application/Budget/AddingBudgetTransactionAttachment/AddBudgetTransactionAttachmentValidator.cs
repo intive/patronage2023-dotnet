@@ -1,5 +1,10 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
+using Intive.Patronage2023.Modules.Budget.Domain;
+using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
 
@@ -10,20 +15,80 @@ public class AddBudgetTransactionAttachmentValidator : AbstractValidator<AddBudg
 {
 	private readonly long maxFileSize = 5000000;
 	private readonly string[] allowedFileExtensions = { ".pdf", ".jpg", ".bmp", ".png" };
+	private readonly IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository;
+	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AddBudgetTransactionAttachmentValidator"/> class.
 	/// Attachment file validator.
 	/// </summary>
-	public AddBudgetTransactionAttachmentValidator()
+	/// <param name="budgetTransactionRepository">Budget Transaction Repository.</param>
+	/// <param name="budgetRepository">Budget Repository.</param>
+	public AddBudgetTransactionAttachmentValidator(IRepository<BudgetTransactionAggregate, TransactionId> budgetTransactionRepository, IRepository<BudgetAggregate, BudgetId> budgetRepository)
 	{
+		this.budgetTransactionRepository = budgetTransactionRepository;
+		this.budgetRepository = budgetRepository;
+
 		this.RuleFor(command => command.TransactionId)
 			.NotEmpty()
-			.WithMessage("Transaction Id cannot be null.");
+			.WithMessage("TransactionId cannot be empty.")
+			.WithErrorCode("2.12")
+			.MustAsync(async (x, cancellation) => await this.TransactionExists(x.Value))
+			.WithMessage("Transaction doesn't exist.")
+			.WithErrorCode("2.11");
+
+		this.RuleFor(command => command.BudgetId)
+			.NotEmpty()
+			.WithMessage("BudgetId cannot be empty.")
+			.WithErrorCode("1.12")
+			.MustAsync(async (x, cancellation) => await this.BudgetExists(x.Value))
+			.WithMessage("Budget doesn't exist.")
+			.WithErrorCode("1.11");
+
+		this.RuleFor(command => command)
+			.MustAsync(async (x, cancellation) => await this.BelongsToBudget(x.BudgetId.Value, x.TransactionId.Value))
+			.WithMessage("This transaction does not belong to the specified budget.")
+			.WithErrorCode("2.10");
+
+		this.RuleFor(command => command.TransactionId)
+			.MustAsync(async (x, cancellation) => await this.IsTransactionWithoutAttachment(x.Value))
+			.WithMessage("Transaction already has an attachment.")
+			.WithErrorCode("2.20");
+
 		this.RuleFor(command => command.File)
-			.NotNull().WithMessage("File cannot be null.")
-			.Must(this.HaveValidExtension).WithMessage($"File extension must be one of the following: {string.Join(", ", this.allowedFileExtensions)}.")
-			.Must(this.HaveValidSize).WithMessage($"File size must be less than {this.maxFileSize} bytes.");
+			.NotNull()
+			.WithMessage("File is required.")
+			.WithErrorCode("11.1")
+			.Must(this.HaveValidSize)
+			.WithMessage($"File size must be less than {this.maxFileSize} bytes.")
+			.WithErrorCode("11.2")
+			.Must(this.HaveValidExtension)
+			.WithMessage($"File extension must be one of the following: {string.Join(", ", this.allowedFileExtensions)}.")
+			.WithErrorCode("11.3");
+	}
+
+	private async Task<bool> TransactionExists(Guid transactionId)
+	{
+		BudgetTransactionAggregate? transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
+		return transaction != null;
+	}
+
+	private async Task<bool> BudgetExists(Guid budgetId)
+	{
+		BudgetAggregate? budget = await this.budgetRepository.GetById(new BudgetId(budgetId));
+		return budget != null;
+	}
+
+	private async Task<bool> BelongsToBudget(Guid budgetId, Guid transactionId)
+	{
+		var transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
+		return budgetId == transaction!.BudgetId.Value;
+	}
+
+	private async Task<bool> IsTransactionWithoutAttachment(Guid transactionId)
+	{
+		BudgetTransactionAggregate? transaction = await this.budgetTransactionRepository.GetById(new TransactionId(transactionId));
+		return transaction!.AttachmentUrl == null;
 	}
 
 	private bool HaveValidExtension(IFormFile file)
