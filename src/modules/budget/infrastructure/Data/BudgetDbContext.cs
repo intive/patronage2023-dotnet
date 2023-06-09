@@ -35,6 +35,11 @@ public class BudgetDbContext : DbContext
 	public virtual DbSet<UserBudgetAggregate> UserBudget { get; set; }
 
 	/// <summary>
+	/// This DbSet represents a database table that will store instances of the TransactionCategoryAggregate entity.
+	/// </summary>
+	public DbSet<TransactionCategoryAggregate> BudgetTransactionCategory { get; set; }
+
+	/// <summary>
 	/// Domain Event Store DbSet.
 	/// </summary>
 	public DbSet<DomainEventStore> DomainEventStore { get; set; }

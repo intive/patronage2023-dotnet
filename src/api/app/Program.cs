@@ -3,6 +3,8 @@ using Hangfire.Dashboard;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
 using Intive.Patronage2023.Modules.Budget.Api;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
 using Intive.Patronage2023.Modules.User.Api.Configuration;
@@ -98,6 +100,7 @@ builder.Services.AddTransient(
 builder.Services.AddCommandBehavior(typeof(ValidationCommandBehavior<>), AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddHangfireService(builder.Configuration);
+builder.Services.AddComposite<ICategoryProvider, CompositeCategoryProvider>();
 
 var app = builder.Build();
 

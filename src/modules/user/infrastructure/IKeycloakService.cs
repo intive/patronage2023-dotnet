@@ -61,4 +61,12 @@ public interface IKeycloakService
 	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
 	/// <returns>User corresponding to query.</returns>
 	Task<HttpResponseMessage> GetUserById(string id, CancellationToken cancellationToken);
+
+	/// <summary>
+	/// Get username from keycloak.
+	/// </summary>
+	/// <param name="id">User id.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the request.</param>
+	/// <returns>User corresponding to query.</returns>
+	Task<string> GetEmailById(string id, CancellationToken cancellationToken);
 }

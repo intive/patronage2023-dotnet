@@ -36,10 +36,11 @@ public class GetTransactionsQueryHandlerTests
 			var id = new TransactionId(new Faker().Random.Guid());
 			var transactionType = TransactionType.Income;
 			string? name = new Faker().Random.Word();
+			string email = new Faker().Internet.Email();
 			decimal value = new Faker().Random.Decimal(min: .1M);
-			var category = new Faker().Random.Enum<CategoryType>();
 			var transactionDate = new Faker().Date.Recent();
-			var transaction = BudgetTransactionAggregate.Create(id, budgetId, transactionType, name, value, category, transactionDate);
+			var category = new CategoryType("Car");
+			var transaction = BudgetTransactionAggregate.Create(id, budgetId, transactionType, name, email, value, category, transactionDate);
 			transactionList.Add(transaction);
 			// this.budgetDbContext.Transaction.Add(transaction);
 		}
