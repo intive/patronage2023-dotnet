@@ -52,7 +52,6 @@ builder.Services.AddUserModule();
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 var emailSetting = builder.Configuration.GetRequiredSection("EmailSettings").Get<EmailConfiguration>();
 builder.Services.AddSingleton<IEmailConfiguration, EmailConfiguration>(x => emailSetting!);
-builder.Services.AddHttpClient();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 builder.Services.AddImportExportModule(builder.Configuration);
 
