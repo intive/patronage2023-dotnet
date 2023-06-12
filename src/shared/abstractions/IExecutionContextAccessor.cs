@@ -1,3 +1,5 @@
+using Intive.Patronage2023.Shared.Abstractions.UserContext;
+
 namespace Intive.Patronage2023.Shared.Abstractions;
 
 /// <summary>
@@ -16,4 +18,10 @@ public interface IExecutionContextAccessor
 	/// </summary>
 	/// <returns>Bool value.</returns>
 	bool IsAdmin();
+
+	/// <summary>
+	/// Holds information from token claims.
+	/// </summary>
+	/// <returns>Dictionary with mapped values from token.</returns>
+	public UserInfo? GetUserContext();
 }

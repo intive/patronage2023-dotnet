@@ -1,6 +1,5 @@
 using ArchUnitNET.Domain.Extensions;
 using ArchUnitNET.Fluent;
-
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Events;
@@ -110,22 +109,35 @@ public class ComponentNamingTests
 	{
 		var baseClass = Architecture.All.GetClassOfType(typeof(DomainEvent));
 
-		IArchRule domainEventNameConvetnionRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("DomainEvent");
+		IArchRule domainEventNameConventnionRule = ArchRuleDefinition.Classes().That().AreAssignableTo(baseClass).Should().HaveNameEndingWith("DomainEvent");
 
-		domainEventNameConvetnionRule.CheckSolution();
+		domainEventNameConventnionRule.CheckSolution();
 	}
 
 	/// <summary>
-	/// Checks if all bussiness rule implementations has BussinessRule postfix.
+	/// Checks if all business rule implementations has BusinessRule postfix.
 	/// </summary>
 	[Fact]
-	public void AllBussinessRuleImplementationShouldEndsWithBussinessRulePostfixTest()
+	public void AllBusinessRuleImplementationShouldEndsWithBusinessRulePostfixTest()
 	{
 		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IBusinessRule));
 
-		IArchRule bussinessRuleNameConventionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("BusinessRule");
+		IArchRule businessRuleNameConventionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().HaveNameEndingWith("BusinessRule");
 
-		bussinessRuleNameConventionRule.CheckSolution();
+		businessRuleNameConventionRule.CheckSolution();
+	}
+
+	/// <summary>
+	/// Checks if all business rule implementations hasn't SuperImportant Prefix.
+	/// </summary>
+	[Fact]
+	public void AllBusinessRuleImplementationShouldNotStartAsSuperImportantPrefixTest()
+	{
+		var baseInterface = Architecture.All.GetInterfaceOfType(typeof(IBusinessRule));
+
+		IArchRule businessRuleNameConventionRule = ArchRuleDefinition.Classes().That().ImplementInterface(baseInterface).Should().NotHaveNameStartingWith("SuperImportant");
+
+		businessRuleNameConventionRule.CheckSolution();
 	}
 
 	/// <summary>

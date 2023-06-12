@@ -1,19 +1,28 @@
 using FluentValidation;
-
 using Intive.Patronage2023.Modules.Budget.Api.ResourcePermissions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.AddingBudgetTransactionAttachment;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetTransaction;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.EditingBudget;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistic;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetsReport;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetStatistics;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactionAttachment;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
+using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.AddingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.DeletingTransactionCategory;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.GettingTransactionCategories;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.AddingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.GettingUserBudget;
+using Intive.Patronage2023.Modules.Budget.Application.UserBudgets.UpdateUserBudgetFavourite;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Infrastructure.Data;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.RemoveBudget;
-using Intive.Patronage2023.Modules.Budget.Application.Budget.CancelBudgetTransaction;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace Intive.Patronage2023.Modules.Budget.Api;
@@ -42,6 +51,17 @@ public static class BudgetModule
 		services.AddScoped<IValidator<RemoveBudget>, RemoveBudgetValidator>();
 		services.AddScoped<IValidator<GetBudgetStatistics>, GetBudgetStatisticsValidator>();
 		services.AddScoped<IValidator<CancelBudgetTransaction>, CancelBudgetTransactionValidator>();
+		services.AddScoped<IValidator<AddUserBudgetList>, AddUserBudgetListValidator>();
+		services.AddScoped<IValidator<GetUserBudgetList>, GetUserBudgetListValidator>();
+		services.AddScoped<IValidator<UpdateUserBudgetFavourite>, UpdateUserBudgetFavouriteValidator>();
+		services.AddScoped<IValidator<AddTransactionCategory>, AddCategoryValidator>();
+		services.AddScoped<IValidator<GetTransactionCategories>, GetTransactionCategoryValidator>();
+		services.AddScoped<IValidator<DeleteTransactionCategory>, DeleteTransactionCategoryValidator>();
+		services.AddScoped<IValidator<GetBudgetsReport>, GetBudgetsReportValidator>();
+		services.AddScoped<IValidator<AddBudgetTransactionAttachment>, AddBudgetTransactionAttachmentValidator>();
+		services.AddScoped<IValidator<GetBudgetTransactionAttachment>, GetBudgetTransactionAttachmentValidator>();
+		services.AddScoped<ICategoryProvider, StaticCategoryProvider>();
+		services.AddScoped<ICategoryProvider, DatabaseCategoryProvider>();
 
 		return services;
 	}

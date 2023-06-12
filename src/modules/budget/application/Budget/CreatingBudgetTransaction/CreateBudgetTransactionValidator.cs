@@ -1,4 +1,5 @@
 using FluentValidation;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
@@ -12,22 +13,28 @@ namespace Intive.Patronage2023.Modules.Budget.Application.Budget.CreatingBudgetT
 public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTransaction>
 {
 	private readonly IRepository<BudgetAggregate, BudgetId> budgetRepository;
+	private readonly ICategoryProvider categoryProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CreateBudgetTransactionValidator"/> class.
 	/// </summary>
 	/// <param name="budgetRepository">budgetRepository, so we can validate BudgetId.</param>
-	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository)
+	/// <param name="categoryProvider">The provider used to get budget transaction categories.</param>
+	public CreateBudgetTransactionValidator(IRepository<BudgetAggregate, BudgetId> budgetRepository, ICategoryProvider categoryProvider)
 	{
 		this.budgetRepository = budgetRepository;
+		this.categoryProvider = categoryProvider;
 		this.RuleFor(transaction => transaction.Id).NotNull();
-		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).NotEmpty().NotNull();
-		this.RuleFor(transaction => transaction.Name).NotEmpty().NotNull().Length(3, 58);
-		this.RuleFor(transaction => transaction.Value).NotEmpty().NotNull().Must(this.IsValueAppropriateToType)
-			.WithMessage("Value must be positive for income or negative for expense");
-		this.RuleFor(transaction => transaction.Category).Must(x => Enum.IsDefined(typeof(CategoryType), x)).NotEmpty().NotNull();
-		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation)).WithMessage("Transaction date is outside the budget period.");
-		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).NotEmpty().NotNull();
+		this.RuleFor(transaction => transaction.Type).Must(x => Enum.IsDefined(typeof(TransactionType), x)).WithErrorCode("2.2").NotEmpty().WithErrorCode("2.3").NotNull();
+		this.RuleFor(transaction => transaction.Name).NotEmpty().WithErrorCode("2.3").NotNull().Length(3, 58).WithErrorCode("2.4");
+		this.RuleFor(transaction => transaction.Value).NotEmpty().WithErrorCode("2.5").NotNull().Must(this.IsValueAppropriateToType)
+			.WithMessage("Value must be positive for income or negative for expense").WithErrorCode("2.6");
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.Category })
+			.Must(x => this.IsCategoryDefined(x.BudgetId, x.Category)).WithMessage("Category is not defined.")
+			.WithErrorCode("2.8").NotEmpty().WithErrorCode("2.7").NotNull();
+		this.RuleFor(transaction => new { transaction.BudgetId, transaction.TransactionDate }).MustAsync(async (x, cancellation) => await this.IsDateInBudgetPeriod(x.BudgetId, x.TransactionDate, cancellation))
+			.WithMessage("Transaction date is outside the budget period.").WithErrorCode("2.9");
+		this.RuleFor(transaction => transaction.BudgetId).MustAsync(this.IsBudgetExists).WithErrorCode("1.11").NotEmpty().WithErrorCode("1.2").NotNull();
 	}
 
 	private async Task<bool> IsBudgetExists(Guid budgetGuid, CancellationToken cancellationToken)
@@ -61,6 +68,12 @@ public class CreateBudgetTransactionValidator : AbstractValidator<CreateBudgetTr
 			return false;
 		}
 
-		return transactionDate >= budget!.Period.StartDate && transactionDate <= budget.Period.EndDate;
+		return transactionDate >= budget.Period.StartDate && transactionDate <= budget.Period.EndDate;
+	}
+
+	private bool IsCategoryDefined(Guid budgetId, CategoryType category)
+	{
+		var categories = this.categoryProvider.GetForBudget(new BudgetId(budgetId));
+		return categories.Select(x => x.Name).Contains(category.CategoryName);
 	}
 }

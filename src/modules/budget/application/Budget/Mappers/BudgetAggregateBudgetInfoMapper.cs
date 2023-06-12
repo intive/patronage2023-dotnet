@@ -1,5 +1,5 @@
-using System.Linq.Expressions;
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgets;
+using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
 
 namespace Intive.Patronage2023.Modules.Budget.Application.Budget.Mappers;
@@ -12,7 +12,16 @@ public static class BudgetAggregateBudgetInfoMapper
 	/// <summary>
 	/// Mapping method.
 	/// </summary>
-	/// <returns>Returns <ref name="BudgetInfo"/>Budget information.</returns>
-	public static Expression<Func<BudgetAggregate, BudgetInfo>> Map =>
-		 entity => new BudgetInfo() { Id = entity.Id, Name = entity.Name, CreatedOn = entity.CreatedOn, Icon = entity.Icon };
+	/// <param name="query">Entity to be mapped.</param>
+	/// <param name="favouriteBudgetDictionary">Dictionary with all budets favourite flag.</param>
+	/// <returns>Returns budgets informations.</returns>
+	public static IQueryable<BudgetInfo> MapToBudgetInfo(this IQueryable<BudgetAggregate> query, List<BudgetId> favouriteBudgetDictionary) =>
+		query.Select(x => new BudgetInfo
+		{
+			Id = x.Id,
+			Name = x.Name,
+			CreatedOn = x.CreatedOn,
+			Icon = x.Icon,
+			IsFavourite = favouriteBudgetDictionary.Contains(x.Id),
+		});
 }

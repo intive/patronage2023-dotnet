@@ -87,13 +87,13 @@ public class BudgetAggregateTests
 		var period = new Period(new DateTime(2023, 04, 13), new DateTime(2023, 05, 13));
 		string icon = new Faker().Random.Word();
 		string description = new Faker().Lorem.Sentences();
-		var budgetAggregate = BudgetAggregate.Create(id, name, userId, limit, period, icon, description);
+		var instance = BudgetAggregate.Create(id, name, userId, limit, period, icon, description);
 
 		// Act
-		budgetAggregate.EditBudget(id, newName, limit, period, description, icon);
+		instance.EditBudget(id, newName, period, description, icon);
 
 		// Assert
-		budgetAggregate.Should().NotBeNull()
+		instance.Should().NotBeNull()
 			.And.BeEquivalentTo(new
 			{
 				Id = id,

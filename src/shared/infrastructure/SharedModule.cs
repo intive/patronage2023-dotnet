@@ -1,5 +1,6 @@
 using Intive.Patronage2023.Shared.Abstractions;
 using Intive.Patronage2023.Shared.Infrastructure.Commands;
+using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 
 using MediatR;
@@ -25,6 +26,7 @@ public static class SharedModule
 		services.AddTransient(typeof(IRequestHandler<>), typeof(MediatRCommandHandlerAdapter<>));
 		services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+		services.AddTransient<IEmailService, EmailService>();
 
 		return services;
 	}

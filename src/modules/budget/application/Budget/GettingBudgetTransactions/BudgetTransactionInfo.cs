@@ -1,3 +1,4 @@
+using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetDetails;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 
@@ -42,4 +43,14 @@ public record BudgetTransactionInfo()
 	/// Transaction Category.
 	/// </summary>
 	public CategoryType CategoryType { get; init; }
+
+	/// <summary>
+	/// Transaction attachment url.
+	/// </summary>
+	public string? AttachmentUrl { get; init; } = null!;
+
+	/// <summary>
+	/// Creator of the budget transaction.
+	/// </summary>
+	public BudgetUser? BudgetUser { get; init; } = null!;
 }

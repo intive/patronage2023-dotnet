@@ -40,14 +40,16 @@ public class HandleCreateBudget : ICommandHandler<CreateBudget>
 	{
 		var id = new BudgetId(command.Id);
 		var userId = new UserId(command.UserId);
+
 		var budget = BudgetAggregate.Create(
-			id,
-			command.Name,
-			userId,
-			command.Limit,
-			command.Period,
-			command.Description,
-			command.IconName);
+				id,
+				command.Name,
+				userId,
+				command.Limit,
+				command.Period,
+				command.Description,
+				command.IconName);
+
 		await this.budgetRepository.Persist(budget);
 	}
 }

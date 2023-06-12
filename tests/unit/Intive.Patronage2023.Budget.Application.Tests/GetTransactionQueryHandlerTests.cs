@@ -1,9 +1,12 @@
 using Bogus;
+
 using FluentAssertions;
+
 using Intive.Patronage2023.Modules.Budget.Application.Budget.GettingBudgetTransactions;
 using Intive.Patronage2023.Modules.Budget.Contracts.TransactionEnums;
 using Intive.Patronage2023.Modules.Budget.Contracts.ValueObjects;
 using Intive.Patronage2023.Modules.Budget.Domain;
+
 using Xunit;
 
 namespace Intive.Patronage2023.Budget.Application.Tests;
@@ -19,6 +22,7 @@ public class GetTransactionsQueryHandlerTests
 	public GetTransactionsQueryHandlerTests()
 	{
 	}
+
 	/// <summary>
 	/// Test that check if the query returns expected values from database.
 	/// </summary>
@@ -36,10 +40,11 @@ public class GetTransactionsQueryHandlerTests
 			var id = new TransactionId(new Faker().Random.Guid());
 			var transactionType = TransactionType.Income;
 			string? name = new Faker().Random.Word();
+			string email = new Faker().Internet.Email();
 			decimal value = new Faker().Random.Decimal(min: .1M);
-			var category = new Faker().Random.Enum<CategoryType>();
 			var transactionDate = new Faker().Date.Recent();
-			var transaction = BudgetTransactionAggregate.Create(id, budgetId, transactionType, name, value, category, transactionDate);
+			var category = new CategoryType("Car");
+			var transaction = BudgetTransactionAggregate.Create(id, budgetId, transactionType, name, email, value, category, transactionDate);
 			transactionList.Add(transaction);
 			// this.budgetDbContext.Transaction.Add(transaction);
 		}
@@ -47,10 +52,10 @@ public class GetTransactionsQueryHandlerTests
 		// this.budgetDbContext.SaveChanges();
 		var query = new GetBudgetTransactions() { PageSize = pageSize, PageIndex = pageIndex, BudgetId = budgetId };
 		var cancellationToken = CancellationToken.None;
-		var handler = new GetTransactionsQueryHandler(null!); // TODO: Use integration tests db context.
+		var instance = new GetTransactionsQueryHandler(null!, null!); // TODO: Use integration tests db context.
 
 		// Act
-		var result = await handler.Handle(query, cancellationToken);
+		var result = await instance.Handle(query, cancellationToken);
 
 		// Assert
 		result.Should().NotBeNull().And

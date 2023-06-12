@@ -1,23 +1,27 @@
 using System.Text.Json.Serialization;
+using Hangfire.Dashboard;
 using Intive.Patronage2023.Api.Configuration;
 using Intive.Patronage2023.Api.Errors;
-using Intive.Patronage2023.Api.Keycloak;
 using Intive.Patronage2023.Modules.Budget.Api;
+using Intive.Patronage2023.Modules.Budget.Application.TransactionCategories.CategoryProviders;
+using Intive.Patronage2023.Modules.Budget.Contracts.Provider;
 using Intive.Patronage2023.Modules.Example.Api;
 using Intive.Patronage2023.Modules.User.Api;
+using Intive.Patronage2023.Modules.User.Api.Configuration;
 using Intive.Patronage2023.Modules.User.Infrastructure;
+using Intive.Patronage2023.Shared.Abstractions.Behaviors;
 using Intive.Patronage2023.Shared.Abstractions.Commands;
 using Intive.Patronage2023.Shared.Abstractions.Domain;
 using Intive.Patronage2023.Shared.Abstractions.Extensions;
 using Intive.Patronage2023.Shared.Abstractions.Queries;
 using Intive.Patronage2023.Shared.Infrastructure;
 using Intive.Patronage2023.Shared.Infrastructure.Commands.CommandBus;
+using Intive.Patronage2023.Shared.Infrastructure.Email;
 using Intive.Patronage2023.Shared.Infrastructure.EventDispachers;
 using Intive.Patronage2023.Shared.Infrastructure.EventHandlers;
 using Intive.Patronage2023.Shared.Infrastructure.Queries.QueryBus;
-
 using Keycloak.AuthServices.Authentication;
-
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -46,8 +50,10 @@ builder.Services.AddHttpClient();
 builder.Services.AddUserModule();
 
 builder.Services.Configure<ApiKeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddHttpClient();
+var emailSetting = builder.Configuration.GetRequiredSection("EmailSettings").Get<EmailConfiguration>();
+builder.Services.AddSingleton<IEmailConfiguration, EmailConfiguration>(x => emailSetting!);
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddImportExportModule(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -60,7 +66,10 @@ builder.Services.AddControllers(options =>
 			.RequireAuthenticatedUser()
 			.Build())))
 			.AddJsonOptions(options =>
-				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+			{
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+				options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
+			});
 
 builder.Services.AddFromAssemblies(typeof(IDomainEventHandler<>), AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddFromAssemblies(typeof(IEventDispatcher<>), AppDomain.CurrentDomain.GetAssemblies());
@@ -83,6 +92,15 @@ builder.Services.AddSwagger();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddTransient(
+	typeof(IPipelineBehavior<,>),
+	typeof(ValidationQueryBehavior<,>));
+
+builder.Services.AddCommandBehavior(typeof(ValidationCommandBehavior<>), AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddHangfireService(builder.Configuration);
+builder.Services.AddComposite<ICategoryProvider, CompositeCategoryProvider>();
+
 var app = builder.Build();
 
 app.UseCors(corsPolicyName);
@@ -98,6 +116,10 @@ app.UseUserModule();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+var scope = app.Services.CreateScope();
+var authorizationFilter = scope.ServiceProvider.GetRequiredService<IDashboardAuthorizationFilter>();
+app.UseHangfireService(authorizationFilter);
 
 app.UseSwagger();
 app.UseSwaggerUI();

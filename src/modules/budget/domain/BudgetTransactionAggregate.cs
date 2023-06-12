@@ -16,9 +16,9 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	{
 	}
 
-	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	private BudgetTransactionAggregate(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, string email, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status)
 	{
-		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		var budgetTransactionCreated = new BudgetTransactionCreatedDomainEvent(id, budgetId, transactionType, name, email, value, categoryType, budgetTransactionDate, status);
 		this.Apply(budgetTransactionCreated, this.Handle);
 	}
 
@@ -43,12 +43,17 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public string Name { get; private set; } = default!;
 
 	/// <summary>
+	/// Budget Transaction creator email.
+	/// </summary>
+	public string Email { get; private set; } = default!;
+
+	/// <summary>
 	/// Value of new created income/Expense.
 	/// </summary>
 	public decimal Value { get; private set; }
 
 	/// <summary>
-	/// Category eg. "Home Spendings," "Subscriptions," "Car," "Grocery".
+	/// Transaction Category name.
 	/// </summary>
 	public CategoryType CategoryType { get; private set; }
 
@@ -58,12 +63,17 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	public DateTime BudgetTransactionDate { get; private set; }
 
 	/// <summary>
+	/// Budget Transaction attachment Url.
+	/// </summary>
+	public string? AttachmentUrl { get; private set; }
+
+	/// <summary>
 	/// Budget Transaction creation date.
 	/// </summary>
 	public DateTime CreatedOn { get; private set; }
 
 	/// <summary>
-	/// Status of budget.
+	/// Status of transaction.
 	/// </summary>
 	public Status Status { get; private set; } = default;
 
@@ -74,13 +84,15 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 	/// <param name="budgetId">Budget Id.</param>
 	/// <param name="transactionType">Enum of Income or Expense.</param>
 	/// <param name="name">Name of income or Expense.</param>
+	/// <param name="email">Transaction creator email.</param>
 	/// <param name="value">Value of income or Expense.</param>
-	/// <param name="categoryType">Enum of income/Expense Categories.</param>
+	/// <param name="categoryType">Category of Income or Expense.</param>
 	/// <param name="budgetTransactionDate">Date of Creating Transaction.</param>
+	/// <param name="status">Transaction status, default Active (optional).</param>
 	/// <returns>New aggregate.</returns>
-	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, decimal value, CategoryType categoryType, DateTime budgetTransactionDate)
+	public static BudgetTransactionAggregate Create(TransactionId id, BudgetId budgetId, TransactionType transactionType, string name, string email, decimal value, CategoryType categoryType, DateTime budgetTransactionDate, Status status = default)
 	{
-		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, value, categoryType, budgetTransactionDate);
+		return new BudgetTransactionAggregate(id, budgetId, transactionType, name, email, value, categoryType, budgetTransactionDate, status);
 	}
 
 	/// <summary>
@@ -108,6 +120,25 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 		this.Apply(evt, this.Handle);
 	}
 
+	/// <summary>
+	/// Add attachment url to Attachment url property.
+	/// </summary>
+	/// <param name="attachmentUrl">Attachment Url.</param>
+	public void AddAttachment(string attachmentUrl)
+	{
+		var attachmentAddedEvent = new BudgetTransactionAttachmentAddedDomainEvent(this.Id, attachmentUrl);
+		this.Apply(attachmentAddedEvent, this.Handle);
+	}
+
+	/// <summary>
+	/// Handle method.
+	/// </summary>
+	/// <param name="event">Event.</param>
+	public void Handle(BudgetTransactionAttachmentAddedDomainEvent @event)
+	{
+		this.AttachmentUrl = @event.AttachmentUrl;
+	}
+
 	private void Handle(BudgetTransactionCancelledDomainEvent @event)
 	{
 		this.Status = @event.Status;
@@ -124,9 +155,11 @@ public class BudgetTransactionAggregate : Aggregate, IEntity<TransactionId>
 		this.BudgetId = @event.BudgetId;
 		this.TransactionType = @event.TransactionType;
 		this.Name = @event.Name;
+		this.Email = @event.Email;
 		this.Value = @event.Value;
 		this.CategoryType = @event.CategoryType;
 		this.BudgetTransactionDate = @event.BudgetTransactionDate;
 		this.CreatedOn = @event.Timestamp;
+		this.Status = @event.Status;
 	}
 }
